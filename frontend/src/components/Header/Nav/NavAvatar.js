@@ -15,7 +15,7 @@ function NavAvatar() {
       <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
         <li className="dropdown-header">
           <h6>David</h6>
-          <span>Web Developer</span>
+          <span>HR Manager</span>
         </li>
         <li>
           <hr className="dropdown-divider" />

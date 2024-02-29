@@ -12,6 +12,7 @@
     "echarts": "^5.4.3",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
+    "react-bootstrap": "^2.10.1",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "remixicons": "^1.0.0",
