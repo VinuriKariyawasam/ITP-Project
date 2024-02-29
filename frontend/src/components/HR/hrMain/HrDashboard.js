@@ -1,17 +1,19 @@
 import React from "react";
-import DbCard from "./hrdbCard";
+import DbCard from "./HrDbCard";
+import "./hrDashboard.css";
 
-function Dashboard() {
+function HrDashboard() {
   return (
     <div className="row">
+      <DbCard title="Total Employees" value="30" iconClass="bi-people-fill" />
       <DbCard
-        title="Total Things"
+        title="Total Leaves"
         value="3"
         iconClass="bi-calendar-x"
         duration="Today"
       />
       <DbCard
-        title="Common"
+        title="Total Salaries"
         value="500,0000"
         iconClass="bi-coin"
         duration="Monthly"
@@ -20,4 +22,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default HrDashboard;
