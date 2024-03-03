@@ -1,0 +1,121 @@
+.header {
+    color: #000;
+    float: center;
+    text-align: center;
+    font-family: Sanchez;
+    font-size: 40px;
+    font-style: normal;
+    flex-shrink: 0;
+    margin-left: 150px;
+    margin-right: 150px;
+}
+
+.img1 {
+    width: 1050px;
+    height: 500px;
+    margin-left: 190px;
+    margin-right: 80px;
+
+}
+
+.div1 {
+    margin-left: 30px;
+    margin-right: 30px;
+    font-family: sans-serif;
+}
+
+.Q {
+    color: #000;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 30px;
+    float: left;
+    margin-left: 500px;
+}
+
+.img2 {
+    width: 400px;
+    height: 250px;
+    float: left;
+}
+
+.periodic {
+    margin-right: 0px;
+    font-size: 20px;
+    font-style: italic;
+    line-height: 1.5;
+    text-align: center;
+    font-family: sans-serif;
+}
+
+.img3 {
+    width: 400px;
+    height: 250px;
+    float: right;
+}
+
+.mechanical {
+    color: #000;
+    font-family: sans-serif;
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.img4 {
+    float: left;
+    width: 400px;
+    height: 250px;
+}
+
+.periodictButton {
+    text-decoration: none;
+    color: #FFFFFF;
+    border: none;
+    text-align: center;
+    font-family: Inter;
+    font-size: 20px;
+    width: 300px;
+    height: 60px;
+    background-color: #000000;
+}
+
+.accidentButton {
+    text-decoration: none;
+    color: #FFFFFF;
+    border: none;
+    text-align: center;
+    font-family: Inter;
+    font-size: 20px;
+    width: 300px;
+    height: 60px;
+    background-color: #000000;
+}
+
+.Accidental {
+    margin-right: 0;
+    color: #000;
+    font-family: sans-serif;
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.MechanicalButton {
+    text-decoration: none;
+    color: #FFFFFF;
+    border: none;
+    text-align: center;
+    font-family: Inter;
+    font-size: 20px;
+    width: 300px;
+    height: 60px;
+    background-color: #000000;
+}
+
+.a {
+    text-decoration: none;
+}
