@@ -1,0 +1,13 @@
+.star-filled {
+    color: gold;
+  }
+  
+.star-outline {
+    color: #ccc;
+    cursor: pointer;
+  }
+
+.star-text{
+  font-size: smaller;
+  font-family: 'Nunito', sans-serif;
+}  

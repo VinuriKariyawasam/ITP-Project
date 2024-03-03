@@ -24,7 +24,7 @@ function App() {
 
   routes = (
     <Switch>
-      <Route path="/hr" exact>
+    <Route path="/hr" exact>
         <HR />
       </Route>
       <Route path="/" exact>
