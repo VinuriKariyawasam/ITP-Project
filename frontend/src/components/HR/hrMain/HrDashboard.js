@@ -1,6 +1,5 @@
 import React from "react";
 import DbCard from "./HrDbCard";
-import "./hrDashboard.css";
 
 function HrDashboard() {
   return (

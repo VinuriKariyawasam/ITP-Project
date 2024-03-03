@@ -20,26 +20,15 @@ import HR from "./components/HR/HrPages/HR";
 import Common from "./components/Pages/Common";
 
 function App() {
-  let routes;
-
-  routes = (
-    <Switch>
-      <Route path="/hr" exact>
-        <HR />
-      </Route>
-      <Route path="/" exact>
-        <Common />
-      </Route>
-
-      <Redirect to="/" />
-    </Switch>
-  );
-
   return (
     <>
       <Header />
       <Router>
-        <main>{routes}</main>
+        <Switch>
+          <Route path="/hr" component={HR} />
+          <Route path="/" component={Common} />
+          <Redirect to="/" />
+        </Switch>
       </Router>
     </>
   );
