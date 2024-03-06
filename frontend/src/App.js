@@ -16,6 +16,7 @@ import "./App.css";
 import Header from "./components/Header/Header";
 import HR from "./components/HR/HrPages/HR";
 import Common from "./components/Pages/Common";
+import IM from "./components/IM/IMPages/IM";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Common />} />
           <Route path="/hr/*" element={<HR />} />
+          <Route path="/im/*" element={<IM />} />
         </Routes>
       </Router>
     </>
@@ -32,3 +34,5 @@ function App() {
 }
 
 export default App;
+
+
