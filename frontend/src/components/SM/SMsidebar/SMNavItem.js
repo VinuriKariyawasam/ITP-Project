@@ -6,7 +6,7 @@ function SMNavItem({ nav }) {
     <li className="nav-item">
       {nav.children && nav.children.length > 0 ? (
         <SMNavLink
-          href={`#nav-${nav._id}`}
+          href={nav.href}
           icon={nav.icon}
           title={nav.name}
           hasSubmenu
@@ -14,7 +14,7 @@ function SMNavItem({ nav }) {
           <i className="bi bi-chevron-down ms-auto"></i>
         </SMNavLink>
       ) : (
-        <SMNavLink href="#" icon={nav.icon} title={nav.name} />
+        <SMNavLink href={nav.href} icon={nav.icon} title={nav.name} />
       )}
 
       {nav.children && nav.children.length > 0 && (

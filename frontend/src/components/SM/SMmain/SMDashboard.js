@@ -1,7 +1,7 @@
 import React from "react";
 import DbCard from "./SMDbCard";
 
-function HrDashboard() {
+function SMDashboard() {
   return (
     <section>
       <div className="col">
@@ -19,9 +19,10 @@ function HrDashboard() {
             value="100+"
           />
         </div>
+
       </div>
     </section>
   );
 }
 
-export default HrDashboard;
+export default SMDashboard;

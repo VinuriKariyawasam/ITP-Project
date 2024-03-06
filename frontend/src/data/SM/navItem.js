@@ -3,6 +3,7 @@ const navList = [
     _id: 1,
     name: "Dashboard",
     icon: "bi bi-grid",
+    href:"/sm",
   },
   {
     _id: 2,
@@ -28,6 +29,7 @@ const navList = [
     _id: 6,
     name: "Appointments",
     icon: "bi bi-car-front",
+    href: "/sm/appointmentMain",
   },
 ];
 

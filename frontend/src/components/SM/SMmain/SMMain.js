@@ -9,14 +9,28 @@ function SMMain() {
       <h1>Service Manager </h1>
       <h3 className="subHead"> Here's a quick summary of what's happening in your team.</h3>
       <SMDashboard />
-      
-      <div className="divtag"> 
-      <h2 className="subHead"> Quick Access</h2>
-      <h3 className="details">New service Requests</h3><button className="btnDetails">See More</button><div/>
-      <h3 className="details">Add a Service record</h3><button className="btnDetails">Add</button><div/>
-      <h3 className="details">Create a service report</h3><button className="btnDetails">Create</button><div/>
-      <h3 className="details">View Service History</h3><button className="btnDetails">View</button><div/>
-      </div>
+      <div class="card">
+        <ul class="list-group">
+          <li class="list-group-item">New service Requests
+            <button className="btn">See More</button>
+          </li>
+          </ul>
+          <ul class="list-group">
+          <li class="list-group-item">Add a Service record
+            <button className="btn">Add</button>
+          </li>
+          </ul>
+          <ul class="list-group">
+          <li class="list-group-item">Create a service report
+            <button className="btn">Create</button>
+          </li>
+          </ul>
+          <ul class="list-group">
+          <li class="list-group-item">View Service History
+            <button className="btn">View</button>
+          </li>
+        </ul>
+        </div>
     </main>
   );
 }

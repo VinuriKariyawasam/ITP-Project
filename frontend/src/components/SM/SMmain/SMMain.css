@@ -53,4 +53,17 @@ margin-top: 20px;
 .divtag{
   margin-left: 250px;
 }
-
+.list-group{
+  margin-top:10px;
+}
+.btn{
+  float:right;
+  border-radius: 10px;
+  background-color: #000000;
+  color:white;width: 100px;
+  height: 40px;
+}
+.card{
+  background: none;
+  border: none;
+}
