@@ -15,6 +15,7 @@ import {
 import "./App.css";
 import Header from "./components/Header/Header";
 import HR from "./components/HR/HrPages/HR";
+import Finance from "./components/Finance/FinancePages/Finance"
 import Common from "./components/Pages/Common";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Common />} />
           <Route path="/hr/*" element={<HR />} />
+          <Route path="/finance/*" element={<Finance/>} />
         </Routes>
       </Router>
     </>
