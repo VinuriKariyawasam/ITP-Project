@@ -1,6 +1,7 @@
 import React from "react";
 import FinanceMain from "../FinanceMain/FinanceMain";
 import FinanceSideBar from "../FinanceSideBar/FinanceSideBar";
+import Incomes from "../FinanceMain/Incomes"
 //import FinanceIncome from "../hrMain/HrEmployee";
 
 // Import front end routes
@@ -10,6 +11,7 @@ import {
   Routes,
   
 } from "react-router-dom";
+import Expenses from "../FinanceMain/Expenses";
 
 function Finance() {
   return (
@@ -18,6 +20,9 @@ function Finance() {
 
       <Routes>
         <Route path="/" element={<FinanceMain />} />
+        <Route path="incomes/" element={<Incomes/>} />
+        <Route path="expenses/" element={<Expenses/>} />
+
       </Routes>
     </>
   );
