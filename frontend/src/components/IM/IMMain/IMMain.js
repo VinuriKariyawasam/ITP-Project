@@ -1,14 +1,16 @@
 import React from "react";
 import "../IMMain/IMMain.css";
 import IMDashboard from "../IMMain/IMDashboard";
-
+import './Lubricants'
+import ImPageTitle from './ImPageTitle'
 
 function IMMain() {
   return (
     <main id="main" className="main">
-      <h1>Inventory Manager Dashboard</h1>
+      <ImPageTitle title="Inventory Manager Dashboard" url="/im" />
       <IMDashboard />
-
+      <br/>
+      <h2>Featured Resources</h2>
       <div class="card2">
           <ul class="list-group ">
             

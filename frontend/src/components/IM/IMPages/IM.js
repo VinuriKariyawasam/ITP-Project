@@ -1,6 +1,9 @@
 import React from "react";
 import IMMain from "../IMMain/IMMain";
 import IMSideBar from "../IMSidebar/IMSideBar";
+import Lubricants from "../IMMain/Lubricants";
+import Header from "../../Header/Header";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 // Import front end routes
@@ -10,16 +13,19 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import Addproducts from "../IMMain/Addproducts";
+
 
 
 function IM() {
   return (
     <>
-      
+      <Header/>
       <IMSideBar />
       <Routes>
         <Route path="/" element={<IMMain />} />
-        
+        <Route path="lubricants/" element={<Lubricants/>} />
+        <Route path="addproduct" element={<Addproducts />} />
       </Routes>
     </>
   );

@@ -13,7 +13,7 @@ import {
 } from "react-router-dom";
 
 import "./App.css";
-import Header from "./components/Header/Header";
+import Customer from "./components/CUS/Pages/Customer";
 import HR from "./components/HR/HrPages/HR";
 import Common from "./components/Pages/Common";
 import IM from "./components/IM/IMPages/IM";
@@ -21,12 +21,14 @@ import IM from "./components/IM/IMPages/IM";
 function App() {
   return (
     <>
-      <Header />
+      
       <Router>
         <Routes>
           <Route path="/" element={<Common />} />
           <Route path="/hr/*" element={<HR />} />
           <Route path="/im/*" element={<IM />} />
+          <Route path="/customer*" element={<Customer />} />
+          
         </Routes>
       </Router>
     </>
