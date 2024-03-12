@@ -14,7 +14,8 @@ app.use(cors())
 readdirSync('./routes').map((route) =>
   app.use('/api/finance', require('./routes/' + route))
 );
-
+const periodicalroute = require("./routes/appointment-routes");
+app.use("/appointment",periodicalroute);
 
 const server = () =>{
     db()

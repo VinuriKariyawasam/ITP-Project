@@ -2,6 +2,7 @@ import React from "react";
 import SMSideBar from "../SMsidebar/SMSideBar"
 import SMmain from "../SMmain/SMMain"
 import SMAppointmentMain from "../SMmain/SMAppointment/SMAppointmentMain"
+import Header from '../../Header/Header'
 // Import front end routes
 import {
   BrowserRouter as Router,
@@ -13,6 +14,7 @@ import {
 function SM() {
   return (
     <>
+     <Header />
       <SMSideBar />
 
       <Routes>
