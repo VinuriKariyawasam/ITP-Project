@@ -38,6 +38,20 @@ router.route("/").get((req, res) => {
 })
 
 
+router.route("/delete/:id").delete(async (req, res) => {
+
+    let userId = req.params.id;
+
+    await Product.findByIdAndDelete(userId).then(() => {
+        res.status(200).send({ status: "user deleted" })
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({ status: "error with deleting" });
+    })
+
+})
+
+
 
 
 module.exports = router;
