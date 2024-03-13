@@ -1,9 +1,26 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 
 const SMPeriodicalServices = props => {
+
+//create an empty array to store details
+  const[periodicalAppointment,setperiodicalAppointment]=useState([]);
+  
+  useEffect(()=>{
+  
+    function getPeriodicalAppointment(){
+      axios.get("http://localhost:5000/appointment/find").then((res)=>{
+       setperiodicalAppointment(res.data);
+      }).catch((err)=>{
+        alert(err.message);
+      })
+    }
+    getPeriodicalAppointment();
+
+  },[])
     return (
+      <main id="main" className="main">
         <div>
 
             <h2 className="pHeading">Periodical Services</h2>
@@ -30,19 +47,21 @@ const SMPeriodicalServices = props => {
                         </tr>
                     </thead>
                     <tbody>
-                        {
-
-                            <tr>
-                                
+                        {periodicalAppointment.map((appointment, index) => (
+                            <tr key={index}>
+                                <td>{appointment.vNo}</td>
+                                <td>{appointment.name}</td>
+                                <td>{`${appointment.appointmentdate} ${appointment.appointmenttime}`}</td>
+                                <td>{appointment.phone}</td>
+                                <td>{appointment.msg}</td>
                             </tr>
-
-                        }
+                        ))}
                     </tbody>
                 </table>
             </div>
 
         </div>
-
+        </main>
     )
 }
 export default SMPeriodicalServices;
