@@ -11,8 +11,12 @@ import {
 } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useNavigate } from "react-router-dom";
 
 function AddEmp() {
+  //to redirect after success
+  const navigate = useNavigate();
+
   //for date picker
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -29,9 +33,46 @@ function AddEmp() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    // Handle form submission logic here
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+
+      // Append regular form data
+      Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+      });
+
+      // Append file data
+      formData.append("photo", data.photo[0]); // Assuming only one file is selected
+      if (data.documents) {
+        for (let i = 0; i < data.documents.length; i++) {
+          formData.append(`documents[${i}]`, data.documents[i]);
+        }
+      }
+
+      // Log FormData object
+      console.log("FormData:", formData);
+
+      const response = await fetch(
+        "http://localhost:5000/api/hr/add-employee",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to submit data");
+      }
+
+      const result = await response.json();
+      console.log("Data submitted successfully:", result);
+
+      // Redirect to the specified URL after successful submission
+      navigate("/hr/employee");
+    } catch (error) {
+      console.error("Error submitting data:", error.message);
+    }
   };
 
   return (
@@ -85,7 +126,7 @@ function AddEmp() {
               rules={{ required: "Birth Date is required" }}
               render={({ field }) => (
                 <DatePicker
-                  selected={field.value}
+                  selected={field.value || null}
                   onChange={(date) => field.onChange(date)}
                   className="form-control mx-2"
                 />
@@ -105,7 +146,11 @@ function AddEmp() {
             control={control}
             rules={{ required: "NIC is required" }}
             render={({ field }) => (
-              <Form.Control placeholder="791161645v" {...field} />
+              <Form.Control
+                placeholder="791161645v"
+                {...field}
+                maxLength="12"
+              />
             )}
           />
           <Form.Text className="text-danger">{errors.nic?.message}</Form.Text>
@@ -142,7 +187,7 @@ function AddEmp() {
                     label="Male"
                     name="gender"
                     type="radio"
-                    value="male"
+                    value="Male"
                     id={`male`}
                     onChange={(e) => {
                       field.onChange(e);
@@ -154,7 +199,7 @@ function AddEmp() {
                     label="Female"
                     name="gender"
                     type="radio"
-                    value="female"
+                    value="Female"
                     id={`female`}
                     onChange={(e) => {
                       field.onChange(e);
@@ -178,7 +223,13 @@ function AddEmp() {
             control={control}
             rules={{ required: "Contact No. is required" }}
             render={({ field }) => (
-              <Form.Control type="tel" placeholder="0715897598" {...field} />
+              <Form.Control
+                type="tel"
+                placeholder="0715897598"
+                {...field}
+                pattern="[0-9]{10}"
+                maxLength="10"
+              />
             )}
           />
           <Form.Text className="text-danger">
@@ -330,9 +381,22 @@ function AddEmp() {
           <Controller
             name="password"
             control={control}
-            rules={{ required: "Password is required" }}
+            rules={{
+              required: "Password is required",
+              pattern: {
+                value:
+                  /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$/,
+                message:
+                  "Password must have at least one uppercase letter, one number, one symbol, and be at least 8 characters long",
+              },
+            }}
             render={({ field }) => (
-              <Form.Control type="password" placeholder="Password" {...field} />
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                {...field}
+                pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$"
+              />
             )}
           />
           <Form.Text className="text-danger">

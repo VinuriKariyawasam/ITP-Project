@@ -2,14 +2,23 @@ const express = require("express");
 const cors = require("cors");
 const { db } = require("./db/db");
 const { readdirSync } = require("fs");
-const bodyParser = require("body-parser");
+
 const app = express();
+const path = require("path"); // Add this line
 
 require("dotenv").config();
 const PORT = process.env.PORT;
 
 app.use(express.json());
 app.use(cors());
+
+//Serve uploaded files statically
+app.use("/uploads", express.static(path.join(__dirname, "/backend/uploads")));
+
+//app.use((err, req, res, next) => {
+//console.error(err.stack);
+//res.status(500).send("Something went wrong!");
+//});
 
 // Load finance routes
 readdirSync("./routes").map((route) =>
