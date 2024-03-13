@@ -3,11 +3,13 @@ const navList = [
     _id: 1,
     name: "Dashboard",
     icon: "bi bi-grid",
+    href: "/hr",
   },
   {
     _id: 2,
     name: "Employee",
     icon: "bi bi-people-fill",
+    href: "/hr/employee",
   },
   {
     _id: 3,

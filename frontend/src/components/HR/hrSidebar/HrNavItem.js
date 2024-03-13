@@ -5,16 +5,11 @@ function HrNavItem({ nav }) {
   return (
     <li className="nav-item">
       {nav.children && nav.children.length > 0 ? (
-        <HrNavLink
-          href={`#nav-${nav._id}`}
-          icon={nav.icon}
-          title={nav.name}
-          hasSubmenu
-        >
+        <HrNavLink href={nav.href} icon={nav.icon} title={nav.name} hasSubmenu>
           <i className="bi bi-chevron-down ms-auto"></i>
         </HrNavLink>
       ) : (
-        <HrNavLink href="#" icon={nav.icon} title={nav.name} />
+        <HrNavLink href={nav.href} icon={nav.icon} title={nav.name} />
       )}
 
       {nav.children && nav.children.length > 0 && (
