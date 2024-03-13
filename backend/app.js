@@ -20,7 +20,7 @@ app.use("/uploads", express.static(path.join(__dirname, "/backend/uploads")));
 //res.status(500).send("Something went wrong!");
 //});
 
-// Load finance routes
+/*/ Load finance routes
 readdirSync("./routes").map((route) =>
   app.use("/api/finance", require("./routes/" + route))
 );
@@ -28,7 +28,7 @@ readdirSync("./routes").map((route) =>
 // Load HR routes
 readdirSync("./routes").map((route) =>
   app.use("/api/hr", require("./routes/" + route))
-);
+);*/
 
 // Load Vehicle routes
 readdirSync("./routes").map((route) =>
