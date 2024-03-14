@@ -51,4 +51,39 @@ router.route("/find").get((req,res)=>{
 })
 
 
-module.exports = router;
+
+
+router.route("/UpdatePeriodicalData").put(async(req, res) => {
+
+exports.updateperiodicalAppointment = async (req,res)=>{
+    let periodicalappointmentId =req.params.id;
+    //to get existing values
+    const {name,vType,vNo,sType,lastServiceYear,lastServiceMonth,mileage,phone,appointmentdate,appointmenttime,mag}= req.body
+    
+    //object to store new values
+    const updatePeriodicalAppointment ={
+     name,
+     vType,
+     vNo,
+     sType,
+     lastServiceYear,
+     lastServiceMonth,
+     mileage,
+     phone,
+     appointmentdate,
+     appointmenttime,
+     msg,
+ 
+ 
+    }
+ 
+    //to find relavant apoointment to update
+    const update = await periodicalSchema.findByIdAndUpdate(periodicalappointmentId,updatePeriodicalAppointment).then(()=>{
+     res.status(200).send({status:"Updated",appointment:update})
+    }).catch((err)=>{
+     res.status(500).send({status:"server error with update data",error:err.message});
+    })
+}
+ })
+ module.exports = router;
+ 
