@@ -6,8 +6,8 @@ router.use(bodyParser.json());
 
 router.get("/vehicles", VehicleController.getVehicles);
 
-router.get("/vehicle/:id", EmployeeController.getVehicleById);
+router.get("/vehicle/:id", VehicleController.getVehicleById);
 
-router.post("/add-vehicle", EmployeeController.createVehicle);
+router.post("/add-vehicle", VehicleController.createVehicle);
 
 module.exports = router;
