@@ -1,4 +1,4 @@
-const VehicleController = require("../controllers/hr/vehicle-controller");
+const VehicleController = require("../controllers/vehicle/vehicle-controller");
 const bodyParser = require("body-parser");
 
 const router = require("express").Router();
