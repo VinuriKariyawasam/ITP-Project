@@ -1,5 +1,5 @@
 import React from "react";
-import DbCard from "./hrdbCard";
+import DbCard from "./vehicledbCard";
 
 function Dashboard() {
   return (
