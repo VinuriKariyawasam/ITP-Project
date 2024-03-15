@@ -54,7 +54,12 @@ const SMPeriodicalServices = props => {
                                 <td>{`${appointment.appointmentdate} ${appointment.appointmenttime}`}</td>
                                 <td>{appointment.phone}</td>
                                 <td>{appointment.msg}</td>
+                                <td style={{ display: 'flex', gap: '5px' }}>
+                                 <button className="btn">Cancel</button>
+                                 <button className="btn">Approve</button>
+                                 </td>
                             </tr>
+                              
                         ))}
                     </tbody>
                 </table>
