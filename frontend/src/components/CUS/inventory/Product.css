@@ -1,0 +1,35 @@
+.containerProduct {
+    margin-left: 6%;
+    margin-right: 45%;
+    max-width: 100%;
+    height: 50%;
+    background-color: white;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border: none;
+    padding: 20px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Include padding in width calculation */
+    display: flex; /* Use flexbox */
+    align-items: center; /* Vertically center items */
+    justify-content: space-between; /* Space items evenly */
+}
+
+#cusmain {
+    margin-left: 9%;
+    margin-right: 9%;
+    margin-top: 9%;
+}
+
+.para1 {
+    
+    margin-top: -36.1%;
+    margin-left: 55%;
+    font-size: 23px;
+    background-color: white;
+    flex: 1; /* Allow paragraph to grow to take available space */
+    padding-top: 133px; /* Adjust padding as needed */
+    padding-bottom: 84px;
+    box-sizing: border-box; /* Include padding in width calculation */
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
