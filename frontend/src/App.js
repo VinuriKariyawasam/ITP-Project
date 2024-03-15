@@ -16,7 +16,7 @@ import {
 
 import "./App.css";
 import Header from "./components/Header/Header";
-import Vehicle from "./components/Vehicle/VehiclePages/Vehicle";
+
 import Common from "./components/Pages/Common";
 
 function App() {
