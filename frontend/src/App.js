@@ -16,7 +16,7 @@ import {
 
 import "./App.css";
 import Header from "./components/Header/Header";
-
+import Vehicle from "./components/Vehicle/VehiclePages/Vehicle";
 import Common from "./components/Pages/Common";
 
 function App() {
@@ -25,7 +25,7 @@ function App() {
       <Header />
       <Router>
         <Switch>
-          <Route path="/vehicle" component={HR} />
+          <Route path="/vehicle" component={Vehicle} />
           <Route path="/" component={Common} />
           <Redirect to="/" />
         </Switch>
