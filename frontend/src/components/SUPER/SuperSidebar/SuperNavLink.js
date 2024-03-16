@@ -20,4 +20,4 @@ const SuperNavLink = ({ href, icon, title, hasSubmenu, children }) => {
   );
 };
 
-export default HrNavLink;
+export default SuperNavLink;
