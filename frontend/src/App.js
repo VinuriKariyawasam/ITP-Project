@@ -1,12 +1,11 @@
-//link****************************************
+//link********************
 // Import icons and Bootstrap
 import React from "react";
 import SuperMain from "../superMain/SuperMain";
 import SuperSideBar from "../SuperSidebar/SuperSideBar";
 import SuperVehicle from "../SuperMain/SuperVehicle";
 
-// Import React and React Router
-import React from "react";
+// Import React Router
 import {
   BrowserRouter as Router,
   Route,
