@@ -12,7 +12,7 @@ import {
   Navigate,
 } from "react-router-dom";
 
-function SuperEmployee() {
+function SuperVehicle() {
   return (
     <main id="main" className="main">
       <SuperPageTitle title="Vehicle" url="super/vehicle" />
