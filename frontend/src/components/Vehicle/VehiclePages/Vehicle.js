@@ -4,7 +4,7 @@ import VehicleSideBar from "../vehicleSidebar/VehicleSideBar";
 
 //Import front end routes
 import {
-  BrowserRouter as Router,
+  BrowserRouter as router,
   Route,
   Redirect,
   Switch,
