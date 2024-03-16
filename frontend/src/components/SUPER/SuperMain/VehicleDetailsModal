@@ -5,28 +5,20 @@ import Container from "react-bootstrap/Container";
 import Modal from "react-bootstrap/Modal";
 import Row from "react-bootstrap/Row";
 
-function EmployeeDetailsModal({ show, onHide, employee }) {
-  console.log("Rendering modal with employee data:", employee);
-  if (!employee) return null;
+function VehicleDetailsModal({ show, onHide, vehicle }) {
+  console.log("Rendering modal with vehicle data:", vehicle);
+  if (!vehicle) return null;
 
   const {
     _id,
-    firstName,
-    lastName,
-    birthDate,
-    nic,
-    address,
-    gender,
+    vehicleNo,
+    brand,
+    model,
+    year,
+    name,
     contact,
-    startDate,
-    position,
-    otherDetails,
-    email,
-    password,
-    _v,
-    photo,
-    documents,
-  } = employee;
+    records,
+  } = vehicle;
 
   // Helper function to format date
   const formatDate = (dateString) => {
@@ -37,64 +29,45 @@ function EmployeeDetailsModal({ show, onHide, employee }) {
   return (
     <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
-        <Modal.Title>Employee Details</Modal.Title>
+        <Modal.Title>Vehicle Registration Details</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Container>
           <Row>
             <Col xs={12} md={8}>
-              <strong>First Name:</strong> {firstName}
+              <strong>Brand:</strong> {brand}
             </Col>
             <Col xs={6} md={4}>
-              <strong>Last Name:</strong> {lastName}
+              <strong>Model:</strong> {model}
             </Col>
           </Row>
 
           <Row>
             <Col xs={12} md={8}>
-              <strong>Birth Date:</strong> {formatDate(birthDate)}
+            <strong>Year:</strong> {year}
             </Col>
             <Col xs={6} md={4}>
-              <strong>NIC:</strong> {nic}
+              <strong>Vehicle owner's name:</strong> {name}
             </Col>
           </Row>
 
           <Row>
             <Col>
-              <strong>Address:</strong> {address}
+              <strong>Vehicle No:</strong> {vehicleNo}
             </Col>
           </Row>
 
           <Row>
-            <Col xs={12} md={8}>
-              <strong>Gender:</strong> {gender}
-            </Col>
+
             <Col xs={6} md={4}>
               <strong>Contact:</strong> {contact}
             </Col>
           </Row>
 
-          <Row>
-            <Col xs={12} md={8}>
-              <strong>Start Date:</strong> {formatDate(startDate)}
-            </Col>
-            <Col xs={6} md={4}>
-              <strong>Position:</strong> {position}
-            </Col>
-          </Row>
-
-          <Row>
-            <Col xs={12} md={8}>
-              <strong>Email:</strong> {email}
-            </Col>
-            <Col xs={6} md={4}>
-              <strong>Password:</strong> {password}
-            </Col>
-          </Row>
 
           <Row>
             <Col>
-              <strong>Other Details:</strong> {otherDetails}
+              <strong>Records:</strong> {records}
             </Col>
           </Row>
         </Container>
@@ -120,4 +93,4 @@ function EmployeeDetailsModal({ show, onHide, employee }) {
   );
 }
 
-export default EmployeeDetailsModal;
+export default VehicleDetailsModal;
