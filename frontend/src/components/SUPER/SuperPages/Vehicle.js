@@ -1,6 +1,6 @@
 import React from "react";
 import VehicleMain from "../SuperMain/VehicleMain";
-import VehicleSideBar from "../SuperSidebar/VehicleSideBar";
+import VehicleSideBar from "../SuperSidebar/SuperSideBar";
 
 //Import front end routes
 import {
