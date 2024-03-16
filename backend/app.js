@@ -12,7 +12,8 @@ app.use(cors())
 
 
 readdirSync('./routes').map((route) =>
-  app.use('/api/finance', require('./routes/' + route))
+  app.use('/api/finance', require('./routes/' + route)),
+  app.use('/consultancy', require('./routes/CAM-routes'))
 );
 
 
