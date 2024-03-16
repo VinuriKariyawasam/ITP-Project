@@ -9,7 +9,7 @@ import {
   ControlLabel,
   HelpBlock,
 } from "react-bootstrap";
-import DatePicker from "react-datepicker";
+//import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 
@@ -185,7 +185,7 @@ function AddVehicle() {
       <Form.Group className="mb-3" controlId="formGridExtra">
         <Form.Label>Current Records</Form.Label>
         <Controller
-          name="otherDetails"
+          name="records"
           control={control}
           render={({ field }) => (
             <Form.Control as="textarea" rows={3} {...field} />
