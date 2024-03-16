@@ -1,20 +1,15 @@
 import React from "react";
-import VehicleNavLink from "./SuperNavLink";
+import SuperNavLink from "./SuperNavLink";
 
-function VehicleNavItem({ nav }) {
+function HrNavItem({ nav }) {
   return (
     <li className="nav-item">
       {nav.children && nav.children.length > 0 ? (
-        <VehicleNavLink
-          href={`#nav-${nav._id}`}
-          icon={nav.icon}
-          title={nav.name}
-          hasSubmenu
-        >
+        <HrNavLink href={nav.href} icon={nav.icon} title={nav.name} hasSubmenu>
           <i className="bi bi-chevron-down ms-auto"></i>
-        </VehicleNavLink>
+        </HrNavLink>
       ) : (
-        <VehicleNavLink href="#" icon={nav.icon} title={nav.name} />
+        <HrNavLink href={nav.href} icon={nav.icon} title={nav.name} />
       )}
 
       {nav.children && nav.children.length > 0 && (
@@ -24,7 +19,7 @@ function VehicleNavItem({ nav }) {
           data-bs-parent="#sidebar-nav"
         >
           {nav.children.map((childNav) => (
-            <VehicleNavItem key={childNav._id} nav={childNav} />
+            <HrNavItem key={childNav._id} nav={childNav} />
           ))}
         </ul>
       )}
@@ -32,4 +27,4 @@ function VehicleNavItem({ nav }) {
   );
 }
 
-export default VehicleNavItem;
+export default HrNavItem;
