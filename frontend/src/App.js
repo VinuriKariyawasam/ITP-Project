@@ -25,7 +25,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Common />} />
-          <Route path="/vehicle/*" element={<Vehicle />} />
+          <Route path="/SUPER/*" element={<Vehicle />} />
         </Routes>
       </Router>
     </>
