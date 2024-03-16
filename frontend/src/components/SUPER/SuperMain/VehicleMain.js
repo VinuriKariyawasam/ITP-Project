@@ -1,7 +1,7 @@
 import React from "react";
 import "./vehicleMain.css";
 import VehicleDashboard from "./VehicleDashboard";
-import VehiclePageTitle from "./VehiclePageTitle";
+import VehiclePageTitle from "./SUPERPageTitle";
 
 function VehicleMain() {
   return (
