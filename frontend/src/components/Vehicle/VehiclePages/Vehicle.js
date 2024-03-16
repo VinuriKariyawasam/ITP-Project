@@ -4,7 +4,7 @@ import VehicleSideBar from "../vehicleSidebar/VehicleSideBar";
 
 //Import front end routes
 import {
-  BrowserRouter as router,
+  BrowserRouter as Router,
   Route,
   Redirect,
   Switch,
@@ -14,12 +14,12 @@ function Vehicle() {
   return (
     <>
       <VehicleSideBar />
-      <Switch>
+      <Route>
         <Route path="/vehicle/main" exact>
           <VehicleMain />
         </Route>
-        <Redirect to="/vehicle/main" />
-      </Switch>
+       
+      </Route>
     </>
   );
 }
