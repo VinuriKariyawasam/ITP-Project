@@ -1,15 +1,15 @@
 import React from "react";
 import SuperNavLink from "./SuperNavLink";
 
-function HrNavItem({ nav }) {
+function SuperNavItem({ nav }) {
   return (
     <li className="nav-item">
       {nav.children && nav.children.length > 0 ? (
-        <HrNavLink href={nav.href} icon={nav.icon} title={nav.name} hasSubmenu>
+        <SuperNavLink href={nav.href} icon={nav.icon} title={nav.name} hasSubmenu>
           <i className="bi bi-chevron-down ms-auto"></i>
-        </HrNavLink>
+        </SuperNavLink>
       ) : (
-        <HrNavLink href={nav.href} icon={nav.icon} title={nav.name} />
+        <SuperNavLink href={nav.href} icon={nav.icon} title={nav.name} />
       )}
 
       {nav.children && nav.children.length > 0 && (
@@ -19,7 +19,7 @@ function HrNavItem({ nav }) {
           data-bs-parent="#sidebar-nav"
         >
           {nav.children.map((childNav) => (
-            <HrNavItem key={childNav._id} nav={childNav} />
+            <SuperNavItem key={childNav._id} nav={childNav} />
           ))}
         </ul>
       )}
@@ -27,4 +27,4 @@ function HrNavItem({ nav }) {
   );
 }
 
-export default HrNavItem;
+export default SuperNavItem;
