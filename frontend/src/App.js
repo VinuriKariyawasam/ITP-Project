@@ -1,8 +1,9 @@
 //link****************************************
 // Import icons and Bootstrap
-import "bootstrap-icons/font/bootstrap-icons.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import React from "react";
+import SuperMain from "../superMain/SuperMain";
+import SuperSideBar from "../superSidebar/SuperSideBar";
+import SuperVehicle from "../superMain/SuperVehicle";
 
 // Import React and React Router
 import React from "react";
