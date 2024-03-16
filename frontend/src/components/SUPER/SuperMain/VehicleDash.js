@@ -6,24 +6,24 @@ import Table from "./Table";
 
 import { useNavigate } from "react-router-dom";
 
-function EmpDash() {
-  //to add employee button part
+function VehicleDash() {
+  //to add vehicle button part
   const navigate = useNavigate();
 
-  //to all emplyees
+  //to all vehicle
   const [tableData, setTableData] = useState([]);
 
   //to modal parts
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [selectedVehicleId, setSelectedVehicleId] = useState(null);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   //To modal data fetch
   // Assume you have a function to fetch employee data by ID
-  const fetchEmployeeById = async (employeeId) => {
+  const fetchVehicleById = async (vehicleId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/hr/employee/${employeeId}`
+        `http://localhost:5000/api/super/vehicle/${vehicleId}`
       );
 
       if (!response.ok) {
@@ -39,11 +39,11 @@ function EmpDash() {
     }
   };
 
-  //to all employee details fetch
+  //to all vehicle details fetch
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/employees");
+        const response = await fetch("http://localhost:5000/api/super/vehicles");
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -69,20 +69,20 @@ function EmpDash() {
   ];*/
 
   //reagarding modal
-  const handleMoreButtonClick = async (employeeId) => {
-    console.log("More button clicked:", employeeId);
-    setSelectedEmployeeId(employeeId);
-    const employee = await fetchEmployeeById(employeeId);
-    console.log("Fetched employee data on click:", employee);
-    setSelectedEmployee(employee);
+  const handleMoreButtonClick = async (vehicleId) => {
+    console.log("More button clicked:", vehicleId);
+    setSelectedVehicleId(vehicleId);
+    const vehicle = await fetchVehicleById(vehicleId);
+    console.log("Fetched vehicle data on click:", vehicle);
+    setSelectedVehicle(vehicle);
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     console.log("Closing modal");
     setShowModal(false);
-    setSelectedEmployeeId(null);
-    setSelectedEmployee(null);
+    setSelectedVehicleId(null);
+    setSelectedVehicle(null);
   };
 
   return (
@@ -102,7 +102,7 @@ function EmpDash() {
           </div>
           <div className="p-2 ms-auto">
             <Button variant="dark" size="md" onClick={() => navigate("add")}>
-              Create Employee
+              Register Vehicle
             </Button>
           </div>
         </Stack>
@@ -118,17 +118,17 @@ function EmpDash() {
             </tr>
           </thead>
           <tbody>
-            {tableData.map((employee, index) => (
+            {tableData.map((vehicle, index) => (
               <tr key={index}>
-                <td>{employee.firstName}</td>
-                <td>{employee.lastName}</td>
-                <td>{employee.position}</td>
-                <td>{employee.contact}</td>
+                <td>{vehicle.firstName}</td>
+                <td>{vehicle.lastName}</td>
+                <td>{vehicle.position}</td>
+                <td>{vehicle.contact}</td>
                 <td>
                   <Button
                     variant="dark"
                     className="d-flex mx-auto"
-                    onClick={() => handleMoreButtonClick(employee._id)}
+                    onClick={() => handleMoreButtonClick(vehicle._id)}
                   >
                     More
                   </Button>
@@ -139,13 +139,13 @@ function EmpDash() {
         </table>
       </div>
 
-      <EmployeeDetailsModal
+      <VehicleDetailsModal
         show={showModal}
         onHide={handleCloseModal}
-        employee={selectedEmployee}
+        vehicle={selectedVehicle}
       />
     </section>
   );
 }
 
-export default EmpDash;
+export default VehicleDash;
