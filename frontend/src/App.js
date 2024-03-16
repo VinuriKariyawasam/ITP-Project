@@ -2,8 +2,8 @@
 // Import icons and Bootstrap
 import React from "react";
 import SuperMain from "../superMain/SuperMain";
-import SuperSideBar from "../superSidebar/SuperSideBar";
-import SuperVehicle from "../superMain/SuperVehicle";
+import SuperSideBar from "../SuperSidebar/SuperSideBar";
+import SuperVehicle from "../SuperMain/SuperVehicle";
 
 // Import React and React Router
 import React from "react";
