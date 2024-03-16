@@ -1,4 +1,4 @@
-const VehicleNavLink = ({ href, icon, title, hasSubmenu, children }) => {
+const SuperNavLink = ({ href, icon, title, hasSubmenu, children }) => {
   return (
     <div className="nav-link-wrapper">
       <a
@@ -20,4 +20,4 @@ const VehicleNavLink = ({ href, icon, title, hasSubmenu, children }) => {
   );
 };
 
-export default VehicleNavLink;
+export default HrNavLink;
