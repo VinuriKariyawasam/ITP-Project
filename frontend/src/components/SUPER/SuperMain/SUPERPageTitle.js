@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./hrpageTitle.css";
+import "./superpageTitle.css";
 
-function HrPageTitle({ title, url }) {
+function SuperPageTitle({ title, url }) {
   const segments = url.split("/").filter(Boolean); // Split the URL and remove empty segments
 
   return (
@@ -28,4 +28,4 @@ function HrPageTitle({ title, url }) {
   );
 }
 
-export default HrPageTitle;
+export default SuperPageTitle;
