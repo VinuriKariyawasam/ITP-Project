@@ -1,7 +1,7 @@
 import React from "react";
 import "./VehicleSideBar.css";
 import vehiclenavList from "../../../data/Vehicle/vehiclenavItem";
-import VehicleNavItem from "./VehicleNavItem";
+import VehicleNavItem from "./SuperNavItem";
 
 function VehcileSideBar() {
   return (
