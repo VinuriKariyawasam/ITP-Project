@@ -7,7 +7,7 @@ function SuperSideBar() {
   return (
     <aside id="sidebar" className="sidebar">
       <ul className="sidebar-nav" id="sidebar-nav">
-        {hrnavList.map((nav) => (
+        {supernavList.map((nav) => (
           <SuperNavItem key={nav._id} nav={nav} />
         ))}
       </ul>

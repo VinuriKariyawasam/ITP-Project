@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Row, Stack } from "react-bootstrap";
-import "./superdash.css";
+import "./vehicledash.css";
 import VehicleDetailsModal from "./VehicleDetailsModal";
 import Table from "./Table";
 
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom"
 
 function VehicleDash() {
   //to add vehicle button part

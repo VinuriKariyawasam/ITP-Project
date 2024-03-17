@@ -1,21 +1,20 @@
-//link********************
 // Import icons and Bootstrap
-import React from "react";
-import SuperMain from "../superMain/SuperMain";
-import SuperSideBar from "../SuperSidebar/SuperSideBar";
-import SuperVehicle from "../SuperMain/SuperVehicle";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
-// Import React Router
+// Import React and React Router
+import React from "react";
 import {
   BrowserRouter as Router,
-  Route,
   Routes,
+  Route,
   Navigate,
 } from "react-router-dom";
 
 import "./App.css";
 import Header from "./components/Header/Header";
-import Vehicle from "./components/Vehicle/SuperPages/Vehicle";
+import SUPER from "./components/SUPER/SuperPages/SUPER";
 import Common from "./components/Pages/Common";
 
 function App() {
@@ -23,9 +22,9 @@ function App() {
     <>
       <Header />
       <Router>
-        <Routes>
+        <Routes> {/* Wrap your routes in <Routes> */}
           <Route path="/" element={<Common />} />
-          <Route path="/SUPER/*" element={<Vehicle />} />
+          <Route path="/supervisor/*" element={<SUPER />} />
         </Routes>
       </Router>
     </>
@@ -33,3 +32,4 @@ function App() {
 }
 
 export default App;
+

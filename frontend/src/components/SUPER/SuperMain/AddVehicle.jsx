@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useNavigate } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Button,
@@ -9,9 +9,6 @@ import {
   ControlLabel,
   HelpBlock,
 } from "react-bootstrap";
-//import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { useNavigate } from "react-router-dom";
 
 function AddVehicle() {
   //to redirect after success

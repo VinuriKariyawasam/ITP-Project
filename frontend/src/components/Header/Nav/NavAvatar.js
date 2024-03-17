@@ -9,13 +9,13 @@ function NavAvatar() {
         data-bs-toggle="dropdown"
       >
         <img src={profileImg} alt="Profile" className="rounded-circle" />
-        <span className="d-none d-md-block dropdown-toggle ps-2">F. David</span>
+        <span className="d-none d-md-block dropdown-toggle ps-2">Albert Rivera</span>
       </a>
 
       <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
         <li className="dropdown-header">
-          <h6>David</h6>
-          <span>HR Manager</span>
+          <h6>Albert</h6>
+          <span>Supervisor</span>
         </li>
         <li>
           <hr className="dropdown-divider" />

@@ -1,15 +1,13 @@
 import React from "react";
-import "./SuperMain.css";
+import "./superMain.css";
 import SuperPageTitle from "./SUPERPageTitle";
 import AddVehicle from "./AddVehicle";
 import VehicleDash from "./VehicleDash";
 
 // Import front end routes
 import {
-  BrowserRouter as Router,
-  Route,
   Routes,
-  Navigate,
+  Route,
 } from "react-router-dom";
 
 function SuperVehicle() {

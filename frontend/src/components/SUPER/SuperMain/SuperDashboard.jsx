@@ -1,7 +1,7 @@
 import React from "react";
-import DbCard from "./VehicleDbCard";
+import DbCard from "./SuperDbCard";
 
-function VehicleDashboard() {
+function SuperDashboard() {
   return (
     <section>
       <div className="col">
@@ -29,4 +29,4 @@ function VehicleDashboard() {
   );
 }
 
-export default VehicleDashboard;
+export default SuperDashboard;
