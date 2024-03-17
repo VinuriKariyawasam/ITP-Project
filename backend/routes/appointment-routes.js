@@ -85,5 +85,15 @@ exports.updateperiodicalAppointment = async (req,res)=>{
     })
 }
  })
+ router.route("/delete/:id").delete(async(req, res) => {
+ 
+    const {id}= req.params;
+    periodicalSchema.findByIdAndDelete(id).then(()=>{
+        res.status(200).send({status :'periodicalAppointment Deleted Sucessfully'})
+    }).catch((error)=>{
+        res.status(500).json({status :'Server Error'})
+    })
+}) 
+
  module.exports = router;
  
