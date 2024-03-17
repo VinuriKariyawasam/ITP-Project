@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import './IMProductCard.css'
 import IM from '../../../images/im/val1.png'
 import axios from 'axios'
-
+import Button from 'react-bootstrap/Button';
 function IMProductCard() {
 
   const [Products, setProducts] = useState([]);
@@ -45,15 +45,15 @@ const Delete = (id) => {
               <a className='product-name'>{product.Product_code}</a>
               <div>
                 <input type='text' className='price' placeholder={`Price: ${product.Unit_price}`} />
-                <button className='updatebtn'>Update</button>
+                <Button variant="primary">Update</Button>
               </div>
               <div className='quantity-details'>
                 <a className='price'>Quantity</a>
-                <button className='quantity-btn bi bi-dash-circle'></button>
+                <button className='btnqunhandler'><span  className='quantity-btn bi bi-dash-circle'></span></button>
                 <a className='quantity'>{product.Quantity}</a>
-                <button className='quantity-btn bi bi-plus-circle'></button>
+                <button  className='btnqunhandler'><span  className='quantity-btn bi bi-plus-circle'></span></button>
               </div>
-              <button className='delete-btn' onClick={() => Delete(product._id)}>Delete Product</button>
+              <Button variant="primary" onClick={() => Delete(product._id)} className='btnproduct'>Delete Product</Button>
             </div>
           </div>
         ))}
