@@ -30,6 +30,11 @@ function SMMain() {
             <button className="btn">View</button>
           </li>
         </ul>
+        <ul class="list-group">
+          <li class="list-group-item">Mobile Service Requests
+            <button className="btn">View</button>
+          </li>
+        </ul>
         </div>
     </main>
   );

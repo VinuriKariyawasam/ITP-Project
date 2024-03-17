@@ -7,7 +7,7 @@ import HrEmployee from "../hrMain/HrEmployee";
 import {
   BrowserRouter as Router,
   Route,
-  Routes,
+  //Routes,
   Navigate,
 } from "react-router-dom";
 

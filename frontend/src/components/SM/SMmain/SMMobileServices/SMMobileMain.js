@@ -1,36 +1,39 @@
 import React from "react";
 import Arrow from '../../../../images/SM/Appointment/Arrow.png'
-import '../SMAppointment/SMAppointment.css'
+import './SMMobileServices.css'
 
-const SMAppointmentMain = () => {
+const SMMobileMain = () => {
     return (
+        <main id="main" className="main">
         <div className="div1">
-            <h2 className="Aheader">Appointments</h2>
+            <h2 className="Aheader">Mobile Services</h2>
             <div className="div2">
             <button className="button">
-                periodical Services
+                Mechanical Service Requests
                 <img src={Arrow} alt="Arrow" className="Arrow" />
             </button>
             </div>
             <div className="div2">
             <button className="button">
-                Mechanical Repairs
+                Emergency Breakdown Requests
                 <img src={Arrow} alt="Arrow" className="Arrow" />
             </button>
             </div>
             <div className="div2">
             <button className="button">
-                Accidental Repairs
+                Vehicle Carrier Requests
                 <img src={Arrow} alt="Arrow" className="Arrow" />
             </button>
             </div>
+        
 
 
 
 
         </div>
+        </main>
     )
 
 }
 
-export default SMAppointmentMain;
+export default SMMobileMain;

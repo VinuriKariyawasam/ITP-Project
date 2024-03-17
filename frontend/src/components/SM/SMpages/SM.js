@@ -1,7 +1,7 @@
 import React from "react";
 import SMSideBar from "../SMsidebar/SMSideBar"
 import SMmain from "../SMmain/SMMain"
-import SMAppointmentMain from "../SMmain/SMAppointment/SMAppointmentMain"
+import SMMobileMain from "../SMmain/SMMobileServices/SMMobileMain"
 // Import front end routes
 import {
   BrowserRouter as Router,
@@ -17,7 +17,7 @@ function SM() {
 
       <Routes>
         <Route path="/" element={<SMmain/>} />
-        <Route path="/appointmentMain" element={<SMAppointmentMain/>} />
+        <Route path="/MobileMain" element={<SMMobileMain/>} />
         
       </Routes>
     </>

@@ -2,11 +2,11 @@ import React from "react";
 
 
 
-const SMPeriodicalServices = props => {
+const SMmMechanicalServices = props => {
     return (
         <div>
 
-            <h2 className="pHeading">Periodical Services</h2>
+            <h2 className="pHeading">Mobile Mechanical Services</h2>
             <div className="ptable">
                 <table className='table table-bordered'>
                     <thead>
@@ -45,7 +45,7 @@ const SMPeriodicalServices = props => {
 
     )
 }
-export default SMPeriodicalServices;
+export default SMmMechanicalServices;
 
 
 /*const TableComponent = ({

@@ -8,7 +8,7 @@ import EmpDash from "./EmpDash";
 import {
   BrowserRouter as Router,
   Route,
-  Routes,
+  //Routes,
   Navigate,
 } from "react-router-dom";
 

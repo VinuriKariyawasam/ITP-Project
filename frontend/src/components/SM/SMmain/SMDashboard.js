@@ -18,6 +18,10 @@ function SMDashboard() {
             title="Service records"
             value="100+"
           />
+          <DbCard
+            title="Mobile Service Requests"
+            //value="100+"
+          />
         </div>
 
       </div>

@@ -3,10 +3,10 @@ import { Button, Form, Row, Stack } from "react-bootstrap";
 import "./empdash.css";
 import Table from "./Table";
 
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 function EmpDash() {
-  const navigate = useNavigate();
+  const navigate = Navigate();
 
   const columns = ["#", "First", "Last", "Handle"];
   const data = [
