@@ -7,19 +7,14 @@ function SuperDashboard() {
       <div className="col">
         <div className="row">
           <DbCard
-            title="Total Employees"
-            value="30"
-            iconClass="bi-people-fill"
-          />
-          <DbCard
-            title="Total Leaves"
+            title="Service Requests"
             value="3"
             iconClass="bi-calendar-x"
             duration="Today"
           />
           <DbCard
-            title="Total Salaries"
-            value="500,0000"
+            title="Vehicles"
+            value="50"
             iconClass="bi-coin"
             duration="Monthly"
           />

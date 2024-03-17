@@ -19,7 +19,7 @@ function VehicleDash() {
   const [showModal, setShowModal] = useState(false);
 
   //To modal data fetch
-  // Assume you have a function to fetch employee data by ID
+  // Assume you have a function to fetch vehicle data by ID
   const fetchVehicleById = async (vehicleId) => {
     try {
       const response = await fetch(
@@ -31,10 +31,10 @@ function VehicleDash() {
       }
 
       const data = await response.json();
-      console.log("Fetched employee data from fetch:", data);
+      console.log("Fetched vehicle data from fetch:", data);
       return data;
     } catch (error) {
-      console.error("Error fetching employee data:", error);
+      console.error("Error fetching vehicle data:", error);
       return null;
     }
   };
@@ -51,7 +51,7 @@ function VehicleDash() {
 
         const data = await response.json();
 
-        setTableData(data.employees);
+        setTableData(data.vehicles);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -61,7 +61,7 @@ function VehicleDash() {
   }, []); // Runs once on component mount
 
   //table headers
-  const columns = ["First", "Last", "Role", "Contact", ""];
+  const columns = ["Vehicle No.", "Brand", "Model", "Year", "Name", "Contact No.", "Current Records"];
   /*const data = [
     [1, "Mark", "Otto", "@mdo"],
     [2, "Jacob", "Thornton", "@fat"],
@@ -120,10 +120,13 @@ function VehicleDash() {
           <tbody>
             {tableData.map((vehicle, index) => (
               <tr key={index}>
-                <td>{vehicle.firstName}</td>
-                <td>{vehicle.lastName}</td>
-                <td>{vehicle.position}</td>
+                <td>{vehicle.vehicleNo}</td>
+                <td>{vehicle.brand}</td>
+                <td>{vehicle.model}</td>
+                <td>{vehicle.year}</td>
+                <td>{vehicle.name}</td>
                 <td>{vehicle.contact}</td>
+                <td>{vehicle.records}</td>
                 <td>
                   <Button
                     variant="dark"

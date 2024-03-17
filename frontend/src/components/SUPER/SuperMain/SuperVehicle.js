@@ -1,3 +1,4 @@
+//register vehicle button linking
 import React from "react";
 import "./superMain.css";
 import SuperPageTitle from "./SUPERPageTitle";
@@ -13,11 +14,11 @@ import {
 function SuperVehicle() {
   return (
     <main id="main" className="main">
-      <SuperPageTitle title="Vehicle" url="super/vehicle" />
+      <SuperPageTitle title="Vehicle" url="supervisor/vehicle/" />
 
       <Routes>
         <Route path="/" element={<VehicleDash />} />
-        <Route path="add" element={<AddVehicle />} />
+        <Route path="/add" element={<AddVehicle />} />
       </Routes>
     </main>
   );

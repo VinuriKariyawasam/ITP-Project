@@ -6,7 +6,7 @@ import SuperPageTitle from "./SUPERPageTitle";
 function SuperMain() {
   return (
     <main id="main" className="main">
-      <SuperPageTitle title="Vehicle Registration Dashboard" url="/super/" />
+      <SuperPageTitle title="Supervisor Dashboard" url="/supervisor/" />
       <SuperDashboard />
     </main>
   );

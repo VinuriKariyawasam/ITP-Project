@@ -3,6 +3,7 @@ const supernavList = [
     _id: 1,
     name: "Dashboard",
     icon: "bi bi-grid",
+    href: "/supervisor",
   },
   {
     _id: 2,
@@ -18,6 +19,7 @@ const supernavList = [
     _id: 4,
     name: "Vehicles",
     icon: "bi bi-car-front",
+    href: "/supervisor/vehicle",
   },
   {
     _id: 5,

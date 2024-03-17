@@ -1,62 +1,17 @@
-import React, { useState,useNavigate } from "react";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Button,
-  Col,
-  Form,
-  Row,
-  FormGroup,
-  ControlLabel,
-  HelpBlock,
-} from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { Button, Form, Col } from "react-bootstrap";
+import "./AddVehicle.css"; // Import CSS file for styling
 
 function AddVehicle() {
-  //to redirect after success
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Hook for navigation
 
-  //validation and submit
-  const {
-    handleSubmit,
-    control,
-    register,
-    setValue,
-    formState: { errors },
-  } = useForm();
+  const { handleSubmit, control, formState: { errors } } = useForm();
 
   const onSubmit = async (data) => {
     try {
-      const formData = new FormData();
-
-      // Append regular form data
-      Object.keys(data).forEach((key) => {
-        formData.append(key, data[key]);
-      });
-
-      // Append file data
-      formData.append("photo", data.photo[0]); // Assuming only one file is selected
-      if (data.documents) {
-        for (let i = 0; i < data.documents.length; i++) {
-          formData.append(`documents[${i}]`, data.documents[i]);
-        }
-      }
-
-      // Log FormData object
-      console.log("FormData:", formData);
-
-      const response = await fetch(
-        "http://localhost:5000/api/super/add-vehicle",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to submit data");
-      }
-
-      const result = await response.json();
-      console.log("Data submitted successfully:", result);
+      // Your form submission logic here
 
       // Redirect to the specified URL after successful submission
       navigate("/super/vehicle");
@@ -66,16 +21,17 @@ function AddVehicle() {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <h3>Vehicle</h3>
+    <div className="form-container"> {/* Apply container class */}
+      <Form onSubmit={handleSubmit(onSubmit)} className="form-frame"> {/* Apply frame class */}
+        <center><h3>Vehicle</h3></center>
 
-      {/* Vehicle No */}
-      <Form.Group as={Col} controlId="formGridNic">
+        {/* Vehicle No */}
+        <Form.Group as={Col} controlId="formGridNic">
           <Form.Label>Vehicle No.</Form.Label>
           <Controller
             name="vehicleNo"
             control={control}
-            rules={{ required: "NIC is required" }}
+            rules={{ required: "Vehicle No is required" }}
             render={({ field }) => (
               <Form.Control
                 placeholder="AFD2541"
@@ -87,13 +43,13 @@ function AddVehicle() {
           <Form.Text className="text-danger">{errors.nic?.message}</Form.Text>
         </Form.Group>
 
-      {/* Brand */}
+        {/* Brand */}
         <Form.Group as={Col} controlId="formGridFname">
           <Form.Label>Brand</Form.Label>
           <Controller
             name="brand"
             control={control}
-            rules={{ required: "First Name is required" }}
+            rules={{ required: "Brand is required" }}
             render={({ field }) => (
               <Form.Control placeholder="Toyota" {...field} />
             )}
@@ -109,7 +65,7 @@ function AddVehicle() {
           <Controller
             name="model"
             control={control}
-            rules={{ required: "First Name is required" }}
+            rules={{ required: "Model is required" }}
             render={({ field }) => (
               <Form.Control placeholder="Toyota" {...field} />
             )}
@@ -125,11 +81,11 @@ function AddVehicle() {
           <Controller
             name="year"
             control={control}
-            rules={{ required: "Contact No. is required" }}
+            rules={{ required: "Year is required" }}
             render={({ field }) => (
               <Form.Control
                 type="tel"
-                placeholder="0715897598"
+                placeholder="2020"
                 {...field}
                 maxLength="4"
               />
@@ -185,7 +141,7 @@ function AddVehicle() {
           name="records"
           control={control}
           render={({ field }) => (
-            <Form.Control as="textarea" rows={3} {...field} />
+            <Form.Control as="textarea" rows={1} {...field} />
           )}
         />
         <Form.Text className="text-danger">
@@ -193,10 +149,19 @@ function AddVehicle() {
         </Form.Text>
       </Form.Group>
 
-      <Button variant="dark" type="submit">
-        Submit
-      </Button>
-    </Form>
+
+      <div className="button-group">
+        <Button variant="dark" type="back" href="/supervisor/vehicle" style={{ marginLeft: '30px' }}>
+          Back
+        </Button>
+
+          <Button variant="dark" type="submit" className="register-button">
+            Register
+          </Button>
+        </div>
+     
+      </Form>
+    </div>
   );
 }
 
