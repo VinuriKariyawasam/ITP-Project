@@ -10,10 +10,29 @@ const PORT=process.env.PORT
 app.use(express.json())
 app.use(cors())
 
+//Serve uploaded files statically
+app.use("/uploads", express.static(path.join(__dirname, "/backend/uploads")));
 
 readdirSync('./routes').map((route) =>
   app.use('/api/finance', require('./routes/' + route))
 );
+
+
+// Load finance routes
+readdirSync("./routes").map((route) =>
+  app.use("/api/finance", require("./routes/" + route))
+);
+
+// Load HR routes
+readdirSync("./routes").map((route) =>
+  app.use("/api/hr", require("./routes/" + route))
+);
+
+// Load SM routes
+readdirSync("./routes").map((route) =>
+  app.use("/api/sm", require("./routes/" + route))
+);
+
 
 
 const server = () =>{
@@ -23,4 +42,4 @@ const server = () =>{
     })
 }
 
-server()
+server();

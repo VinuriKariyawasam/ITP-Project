@@ -1,0 +1,13 @@
+.custom-input:focus {
+    border-color: #000000; /* Change this to your desired focus shadow color */
+    box-shadow: 0 0 0 0.2rem rgba(2, 2, 2, 0.25); /* Change this to your desired focus shadow color with alpha transparency */
+  }
+  
+  .custom-input {
+    width: 300px;
+  }
+  
+  .table {
+    margin-top: 40px;
+  }
+  
