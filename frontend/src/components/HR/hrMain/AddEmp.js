@@ -12,10 +12,15 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
+import ImageUpload from "../HrUtil/ImageUpload";
+import FileUpload from "../HrUtil/FileUpload";
 
 function AddEmp() {
   //to redirect after success
   const navigate = useNavigate();
+
+  // State to track selected position
+  const [selectedPosition, setSelectedPosition] = useState("");
 
   //for date picker
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -42,16 +47,17 @@ function AddEmp() {
         formData.append(key, data[key]);
       });
 
-      // Append file data
-      formData.append("photo", data.photo[0]); // Assuming only one file is selected
-      if (data.documents) {
-        for (let i = 0; i < data.documents.length; i++) {
-          formData.append(`documents[${i}]`, data.documents[i]);
-        }
+      if (uploadedFile) {
+        formData.append("documents", uploadedFile);
       }
 
       // Log FormData object
       console.log("FormData:", formData);
+
+      console.log("FormData Entries:");
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
 
       const response = await fetch(
         "http://localhost:5000/api/hr/add-employee",
@@ -72,6 +78,26 @@ function AddEmp() {
       navigate("/hr/employee");
     } catch (error) {
       console.error("Error submitting data:", error.message);
+    }
+  };
+
+  const handlePositionChange = (e) => {
+    setSelectedPosition(e.target.value); // Update selected position
+  };
+
+  //file uplood funxtions
+  // State to store the uploaded files
+  // State to store the uploaded files
+  const [uploadedFile, setUploadedFile] = useState(null);
+
+  // File input handler for SingleFileUpload component
+  const fileInputHandler = (id, file, isValid) => {
+    if (isValid) {
+      // Set the uploaded file in state
+      setUploadedFile(file);
+    } else {
+      // Handle invalid files if needed
+      console.log("Invalid file:", file);
     }
   };
 
@@ -271,7 +297,14 @@ function AddEmp() {
             control={control}
             rules={{ required: "Position is required" }}
             render={({ field }) => (
-              <Form.Select defaultValue="Choose..." {...field}>
+              <Form.Select
+                defaultValue="Choose..."
+                {...field}
+                onChange={(e) => {
+                  field.onChange(e);
+                  handlePositionChange(e); // Call function to update selected position
+                }}
+              >
                 <option>Choose...</option>
                 <option value="HR Manager">HR Manager</option>
                 <option value="Inventory Manager">Inventory Manager</option>
@@ -296,43 +329,26 @@ function AddEmp() {
             name="photo"
             control={control}
             render={({ field }) => (
-              <>
-                <Form.Control
-                  type="file"
-                  accept=".jpg, .jpeg, .png"
-                  onChange={(e) => {
-                    field.onChange(e);
-                    field.onBlur(e);
-                  }}
-                />
-              </>
+              <ImageUpload
+                id="photo" // Pass the ID for the ImageUpload component
+                onInput={(id, file, isValid) => {
+                  field.onChange(file); // Trigger the onChange event for the photo field
+                  field.onBlur(); // Trigger the onBlur event for validation
+                }}
+                errorText={errors.photo?.message}
+              />
             )}
           />
-          <Form.Text className="text-danger">{errors.photo?.message}</Form.Text>
         </Form.Group>
         {/* Documents */}
         <Form.Group as={Col} controlId="formFileDocuments">
           <Form.Label>Add other documents *(.pdf only)</Form.Label>
-          <Controller
-            name="documents"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Form.Control
-                  type="file"
-                  accept=".pdf"
-                  multiple
-                  onChange={(e) => {
-                    field.onChange(e);
-                    field.onBlur(e);
-                  }}
-                />
-              </>
-            )}
+          <FileUpload
+            id="documents"
+            accept=".pdf"
+            onInput={fileInputHandler}
+            errorText={errors.documents?.message}
           />
-          <Form.Text className="text-danger">
-            {errors.documents?.message}
-          </Form.Text>
         </Form.Group>
       </Row>
 
@@ -353,57 +369,69 @@ function AddEmp() {
 
       {/* System Credentials */}
       {/* Email */}
-      <Row className="mb-3">
-        <h5 className="text-dark">System Credentials</h5>
-        <h6 className="text-primary">*Only need for manager or supervisor</h6>
-        <Form.Group as={Col} controlId="formGridEmail">
-          <Form.Label>Email</Form.Label>
-          <Controller
-            name="email"
-            control={control}
-            rules={{
-              required: "Email is required",
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                message: "Invalid email address",
-              },
-            }}
-            render={({ field }) => (
-              <Form.Control type="email" placeholder="Enter email" {...field} />
-            )}
-          />
-          <Form.Text className="text-danger">{errors.email?.message}</Form.Text>
-        </Form.Group>
+      {/* Conditional rendering of credentials based on selected position */}
+      {selectedPosition !== "Technician" && (
+        <Row className="mb-3 credentials">
+          <h5 className="text-dark">System Credentials</h5>
+          <h6 className="text-primary">
+            *Only needed for manager or supervisor
+          </h6>
+          {/* Email */}
+          <Form.Group as={Col} controlId="formGridEmail">
+            <Form.Label>Email</Form.Label>
+            <Controller
+              name="email"
+              control={control}
+              rules={{
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                  message: "Invalid email address",
+                },
+              }}
+              render={({ field }) => (
+                <Form.Control
+                  type="email"
+                  placeholder="Enter email"
+                  {...field}
+                />
+              )}
+            />
+            <Form.Text className="text-danger">
+              {errors.email?.message}
+            </Form.Text>
+          </Form.Group>
 
-        {/* Password */}
-        <Form.Group as={Col} controlId="formGridPassword">
-          <Form.Label>Password</Form.Label>
-          <Controller
-            name="password"
-            control={control}
-            rules={{
-              required: "Password is required",
-              pattern: {
-                value:
-                  /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$/,
-                message:
-                  "Password must have at least one uppercase letter, one number, one symbol, and be at least 8 characters long",
-              },
-            }}
-            render={({ field }) => (
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                {...field}
-                pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$"
-              />
-            )}
-          />
-          <Form.Text className="text-danger">
-            {errors.password?.message}
-          </Form.Text>
-        </Form.Group>
-      </Row>
+          {/* Password */}
+          <Form.Group as={Col} controlId="formGridPassword">
+            <Form.Label>Password</Form.Label>
+            <Controller
+              name="password"
+              control={control}
+              rules={{
+                required: "Password is required",
+                pattern: {
+                  value:
+                    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$/,
+                  message:
+                    "Password must have at least one uppercase letter, one number, one symbol, and be at least 8 characters long",
+                },
+              }}
+              render={({ field }) => (
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  {...field}
+                  pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$"
+                />
+              )}
+            />
+            <Form.Text className="text-danger">
+              {errors.password?.message}
+            </Form.Text>
+          </Form.Group>
+        </Row>
+      )}
 
       <Button variant="dark" type="submit">
         Submit

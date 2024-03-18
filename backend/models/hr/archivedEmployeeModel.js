@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
-const employeeSchema = new mongoose.Schema({
+const archivedEmployeeSchema = new mongoose.Schema({
+  // Define schema for archived employees
+  // Example: firstName, lastName, etc.
   firstName: {
     type: String,
     required: true,
@@ -58,12 +60,27 @@ const employeeSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    required: function () {
+      // Require email field only for manager or supervisor positions
+      return this.position === "Manager" || this.position === "Supervisor";
+    },
+    match: [
+      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+      "Invalid email address",
+    ],
   },
   password: {
     type: String,
+    required: function () {
+      // Require password field only for manager or supervisor positions
+      return this.position === "Manager" || this.position === "Supervisor";
+    },
   },
 });
 
-const Employee = mongoose.model("Employee", employeeSchema);
+const ArchivedEmployee = mongoose.model(
+  "ArchivedEmployee",
+  archivedEmployeeSchema
+);
 
-module.exports = Employee;
+module.exports = ArchivedEmployee;
