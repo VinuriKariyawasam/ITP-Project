@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const vehicleSchema = new mongoose.Schema({
+const VehicleSchema = new mongoose.Schema({
   vehicleNo: {
     type: String,
     required: true,
@@ -25,20 +25,13 @@ const vehicleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  documents: [
+  records: [
     {
       type: String, // Array of file paths or references
     },
   ],
-  password: {
-    type: String,
-    required: function () {
-      // Require password field only for supervisor positions
-      this.position === "Supervisor";
-    },
-  },
 });
 
-const Vehicle = mongoose.model("Vehicle", vehicleSchema);
+const VehicleModel = mongoose.model("vehicles", VehicleSchema);
 
-module.exports = Vehicle;
+module.exports = VehicleModel;

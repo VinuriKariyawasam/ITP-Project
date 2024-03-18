@@ -1,168 +1,101 @@
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { Button, Form, Col } from "react-bootstrap";
-import "./AddVehicle.css"; // Import CSS file for styling
+import React, { useState } from "react";
+import { Button, Form } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 function AddVehicle() {
-  const navigate = useNavigate(); // Hook for navigation
+  const [formData, setFormData] = useState({
+    vehicleNo: "",
+    brand: "",
+    model: "",
+    year: "",
+    name: "",
+    contact: "",
+    records: null // Assuming records is a file
+  });
 
-  const { handleSubmit, control, formState: { errors } } = useForm();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
 
-  const onSubmit = async (data) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      // Your form submission logic here
-
-      // Redirect to the specified URL after successful submission
-      navigate("/super/vehicle");
+      const response = await fetch("http://localhost:3001/createVehicles", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+      if (response.ok) {
+        // Vehicle created successfully, redirect to vehicle dashboard
+        window.location.href = "/supervisor/vehicle";
+      } else {
+        console.error("Failed to register vehicle");
+      }
     } catch (error) {
-      console.error("Error submitting data:", error.message);
+      console.error("Error registering vehicle:", error);
     }
   };
 
   return (
-    <div className="form-container"> {/* Apply container class */}
-      <Form onSubmit={handleSubmit(onSubmit)} className="form-frame"> {/* Apply frame class */}
-        <center><h3>Vehicle</h3></center>
+    <div className='vh-100 d-flex justify-content-center align-items-center'>
+      <div className='w-50 bg-white rounded p-3'>
+        <form onSubmit={handleSubmit}>
+          <h2>Vehicle</h2>
 
-        {/* Vehicle No */}
-        <Form.Group as={Col} controlId="formGridNic">
-          <Form.Label>Vehicle No.</Form.Label>
-          <Controller
-            name="vehicleNo"
-            control={control}
-            rules={{ required: "Vehicle No is required" }}
-            render={({ field }) => (
-              <Form.Control
-                placeholder="AFD2541"
-                {...field}
-                maxLength="7"
-              />
-            )}
-          />
-          <Form.Text className="text-danger">{errors.nic?.message}</Form.Text>
-        </Form.Group>
+          <div className='mb-2'>
+            <label htmlFor="vehicleNo">Vehicle No.</label>
+            <input type="text" name="vehicleNo" value={formData.vehicleNo} onChange={handleChange} className="form-control" />
+          </div>
 
-        {/* Brand */}
-        <Form.Group as={Col} controlId="formGridFname">
-          <Form.Label>Brand</Form.Label>
-          <Controller
-            name="brand"
-            control={control}
-            rules={{ required: "Brand is required" }}
-            render={({ field }) => (
-              <Form.Control placeholder="Toyota" {...field} />
-            )}
-          />
-          <Form.Text className="text-danger">
-            {errors.firstName?.message}
-          </Form.Text>
-        </Form.Group>
+          <div className='mb-2'>
+            <label htmlFor="brand">Brand</label>
+            <input type="text" name="brand" value={formData.brand} onChange={handleChange} className="form-control" />
+          </div>
 
-      {/* Model */}
-      <Form.Group as={Col} controlId="formGridFname">
-          <Form.Label>Model</Form.Label>
-          <Controller
-            name="model"
-            control={control}
-            rules={{ required: "Model is required" }}
-            render={({ field }) => (
-              <Form.Control placeholder="Toyota" {...field} />
-            )}
-          />
-          <Form.Text className="text-danger">
-            {errors.firstName?.message}
-          </Form.Text>
-        </Form.Group>
+          <div className='mb-2'>
+            <label htmlFor="model">Model</label>
+            <input type="text" name="model" value={formData.model} onChange={handleChange} className="form-control" />
+          </div>
 
-      {/* Year */}
-      <Form.Group as={Col} controlId="formGridContact">
-          <Form.Label>Year</Form.Label>
-          <Controller
-            name="year"
-            control={control}
-            rules={{ required: "Year is required" }}
-            render={({ field }) => (
-              <Form.Control
-                type="tel"
-                placeholder="2020"
-                {...field}
-                maxLength="4"
-              />
-            )}
-          />
-          <Form.Text className="text-danger">
-            {errors.contact?.message}
-          </Form.Text>
-        </Form.Group>
+          <div className='mb-2'>
+            <label htmlFor="year">Year</label>
+            <input type="text" name="year" value={formData.year} onChange={handleChange} className="form-control" />
+          </div>
 
-      {/* Name */}
-      <Form.Group as={Col} controlId="formGridFname">
-          <Form.Label>Vehicle Owner's name</Form.Label>
-          <Controller
-            name="name"
-            control={control}
-            rules={{ required: "Name is required" }}
-            render={({ field }) => (
-              <Form.Control placeholder="Saman Perera" {...field} />
-            )}
-          />
-          <Form.Text className="text-danger">
-            {errors.firstName?.message}
-          </Form.Text>
-        </Form.Group>
+          <div className='mb-2'>
+            <label htmlFor="name">Name</label>
+            <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-control" />
+          </div>
 
-      {/* Contact No. */}
-      <Form.Group as={Col} controlId="formGridContact">
-          <Form.Label>Contact No.</Form.Label>
-          <Controller
-            name="contact"
-            control={control}
-            rules={{ required: "Contact No. is required" }}
-            render={({ field }) => (
-              <Form.Control
-                type="tel"
-                placeholder="0715897598"
-                {...field}
-                pattern="[0-9]{10}"
-                maxLength="10"
-              />
-            )}
-          />
-          <Form.Text className="text-danger">
-            {errors.contact?.message}
-          </Form.Text>
-        </Form.Group>
+          <div className='mb-2'>
+            <label htmlFor="contact">Contact No.</label>
+            <input type="text" name="contact" value={formData.contact} onChange={handleChange} className="form-control" />
+          </div>
+          
+          <div className='mb-2'>
+            <label htmlFor="records">Current Records</label>
+            <input type="file" name="records" onChange={handleChange} className="form-control" />
+          </div>
 
-      {/* Current records */}
-      <Form.Group className="mb-3" controlId="formGridExtra">
-        <Form.Label>Current Records</Form.Label>
-        <Controller
-          name="records"
-          control={control}
-          render={({ field }) => (
-            <Form.Control as="textarea" rows={1} {...field} />
-          )}
-        />
-        <Form.Text className="text-danger">
-          {errors.otherDetails?.message}
-        </Form.Text>
-      </Form.Group>
+          <div className="d-flex justify-content-center mt-3">
+            <Button variant="secondary" className="me-5">
+              <Link to="/supervisor/vehicle" className="text-light text-decoration-none">
+                Back
+              </Link>
+            </Button>
+            <Button type="submit" className='btn btn-success ms-2'>Register</Button>
+          </div>
 
-
-      <div className="button-group">
-        <Button variant="dark" type="back" href="/supervisor/vehicle" style={{ marginLeft: '30px' }}>
-          Back
-        </Button>
-
-          <Button variant="dark" type="submit" className="register-button">
-            Register
-          </Button>
-        </div>
-     
-      </Form>
+        </form>
+      </div>
     </div>
-  );
+  )
 }
 
 export default AddVehicle;

@@ -9,5 +9,7 @@ router.get("/vehicles", VehicleController.getVehicles);
 router.get("/vehicle/:id", VehicleController.getVehicleById);
 
 router.post("/add-vehicle", VehicleController.createVehicle);
+router.put("/update-vehicle/:id", VehicleController.updateVehicle);
+router.delete("/delete-vehicle/:id", VehicleController.deleteVehicle);
 
 module.exports = router;

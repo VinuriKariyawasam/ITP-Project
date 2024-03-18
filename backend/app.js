@@ -1,39 +1,84 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const { db } = require('./db/db');
 const { readdirSync } = require('fs');
-const app = express();
+const VehicleModel = require('./models/vehicle/vehicleModel.js')
 
-require('dotenv').config();
-let PORT= process.env.PORT || 5000; // Use 5000 as default if PORT is not provided
+const app = express()
+app.use(cors())
+app.use(express.json())
 
-app.use(express.json());
-app.use(cors());
+mongoose.connect("mongodb+srv://teamoctagonit:y2s2_2024@neotech.dcrtlz8.mongodb.net/Vehicle?retryWrites=true&w=majority")
 
-//Load Supervisor routes
-readdirSync('./routes').map((route) =>
-  app.use('/api/supervisor', require('./routes/' + route))
-);
+app.get("/getVehicles", (req, res)=> {
+  VehicleModel.find({}).then(function(vehicles) {
+    res.json(vehicles); // Corrected the typo here
+  }).catch(function(err) {
+    res.json(err)
+  })
+})
 
+app.post("/createVehicles", async (req, res) => {
+  try {
+    const vehicleData = req.body;
+    const newVehicle = new VehicleModel(vehicleData);
+    await newVehicle.save();
+    res.status(201).json(newVehicle);
+  } catch (error) {
+    console.error("Error saving vehicle:", error);
+    res.status(500).json({ error: "Failed to save vehicle" });
+  }
+});
 
-const server = () => {
-  const listener = app.listen(PORT, () => {
-    console.log('Listening to port: ', listener.address().port);
-  });
-  
-  listener.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      // if the port is already in use, trying the next available port
-      listener.close();
-      PORT++;
-      server(); //call to attempt with the next port
-    } else {
-      console.error('Error starting server:', err);
+app.put("/updateVehicle/:id", async (req, res) => {
+  try {
+    const vehicleId = req.params.id;
+    const updatedVehicleData = req.body;
+    const updatedVehicle = await VehicleModel.findByIdAndUpdate(vehicleId, updatedVehicleData, { new: true });
+    if (!updatedVehicle) {
+      return res.status(404).json({ error: "Vehicle not found" });
     }
-  });
-};
+    res.json(updatedVehicle);
+  } catch (error) {
+    console.error("Error updating vehicle:", error);
+    res.status(500).json({ error: "Failed to update vehicle" });
+  }
+});
 
+app.delete("/delete-vehicle/:id", async (req, res) => {
+  try {
+    const vehicleId = req.params.id;
+    const deletedVehicle = await VehicleModel.findByIdAndDelete(vehicleId);
+    if (!deletedVehicle) {
+      return res.status(404).json({ error: "Vehicle not found" });
+    }
+    res.json({ message: "Vehicle deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting vehicle:", error);
+    res.status(500).json({ error: "Failed to delete vehicle" });
+  }
+});
 
-//establish ofdatabase connection before starting the server
-db();
-server();
+// Define the default port
+const DEFAULT_PORT = 3001;
+
+// Function to start the server
+function startServer(port) {
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    }).on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+            // If the port is already in use, try the next port
+            console.log(`Port ${port} is already in use, trying the next port...`);
+            startServer(port + 1);
+        } else {
+            // For other errors, log the error and exit
+            console.error('Server could not start:', err);
+            process.exit(1);
+        }
+    });
+}
+
+// Start the server with the default port
+startServer(DEFAULT_PORT);

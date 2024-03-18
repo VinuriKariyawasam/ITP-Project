@@ -2,7 +2,7 @@ import React from "react";
 import SuperMain from "../SuperMain/SuperMain";
 import SuperVehicle from "../SuperMain/SuperVehicle";
 import SuperSideBar from "../SuperSidebar/SuperSideBar";
-import VehicleDash from "../SuperMain/VehicleDash";
+import UpdateVehicle from "../SuperMain/UpdateVehicle";
 
 // Import front end routes
 import {
@@ -13,15 +13,15 @@ import {
 
 function SUPERVISOR() {
   return (
-    <>
-   
+    <main>
+
       <SuperSideBar />
       <Routes>
         <Route path="/" element={<SuperMain />} />
         <Route path="vehicle/*" element={<SuperVehicle />} />
       </Routes>
    
-    </>
+    </main>
   );
 }
 

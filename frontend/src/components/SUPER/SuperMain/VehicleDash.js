@@ -1,92 +1,52 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Row, Stack } from "react-bootstrap";
-import "./vehicledash.css";
-import VehicleDetailsModal from "./VehicleDetailsModal";
-import Table from "./Table";
-
-import {useNavigate} from "react-router-dom"
+import { Link } from "react-router-dom";
 
 function VehicleDash() {
-  //to add vehicle button part
-  const navigate = useNavigate();
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  //to all vehicle
-  const [tableData, setTableData] = useState([]);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  //to modal parts
-  const [selectedVehicleId, setSelectedVehicleId] = useState(null);
-  const [selectedVehicle, setSelectedVehicle] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-
-  //To modal data fetch
-  // Assume you have a function to fetch vehicle data by ID
-  const fetchVehicleById = async (vehicleId) => {
+  const fetchData = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/super/vehicle/${vehicleId}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      const response = await fetch("http://localhost:3001/getVehicles");
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Fetched data:", data); // Log the fetched data
+        setVehicles(data);
+        setLoading(false);
+      } else {
+        console.error("Failed to fetch data");
       }
-
-      const data = await response.json();
-      console.log("Fetched vehicle data from fetch:", data);
-      return data;
     } catch (error) {
-      console.error("Error fetching vehicle data:", error);
-      return null;
+      console.error("Error fetching data:", error);
     }
   };
 
-  //to all vehicle details fetch
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/super/vehicles");
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3001/delete-vehicle/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
         }
-
-        const data = await response.json();
-
-        setTableData(data.vehicles);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      });
+      if (response.ok) {
+        // Remove the deleted vehicle from the state
+        setVehicles(vehicles.filter(vehicle => vehicle._id !== id));
+      } else {
+        console.error("Failed to delete vehicle");
       }
-    };
-
-    fetchData();
-  }, []); // Runs once on component mount
-
-  //table headers
-  const columns = ["Vehicle No.", "Brand", "Model", "Year", "Name", "Contact No.", "Current Records"];
-  /*const data = [
-    [1, "Mark", "Otto", "@mdo"],
-    [2, "Jacob", "Thornton", "@fat"],
-    [3, "Larry", "Bird", "@twitter"],
-  ];*/
-
-  //reagarding modal
-  const handleMoreButtonClick = async (vehicleId) => {
-    console.log("More button clicked:", vehicleId);
-    setSelectedVehicleId(vehicleId);
-    const vehicle = await fetchVehicleById(vehicleId);
-    console.log("Fetched vehicle data on click:", vehicle);
-    setSelectedVehicle(vehicle);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    console.log("Closing modal");
-    setShowModal(false);
-    setSelectedVehicleId(null);
-    setSelectedVehicle(null);
+    } catch (error) {
+      console.error("Error deleting vehicle:", error);
+    }
   };
 
   return (
-    <section>
+    <div className="table">
       <Row>
         <Stack direction="horizontal" gap={3}>
           <div className="p-2">
@@ -101,53 +61,52 @@ function VehicleDash() {
             </Form>
           </div>
           <div className="p-2 ms-auto">
-            <Button variant="dark" size="md" onClick={() => navigate("add")}>
-              Register Vehicle
+            <Button variant="success" size="md">
+              <Link to="/supervisor/vehicle/add" className="text-light text-decoration-none">
+                Register Vehicle
+              </Link>
             </Button>
           </div>
         </Stack>
       </Row>
-
-      <div className="table">
-        <table className="table table-rounded">
-          <thead>
-            <tr>
-              {columns.map((column, index) => (
-                <th key={index}>{column}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.map((vehicle, index) => (
-              <tr key={index}>
-                <td>{vehicle.vehicleNo}</td>
-                <td>{vehicle.brand}</td>
-                <td>{vehicle.model}</td>
-                <td>{vehicle.year}</td>
-                <td>{vehicle.name}</td>
-                <td>{vehicle.contact}</td>
-                <td>{vehicle.records}</td>
-                <td>
-                  <Button
-                    variant="dark"
-                    className="d-flex mx-auto"
-                    onClick={() => handleMoreButtonClick(vehicle._id)}
-                  >
-                    More
-                  </Button>
-                </td>
+      <div className="mt-3">
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Vehicle No</th>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Year</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Records</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {vehicles.map((vehicle, index) => (
+                <tr key={index}>
+                  <td>{vehicle.vehicleNo}</td>
+                  <td>{vehicle.brand}</td>
+                  <td>{vehicle.model}</td>
+                  <td>{vehicle.year}</td>
+                  <td>{vehicle.name}</td>
+                  <td>{vehicle.contact}</td>
+                  <td>{vehicle.records}</td>
+                  <td>
+                    <Link to={`/supervisor/vehicle/update/${vehicle._id}`} className="btn btn-success">Update</Link>
+                    <button onClick={() => handleDelete(vehicle._id)} className="btn btn-danger">Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
-
-      <VehicleDetailsModal
-        show={showModal}
-        onHide={handleCloseModal}
-        vehicle={selectedVehicle}
-      />
-    </section>
+    </div>
   );
 }
 
