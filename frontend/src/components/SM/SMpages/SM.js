@@ -3,7 +3,9 @@ import SMSidebar from "../SMsidebar/SMSidebar"
 import SMMain from "../SMmain/SMMain"
 import Addrecord from "../SMmain/SMRecords/Addrecord"
 import Smrecords from "../SMmain/SMRecords/Smrecords"
-import title from "../SMmain/SMRecords/SMPageTitle"
+import Title from "../SMmain/SMRecords/SMPageTitle"
+
+
 
 import RecDash from "../SMmain/SMRecords/RecDash"
 // Import front end routes
@@ -27,6 +29,7 @@ function SM() {
         <Route path="/recDash" element={<RecDash/>} />
         <Route path="/add" element={<Addrecord/>} />
         <Route path="/records" element={<Smrecords/>} />
+        <Route path="/title" element={<Title/>} />
 
       </Routes>
     </>

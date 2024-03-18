@@ -33,7 +33,7 @@ function Addrecord() {
     // Handle form submission logic here
     console.log(data);
   };
-
+ 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <h3>Create Record</h3>

@@ -1,5 +1,4 @@
 import React from "react";
-
 import SMPageTitle from "./SMPageTitle";
 import Addrecord from "./Addrecord";
 import RecDash from "./RecDash";
@@ -19,7 +18,7 @@ function Smrecords() {
 
       <Routes>
         <Route path="/" element={<RecDash />} />
-        <Route path="add" element={<Addrecord />} />
+        <Route path="/add" element={<Addrecord />} />
       </Routes>
     </main>
   );
