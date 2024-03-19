@@ -9,14 +9,14 @@ const Incomes = () => {
   const [incomes, setIncomes] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/finance/incomes")
+    fetch("http://localhost:5000/api/finance/incomes")
       .then((response) => response.json())
       .then((data) => setIncomes(data))
       .catch((error) => console.error("Error fetching incomes:", error));
   }, []);
 
   const handleAddIncomeClick = () => {
-    navigate("/finance/incomes/add-income");
+    navigate("add-income");
   };
 
   const formatDate = (dateString) => {
@@ -25,11 +25,11 @@ const Incomes = () => {
   };
 
   const handleEditIncome = (id) => {
-    navigate(`/finance/incomes/edit-income/${id}`);
+    navigate(`edit-income/${id}`);
   };
 
   const handleDeleteIncome = (id) => {
-    fetch(`http://localhost:5000/finance/incomes/delete-income/${id}`, {
+    fetch(`http://localhost:5000/api/finance/incomes/delete-income/${id}`, {
       method: "DELETE",
     })
       .then((response) => response.json())

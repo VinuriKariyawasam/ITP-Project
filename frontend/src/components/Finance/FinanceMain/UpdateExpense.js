@@ -19,7 +19,7 @@ const UpdateExpense = () => {
     useEffect(() => {
         const fetchExpense = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/finance/expenses/get-expense/${id}`);
+                const response = await fetch(`http://localhost:5000/api/finance/expenses/get-expense/${id}`);
                 if (response.ok) {
                     const data = await response.json();
                     // Update formData state with existing expense data
@@ -47,7 +47,7 @@ const UpdateExpense = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:5000/finance/expenses/update-expense/${id}`, {
+            const response = await fetch(`http://localhost:5000/api/finance/expenses/update-expense/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

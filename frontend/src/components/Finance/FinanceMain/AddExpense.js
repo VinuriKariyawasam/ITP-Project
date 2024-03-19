@@ -26,7 +26,7 @@ const AddExpense = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:5000/finance/expenses/add-expense", {
+            const response = await fetch("http://localhost:5000/api/finance/expenses/add-expense", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -44,7 +44,7 @@ const AddExpense = () => {
                     description: ''
                 });
                 // Redirect to previous page
-                navigate("/finance/expenses");
+                navigate(-1);
             } else {
                 setErrorMessage(data.message || 'Failed to add expense');
             }

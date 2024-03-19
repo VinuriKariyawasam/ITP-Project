@@ -18,7 +18,7 @@ const AddIncome = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    fetch("http://localhost:5000/finance/incomes/add-income", {
+    fetch("http://localhost:5000/api/finance/incomes/add-income", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -27,7 +27,7 @@ const AddIncome = () => {
     })
       .then(() => {
         console.log("Income added successfully");
-        navigate("/finance/incomes");
+        navigate(-1);
       })
       .catch((error) => console.error("Error adding income:", error));
   };
