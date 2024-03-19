@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import PageTitle from './PageTitle';
 
 const AddExpense = () => {
     const navigate = useNavigate();
@@ -55,6 +56,7 @@ const AddExpense = () => {
 
     return (
         <main id="main" className="main">
+             <PageTitle title="Finance / Expenses / Add-Expense" />
             <Form onSubmit={handleSubmit}>
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
                 <Form.Group controlId="title">

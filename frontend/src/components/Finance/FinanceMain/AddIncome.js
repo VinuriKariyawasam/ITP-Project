@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import PageTitle from "./PageTitle";
 
 const AddIncome = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const AddIncome = () => {
 
   return (
     <main id="main" className="main">
-      <h2>Add Income</h2>
+       <PageTitle title="Finance / Incomes / Add-Income" />
       <Form onSubmit={handleFormSubmit}>
         <Form.Group controlId="title">
           <Form.Label>Title</Form.Label>
