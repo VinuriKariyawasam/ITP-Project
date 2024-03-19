@@ -14,15 +14,30 @@ app.use(cors());
 
 app.use("/uploads/hr", express.static(path.join(__dirname, "uploads", "hr")));
 
-readdirSync("./routes").map((route) => {
-  if (route.includes("finance")) {
-    app.use("/finance", require("./routes/" + route));
-  } else if (route.includes("hr")) {
-    app.use("/api/hr", require("./routes/" + route));
-  } else {
-    app.use("/", require("./routes/" + route));
-  }
-});
+
+// Load finance routes
+readdirSync("./routes").map((route) =>
+  app.use("/api/finance", require("./routes/" + route))
+);
+
+readdirSync("./routes").map((route) =>
+  app.use("/api/hr", require("./routes/" + route))
+);
+
+
+//Load Inventory
+
+//CAS
+
+//Vehicle
+
+//Appointment
+
+//Mobile
+
+//services
+
+//handle 404 errors
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route.", 404);
