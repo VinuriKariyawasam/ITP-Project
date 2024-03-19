@@ -13,29 +13,22 @@ import {
 } from "react-router-dom";
 
 import "./App.css";
-
-import StaffApp from "./StaffApp";
-import CustomerApp from "./CustomerApp";
+import Header from "./components/Header/Header";
 import HR from "./components/HR/HrPages/HR";
 import Common from "./components/Pages/Common";
 import SM from "./components/SM/SMpages/SM";
-import Customer from "./components/CUS/Pages/Customer";
-
-function App() {
+function StaffApp() {
   return (
     <>
-     
-      <Router>
-        <Routes>
-          <Route path="/" element={<Common />} />
-          <Route path="/staff/*" element={<StaffApp />} />
-          <Route path="/customer/*" element={<CustomerApp />} />
-          
-         
-        </Routes>
-      </Router>
+      <Header />
+
+      <Routes>
+        <Route path="/" element={<Common />} />
+        <Route path="/hr/*" element={<HR />} />
+        <Route path="/sm/*" element={<SM />} />
+      </Routes>
     </>
   );
 }
 
-export default App;
+export default StaffApp;

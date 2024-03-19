@@ -22,7 +22,7 @@ const SMPeriodicalServices = props => {
 
   },[])
   const Delete = (id) => {
-    const shouldDelete = window.confirm("Would you like to delete?");
+    const shouldDelete = window.confirm("please confirm deletion!");
 
     if (shouldDelete) {
         axios.delete(`http://localhost:5000/appointment/delete/${id}`)
@@ -66,7 +66,7 @@ const SMPeriodicalServices = props => {
                     <tbody>
                         {periodicalAppointment.map((appointment) => (
                             <tr key={appointment._id}>
-                            <td>{appointment._id}</td>
+                          
                                 <td>{appointment.vNo}</td>
                                 <td>{appointment.name}</td>
                                 <td>{`${appointment.appointmentdate} ${appointment.appointmenttime}`}</td>

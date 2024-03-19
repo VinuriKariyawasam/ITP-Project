@@ -66,7 +66,7 @@ function PeriodicalAppointment() {
       <div className="form-container">
         <h2 className='heading'>Make an Appointment for Your Periodical Services</h2>
         <container className=''>
-          <form className="form" onSubmit={handleSubmit}>
+          <form className="form" onSubmit={sendata}>
             <div className="form-element">
               <label htmlFor="name" className='L1'>Name</label><br />
               <input className="small-input" type="text" id="name" placeholder="Enter your name" value={name} onChange={(e) => setname(e.target.value)} />

@@ -8,21 +8,21 @@ const SMAppointmentMain = () => {
         <div className="div1">
             <h2 className="Aheader">Appointments</h2>
             <div className="div2">
-            <Link className='a' to='/sm/pappointmentMain'>
-            <button className="button">
+            <Link className='a' to='/staff/sm/pappointmentMain'>
+            <button className="SMMainbutton">
                 periodical Services
                 <img src={Arrow} alt="Arrow" className="Arrow" />
             </button>
             </Link>
             </div>
             <div className="div2">
-            <button className="button">
+            <button className="SMMainbutton">
                 Mechanical Repairs
                 <img src={Arrow} alt="Arrow" className="Arrow" />
             </button>
             </div>
             <div className="div2">
-            <button className="button">
+            <button className="SMMainbutton">
                 Accidental Repairs
                 <img src={Arrow} alt="Arrow" className="Arrow" />
             </button>

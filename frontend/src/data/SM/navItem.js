@@ -29,7 +29,7 @@ const navList = [
     _id: 6,
     name: "Appointments",
     icon: "bi bi-car-front",
-    href: "/sm/appointmentMain",
+    href: "/staff/sm/appointmentMain",
   },
 ];
 
