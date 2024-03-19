@@ -1,0 +1,43 @@
+.headerDeatail{
+    color: #000;
+
+font-family: Righteous;
+font-size: 40px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+margin-top: 90px;
+margin-left: 600px;
+}
+.DetailType{
+    color: #000;
+
+font-family: Abel;
+font-size: 30px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+}
+.button{
+    color: #FFFBFB;
+
+font-family: Abel;
+font-size: 10px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+width: 200px;
+height: 41px;
+flex-shrink: 0;
+}
+.AdetailsDiv{
+    margin-top: 50px;
+}
+.buttonContainer {
+    display: flex;
+    
+}
+
+.buttonContainer button {
+    margin-right: 300px; /* Optional: Add some space between buttons */
+}
