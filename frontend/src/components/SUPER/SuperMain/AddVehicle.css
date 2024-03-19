@@ -1,0 +1,28 @@
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh; 
+  }
+  
+  .form-frame {
+    width: 90%; 
+    max-width: 300px; 
+    padding: 20px;
+    border: 3px solid #343a40;
+    border-radius: 10px;
+  }
+  
+  .button-group {
+    display: flex;
+  }
+  
+  .button-group > :not(:first-child) {
+    margin-left: 50px; /* Adjust the margin between the buttons */
+  }
+  
+  .register-button {
+    margin-left: auto; /* Push the Register button to the right */
+  }
+  
+  
