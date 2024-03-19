@@ -17,6 +17,7 @@ import Header from "./components/Header/Header";
 import HR from "./components/HR/HrPages/HR";
 import Finance from "./components/Finance/FinancePages/Finance";
 import Common from "./components/Pages/Common";
+import SUPER from "./components/SUPER/SuperPages/SUPER";
 
 function StaffApp() {
   return (
@@ -27,6 +28,7 @@ function StaffApp() {
         <Route path="/" element={<Common />} />
         <Route path="/hr/*" element={<HR />} />
         <Route path="/finance/*" element={<Finance />} />
+        <Route path="/supervisor/*" element={<SUPER />} />
       </Routes>
     </>
   );
