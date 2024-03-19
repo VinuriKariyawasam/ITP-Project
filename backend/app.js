@@ -18,6 +18,7 @@ app.use(cors());
 
 // Serve uploaded files statically
 app.use("/uploads/hr", express.static(path.join(__dirname, "uploads", "hr")));
+
 // Load finance routes
 readdirSync("./routes").map((route) =>
   app.use("/api/finance", require("./routes/" + route))
@@ -27,6 +28,18 @@ readdirSync("./routes").map((route) =>
 readdirSync("./routes").map((route) =>
   app.use("/api/hr", require("./routes/" + route))
 );
+
+//Load Inventory
+
+//CAS
+
+//Vehicle
+
+//Appointment
+
+//Mobile
+
+//services
 
 //handle 404 errors
 app.use((req, res, next) => {
