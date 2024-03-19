@@ -1,25 +1,46 @@
-const express = require('express');
-const cors = require('cors');
-const { db } = require('./db/db');
-const { readdirSync } = require('fs');
-const bodyParser = require('body-parser');
+const express = require("express");
+const cors = require("cors");
+const { db } = require("./db/db");
+const { readdirSync } = require("fs");
+const HttpError = require("./models/http-error");
+const path = require("path");
 
 const app = express();
+require("dotenv").config();
+const PORT = process.env.PORT || 3000;
 
-require('dotenv').config();
-const PORT = process.env.PORT || 3000; // Default port to 3000 if PORT is not specified in .env
+app.use(express.json());
+app.use(cors());
 
-app.use(bodyParser.json()); // Use body-parser before other middleware
-app.use(cors()); // CORS middleware
+app.use("/uploads/hr", express.static(path.join(__dirname, "uploads", "hr")));
 
-readdirSync('./routes').map((route) =>
-  app.use('/finance', require('./routes/' + route))
-);
+readdirSync("./routes").map((route) => {
+  if (route.includes("finance")) {
+    app.use("/api/finance", require("./routes/" + route));
+  } else if (route.includes("hr")) {
+    app.use("/api/hr", require("./routes/" + route));
+  } else {
+    app.use("/", require("./routes/" + route));
+  }
+});
+
+app.use((req, res, next) => {
+  const error = new HttpError("Could not find this route.", 404);
+  next(error);
+});
+
+app.use((error, req, res, next) => {
+  if (res.headerSent) {
+    return next(error);
+  }
+  res.status(error.code || 500);
+  res.json({ message: error.message || "An unknown error occurred!" });
+});
 
 const server = () => {
-  db(); // Connect to the database
+  db();
   app.listen(PORT, () => {
-    console.log('Listening to port:', PORT);
+    console.log("Listening to port:", PORT);
   });
 };
 

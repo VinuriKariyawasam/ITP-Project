@@ -25,6 +25,7 @@ const navList = [
     _id: 5,
     name: "Attendance",
     icon: "bi bi-card-checklist",
+    href: "/hr/attendance",
   },
   {
     _id: 6,
