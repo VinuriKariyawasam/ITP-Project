@@ -56,7 +56,7 @@ const AddExpense = () => {
 
     return (
         <main id="main" className="main">
-             <PageTitle title="Finance / Expenses / Add-Expense" />
+             <PageTitle path="Finance / Expenses / Add-Expense" title="Add-Expense" />
             <Form onSubmit={handleSubmit}>
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
                 <Form.Group controlId="title">

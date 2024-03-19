@@ -43,7 +43,7 @@ const Expenses = () => {
 
   return (
     <main id="main" className="main">
-      <PageTitle title="Finance / Expenses" />
+      <PageTitle path="Finance / Expenses"  title="Expenses"/>
       <div>
         <Button variant="primary" onClick={handleAddExpenseClick}>
           Add Expense

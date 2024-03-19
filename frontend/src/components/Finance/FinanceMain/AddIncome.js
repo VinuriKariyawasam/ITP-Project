@@ -42,7 +42,7 @@ const AddIncome = () => {
 
   return (
     <main id="main" className="main">
-       <PageTitle title="Finance / Incomes / Add-Income" />
+       <PageTitle path="Finance / Incomes / Add-Income"  title="Add-Income"/>
       <Form onSubmit={handleFormSubmit}>
         <Form.Group controlId="title">
           <Form.Label>Title</Form.Label>

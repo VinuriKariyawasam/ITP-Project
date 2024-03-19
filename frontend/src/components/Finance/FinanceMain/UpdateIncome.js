@@ -53,7 +53,7 @@ const UpdateIncome = () => {
 
   return (
     <main id="main" className="main">
-      <PageTitle title="Finance / Incomes / Edit-Income" />
+     <PageTitle path="Finance / Incomes / Edit-Income"  title="Edit-Income"/>
       <Form onSubmit={handleFormSubmit}>
         <Form.Group controlId="title">
           <Form.Label>Title</Form.Label>
