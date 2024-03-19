@@ -19,7 +19,6 @@ import Finance from "./components/Finance/FinancePages/Finance";
 import Common from "./components/Pages/Common";
 import StaffApp from "./StaffApp";
 import CustomerApp from "./CustomerApp";
-import SUPER from "./components/SUPER/SuperPages/SUPER";
 
 function App() {
   return (
@@ -29,7 +28,6 @@ function App() {
           <Route path="/" element={<Common />} />
           <Route path="/staff/*" element={<StaffApp />} />
           <Route path="/customer/*" element={<CustomerApp />} />
-          <Route path="/supervisor/*" element={<SUPER />} />
         </Routes>
       </Router>
     </>

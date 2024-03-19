@@ -12,23 +12,25 @@ function VehicleDash() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3001/getVehicles");
+      const response = await fetch("http://localhost:5000/api/vehicle/vehicles");
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched data:", data); // Log the fetched data
-        setVehicles(data);
-        setLoading(false);
+        setVehicles(data.vehicles); // Update vehicles state with fetched data
+        setLoading(false); // Set loading state to false
       } else {
         console.error("Failed to fetch data");
+        setLoading(false); // Set loading state to false in case of failure
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      setLoading(false); // Set loading state to false in case of error
     }
   };
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3001/delete-vehicle/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/vehicle/delete-vehicle/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json"
@@ -62,7 +64,7 @@ function VehicleDash() {
           </div>
           <div className="p-2 ms-auto">
             <Button variant="success" size="md">
-              <Link to="/supervisor/vehicle/add" className="text-light text-decoration-none">
+              <Link to="/staff/supervisor/vehicle/add" className="text-light text-decoration-none">
                 Register Vehicle
               </Link>
             </Button>
@@ -97,7 +99,7 @@ function VehicleDash() {
                   <td>{vehicle.contact}</td>
                   <td>{vehicle.records}</td>
                   <td>
-                    <Link to={`/supervisor/vehicle/update/${vehicle._id}`} className="btn btn-success">Update</Link>
+                    <Link to={`/staff/supervisor/vehicle/update/${vehicle._id}`} className="btn btn-success">Update</Link>
                     <button onClick={() => handleDelete(vehicle._id)} className="btn btn-danger">Delete</button>
                   </td>
                 </tr>
