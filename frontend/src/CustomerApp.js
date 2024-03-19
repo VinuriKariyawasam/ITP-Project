@@ -1,3 +1,4 @@
+
 // Import icons and Bootstrap
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -16,19 +17,21 @@ import {
 } from "react-router-dom";
 
 
+
 function CustomerApp() {
   return (
     <div>
+
        <Header/>
     <Routes>
     <Route path="/Periodical" element={<PeriodicalAppointment/>} />
     <Route path="/MyAppointment" element={<MyAppointment/>} />
     
     </Routes>
+
     </div>
   );
 }
 
 export default CustomerApp;
-
 

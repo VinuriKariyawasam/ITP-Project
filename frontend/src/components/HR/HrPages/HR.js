@@ -2,6 +2,7 @@ import React from "react";
 import HrMain from "../hrMain/HrMain";
 import HrSideBar from "../hrSidebar/HrSideBar";
 import HrEmployee from "../hrMain/HrEmployee";
+import HrAttendance from "../hrMain/HrAttendance";
 
 // Import front end routes
 import {
@@ -19,6 +20,7 @@ function HR() {
       <Routes>
         <Route path="/" element={<HrMain />} />
         <Route path="employee/*" element={<HrEmployee />} />
+        <Route path="attendance/*" element={<HrAttendance />} />
       </Routes>
     </>
   );

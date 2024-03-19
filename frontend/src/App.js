@@ -17,21 +17,26 @@ import "./App.css";
 import StaffApp from "./StaffApp";
 import CustomerApp from "./CustomerApp";
 import HR from "./components/HR/HrPages/HR";
+import Finance from "./components/Finance/FinancePages/Finance";
 import Common from "./components/Pages/Common";
+
 import SM from "./components/SM/SMpages/SM";
 import Customer from "./components/CUS/Pages/Customer";
+
+import StaffApp from "./StaffApp";
+import CustomerApp from "./CustomerApp";
+
 
 function App() {
   return (
     <>
-     
+
       <Router>
         <Routes>
           <Route path="/" element={<Common />} />
           <Route path="/staff/*" element={<StaffApp />} />
           <Route path="/customer/*" element={<CustomerApp />} />
-          
-         
+
         </Routes>
       </Router>
     </>
