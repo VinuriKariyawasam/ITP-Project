@@ -10,7 +10,7 @@ function Lubricants() {
     <main id="main" className="main">
       <ImPageTitle title="Lubricants Stock" url="/im/lubricants" />
       
-      <Link to="/im/addproduct">
+      <Link to="addproduct/">
       <button type="button" className="btn-add">
          Add Product
       <span class="bi bi-plus-circle"></span>

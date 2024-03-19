@@ -37,7 +37,7 @@ function FormExample() {
       }
 
       axios.post("http://localhost:5000/product/add",newProduct).then(()=>{
-          navigate('/im/lubricants/');
+          navigate('staff/im/lubricants/');
       }).catch((err)=>{
           alert(err)
       })  
@@ -45,6 +45,7 @@ function FormExample() {
 
 
   return (
+    <main id="main" className="main">
     <Form noValidate validated={validated} onSubmit={(event) => {handleSubmit(event); sendData(event);}}>
       <Row className="mb-3">
         <Form.Group as={Col} md="5" controlId="validationCustom01">
@@ -107,6 +108,7 @@ function FormExample() {
       
       <Button type="submit">Submit form</Button>
     </Form>
+    </main>
   );
 }
 

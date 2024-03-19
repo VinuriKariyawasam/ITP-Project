@@ -3,7 +3,7 @@ const navList = [
     _id: 1,
     name: "Dashboard",
     icon: "bi bi-grid",
-    href: "/im"
+    href: "/staff/im"
   },
   {
     _id: 2,
@@ -19,7 +19,7 @@ const navList = [
     _id: 4,
     name: "Lubricants",
     icon: "bi bi-droplet-half",
-    href: "/im/lubricants",
+    href: "im/lubricants",
   },
   {
     _id: 5,

@@ -19,6 +19,7 @@ function IMProductCard() {
     getProducts();
 }, [])
 
+
 const Delete = (id) => {
   const shouldDelete = window.confirm("Confirm Delete");
   if (shouldDelete) {
@@ -41,19 +42,14 @@ const Delete = (id) => {
           <div key={product._id} className="product-card-container">
             <div className="product-card">
               <img src={IM} className="product-image" alt={product.Product_name} />
-              <h6 className='product-header'>{product.Product_name}</h6>
-              <a className='product-name'>{product.Product_code}</a>
+              <h4 className='product-header'>{product.Product_name}</h4>
+              <p className='product-name'>Product code:             {product.Product_code}</p>
               <div>
-                <input type='text' className='price' placeholder={`Price: ${product.Unit_price}`} />
-                <Button variant="primary">Update</Button>
+                <p className='product-name'>Price: Rs.{product.Unit_price} </p>
               </div>
-              <div className='quantity-details'>
-                <a className='price'>Quantity</a>
-                <button className='btnqunhandler'><span  className='quantity-btn bi bi-dash-circle'></span></button>
-                <a className='quantity'>{product.Quantity}</a>
-                <button  className='btnqunhandler'><span  className='quantity-btn bi bi-plus-circle'></span></button>
-              </div>
-              <Button variant="primary" onClick={() => Delete(product._id)} className='btnproduct'>Delete Product</Button>
+                <p className='quantity'>Available Quantity: {product.Quantity}</p>
+              <Button variant="danger" onClick={() => Delete(product._id)} className='btnproductdel'>Delete Product</Button>
+              <Button variant="warning"  className='btnproductup'>Update Product</Button>
             </div>
           </div>
         ))}

@@ -1,9 +1,11 @@
 import React from "react";
 import "./Product.css";
 import Slideshow from "../../../data/CUS/inventory/Slideshow";
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import img1 from '../../../images/im/lubricants.jpg'
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import img1 from "../../../images/im/lubricants.jpg";
+import img2 from "../../../images/im/tires.jpg";
+import img3 from "../../../images/im/Spare parts.jpg";
 
 function Products() {
   const scrollToBottom = () => {
@@ -34,44 +36,45 @@ function Products() {
             class="btn btn-primary btn-lg"
             onClick={scrollToBottom}
           >
-            Explore<span class="bi bi-arrow-right"></span>
+            Discover<span class="bi bi-arrow-right"></span>
           </button>
         </div>
       </div>
       <h3 className="h3"> Our offerings at Neo Tech...</h3>
-    <Card style={{ width: '18rem' }}>
-      <Card.Img variant="top" src={img1} />
-      <Card.Body>
-        <Card.Title>Lubricants</Card.Title>
-        <Card.Text>
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </Card.Text>
-        <Button variant="primary">Explore</Button>
-      </Card.Body>
-    </Card>
-    <Card style={{ width: '18rem' }}>
-      <Card.Img variant="top" src={img1} />
-      <Card.Body>
-        <Card.Title>Lubricants</Card.Title>
-        <Card.Text>
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </Card.Text>
-        <Button variant="primary">Explore</Button>
-      </Card.Body>
-    </Card>
-    <Card style={{ width: '18rem' }}>
-      <Card.Img variant="top" src={img1} />
-      <Card.Body>
-        <Card.Title>Lubricants</Card.Title>
-        <Card.Text>
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </Card.Text>
-        <Button variant="primary">Explore</Button>
-      </Card.Body>
-    </Card>
+      <div className="card-container">
+        <Card style={{ width: "30%" }}>
+          <Card.Img variant="top" src={img1} />
+          <Card.Body>
+            <Card.Title>Lubricants</Card.Title>
+            <Card.Text>
+            "Keep your vehicle running smoothly with our top-quality lubricants for lasting performance."
+            </Card.Text>
+            <Button variant="primary" className="exbtn">Explore</Button>
+          </Card.Body>
+        </Card>
+        <Card style={{ width: "30%" }}>
+          <Card.Img variant="top" src={img2} />
+          <Card.Body>
+            <Card.Title>Tires</Card.Title>
+            <Card.Text>
+              Explore our wide selection of quality tire stocks, ensuring smooth
+              rides for every vehicle.
+            </Card.Text>
+            <Button variant="primary" className="exbtn">Explore</Button>
+          </Card.Body>
+        </Card>
+        <Card style={{ width: "30%" }}>
+          <Card.Img variant="top" src={img3} />
+          <Card.Body>
+            <Card.Title>Spare Parts</Card.Title>
+            <Card.Text>
+              Acquire your vehicle spare parts swiftly and seamlessly with our
+              top-notch procurement assistance.
+            </Card.Text>
+            <Button variant="primary" className="exbtn"> Explore</Button>
+          </Card.Body>
+        </Card>
+      </div>
     </main>
   );
 }

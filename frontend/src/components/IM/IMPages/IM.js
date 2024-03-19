@@ -13,7 +13,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import Addproducts from "../IMMain/Addproducts";
+import Addproducts from "../IMMain/Productform";
 
 
 
@@ -23,12 +23,11 @@ function IM() {
       <Header/>
       <IMSideBar />
       <Routes>
-        <Route path="/" element={<IMMain />} />
-        <Route path="lubricants/" element={<Lubricants/>} />
-        <Route path="addproduct" element={<Addproducts />} />
+        <Route path="/*" element={<IMMain />} />
+        <Route path="/lubricants/*" element={<Lubricants/>} />
+        <Route path="lubricants/addproduct/" element={<Addproducts />} />
       </Routes>
     </>
   );
 }
-
 export default IM;

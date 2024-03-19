@@ -7,7 +7,7 @@ function DarkVariantExample() {
   return (
     
     <Carousel className='Sldieshowcss' > 
-      <Carousel.Item interval={3000} >
+      <Carousel.Item interval={2000} >
       <img
           className="d-block "
           src={Slide1}
@@ -15,7 +15,7 @@ function DarkVariantExample() {
         />
         
       </Carousel.Item>
-      <Carousel.Item interval={3000}>
+      <Carousel.Item interval={2000}>
       <img
           className="d-block "
           src={Slide2}
@@ -23,7 +23,7 @@ function DarkVariantExample() {
         />
         
       </Carousel.Item>
-      <Carousel.Item interval={3000}>
+      <Carousel.Item interval={2000}>
       <img
           className="d-block"
           src={Slide3}
