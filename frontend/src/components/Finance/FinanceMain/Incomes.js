@@ -41,6 +41,11 @@ const Incomes = () => {
       .catch((error) => console.error("Error deleting income:", error));
   };
 
+  // Function to generate ID in the format IN0001, IN0002, etc.
+  const generateIncomeID = (index) => {
+    return `IN${(index + 1).toString().padStart(4, "0")}`;
+  };
+
   return (
     <main id="main" className="main">
       <PageTitle path="Finance / Incomes" title="Incomes" />
@@ -51,7 +56,7 @@ const Incomes = () => {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Income ID</th>
               <th>Title</th>
               <th>Service Invoice ID</th>
               <th>Amount</th>
@@ -63,12 +68,12 @@ const Incomes = () => {
             </tr>
           </thead>
           <tbody>
-            {incomes.map((income) => (
+            {incomes.map((income, index) => (
               <tr key={income._id}>
-                <td>{`I${income._id}`}</td>
+                <td>{generateIncomeID(index)}</td>
                 <td>{income.title}</td>
                 <td>{income.serviceInvoiceId}</td>
-                <td>{income.amount}</td>
+                <td>Rs.{income.amount}</td>
                 <td>{income.type}</td>
                 <td>{formatDate(income.date)}</td>
                 <td>{income.time}</td>

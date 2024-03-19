@@ -41,9 +41,14 @@ const Expenses = () => {
       .catch((error) => console.error("Error deleting expense:", error));
   };
 
+  // Function to generate ID in the format EX0001, EX0002, etc.
+  const generateExpenseID = (index) => {
+    return `EX${(index + 1).toString().padStart(4, "0")}`;
+  };
+
   return (
     <main id="main" className="main">
-      <PageTitle path="Finance / Expenses"  title="Expenses"/>
+      <PageTitle path="Finance / Expenses" title="Expenses" />
       <div>
         <Button variant="primary" onClick={handleAddExpenseClick}>
           Add Expense
@@ -51,7 +56,7 @@ const Expenses = () => {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Expense ID</th>
               <th>Title</th>
               <th>Amount</th>
               <th>Type</th>
@@ -61,11 +66,11 @@ const Expenses = () => {
             </tr>
           </thead>
           <tbody>
-            {expenses.map((expense) => (
+            {expenses.map((expense, index) => (
               <tr key={expense._id}>
-                <td>{`E${expense._id}`}</td>
+                <td>{generateExpenseID(index)}</td>
                 <td>{expense.title}</td>
-                <td>{expense.amount}</td>
+                <td>Rs.{expense.amount}</td>
                 <td>{expense.type}</td>
                 <td>{formatDate(expense.date)}</td>
                 <td>{expense.description}</td>
