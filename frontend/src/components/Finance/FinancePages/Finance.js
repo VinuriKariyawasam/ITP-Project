@@ -4,7 +4,7 @@ import FinanceSideBar from "../FinanceSideBar/FinanceSideBar";
 import Incomes from "../FinanceMain/Incomes"
 import AddExpense from "../FinanceMain/AddExpense";
 import UpdateExpense from "../FinanceMain/UpdateExpense";
-import DeleteExpense from "../FinanceMain/DeleteExpense";
+
 import AddIncome from "../FinanceMain/AddIncome";
 import UpdateIncome from "../FinanceMain/UpdateIncome";
 //import FinanceIncome from "../hrMain/HrEmployee";
@@ -33,7 +33,7 @@ function Finance() {
         <Route path="expenses/" element={<Expenses/>} />
         <Route path="expenses/add-expense" element={<AddExpense/>}/>
         <Route path="expenses/edit-expense/:id" element={<UpdateExpense/>}/>
-        <Route path="expenses/delete-expense/:id" element={<DeleteExpense/>}/>
+       
        
 
 

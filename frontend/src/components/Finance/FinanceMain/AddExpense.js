@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import PageTitle from './PageTitle';
 
 const AddExpense = () => {
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ const AddExpense = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:5000/finance/expenses/add-expense", {
+            const response = await fetch("http://localhost:5000/api/finance/expenses/add-expense", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -43,7 +44,7 @@ const AddExpense = () => {
                     description: ''
                 });
                 // Redirect to previous page
-                navigate("/finance/expenses");
+                navigate(-1);
             } else {
                 setErrorMessage(data.message || 'Failed to add expense');
             }
@@ -55,6 +56,7 @@ const AddExpense = () => {
 
     return (
         <main id="main" className="main">
+             <PageTitle path="Finance / Expenses / Add-Expense" title="Add-Expense" />
             <Form onSubmit={handleSubmit}>
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
                 <Form.Group controlId="title">

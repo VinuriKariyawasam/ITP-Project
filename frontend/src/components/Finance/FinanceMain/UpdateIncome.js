@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-
+import PageTitle from "./PageTitle";
 const UpdateIncome = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -18,7 +18,7 @@ const UpdateIncome = () => {
 
   useEffect(() => {
     // Fetch the income details based on the id from the URL
-    fetch(`http://localhost:5000/finance/incomes/get-income/${id}`)
+    fetch(`http://localhost:5000/api/finance/incomes/get-income/${id}`)
       .then((response) => response.json())
       .then((data) => {
         // Set the fetched income data into the form state
@@ -29,7 +29,7 @@ const UpdateIncome = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    fetch(`http://localhost:5000/finance/incomes/update-income/${id}`, {
+    fetch(`http://localhost:5000/api/finance/incomes/update-income/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json"
@@ -38,7 +38,7 @@ const UpdateIncome = () => {
     })
       .then(() => {
         console.log("Income updated successfully");
-        navigate("/finance/incomes");
+        navigate(-1);
       })
       .catch((error) => console.error("Error updating income:", error));
   };
@@ -53,7 +53,7 @@ const UpdateIncome = () => {
 
   return (
     <main id="main" className="main">
-      <h2>Update Income</h2>
+     <PageTitle path="Finance / Incomes / Edit-Income"  title="Edit-Income"/>
       <Form onSubmit={handleFormSubmit}>
         <Form.Group controlId="title">
           <Form.Label>Title</Form.Label>

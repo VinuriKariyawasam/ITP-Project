@@ -3,13 +3,13 @@ const navList = [
       _id: 1,
       name: "Dashboard",
       icon: "bi bi-grid",
-      href:"/finance"
+      href:"http://localhost:3000/staff/finance"
     },
     {
       _id: 2,
       name: "Incomes",
       icon: "bi bi-cash",
-      href:"/finance/incomes"
+      href:"http://localhost:3000/staff/finance/incomes"
       // children: [
       //   { _id: 21, name: "Vehicle Services", icon: "bi bi-circle" },
       //   { _id: 22, name: "Mechanical Repairs", icon: "bi bi-circle" },
@@ -22,7 +22,7 @@ const navList = [
       _id: 3,
       name: "Expenses",
       icon: "bi bi-currency-dollar",
-      href:"/finance/expenses"
+      href:"http://localhost:3000/staff/finance/expenses"
     },
     {
       _id: 4,

@@ -9,14 +9,14 @@ const Expenses = () => {
   const [expenses, setExpenses] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/finance/expenses")
+    fetch("http://localhost:5000/api/finance/expenses")
       .then((response) => response.json())
       .then((data) => setExpenses(data))
       .catch((error) => console.error("Error fetching expenses:", error));
   }, []);
 
   const handleAddExpenseClick = () => {
-    navigate("/finance/expenses/add-expense");
+    navigate("add-expense");
   };
 
   const formatDate = (dateString) => {
@@ -25,11 +25,11 @@ const Expenses = () => {
   };
 
   const handleEditExpense = (id) => {
-    navigate(`/finance/expenses/edit-expense/${id}`);
+    navigate(`edit-expense/${id}`);
   };
 
   const handleDeleteExpense = (id) => {
-    fetch(`http://localhost:5000/finance/expenses/delete-expense/${id}`, {
+    fetch(`http://localhost:5000/api/finance/expenses/delete-expense/${id}`, {
       method: "DELETE",
     })
       .then((response) => response.json())
@@ -43,7 +43,7 @@ const Expenses = () => {
 
   return (
     <main id="main" className="main">
-      <PageTitle title="Finance / Expenses" />
+      <PageTitle path="Finance / Expenses"  title="Expenses"/>
       <div>
         <Button variant="primary" onClick={handleAddExpenseClick}>
           Add Expense
