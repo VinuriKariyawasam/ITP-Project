@@ -17,21 +17,19 @@ import Header from "./components/Header/Header";
 import HR from "./components/HR/HrPages/HR";
 import Finance from "./components/Finance/FinancePages/Finance";
 import Common from "./components/Pages/Common";
-import StaffApp from "./StaffApp";
-import CustomerApp from "./CustomerApp";
 
-function App() {
+function StaffApp() {
   return (
     <>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Common />} />
-          <Route path="/staff/*" element={<StaffApp />} />
-          <Route path="/customer/*" element={<CustomerApp />} />
-        </Routes>
-      </Router>
+      <Header />
+
+      <Routes>
+        <Route path="/" element={<Common />} />
+        <Route path="/hr/*" element={<HR />} />
+        <Route path="/finance/*" element={<Finance />} />
+      </Routes>
     </>
   );
 }
 
-export default App;
+export default StaffApp;
