@@ -7,7 +7,7 @@ const path = require("path");
 
 const app = express();
 require("dotenv").config();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cors());
@@ -16,7 +16,7 @@ app.use("/uploads/hr", express.static(path.join(__dirname, "uploads", "hr")));
 
 readdirSync("./routes").map((route) => {
   if (route.includes("finance")) {
-    app.use("/api/finance", require("./routes/" + route));
+    app.use("/finance", require("./routes/" + route));
   } else if (route.includes("hr")) {
     app.use("/api/hr", require("./routes/" + route));
   } else {
