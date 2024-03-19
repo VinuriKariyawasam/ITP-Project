@@ -16,8 +16,10 @@ readdirSync('./routes').map((route) =>
   app.use('/api/finance', require('./routes/' + route))
 );
 
-const productRouter = require("./routes/Inventory-routes");
-app.use("/product",productRouter);
+
+readdirSync("./routes/").map((route) =>
+  app.use("/product", require("./routes/" + route))
+);
 
 
 const server = () =>{

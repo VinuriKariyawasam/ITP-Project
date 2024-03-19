@@ -61,7 +61,7 @@ function NavAvatar() {
         </li>
 
         <li>
-          <a className="dropdown-item d-flex align-items-center" href="#">
+          <a className="dropdown-item d-flex align-items-center" href="/customer/MyAppointment">
             
             <span>Mobile Services</span>
           </a>
