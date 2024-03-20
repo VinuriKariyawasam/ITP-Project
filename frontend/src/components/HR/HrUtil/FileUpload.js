@@ -10,15 +10,19 @@ const FileUpload = (props) => {
   const filePickerRef = useRef();
 
   useEffect(() => {
-    if (!file) {
+    if (!file && !props.existingFileName) {
       return;
     }
     const fileReader = new FileReader();
     fileReader.onload = () => {
       setPreviewUrl(fileReader.result);
     };
-    fileReader.readAsDataURL(file);
-  }, [file]);
+    if (file) {
+      fileReader.readAsDataURL(file);
+    } else {
+      setPreviewUrl(props.existingFile); // Set existing file URL as preview URL
+    }
+  }, [file, props.existingFileName]);
 
   const pickedHandler = (event) => {
     let pickedFile;
@@ -54,7 +58,17 @@ const FileUpload = (props) => {
           {previewUrl && <img src={pdfImage} alt="Preview" />}
           {previewUrl && (
             <p className="file-upload__name">
-              {file ? file.name : "No file chosen"}
+              {file
+                ? file.name
+                : (
+                    <a
+                      href={props.existingFileName}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {props.existingFileDisplayName || "View File"}
+                    </a>
+                  ) || "No file chosen"}
             </p>
           )}
         </div>

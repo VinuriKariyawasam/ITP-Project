@@ -23,7 +23,8 @@ readdirSync("./routes").map((route) =>
 readdirSync("./routes").map((route) =>
   app.use("/api/hr", require("./routes/" + route))
 );
-
+const periodicalroute = require("./routes/appointment-routes");
+app.use("/appointment",periodicalroute);
 
 //Load Inventory
 
