@@ -10,14 +10,16 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import AddLeave from "./AddLeave";
 
 function HrLeaves() {
   return (
     <main id="main" className="main">
-      <HrPageTitle title="Leaves" url="hr/leaves" />
+      <HrPageTitle title="Leaves" url="staff/hr/leaves" />
 
       <Routes>
         <Route path="/" element={<Leaves />} />
+        <Route path="/add" element={<AddLeave />} />
       </Routes>
     </main>
   );

@@ -12,7 +12,7 @@ function Leaves() {
             <Button
               variant="dark"
               size="md"
-              onClick={() => navigate("weekly")}
+              onClick={() => navigate("add")}
               style={{ margin: "10px" }}
             >
               Create New Leave
