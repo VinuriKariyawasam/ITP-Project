@@ -30,15 +30,27 @@ const upload = multer({
 
 class EmployeeController {
   // Create employee controller function
-  static async createEmployee(req, res) {
+  static async createEmployee(req, res, next) {
     try {
       // Log the request body to see the uploaded data
       console.log("Request Body:", req.body);
-
+      const { nic } = req.body;
+      console.log("NIC:", req.body.nic);
       // Check for validation errors using express-validator
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         new HttpError("Invalid inputs passed, please check your data.", 422);
+      }
+
+      // Check if an employee with the same NIC already exists
+      const existingEmployee = await EmployeeModel.findOne({
+        nic: nic,
+      });
+      if (existingEmployee) {
+        throw new HttpError(
+          "An employee with the same NIC already exists.",
+          422
+        );
       }
 
       //image and document upload logic
@@ -128,18 +140,79 @@ class EmployeeController {
     }
   }
 
-  // Update employee by ID
-  static async updateEmployeeById(req, res) {
+  //Update employee by id
+  static async updateEmployeeById(req, res, next) {
+    console.log("Request Body:", req.params.id);
+    console.log("Request Body:", req.body.otherDetails);
+    console.log("Request Body:", req.body);
+
+    const { address, contact, position, otherDetails, email, password, photo } =
+      req.body;
+    const employeeId = req.params.id;
+
+    let emp;
     try {
-      const updatedEmployee = await EmployeeModel.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
+      emp = await EmployeeModel.findById(employeeId);
+    } catch (err) {
+      const error = new HttpError(
+        "Something went wrong, could not find employee.",
+        404
       );
-      if (!updatedEmployee) {
-        throw new HttpError("Employee not found", 404);
-      }
-      res.status(200).json(updatedEmployee);
+      return next(error);
+    }
+
+    if (!emp) {
+      const error = new HttpError("Employee not found", 404);
+      return next(error);
+    }
+
+    // Update employee fields with values from req.body
+    emp.address = address;
+    emp.contact = contact;
+    emp.position = position;
+    emp.otherDetails = otherDetails;
+    emp.email = email;
+    emp.password = password;
+    emp.photo = photo;
+
+    try {
+      // Check if there are file uploads for photo
+      upload(req, res, async function (err) {
+        if (err instanceof multer.MulterError) {
+          console.error("File upload error:", err.message);
+          return res.status(400).json({ error: err.message });
+        } else if (err) {
+          console.error("File upload error:", err.message);
+          return res.status(500).json({ error: err.message });
+        }
+
+        // Handle photo upload if needed
+        if (req.files && req.files["photo"]) {
+          const uploadedPhotoName = req.files["photo"][0].originalname;
+
+          const dbPhotoName = emp.photo ? path.basename(emp.photo) : null;
+
+          if (!dbPhotoName || uploadedPhotoName !== dbPhotoName) {
+            // Upload photo and update photo URL in emp object
+            const photoPath = `/uploads/hr/${path.basename(
+              req.files["photo"][0].path
+            )}`;
+            emp.photo = photoPath;
+          }
+        }
+
+        // Save the updated employee
+        try {
+          const updatedEmployee = await emp.save();
+          res.status(200).json(updatedEmployee);
+        } catch (err) {
+          const error = new HttpError(
+            "Something went wrong, could not update employee.",
+            500
+          );
+          return next(error);
+        }
+      });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

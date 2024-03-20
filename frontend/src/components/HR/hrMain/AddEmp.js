@@ -16,6 +16,8 @@ import ImageUpload from "../HrUtil/ImageUpload";
 import FileUpload from "../HrUtil/FileUpload";
 
 function AddEmp() {
+  const [errorMessage, setErrorMessage] = useState("");
+
   //to redirect after success
   const navigate = useNavigate();
 
@@ -77,7 +79,13 @@ function AddEmp() {
       // Redirect to the specified URL after successful submission
       navigate("/staff/hr/employee");
     } catch (error) {
-      console.error("Error submitting data:", error.message);
+      if (error.response && error.response.status === 422) {
+        // Display error message using alert box
+        setErrorMessage(error.response.data.error);
+        alert(error.response.data.error); // Display error message in an alert box
+      } else {
+        console.error("Error:", error.message);
+      }
     }
   };
 
@@ -254,7 +262,7 @@ function AddEmp() {
                 placeholder="0715897598"
                 {...field}
                 pattern="[0-9]{10}"
-                maxLength="10"
+                Length="10"
               />
             )}
           />

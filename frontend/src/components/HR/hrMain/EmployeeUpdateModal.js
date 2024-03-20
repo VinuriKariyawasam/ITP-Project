@@ -18,8 +18,12 @@ import ImageUpload from "../HrUtil/ImageUpload";
 import FileUpload from "../HrUtil/FileUpload";
 import pdfImage from "../HrImages/pdf-file.png"; // Path to your custom PDF image
 import axios from "axios"; // Import axios for HTTP requests
+import { useNavigate } from "react-router-dom";
 
 function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
+  //to redirect after success
+  const navigate = useNavigate();
+
   //to tool tip
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -43,6 +47,15 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
     setSelectedPosition(e.target.value); // Update selected position
   };
 
+  //const [image, setImage] = useState(null);
+
+  const handleImageInput = (id, file, isValid) => {
+    // Handle the file input here (e.g., validate, store in state, etc.)
+    console.log("Received file data:", file);
+    // Update the state or perform any necessary actions
+    //setImage(file);
+  };
+
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
@@ -52,36 +65,28 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
         formData.append(key, data[key]);
       });
 
-      /*if (uploadedFile) {
-        formData.append("documents", uploadedFile);
-      }*/
+      //console.log("photo:", image);
+      //formData.set("photo", image);
+      //console.log("photo:", formData.photo);
 
       // Log FormData object
-      console.log("FormData:", formData);
-
-      console.log("FormData Entries:");
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
+      for (var key of formData.entries()) {
+        console.log(key[0] + ", " + key[1]);
       }
 
-      const response = await fetch(
-        `http://localhost:5000/api/hr/update-employee/${employee.id}`, // Use PATCH method for updating an employee
-        {
-          method: "PATCH",
-
-          body: JSON.stringify(Object.fromEntries(formData.entries())),
-        }
+      const response = await axios.patch(
+        `http://localhost:5000/api/hr/update-employee/${employee.id}`,
+        Object.fromEntries(formData.entries())
       );
 
-      if (!response.ok) {
+      if (!response.status === 200) {
         throw new Error("Failed to update data");
       }
 
-      const result = await response.json();
-      console.log("Data updated successfully:", result);
-
+      // Redirect to the specified URL after successful submission
+      navigate("/staff/hr/employee");
       // Optionally update the UI or perform any other actions after successful submission
-      onUpdate(result); // Assuming onUpdate is a function to update the UI with the updated data
+      onUpdate(response.data); // Assuming onUpdate is a function to update the UI with the updated data
 
       // Close the modal or redirect to another page after successful submission
       onHide(); // Close the modal
@@ -319,10 +324,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
                 render={({ field }) => (
                   <ImageUpload
                     id="photo" // Pass the ID for the ImageUpload component
-                    onInput={(id, file, isValid) => {
-                      field.onChange(file); // Trigger the onChange event for the photo field
-                      field.onBlur(); // Trigger the onBlur event for validation
-                    }}
+                    onInput={handleImageInput} // Pass the onInput function
                     errorText={errors.photo?.message}
                     existingImageUrl={employee.photoUrl}
                   />

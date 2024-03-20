@@ -3,7 +3,7 @@ import HrMain from "../hrMain/HrMain";
 import HrSideBar from "../hrSidebar/HrSideBar";
 import HrEmployee from "../hrMain/HrEmployee";
 import HrAttendance from "../hrMain/HrAttendance";
-
+import HrLeaves from "../hrMain/HrLeaves";
 // Import front end routes
 import {
   BrowserRouter as Router,
@@ -21,6 +21,7 @@ function HR() {
         <Route path="/" element={<HrMain />} />
         <Route path="employee/*" element={<HrEmployee />} />
         <Route path="attendance/*" element={<HrAttendance />} />
+        <Route path="leaves/*" element={<HrLeaves />} />
       </Routes>
     </>
   );

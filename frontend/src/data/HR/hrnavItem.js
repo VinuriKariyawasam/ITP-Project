@@ -20,6 +20,7 @@ const navList = [
     _id: 4,
     name: "Leaves",
     icon: "bi bi-layout-text-window-reverse",
+    href: "/staff/hr/leaves",
   },
   {
     _id: 5,
