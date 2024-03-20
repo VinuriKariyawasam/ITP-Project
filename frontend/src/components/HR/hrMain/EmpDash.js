@@ -17,6 +17,23 @@ function EmpDash() {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [isDataUpdated, setIsDataUpdated] = useState(false);
+
+  //refresh details modal after update
+  // useEffect to listen for changes in isDataUpdated
+  useEffect(() => {
+    if (isDataUpdated) {
+      setShowModal(true); // Show the modal when data is updated
+      setIsDataUpdated(false); // Reset isDataUpdated after refreshing modal
+    }
+  }, [isDataUpdated]);
+
+  // handleUpdateEmployee function to pass to EmployeeDetailsModal
+  const handleUpdateEmployee = (updatedData) => {
+    // Logic to update employee data
+    console.log("Updated employee data:", updatedData);
+    setIsDataUpdated(true); // Set isDataUpdated to trigger modal refresh
+  };
 
   //To modal data fetch
   // Assume you have a function to fetch employee data by ID
@@ -143,6 +160,8 @@ function EmpDash() {
         show={showModal}
         onHide={handleCloseModal}
         employee={selectedEmployee}
+        isDataUpdated={isDataUpdated}
+        onUpdate={handleUpdateEmployee}
       />
     </section>
   );

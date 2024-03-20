@@ -101,6 +101,14 @@ function AddEmp() {
     }
   };
 
+  const defaultValues = {
+    photo: null,
+    documents: null,
+    otherDetails: null,
+    email: null,
+    password: null,
+  };
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <h3>Create Employee</h3>
@@ -254,7 +262,7 @@ function AddEmp() {
                 placeholder="0715897598"
                 {...field}
                 pattern="[0-9]{10}"
-                maxLength="10"
+                length="10"
               />
             )}
           />

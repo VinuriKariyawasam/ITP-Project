@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Row, Col, Form, Button, Stack } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Stack,
+  Card,
+} from "react-bootstrap";
 import DatePicker from "react-datepicker";
 
 function Attendance() {
@@ -58,59 +66,99 @@ function Attendance() {
   return (
     <section>
       <Row>
-        <Stack direction="horizontal" gap={3}>
+        <Stack direction="horizontal">
           <div className="p-2">
-            <Form className="d-flex">
-              <Form.Control
-                type="search"
-                placeholder="Search"
-                className="me-2 custom-input"
-                aria-label="Search"
-              />
-              <Button variant="outline-dark">Search</Button>
-            </Form>
-          </div>
-          <div className="p-2 ms-auto">
-            <Button variant="dark" size="md" onClick={() => navigate("add")}>
-              Create Employee
+            <Button
+              variant="dark"
+              size="md"
+              onClick={() => navigate("weekly")}
+              style={{ margin: "10px" }}
+            >
+              Weekly Attendance
+            </Button>
+            <Button
+              variant="dark"
+              size="md"
+              onClick={() => navigate("add")}
+              style={{ margin: "10px" }}
+            >
+              Monthly Attendance
+            </Button>
+            <Button
+              variant="dark"
+              size="md"
+              onClick={() => navigate("add")}
+              style={{ margin: "10px" }}
+            >
+              All Records
             </Button>
           </div>
         </Stack>
       </Row>
 
       <Row>
-        <Col md={12}>
-          <div>
-            <h2>Attendance</h2>
-            <Form onSubmit={handleSubmit}>
-              <Form.Group>
-                <Form.Label>Date:</Form.Label>
-                <DatePicker
-                  selected={attendanceDate}
-                  onChange={handleDateChange}
-                  className="form-control"
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Employees:</Form.Label>
-                <ul>
-                  {tableData.map((employee) => (
-                    <li key={employee._id}>
-                      <Form.Check
-                        type="checkbox"
-                        label={employee.firstName + " " + employee.lastName}
-                        checked={attendanceRecords[employee.id] || false}
-                        onChange={() => handleCheckboxChange(employee.id)}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </Form.Group>
-              <Button variant="primary" type="submit">
-                Submit
-              </Button>
-            </Form>
-          </div>
+        <Col md={6}>
+          <Card>
+            <Card.Header>Take Attendance</Card.Header>
+            <Card.Body>
+              <Form onSubmit={handleSubmit} style={{ margin: "10px" }}>
+                <Form.Group>
+                  <Form.Label>Date:</Form.Label>
+                  <DatePicker
+                    selected={attendanceDate}
+                    onChange={handleDateChange}
+                    className="form-control"
+                  />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Employees:</Form.Label>
+                  <ol>
+                    {tableData.map((employee) => (
+                      <li key={employee._id}>
+                        <Form.Check
+                          type="checkbox"
+                          label={employee.firstName + " " + employee.lastName}
+                          checked={attendanceRecords[employee.id] || false}
+                          onChange={() => handleCheckboxChange(employee.id)}
+                        />
+                      </li>
+                    ))}
+                  </ol>
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Submit
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6}>
+          <Card>
+            <Card.Header>Today Leaves</Card.Header>
+            <Card.Body>
+              <table className="table table-rounded">
+                <thead style={{ backgroundColor: "lightgray" }}>
+                  <tr style={{ backgroundColor: "lightgray" }}>
+                    <th>#</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                  </tr>
+                </tbody>
+              </table>
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
     </section>
