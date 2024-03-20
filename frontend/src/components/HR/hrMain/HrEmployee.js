@@ -15,7 +15,7 @@ import {
 function HrEmployee() {
   return (
     <main id="main" className="main">
-      <HrPageTitle title="Employee" url="staff/hr/employee" />
+      <HrPageTitle title="Employee" url="hr/employee" />
 
       <Routes>
         <Route path="/" element={<EmpDash />} />

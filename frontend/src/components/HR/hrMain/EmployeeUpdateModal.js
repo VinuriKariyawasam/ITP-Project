@@ -8,18 +8,30 @@ import {
   Row,
   OverlayTrigger,
   Tooltip,
-  Card,
-  Image,
 } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ImageUpload from "../HrUtil/ImageUpload";
 import FileUpload from "../HrUtil/FileUpload";
-import pdfImage from "../HrImages/pdf-file.png"; // Path to your custom PDF image
-import axios from "axios"; // Import axios for HTTP requests
 
 function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
+  //file uplood funxtions
+  // State to store the uploaded files
+  // State to store the uploaded files
+  const [uploadedFile, setUploadedFile] = useState(null);
+
+  // File input handler for SingleFileUpload component
+  const fileInputHandler = (id, file, isValid) => {
+    if (isValid) {
+      // Set the uploaded file in state
+      setUploadedFile(file);
+    } else {
+      // Handle invalid files if needed
+      console.log("Invalid file:", file);
+    }
+  };
+
   //to tool tip
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -36,6 +48,11 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
     formState: { errors },
   } = useForm({ defaultValues: employee });
 
+  const onSubmit = (data) => {
+    onUpdate(data);
+    onHide();
+  };
+
   // State to track selected position
   const [selectedPosition, setSelectedPosition] = useState("");
 
@@ -43,61 +60,8 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
     setSelectedPosition(e.target.value); // Update selected position
   };
 
-  const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
-
-      // Append regular form data
-      Object.keys(data).forEach((key) => {
-        formData.append(key, data[key]);
-      });
-
-      /*if (uploadedFile) {
-        formData.append("documents", uploadedFile);
-      }*/
-
-      // Log FormData object
-      console.log("FormData:", formData);
-
-      console.log("FormData Entries:");
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-
-      const response = await fetch(
-        `http://localhost:5000/api/hr/update-employee/${employee.id}`, // Use PATCH method for updating an employee
-        {
-          method: "PATCH",
-
-          body: JSON.stringify(Object.fromEntries(formData.entries())),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to update data");
-      }
-
-      const result = await response.json();
-      console.log("Data updated successfully:", result);
-
-      // Optionally update the UI or perform any other actions after successful submission
-      onUpdate(result); // Assuming onUpdate is a function to update the UI with the updated data
-
-      // Close the modal or redirect to another page after successful submission
-      onHide(); // Close the modal
-    } catch (error) {
-      console.error("Error updating data:", error.message);
-    }
-  };
-
   return (
-    <Modal
-      show={show}
-      onHide={onHide}
-      size="lg"
-      centered
-      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-    >
+    <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
         <Modal.Title>
           Update Employee{" "}
@@ -309,10 +273,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
           {/* Add a photo and other documents */}
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formImage">
-              <Form.Label>
-                Profile Photo *(.jpg, .jpeg, .png only){" "}
-                <i class="bi bi-pencil-square"></i>
-              </Form.Label>
+              <Form.Label>Add a photo *(.jpg, .jpeg, .png only)</Form.Label>
               <Controller
                 name="photo"
                 control={control}
@@ -331,26 +292,12 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
             </Form.Group>
             {/* Documents */}
             <Form.Group as={Col} controlId="formFileDocuments">
-              <Form.Label>CV *(.pdf only)</Form.Label>
-              <Controller
-                name="documents"
-                control={control}
-                render={({ field }) => (
-                  <Card style={{ width: "18rem" }}>
-                    <Card.Body>
-                      <Image
-                        src={pdfImage}
-                        thumbnail
-                        style={{ width: "200px", height: "200px" }}
-                      />
-                      <Card.Link href="{employee.documentUrls[0]}">
-                        {employee.documentUrls[0].substring(
-                          employee.documentUrls[0].lastIndexOf("/") + 1
-                        )}
-                      </Card.Link>
-                    </Card.Body>
-                  </Card>
-                )}
+              <Form.Label>Add other documents *(.pdf only)</Form.Label>
+              <FileUpload
+                id="documents"
+                accept=".pdf"
+                onInput={fileInputHandler}
+                errorText={errors.documents?.message}
               />
             </Form.Group>
           </Row>
@@ -443,7 +390,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
           )}
 
           <Button variant="dark" type="submit">
-            Update
+            Submit
           </Button>
         </Form>
       </Modal.Body>
