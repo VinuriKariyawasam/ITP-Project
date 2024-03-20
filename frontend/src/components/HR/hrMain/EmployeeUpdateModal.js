@@ -41,19 +41,10 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
   } = useForm({ defaultValues: employee });
 
   // State to track selected position
-  const [selectedPosition, setSelectedPosition] = useState("");
+  const [selectedPosition, setSelectedPosition] = useState(employee.position);
 
   const handlePositionChange = (e) => {
     setSelectedPosition(e.target.value); // Update selected position
-  };
-
-  //const [image, setImage] = useState(null);
-
-  const handleImageInput = (id, file, isValid) => {
-    // Handle the file input here (e.g., validate, store in state, etc.)
-    console.log("Received file data:", file);
-    // Update the state or perform any necessary actions
-    //setImage(file);
   };
 
   const onSubmit = async (data) => {
@@ -65,13 +56,16 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
         formData.append(key, data[key]);
       });
 
-      //console.log("photo:", image);
-      //formData.set("photo", image);
-      //console.log("photo:", formData.photo);
+      if (data.photo[0]) {
+        formData.append("photo", data.photo[0]);
+      }
 
       // Log FormData object
-      for (var key of formData.entries()) {
-        console.log(key[0] + ", " + key[1]);
+      console.log("FormData:", formData);
+
+      console.log("FormData Entries:");
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
       }
 
       const response = await axios.patch(
@@ -191,7 +185,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
           {/* Address */}
           <Form.Group className="mb-3" controlId="formGridAddress">
             <Form.Label>
-              Address <i class="bi bi-pencil-square"></i>
+              Address <i className="bi bi-pencil-square"></i>
             </Form.Label>
             <Controller
               name="address"
@@ -230,7 +224,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
             {/* Contact No. */}
             <Form.Group as={Col} controlId="formGridContact">
               <Form.Label>
-                Contact No. <i class="bi bi-pencil-square"></i>
+                Contact No. <i className="bi bi-pencil-square"></i>
               </Form.Label>
               <Controller
                 name="contact"
@@ -280,7 +274,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
             {/* Position */}
             <Form.Group as={Col} controlId="formGridRole">
               <Form.Label>
-                Position <i class="bi bi-pencil-square"></i>
+                Position <i className="bi bi-pencil-square"></i>
               </Form.Label>
               <Controller
                 name="position"
@@ -288,7 +282,6 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
                 rules={{ required: "Position is required" }}
                 render={({ field }) => (
                   <Form.Select
-                    defaultValue="Choose..."
                     {...field}
                     onChange={(e) => {
                       field.onChange(e);
@@ -311,56 +304,10 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
             </Form.Group>
           </Row>
 
-          {/* Add a photo and other documents */}
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formImage">
-              <Form.Label>
-                Profile Photo *(.jpg, .jpeg, .png only){" "}
-                <i class="bi bi-pencil-square"></i>
-              </Form.Label>
-              <Controller
-                name="photo"
-                control={control}
-                render={({ field }) => (
-                  <ImageUpload
-                    id="photo" // Pass the ID for the ImageUpload component
-                    onInput={handleImageInput} // Pass the onInput function
-                    errorText={errors.photo?.message}
-                    existingImageUrl={employee.photoUrl}
-                  />
-                )}
-              />
-            </Form.Group>
-            {/* Documents */}
-            <Form.Group as={Col} controlId="formFileDocuments">
-              <Form.Label>CV *(.pdf only)</Form.Label>
-              <Controller
-                name="documents"
-                control={control}
-                render={({ field }) => (
-                  <Card style={{ width: "18rem" }}>
-                    <Card.Body>
-                      <Image
-                        src={pdfImage}
-                        thumbnail
-                        style={{ width: "200px", height: "200px" }}
-                      />
-                      <Card.Link href="{employee.documentUrls[0]}">
-                        {employee.documentUrls[0].substring(
-                          employee.documentUrls[0].lastIndexOf("/") + 1
-                        )}
-                      </Card.Link>
-                    </Card.Body>
-                  </Card>
-                )}
-              />
-            </Form.Group>
-          </Row>
-
           {/* Other Details */}
           <Form.Group className="mb-3" controlId="formGridExtra">
             <Form.Label>
-              Other Details <i class="bi bi-pencil-square"></i>
+              Other Details <i className="bi bi-pencil-square"></i>
             </Form.Label>
             <Controller
               name="otherDetails"
@@ -386,7 +333,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
               {/* Email */}
               <Form.Group as={Col} controlId="formGridEmail">
                 <Form.Label>
-                  Email <i class="bi bi-pencil-square"></i>
+                  Email <i className="bi bi-pencil-square"></i>
                 </Form.Label>
                 <Controller
                   name="email"
@@ -414,7 +361,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
               {/* Password */}
               <Form.Group as={Col} controlId="formGridPassword">
                 <Form.Label>
-                  Password <i class="bi bi-pencil-square"></i>
+                  Password <i className="bi bi-pencil-square"></i>
                 </Form.Label>
                 <Controller
                   name="password"

@@ -30,27 +30,15 @@ const upload = multer({
 
 class EmployeeController {
   // Create employee controller function
-  static async createEmployee(req, res, next) {
+  static async createEmployee(req, res) {
     try {
       // Log the request body to see the uploaded data
       console.log("Request Body:", req.body);
-      const { nic } = req.body;
-      console.log("NIC:", req.body.nic);
+
       // Check for validation errors using express-validator
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         new HttpError("Invalid inputs passed, please check your data.", 422);
-      }
-
-      // Check if an employee with the same NIC already exists
-      const existingEmployee = await EmployeeModel.findOne({
-        nic: nic,
-      });
-      if (existingEmployee) {
-        throw new HttpError(
-          "An employee with the same NIC already exists.",
-          422
-        );
       }
 
       //image and document upload logic
