@@ -13,31 +13,24 @@ import {
 } from "react-router-dom";
 
 import "./App.css";
-
-import StaffApp from "./StaffApp";
-import CustomerApp from "./CustomerApp";
-
+import Header from "./components/Header/Header";
+import HR from "./components/HR/HrPages/HR";
 import Common from "./components/Pages/Common";
+import CAM from "./components/CAM/CAM_pages/CAM";
 
-
-
-
-
-
-function App() {
-  return (
-    <>
-
-      <Router>
+function StaffApp(){
+    return(
+        <>
+      <Header />
+      
         <Routes>
           <Route path="/" element={<Common />} />
-          <Route path="/staff/*" element={<StaffApp />} />
-          <Route path="/customer/*" element={<CustomerApp />} />
-
+          <Route path="/hr/*" element={<HR />} />
+          <Route path="/CAM/*" element={<CAM/>}/>
         </Routes>
-      </Router>
+      
     </>
-  );
+    );
 }
 
-export default App;
+export default StaffApp;

@@ -10,5 +10,4 @@ const consultSchema = new mongoose.Schema({
 
 })
 
-const consult = mongoose.model("Reply",consultSchema);
-module.exports = consult;
+module.exports = mongoose.model("question",consultSchema);

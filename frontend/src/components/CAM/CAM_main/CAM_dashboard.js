@@ -7,20 +7,21 @@ function CAM_dashboard() {
       <div className="col">
         <div className="row">
           <CAM_dbCard
-            title="Total Employees"
-            value="30"
+            title="Total Questions"
+            value="+10"
             iconClass="bi-people-fill"
-          />
-          <CAM_dbCard
-            title="Total Leaves"
-            value="3"
-            iconClass="bi-calendar-x"
             duration="Today"
           />
           <CAM_dbCard
-            title="Total Salaries"
-            value="500,0000"
-            iconClass="bi-coin"
+            title="FeedBack"
+            value="+100"
+            iconClass="bi bi-card-checklist"
+            duration="Today"
+          />
+          <CAM_dbCard
+            title="General Reports"
+            value="2"
+            iconClass="bi bi-clipboard2-data"
             duration="Monthly"
           />
         </div>

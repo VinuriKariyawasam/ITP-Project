@@ -24,7 +24,8 @@ function ConsultancyPage() {
         </Accordion.Body>
       </Accordion.Item>
       <div className="replybtn">
-      <Button variant="dark" size="md" onClick={() => navigate("reply")}>Reply</Button>
+      <Button variant="dark" size="md" onClick={() => navigate("addreply")}>Reply</Button>
+      <Button className="gotobtn" variant="dark" size="md" onClick={() => navigate("getreply")}>Go To Reply</Button>
       </div>
       <br/>
       <Accordion.Item eventKey="1">
@@ -40,7 +41,8 @@ function ConsultancyPage() {
         </Accordion.Body>
       </Accordion.Item>
       <div className="replybtn">
-      <Button variant="dark" size="md" onClick={() => navigate("reply")}>Reply</Button>
+      <Button variant="dark" size="md" onClick={() => navigate("addreply")}>Reply</Button>
+      <Button className="gotobtn" variant="dark" size="md" onClick={() => navigate("getreply")}>Go To Reply</Button>
       </div>
     </Accordion>
 

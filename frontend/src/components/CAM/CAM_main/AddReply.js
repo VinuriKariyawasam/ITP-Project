@@ -1,10 +1,15 @@
 import React,{useState} from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
-import { useNavigate } from "react-router-dom";
+
+import './CAM_main.css';
+
+
 
 function AddReply(){
 
@@ -18,15 +23,13 @@ function sendData(e){
     reply
   }
 
-  axios.post("http://localhost:5000/consultancy/add",newReply).then(()=>{
+  axios.post("http://localhost:5000/consultancy/add-reply",newReply).then(()=>{
     alert("Reply Added")
     setReply("");
+    //navigate("getreply");
   }).catch((err)=>{
     alert(err)
   })
-
-
-
 }
     return(
       <>
