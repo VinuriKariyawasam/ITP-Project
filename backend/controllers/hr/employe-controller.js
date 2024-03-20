@@ -30,7 +30,7 @@ const upload = multer({
 
 class EmployeeController {
   // Create employee controller function
-  static async createEmployee(req, res) {
+  static async createEmployee(req, res, next) {
     try {
       // Log the request body to see the uploaded data
       console.log("Request Body:", req.body);
@@ -56,6 +56,46 @@ class EmployeeController {
         // Log the request body to see the uploaded data
         console.log("Request Body:", req.body);
 
+        const nic = req.body["nic"];
+        console.log(nic);
+        const email = req.body["email"];
+        console.log(nic);
+
+        //check if employee alredy in db with nic
+        let existingEmployee;
+        try {
+          existingEmployee = await EmployeeModel.findOne({
+            $or: [{ nic: nic }, { email: email }],
+          });
+        } catch (err) {
+          const error = new HttpError(
+            "Employee Registartion Fails.Try Again",
+            500
+          );
+          return next(error);
+        }
+
+        if (existingEmployee) {
+          const error = new HttpError(
+            "Employee with this NIC and Email alredy exist.",
+            422
+          );
+          return next(error);
+        }
+
+        // Generate the unique employee ID based on the startDate
+        const startDate = new Date(req.body.startDate);
+        const year = startDate.getFullYear().toString().substring(2); // Get last two digits of the year
+        const month = (startDate.getMonth() + 1).toString().padStart(2, "0"); // Get month with leading zero if needed
+        let lastEmployee = await EmployeeModel.findOne().sort({ id: -1 });
+        let nextNumber = 1;
+        if (lastEmployee && lastEmployee.id.startsWith(`EMP${year}${month}`)) {
+          const lastNumber = parseInt(lastEmployee.id.substring(8));
+          nextNumber = lastNumber + 1;
+        }
+        const nextNumberString = nextNumber.toString().padStart(3, "0");
+        const employeeId = `EMP${year}${month}${nextNumberString}`;
+
         // Use the correct URLs when constructing file paths
         const photoPath = req.files["photo"]
           ? `/uploads/hr/${path.basename(req.files["photo"][0].path)}`
@@ -68,6 +108,7 @@ class EmployeeController {
 
         const newEmployee = new EmployeeModel({
           ...req.body,
+          empId: employeeId,
           photo: photoPath,
           documents: documentPaths,
         });
@@ -78,7 +119,12 @@ class EmployeeController {
     } catch (error) {
       // Log the error for debugging purposes
       console.error("Error while fetching(sending) employee to db:", error);
-      res.status(500).json({ error: error.message });
+      // Handle any errors that occur during employee creation
+      const err = new HttpError(
+        "Failed to create employee. Please try again.",
+        500
+      );
+      return next(err);
     }
   }
 
@@ -105,6 +151,11 @@ class EmployeeController {
   // Get employee by ID
   static async getEmployeeById(req, res) {
     try {
+      // Check for validation errors using express-validator
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        new HttpError("Invalid inputs passed, please check your data.", 422);
+      }
       const employee = await EmployeeModel.findById(req.params.id);
       if (!employee) {
         throw new HttpError("Employee not found", 404);
@@ -215,7 +266,7 @@ class EmployeeController {
       );
 
       if (!deletedEmployee) {
-        throw new HttpError("Employee not found", 404);
+        return res.status(404).json({ error: "Employee not found" });
       }
 
       // Create an instance of ArchivedEmployee using the deleted employee's data
@@ -227,7 +278,10 @@ class EmployeeController {
       });
 
       // Save the archived employee to the archive table
-      await archivedEmployee.save();
+      const archived = await archivedEmployee.save();
+      if (!archived) {
+        return res.status(500).json({ error: "Employee archive faild" });
+      }
 
       // Respond with success (204 No Content) as the employee has been successfully moved
       res.status(204).json(); // No content in response for successful deletion

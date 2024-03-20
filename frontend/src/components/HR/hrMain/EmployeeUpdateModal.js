@@ -56,10 +56,6 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
         formData.append(key, data[key]);
       });
 
-      if (data.photo[0]) {
-        formData.append("photo", data.photo[0]);
-      }
-
       // Log FormData object
       console.log("FormData:", formData);
 
@@ -236,7 +232,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
                     placeholder="0715897598"
                     {...field}
                     pattern="[0-9]{10}"
-                    maxLength="10"
+                    length="10"
                   />
                 )}
               />

@@ -39,6 +39,29 @@ const createEmployeeValidationRules = [
   body("password").optional().isString().withMessage("Invalid password"),
 ];
 
+const updateEmployeeValidationRules = [
+  body("address").notEmpty().withMessage("Address is required"),
+  body("contact").notEmpty().withMessage("Contact number is required"),
+  body("position")
+    .notEmpty()
+    .withMessage("Position is required")
+    .isIn([
+      "HR Manager",
+      "Inventory Manager",
+      "Service Manager",
+      "Finance Manager",
+      "Supervisor",
+      "Technician",
+    ])
+    .withMessage("Invalid position"),
+  body("otherDetails")
+    .optional()
+    .isArray()
+    .withMessage("Invalid other details"),
+  body("email").optional().isEmail().withMessage("Invalid email address"),
+  body("password").optional().isString().withMessage("Invalid password"),
+];
+
 router.get("/employees", EmployeeController.getEmployees);
 
 router.get("/employee/:id", EmployeeController.getEmployeeById);
@@ -49,7 +72,11 @@ router.post(
   EmployeeController.createEmployee
 );
 
-router.patch("/update-employee/:id", EmployeeController.updateEmployeeById);
+router.patch(
+  "/update-employee/:id",
+  updateEmployeeValidationRules,
+  EmployeeController.updateEmployeeById
+);
 
 router.delete("/archive-employee/:id", EmployeeController.deleteEmployeeById);
 

@@ -60,10 +60,17 @@ function EmployeeDetailsModal({ show, onHide, employee, onUpdate }) {
 
   const handleConfirmDelete = async () => {
     try {
-      // Send DELETE request to backend API
-      await axios.delete(
-        `http://localhost:5000/api/hr/archive-employee/${_id}`
-      ); // Adjust the endpoint URL accordingly
+      // Send DELETE request to backend API using fetch
+      await fetch(`http://localhost:5000/api/hr/archive-employee/${_id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if required
+        },
+        // Optionally, include credentials if necessary
+        // credentials: 'include',
+      });
+
       // Close the modal
       onHide();
       // Show success dialog
@@ -88,6 +95,7 @@ function EmployeeDetailsModal({ show, onHide, employee, onUpdate }) {
 
   const {
     _id,
+    empId,
     firstName,
     lastName,
     birthDate,
@@ -129,6 +137,12 @@ function EmployeeDetailsModal({ show, onHide, employee, onUpdate }) {
               />
             </Col>
           </Row>
+          <Row style={{ marginBottom: "10px" }}>
+            <Col>
+              <strong>Employee Id:</strong> {empId}
+            </Col>
+          </Row>
+
           <Row style={{ marginBottom: "10px" }}>
             <Col xs={12} md={8}>
               <strong>First Name:</strong> {firstName}
