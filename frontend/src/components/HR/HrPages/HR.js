@@ -1,25 +1,28 @@
 import React from "react";
 import HrMain from "../hrMain/HrMain";
 import HrSideBar from "../hrSidebar/HrSideBar";
-
-//Import front end routes
+import HrEmployee from "../hrMain/HrEmployee";
+import HrAttendance from "../hrMain/HrAttendance";
+import HrLeaves from "../hrMain/HrLeaves";
+// Import front end routes
 import {
   BrowserRouter as Router,
   Route,
-  Redirect,
-  Switch,
+  Routes,
+  Navigate,
 } from "react-router-dom";
 
 function HR() {
   return (
     <>
       <HrSideBar />
-      <Switch>
-        <Route path="/hr/main" exact>
-          <HrMain />
-        </Route>
-        <Redirect to="/hr/main" />
-      </Switch>
+
+      <Routes>
+        <Route path="/" element={<HrMain />} />
+        <Route path="employee/*" element={<HrEmployee />} />
+        <Route path="attendance/*" element={<HrAttendance />} />
+        <Route path="leaves/*" element={<HrLeaves />} />
+      </Routes>
     </>
   );
 }
