@@ -1,97 +1,132 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import PageTitle from './PageTitle';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import PageTitle from "./PageTitle";
 
-const AddExpense = () => {
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        title: '',
-        amount: '',
-        type: '',
-        date: '',
-        description: ''
-    });
-    const [errorMessage, setErrorMessage] = useState('');
+const AddIncome = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    title: "",
+    serviceInvoiceId: "",
+    amount: "",
+    type: "",
+    date: "",
+    time: "",
+    status: "",
+  });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch("http://localhost:5000/api/finance/expenses/add-expense", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-            const data = await response.json();
-            if (response.ok) {
-                // Reset form data if the request was successful
-                setFormData({
-                    title: '',
-                    amount: '',
-                    type: '',
-                    date: '',
-                    description: ''
-                });
-                // Redirect to previous page
-                navigate(-1);
-            } else {
-                setErrorMessage(data.message || 'Failed to add expense');
-            }
-        } catch (error) {
-            console.error('Error adding expense:', error);
-            setErrorMessage('Failed to add expense');
-        }
-    };
-
-    const handleCancel = () => {
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    fetch("http://localhost:5000/api/finance/incomes/add-income", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then(() => {
+        console.log("Income added successfully");
         navigate(-1);
-    };
+      })
+      .catch((error) => console.error("Error adding income:", error));
+  };
 
-    return (
-        <main id="main" className="main">
-             <PageTitle path="Finance / Expenses / Add-Expense" title="Add-Expense" />
-            <Form onSubmit={handleSubmit}>
-                {errorMessage && <p className="error-message">{errorMessage}</p>}
-                <Form.Group controlId="title">
-                    <Form.Label>Title</Form.Label>
-                    <Form.Control type="text" name="title" value={formData.title} onChange={handleChange} />
-                </Form.Group>
-                <Form.Group controlId="amount">
-                    <Form.Label>Amount</Form.Label>
-                    <Form.Control type="number" name="amount" value={formData.amount} onChange={handleChange} />
-                </Form.Group>
-                <Form.Group controlId="type">
-                    <Form.Label>Type</Form.Label>
-                    <Form.Control type="text" name="type" value={formData.type} onChange={handleChange} />
-                </Form.Group>
-                <Form.Group controlId="date">
-                    <Form.Label>Date</Form.Label>
-                    <Form.Control type="date" name="date" value={formData.date} onChange={handleChange} />
-                </Form.Group>
-                <Form.Group controlId="description">
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    Add Expense
-                </Button>{" "}
-                <Button variant="secondary" onClick={handleCancel}>
-                    Cancel
-                </Button>
-            </Form>
-        </main>
-    );
-}
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
-export default AddExpense;
+  const handleCancel = () => {
+    // Navigate back to the previous page
+    navigate(-1);
+  };
+
+  return (
+    <main id="main" className="main">
+      <PageTitle path="Finance / Incomes / Add-Income" title="Add-Income" />
+      <Form onSubmit={handleFormSubmit}>
+        <Form.Group controlId="title">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group controlId="serviceInvoiceId">
+          <Form.Label>Service Invoice ID</Form.Label>
+          <Form.Control
+            type="text"
+            name="serviceInvoiceId"
+            value={formData.serviceInvoiceId}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group controlId="amount">
+          <Form.Label>Amount</Form.Label>
+          <Form.Control
+            type="text"
+            name="amount"
+            value={formData.amount}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group controlId="type">
+          <Form.Label>Type</Form.Label>
+          <Form.Control
+            type="text"
+            name="type"
+            value={formData.type}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group controlId="date">
+          <Form.Label>Date</Form.Label>
+          <Form.Control
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group controlId="time">
+          <Form.Label>Time</Form.Label>
+          <Form.Control
+            type="time"
+            name="time"
+            value={formData.time}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group controlId="status">
+          <Form.Label>Status</Form.Label>
+          <Form.Control
+            as="select" // Use as="select" to render a dropdown list
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+          >
+            <option value="">Select Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </Form.Control>
+        </Form.Group>
+
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>{" "}
+        <Button variant="secondary" onClick={handleCancel}>
+          Cancel
+        </Button>
+      </Form>
+    </main>
+  );
+};
+
+export default AddIncome;
