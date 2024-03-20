@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require ('cors')
 const { db } = require('./db/db')
 const {readdirSync}=require('fs')
-const { route } = require('./routes/CAM-routes')
+//const { route } = require('./routes/CAM-routes')
 const app= express()
 
 require ('dotenv').config()
@@ -13,8 +13,11 @@ app.use(cors())
 
 
 readdirSync('./routes').map((route) =>
-  app.use('/api/finance', require('./routes/' + route)),
-  app.use('/consultancy', require('./routes/CAM-routes'))
+  app.use('/api/finance', require('./routes/' + route))
+);
+
+readdirSync("./routes").map((route) =>
+  app.use("/consultancy", require("./routes/CAM-routes"))
 );
 
 

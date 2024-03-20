@@ -19,4 +19,4 @@ router.post('/add-reply',addReply)
 
 
 
-module.exports=router
+module.exports=router;
