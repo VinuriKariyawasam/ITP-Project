@@ -34,6 +34,7 @@
 }
 
 @media (min-width: 1200px) {
+
   #main,
   #footer {
     margin-left: 300px;
@@ -47,6 +48,7 @@
 }
 
 @media (min-width: 1200px) {
+
   .toggle-sidebar #main,
   .toggle-sidebar #footer {
     margin-left: 0;
@@ -88,18 +90,21 @@
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: black; /* Set default color to black */
+  color: black;
+  /* Set default color to black */
   transition: 0.3s;
   padding: 10px 15px;
   border-radius: 4px;
-  background: transparent; /* Set default background to transparent */
+  background: transparent;
+  /* Set default background to transparent */
 }
 
 .sidebar-nav .nav-link i,
 .sidebar-nav .nav-content a i {
   font-size: 16px;
   margin-right: 10px;
-  color: black; /* Set icon color to black */
+  color: black;
+  /* Set icon color to black */
 }
 
 .sidebar-nav .nav-link:hover,
@@ -108,7 +113,8 @@
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
   color: #4154f1;
-  background: #e1e1e1; /* Grey background on hover, expand, and active */
+  background: #e1e1e1;
+  /* Grey background on hover, expand, and active */
 }
 
 .sidebar-nav .nav-link .bi-chevron-down,
@@ -133,7 +139,8 @@
   align-items: center;
   font-size: 14px;
   font-weight: 600;
-  color: black; /* Set link color to black */
+  color: black;
+  /* Set link color to black */
   transition: 0.3s;
   padding: 10px 0 10px 40px;
 }
@@ -148,7 +155,8 @@
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
   color: #4154f1;
-  background: #e1e1e1; /* Grey background on hover and active */
+  background: #e1e1e1;
+  /* Grey background on hover and active */
 }
 
 .sidebar-nav .nav-content a.active i {
