@@ -8,7 +8,7 @@ const IncomeSchema = new mongoose.Schema({
         maxLength: 50
     },
     serviceInvoiceId: {
-        type: String, 
+        type: String,
         maxLength: 50,
         trim: true
     },
@@ -31,12 +31,12 @@ const IncomeSchema = new mongoose.Schema({
         required: true,
         maxLength: 10
     },
-    
+
     status: {
         type: String,
         enum: ["pending", "completed", "cancelled"],
         default: "pending"
     }
-},{timestamps:true});
+}, { timestamps: true });
 
 module.exports = mongoose.model("Income", IncomeSchema);

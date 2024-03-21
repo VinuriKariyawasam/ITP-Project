@@ -8,16 +8,16 @@ router.route("/addPeriodicalData").post((req, res) => {
     const vType = req.body.vType;
     const vNo = req.body.vNo;
     const sType = req.body.sType;
-    const lastServiceYear =req.body.lastServiceYear;
+    const lastServiceYear = req.body.lastServiceYear;
     const lastServiceMonth = req.body.lastServiceMonth;
     const mileage = req.body.mileage;
     const phone = req.body.phone;
-    const appointmentdate=req.body.appointmentdate;
-    const appointmenttime=req.body.appointmenttime;
-    const msg=req.body.msg;
+    const appointmentdate = req.body.appointmentdate;
+    const appointmenttime = req.body.appointmenttime;
+    const msg = req.body.msg;
 
 
-    const newPeriodicalAppointment = new periodicalSchema ({
+    const newPeriodicalAppointment = new periodicalSchema({
         name,
         vType,
         vNo,
@@ -30,7 +30,7 @@ router.route("/addPeriodicalData").post((req, res) => {
         appointmenttime,
         msg,
 
-    
+
     })
 
     newPeriodicalAppointment.save().then(() => {
@@ -42,10 +42,10 @@ router.route("/addPeriodicalData").post((req, res) => {
 })
 
 
-router.route("/find").get((req,res)=>{
-    periodicalSchema .find().then((periodicalAppointments)=>{
+router.route("/find").get((req, res) => {
+    periodicalSchema.find().then((periodicalAppointments) => {
         res.json(periodicalAppointments)
-    }).catch((err)=>{
+    }).catch((err) => {
         console.log(err)
     })
 })
@@ -53,47 +53,46 @@ router.route("/find").get((req,res)=>{
 
 
 
-router.route("/UpdatePeriodicalData").put(async(req, res) => {
+router.route("/UpdatePeriodicalData").put(async (req, res) => {
 
-exports.updateperiodicalAppointment = async (req,res)=>{
-    let periodicalappointmentId =req.params.id;
-    //to get existing values
-    const {name,vType,vNo,sType,lastServiceYear,lastServiceMonth,mileage,phone,appointmentdate,appointmenttime,mag}= req.body
-    
-    //object to store new values
-    const updatePeriodicalAppointment ={
-     name,
-     vType,
-     vNo,
-     sType,
-     lastServiceYear,
-     lastServiceMonth,
-     mileage,
-     phone,
-     appointmentdate,
-     appointmenttime,
-     msg,
- 
- 
+    exports.updateperiodicalAppointment = async (req, res) => {
+        let periodicalappointmentId = req.params.id;
+        //to get existing values
+        const { name, vType, vNo, sType, lastServiceYear, lastServiceMonth, mileage, phone, appointmentdate, appointmenttime, mag } = req.body
+
+        //object to store new values
+        const updatePeriodicalAppointment = {
+            name,
+            vType,
+            vNo,
+            sType,
+            lastServiceYear,
+            lastServiceMonth,
+            mileage,
+            phone,
+            appointmentdate,
+            appointmenttime,
+            msg,
+
+
+        }
+
+        //to find relavant apoointment to update
+        const update = await periodicalSchema.findByIdAndUpdate(periodicalappointmentId, updatePeriodicalAppointment).then(() => {
+            res.status(200).send({ status: "Updated", appointment: update })
+        }).catch((err) => {
+            res.status(500).send({ status: "server error with update data", error: err.message });
+        })
     }
- 
-    //to find relavant apoointment to update
-    const update = await periodicalSchema.findByIdAndUpdate(periodicalappointmentId,updatePeriodicalAppointment).then(()=>{
-     res.status(200).send({status:"Updated",appointment:update})
-    }).catch((err)=>{
-     res.status(500).send({status:"server error with update data",error:err.message});
-    })
-}
- })
- router.route("/delete/:id").delete(async(req, res) => {
- 
-    const {id}= req.params;
-    periodicalSchema.findByIdAndDelete(id).then(()=>{
-        res.status(200).send({status :'periodicalAppointment Deleted Sucessfully'})
-    }).catch((error)=>{
-        res.status(500).json({status :'Server Error'})
-    })
-}) 
+})
+router.route("/delete/:id").delete(async (req, res) => {
 
- module.exports = router;
- 
+    const { id } = req.params;
+    periodicalSchema.findByIdAndDelete(id).then(() => {
+        res.status(200).send({ status: 'periodicalAppointment Deleted Sucessfully' })
+    }).catch((error) => {
+        res.status(500).json({ status: 'Server Error' })
+    })
+})
+
+module.exports = router;

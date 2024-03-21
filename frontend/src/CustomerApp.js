@@ -7,7 +7,6 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import React from "react";
 import PeriodicalAppointment from '../src/components/CUS/CUSMain/CUSAppointment/PeriodicalAppointment'
 import Header from '../src/components/CUS/CusHeader/Header'
-import MyAppointment from "./components/CUS/CUSMain/CUSAppointment/MyAppointment";
 import {
   BrowserRouter as Router,
   Route,
@@ -19,12 +18,10 @@ import {
 function CustomerApp() {
   return (
     <div>
-       <Header/>
-    <Routes>
-    <Route path="/Periodical" element={<PeriodicalAppointment/>} />
-    <Route path="/MyAppointment" element={<MyAppointment/>} />
-    
-    </Routes>
+      <Header />
+      <Routes>
+        <Route path="/Periodical" element={<PeriodicalAppointment />} />
+      </Routes>
     </div>
   );
 }

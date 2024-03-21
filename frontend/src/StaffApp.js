@@ -21,7 +21,6 @@ function StaffApp() {
   return (
     <>
       <Header />
-
       <Routes>
         <Route path="/" element={<Common />} />
         <Route path="/hr/*" element={<HR />} />

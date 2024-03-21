@@ -16,22 +16,18 @@ import "./App.css";
 
 import StaffApp from "./StaffApp";
 import CustomerApp from "./CustomerApp";
-import HR from "./components/HR/HrPages/HR";
 import Common from "./components/Pages/Common";
-import SM from "./components/SM/SMpages/SM";
-import Customer from "./components/CUS/Pages/Customer";
+
 
 function App() {
   return (
     <>
-     
+
       <Router>
         <Routes>
           <Route path="/" element={<Common />} />
           <Route path="/staff/*" element={<StaffApp />} />
           <Route path="/customer/*" element={<CustomerApp />} />
-          
-         
         </Routes>
       </Router>
     </>

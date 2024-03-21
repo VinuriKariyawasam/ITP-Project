@@ -1,15 +1,17 @@
-.div1{
+.div1111 {
 
-margin-top:100px;
+    margin-top: 100px;
 
 }
-.div2{
-    margin-top:40px;
-    margin-left:500px;
+
+.div2222 {
+    margin-top: 40px;
+    margin-left: 500px;
 }
-.Aheader {
-    
-    color:#000;
+
+.AppMainButtonPageHeading {
+
+    color: #000;
     font-feature-settings: 'dlig' on;
     font-family: Jomhuria;
     font-size: 58px;
@@ -24,7 +26,7 @@ margin-top:100px;
 }
 
 .SMMainbutton {
-    color:white;
+    color: white;
     width: 557px;
     height: 89px;
     flex-shrink: 0;
@@ -32,7 +34,7 @@ margin-top:100px;
     font-size: 26px;
 }
 
-.Arrow {
+.SMMainArrow {
     width: 130px;
     height: 49px;
     flex-shrink: 0;

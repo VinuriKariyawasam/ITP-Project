@@ -38,7 +38,7 @@ const periodicalSchema = new schema({
     phone: {
         type: String,
         required: true,
-        maxLength:10,
+        maxLength: 10,
     },
     appointmentdate: {
         type: String,
@@ -50,7 +50,7 @@ const periodicalSchema = new schema({
     },
     msg: {
         type: String,
-        maxLength: 255 
+        maxLength: 255
     }
 });
 
