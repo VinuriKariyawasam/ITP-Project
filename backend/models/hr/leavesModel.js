@@ -5,6 +5,10 @@ const leavesSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  empDBId: {
+    type: String,
+    required: true,
+  },
   name: {
     type: String,
     required: true,
@@ -29,6 +33,10 @@ const leavesSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: ["Approved", "Rejected", "Pending"],
+  },
+  reqDate: {
+    type: Date,
+    required: true,
   },
 });
 

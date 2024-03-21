@@ -85,8 +85,21 @@ router.delete("/archive-employee/:id", EmployeeController.deleteEmployeeById);
 
 //---------Leaves Routes-------------------
 
+// Validation middleware function for validating the leave request data
+const validateLeaveRequest = [
+  body("empId").notEmpty().withMessage("Employee ID is required"),
+  body("empDBId").notEmpty().withMessage("Employee Database ID is required"),
+  body("name").notEmpty().withMessage("Employee name is required"),
+  body("fromDate").isISO8601().withMessage("Invalid fromDate format"),
+  body("toDate").isISO8601().withMessage("Invalid toDate format"),
+  body("reason").notEmpty().withMessage("Reason is required"),
+  body("status")
+    .isIn(["Approved", "Rejected", "Pending"])
+    .withMessage("Invalid status"),
+];
+
 // Route for creating a new leave record
-router.post("/add-leave", LeavesController.createLeave);
+router.post("/add-leave", validateLeaveRequest, LeavesController.createLeave);
 
 // Route for getting all leave records
 router.get("/leaves", LeavesController.getAllLeaves);
