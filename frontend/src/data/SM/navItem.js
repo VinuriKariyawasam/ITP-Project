@@ -14,6 +14,7 @@ const navList = [
     _id: 3,
     name: " Record",
     icon: "bi bi-journal-text",
+    href:"/sm/record"
   },
   {
     _id: 4,

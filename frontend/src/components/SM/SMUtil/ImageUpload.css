@@ -1,0 +1,20 @@
+.image-upload.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .image-upload__preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .image-upload__preview img {
+    width: 13rem;
+    height: 13rem;
+    object-fit: cover;
+  }

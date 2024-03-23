@@ -2,10 +2,13 @@ const RecordController = require("../controllers/sm/record-controller");
 
 const router = require("express").Router();
 
-router.get("/add", RecordController.getRecords);
+router.get("/records", RecordController.getRecords);
 
-router.get("/add/:id", RecordController.getRecords);
+router.get("/records/:id", RecordController.getRecordById);
 
-router.post("/add", RecordController.createRecord);
+router.post("/records", RecordController.createRecord);
+
+router.delete("/archive-records/:id", RecordController.deleteRecordById);
+
 
 module.exports = router;

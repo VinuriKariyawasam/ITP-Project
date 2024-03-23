@@ -1,7 +1,7 @@
 import React from "react";
 import "./SMSidebar.css";
 import SMnavList from "../../../data/SM/navItem";
-import SMNavItem from "./SMNavItem.js";
+import SMNavItem from "./SMNavItem";
 
 function SMSidebar() {
   return (

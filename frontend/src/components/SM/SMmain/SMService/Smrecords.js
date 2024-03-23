@@ -2,6 +2,8 @@ import React from "react";
 import SMPageTitle from "./SMPageTitle";
 import Addrecord from "./Addrecord";
 import RecDash from "./RecDash";
+import "./SMMain.css";
+
 
 // Import front end routes
 import {

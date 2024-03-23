@@ -1,6 +1,6 @@
 import React from "react";
 import "./SMMain.css";
-import SMDashboard from "../SMmain/SMDashboard"
+import SMDashboard from "../SMService/SMDashboard";
 
 
 function SMMain() {

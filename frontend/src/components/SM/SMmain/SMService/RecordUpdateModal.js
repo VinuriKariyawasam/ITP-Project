@@ -2,40 +2,82 @@ import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Button,
-  Col,
   Form,
+  Modal,
+  Col,
   Row,
-  FormGroup,
-  ControlLabel,
-  HelpBlock,
+  OverlayTrigger,
+  Tooltip,
 } from "react-bootstrap";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import ImageUpload from "../../SMUtil/ImageUpload";
+import FileUpload from "../../SMUtil/FileUpload";
 
-function Addrecord() {
-  //for date picker
-  const [selectedDate, setSelectedDate] = useState(new Date());
+function RecordUpdateModal({ show, onHide, record, onUpdate }) {
+  //file uplood funxtions
+  // State to store the uploaded files
+  // State to store the uploaded files
+  const [uploadedFile, setUploadedFile] = useState(null);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  // File input handler for SingleFileUpload component
+  const fileInputHandler = (id, file, isValid) => {
+    if (isValid) {
+      // Set the uploaded file in state
+      setUploadedFile(file);
+    } else {
+      // Handle invalid files if needed
+      console.log("Invalid file:", file);
+    }
   };
 
-  //validation and submit
+  //to tool tip
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      You can only update editable marked(edit icon) fields only according to
+      company policies.If there is a issue contact system admin or follow the
+      protocol.
+    </Tooltip>
+  );
+
   const {
     handleSubmit,
     control,
-    register,
     setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm({ defaultValues: record });
 
   const onSubmit = (data) => {
-    // Handle form submission logic here
-    console.log(data);
+    onUpdate(data);
+    onHide();
   };
- 
+
+  // State to track selected position
+  const [selectedPosition, setSelectedPosition] = useState("");
+
+  const handlePositionChange = (e) => {
+    setSelectedPosition(e.target.value); // Update selected position
+  };
+
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Modal show={show} onHide={onHide} size="lg" centered>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          Update Record{" "}
+          <OverlayTrigger
+            placement="right"
+            delay={{ show: 250, hide: 400 }}
+            overlay={renderTooltip}
+          >
+            <Button variant="link" className="p-0 ml-2">
+              <i className="bi bi-info-circle text-primary"></i>
+            </Button>
+          </OverlayTrigger>
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+      <Form onSubmit={handleSubmit(onSubmit)}>
       <h3>Create Record</h3>
 
  {/* Vehicle Number */}
@@ -132,56 +174,41 @@ function Addrecord() {
       {/* Add a quotation and service reports */}
       <Row className="mb-3">
         <Form.Group as={Col} controlId="formImage">
-          <Form.Label>Add the quotation*(.jpg, .jpeg, .png only)</Form.Label>
+          <Form.Label>Add the quotation *(.jpg, .jpeg, .png only)</Form.Label>
           <Controller
-            name="quotation"
+            name="photo"
             control={control}
             render={({ field }) => (
-              <>
-                <Form.Control
-                  type="file"
-                  accept=".jpg, .jpeg, .png"
-                  onChange={(e) => {
-                    field.onChange(e);
-                    field.onBlur(e);
-                  }}
-                />
-              </>
+              <ImageUpload
+                id="photo" // Pass the ID for the ImageUpload component
+                onInput={(id, file, isValid) => {
+                  field.onChange(file); // Trigger the onChange event for the photo field
+                  field.onBlur(); // Trigger the onBlur event for validation
+                }}
+                errorText={errors.photo?.message}
+              />
             )}
           />
-          <Form.Text className="text-danger">{errors.quotation?.message}</Form.Text>
         </Form.Group>
         {/* Documents */}
         <Form.Group as={Col} controlId="formFileDocuments">
-          <Form.Label>Add service report *(.pdf only)</Form.Label>
-          <Controller
-            name="documents"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Form.Control
-                  type="file"
-                  accept=".pdf"
-                  multiple
-                  onChange={(e) => {
-                    field.onChange(e);
-                    field.onBlur(e);
-                  }}
-                />
-              </>
-            )}
+          <Form.Label>Add other documents *(.pdf only)</Form.Label>
+          <FileUpload
+            id="documents"
+            accept=".pdf"
+            onInput={fileInputHandler}
+            errorText={errors.documents?.message}
           />
-          <Form.Text className="text-danger">
-            {errors.documents?.message}
-          </Form.Text>
         </Form.Group>
       </Row>
-
       {/* Other Details */}
       <Form.Group className="mb-3" controlId="formGridExtra">
         <Row>
         <Form.Label>Other Details</Form.Label>
         </Row>
+
+
+
         <Row>
         <Controller
           name="otherDetails"
@@ -226,22 +253,36 @@ function Addrecord() {
           <Controller
             name="password"
             control={control}
-            rules={{ required: "Password is required" }}
+            rules={{ required: "Password is required" ,
+            pattern: {
+                value:
+                  /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$/,
+                message:
+                  "Password must have at least one uppercase letter, one number, one symbol, and be at least 8 characters long",
+              },}}
             render={({ field }) => (
-              <Form.Control type="password" placeholder="Password" {...field} />
+              <Form.Control type="password" placeholder="Password" {...field}
+              pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$" />
             )}
           />
           <Form.Text className="text-danger">
             {errors.password?.message}
           </Form.Text>
         </Form.Group>
-      </Row>
+      </Row> )
 
-      <Button variant="dark" type="submit">
-        Submit
-      </Button>
-    </Form>
+          <Button variant="dark" type="submit">
+            Submit
+          </Button>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="dark" onClick={onHide} className="mr-2">
+          Cancel
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 }
 
-export default Addrecord;
+export default RecordUpdateModal;

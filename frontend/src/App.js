@@ -13,7 +13,6 @@ import {
 } from "react-router-dom";
 
 import "./App.css";
-import Header from "./components/Header/Header";
 import HR from "./components/HR/HrPages/HR";
 import SM from "./components/SM/SMpages/SM";
 import Common from "./components/Pages/Common";
@@ -21,7 +20,7 @@ import Common from "./components/Pages/Common";
 function App() {
   return (
     <>
-      <Header />
+      
       <Router>
         <Routes>
           <Route path="/" element={<Common />} />

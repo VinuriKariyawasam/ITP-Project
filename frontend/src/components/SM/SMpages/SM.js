@@ -1,13 +1,10 @@
 import React from "react";
 import SMSidebar from "../SMsidebar/SMSidebar"
-import SMMain from "../SMmain/SMMain"
-import Addrecord from "../SMmain/SMRecords/Addrecord"
-import Smrecords from "../SMmain/SMRecords/Smrecords"
-import Title from "../SMmain/SMRecords/SMPageTitle"
+import SMMain from "../SMmain/SMService/SMMain"
+import Smrecords from "../SMmain/SMService/Smrecords"
+import Header from "../../Header/Header";
 
 
-
-import RecDash from "../SMmain/SMRecords/RecDash"
 // Import front end routes
 import {
   BrowserRouter as Router,
@@ -21,15 +18,13 @@ function SM() {
   return (
     <>
       <SMSidebar />
-
+       <Header> </Header>
       <Routes>
         <Route path="/" element={<SMMain/>} />
        
  /*Add udara's route here*/
-        <Route path="/recDash" element={<RecDash/>} />
-        <Route path="/add" element={<Addrecord/>} />
-        <Route path="/records" element={<Smrecords/>} />
-        <Route path="/title" element={<Title/>} />
+        <Route path="record/*" element={<Smrecords/>} />
+        
 
       </Routes>
     </>
