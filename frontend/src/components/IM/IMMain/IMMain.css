@@ -15,26 +15,15 @@
   font-weight:bold; 
   margin-top:30px;
   border-radius: 5px;
-  height: 45px;
+  height:fit-content
 
 }
 .btn1{
   float:right;
-  height: 30px;
-  padding: 4px;
-  background-color:rgb(21, 82, 119) ;
-  color:white;
-  width:70px;
-  border-radius: 5px;
-  border:none;
+ 
+ 
 }
-.btn1:hover{
-  
-  background-color:rgb(228, 222, 222) ;
-  color:black;
-  width:70px;
-  border:none;
-}
+
 @media (max-width: 1199px) {
   #main {
     padding: 20px;

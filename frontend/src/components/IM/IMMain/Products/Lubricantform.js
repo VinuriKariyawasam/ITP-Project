@@ -5,8 +5,9 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import ImPageTitle from '../ImPageTitle';
 
-function FormExample() {
+function Lubricantform() {
   const [validated, setValidated] = useState(false);
 
   const handleSubmit = (event) => {
@@ -36,7 +37,7 @@ function FormExample() {
         Unit_price
       }
 
-      axios.post("http://localhost:5000/product/add",newProduct).then(()=>{
+      axios.post("http://localhost:5000/Product/addlubricant",newProduct).then(()=>{
           navigate('staff/im/lubricants/');
       }).catch((err)=>{
           alert(err)
@@ -46,6 +47,7 @@ function FormExample() {
 
   return (
     <main id="main" className="main">
+      <ImPageTitle title="Add Lubricants" url="/staff/im/lubricants/addproduct/" />
     <Form noValidate validated={validated} onSubmit={(event) => {handleSubmit(event); sendData(event);}}>
       <Row className="mb-3">
         <Form.Group as={Col} md="5" controlId="validationCustom01">
@@ -112,4 +114,4 @@ function FormExample() {
   );
 }
 
-export default FormExample;
+export default Lubricantform;

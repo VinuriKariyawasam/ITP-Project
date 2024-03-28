@@ -14,7 +14,6 @@ app.use(cors());
 
 app.use("/uploads/hr", express.static(path.join(__dirname, "uploads", "hr")));
 
-
 // Load finance routes
 readdirSync("./routes").map((route) =>
   app.use("/api/finance", require("./routes/" + route))
@@ -24,7 +23,7 @@ readdirSync("./routes").map((route) =>
   app.use("/api/hr", require("./routes/" + route))
 );
 readdirSync("./routes/").map((route) =>
-  app.use("/product", require("./routes/" + route))
+  app.use("/Product", require("./routes/" + route))
 );
 
 //Load Inventory

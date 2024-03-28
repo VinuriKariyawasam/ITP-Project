@@ -1,14 +1,14 @@
 import React from "react";
 import "./Lubricants.css";
-import ImPageTitle from "./ImPageTitle";
-import IMProductCard from "./IMProductCard";
+import ImPageTitle from "../ImPageTitle";
+import IMLubricantCard from "./IMLubricantCard";
 import {Link} from 'react-router-dom'
 
 
 function Lubricants() {
   return (
     <main id="main" className="main">
-      <ImPageTitle title="Lubricants Stock" url="/im/lubricants" />
+      <ImPageTitle title="Lubricants Stock" url="/staff/im/lubricants" />
       
       <Link to="addproduct/">
       <button type="button" className="btn-add">
@@ -16,7 +16,7 @@ function Lubricants() {
       <span class="bi bi-plus-circle"></span>
       </button>
       </Link>
-      <IMProductCard/>
+      <IMLubricantCard/>
     </main>
   );
 }

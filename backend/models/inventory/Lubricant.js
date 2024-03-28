@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const schema = mongoose.Schema;
 
-const ProductSchema = new schema({
+const LubricantSchema = new schema({
     Product_name: {
         type: String,
         required: true
@@ -22,7 +22,7 @@ const ProductSchema = new schema({
    
 })
 
-const Product = mongoose.model("Product", ProductSchema);
+const Lubricant = mongoose.model("Lubricant", LubricantSchema);
 
 
-module.exports = Product;
+module.exports = Lubricant;

@@ -14,6 +14,7 @@ const navList = [
     _id: 3,
     name: "Tires",
     icon: "bi bi-vinyl",
+    href: "im/Tires",
   },
   {
     _id: 4,
