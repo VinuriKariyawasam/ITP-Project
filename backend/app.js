@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cors = require("cors");
 const { db } = require("./db/db");
@@ -33,6 +32,7 @@ app.use("/appointment", periodicalroute);
 readdirSync("./routes/").map((route) =>
   app.use("/Product", require("./routes/" + route))
 );
+
 //CAS
 
 //Vehicle

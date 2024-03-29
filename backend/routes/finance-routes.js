@@ -1,20 +1,33 @@
-const { addExpense,getExpenses,deleteExpense } = require('../controllers/finance/expense')
-const { addIncome,getIncomes,deleteIncome } = require('../controllers/finance/income')
 
+const {
+  addExpense,
+  getExpenses,
+  deleteExpense,
+  updateExpense,
+  getExpenseById,
+} = require("../controllers/finance/expense");
+const {
+  addIncome,
+  getIncomes,
+  deleteIncome,
+  updateIncome,
+  getIncomeById,
+} = require("../controllers/finance/income");
 
-const router = require ('express').Router()
+const router = require("express").Router();
 
+// Income routes
+router.post("/incomes/add-income", addIncome);
+router.delete("/incomes/delete-income/:id", deleteIncome);
+router.patch("/incomes/update-income/:id", updateIncome);
+router.get("/incomes/get-income/:id", getIncomeById);
+router.get("/incomes", getIncomes);
 
-router.post('/add-income',addIncome )
-    .get('/get-incomes',getIncomes)
-    .delete('/delete-income/:id',deleteIncome)
+// Expense routes
+router.post("/expenses/add-expense", addExpense);
+router.delete("/expenses/delete-expense/:id", deleteExpense);
+router.patch("/expenses/update-expense/:id", updateExpense);
+router.get("/expenses/get-expense/:id", getExpenseById);
+router.get("/expenses", getExpenses);
 
-
-
-router.post('/add-expense',addExpense)
-    .get('/get-expenses',getExpenses)
-    .delete('/delete-expense/:id',deleteExpense)
-
-
-
-module.exports=router
+module.exports = router;

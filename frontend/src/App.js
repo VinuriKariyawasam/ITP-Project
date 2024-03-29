@@ -13,13 +13,16 @@ import {
 } from "react-router-dom";
 
 import "./App.css";
+
 import StaffApp from "./StaffApp";
 import CustomerApp from "./CustomerApp";
 import Common from "./components/Pages/Common";
 
+
 function App() {
   return (
     <>
+    
       <Router>
         <Routes>
           <Route path="/" element={<Common />} />
