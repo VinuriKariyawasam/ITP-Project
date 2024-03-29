@@ -75,6 +75,11 @@ const UpdateExpense = () => {
         }
     };
 
+    const handleCancel = () => {
+        // Navigate back to the previous page
+        navigate(-1);
+    };
+
     return (
         <main id="main" className="main">
               <PageTitle path="Finance / Expenses / Edit-Expense"  title="Edit-Expense"/>
@@ -102,6 +107,9 @@ const UpdateExpense = () => {
                 </Form.Group>
                 <Button variant="primary" type="submit">
                     Update Expense
+                </Button>{" "}
+                <Button variant="secondary" onClick={handleCancel}>
+                    Cancel
                 </Button>
             </Form>
         </main>

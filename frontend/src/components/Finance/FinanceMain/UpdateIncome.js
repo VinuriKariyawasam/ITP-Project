@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import PageTitle from "./PageTitle";
+
 const UpdateIncome = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -13,7 +14,7 @@ const UpdateIncome = () => {
     type: "",
     date: "",
     time: "",
-    status: ""
+    status: "",
   });
 
   useEffect(() => {
@@ -32,9 +33,9 @@ const UpdateIncome = () => {
     fetch(`http://localhost:5000/api/finance/incomes/update-income/${id}`, {
       method: "PATCH",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(formData),
     })
       .then(() => {
         console.log("Income updated successfully");
@@ -47,13 +48,18 @@ const UpdateIncome = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
+  };
+
+  const handleCancel = () => {
+    // Navigate back to the previous page
+    navigate(-1);
   };
 
   return (
     <main id="main" className="main">
-     <PageTitle path="Finance / Incomes / Edit-Income"  title="Edit-Income"/>
+      <PageTitle path="Finance / Incomes / Edit-Income" title="Edit-Income" />
       <Form onSubmit={handleFormSubmit}>
         <Form.Group controlId="title">
           <Form.Label>Title</Form.Label>
@@ -71,8 +77,10 @@ const UpdateIncome = () => {
             name="serviceInvoiceId"
             value={formData.serviceInvoiceId}
             onChange={handleChange}
+            readOnly
           />
         </Form.Group>
+
         <Form.Group controlId="amount">
           <Form.Label>Amount</Form.Label>
           <Form.Control
@@ -120,6 +128,9 @@ const UpdateIncome = () => {
         </Form.Group>
         <Button variant="primary" type="submit">
           Update
+        </Button>{" "}
+        <Button variant="secondary" onClick={handleCancel}>
+          Cancel
         </Button>
       </Form>
     </main>
