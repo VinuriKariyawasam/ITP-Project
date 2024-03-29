@@ -8,14 +8,13 @@ import {
   Row,
   OverlayTrigger,
   Tooltip,
-  Card,
-  Image,
 } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ImageUpload from "../HrUtil/ImageUpload";
 import FileUpload from "../HrUtil/FileUpload";
+
 import pdfImage from "../HrImages/pdf-file.png"; // Path to your custom PDF image
 import axios from "axios"; // Import axios for HTTP requests
 import { useNavigate } from "react-router-dom";
@@ -23,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
   //to redirect after success
   const navigate = useNavigate();
+
 
   //to tool tip
   const renderTooltip = (props) => (
@@ -40,12 +40,18 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
     formState: { errors },
   } = useForm({ defaultValues: employee });
 
+  const onSubmit = (data) => {
+    onUpdate(data);
+    onHide();
+  };
+
   // State to track selected position
   const [selectedPosition, setSelectedPosition] = useState(employee.position);
 
   const handlePositionChange = (e) => {
     setSelectedPosition(e.target.value); // Update selected position
   };
+
 
   const onSubmit = async (data) => {
     try {
@@ -85,14 +91,9 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
     }
   };
 
+
   return (
-    <Modal
-      show={show}
-      onHide={onHide}
-      size="lg"
-      centered
-      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-    >
+    <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
         <Modal.Title>
           Update Employee{" "}
@@ -300,6 +301,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
             </Form.Group>
           </Row>
 
+
           {/* Other Details */}
           <Form.Group className="mb-3" controlId="formGridExtra">
             <Form.Label>
@@ -388,7 +390,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
           )}
 
           <Button variant="dark" type="submit">
-            Update
+            Submit
           </Button>
         </Form>
       </Modal.Body>

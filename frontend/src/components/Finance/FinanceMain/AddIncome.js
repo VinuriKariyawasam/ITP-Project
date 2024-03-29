@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import PageTitle from "./PageTitle";
 
 const AddIncome = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const AddIncome = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    fetch("http://localhost:5000/finance/incomes/add-income", {
+    fetch("http://localhost:5000/api/finance/incomes/add-income", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -26,7 +27,7 @@ const AddIncome = () => {
     })
       .then(() => {
         console.log("Income added successfully");
-        navigate("/finance/incomes");
+        navigate(-1);
       })
       .catch((error) => console.error("Error adding income:", error));
   };
@@ -41,7 +42,7 @@ const AddIncome = () => {
 
   return (
     <main id="main" className="main">
-      <h2>Add Income</h2>
+       <PageTitle path="Finance / Incomes / Add-Income"  title="Add-Income"/>
       <Form onSubmit={handleFormSubmit}>
         <Form.Group controlId="title">
           <Form.Label>Title</Form.Label>

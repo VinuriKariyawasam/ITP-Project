@@ -1,3 +1,4 @@
+
 const express = require("express");
 const cors = require("cors");
 const { db } = require("./db/db");
@@ -8,6 +9,7 @@ const path = require("path");
 const app = express();
 require("dotenv").config();
 const PORT = process.env.PORT || 5000;
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -24,6 +26,8 @@ readdirSync("./routes").map((route) =>
 readdirSync("./routes").map((route) =>
   app.use("/api/hr", require("./routes/" + route))
 );
+const periodicalroute = require("./routes/appointment-routes");
+app.use("/appointment", periodicalroute);
 
 //Load Inventory
 
@@ -58,5 +62,6 @@ const server = () => {
     console.log("Listening to port:", PORT);
   });
 };
+
 
 server();

@@ -90,7 +90,7 @@ function AddEmp() {
       console.log("Data submitted successfully:", result);
       alert("Employee Registered Succesfully!");
       // Redirect to the specified URL after successful submission
-      navigate("/staff/hr/employee");
+      navigate("/hr/employee");
     } catch (error) {
       if (error.response && error.response.status === 422) {
         // Display error message using alert box
@@ -371,7 +371,7 @@ function AddEmp() {
         </Form.Group>
         {/* Documents */}
         <Form.Group as={Col} controlId="formFileDocuments">
-          <Form.Label>Upload CV *(.pdf only)</Form.Label>
+          <Form.Label>Add other documents *(.pdf only)</Form.Label>
           <FileUpload
             id="documents"
             accept=".pdf"
