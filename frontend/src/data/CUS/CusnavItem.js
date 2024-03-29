@@ -10,9 +10,9 @@ function CusnavItem() {
 <Navbar >
         <Container>
           <Nav className="me-auto">
-            <Nav.Link href="/customer">Home</Nav.Link>
+            <Nav.Link href="#home">Home</Nav.Link>
             <NavDropdown title="Service" id="basic-nav-dropdown">
-              <NavDropdown.Item href="customer/products">Product</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.1">Product</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
                 Our Services
               </NavDropdown.Item>
