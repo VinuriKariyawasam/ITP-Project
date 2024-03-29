@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 import PageTitle from "./PageTitle";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
+import Modal from "react-bootstrap/Modal";
 
 const Incomes = () => {
   const navigate = useNavigate();
   const [incomes, setIncomes] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [incomeToDelete, setIncomeToDelete] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/finance/incomes")
@@ -29,16 +32,31 @@ const Incomes = () => {
   };
 
   const handleDeleteIncome = (id) => {
-    fetch(`http://localhost:5000/api/finance/incomes/delete-income/${id}`, {
-      method: "DELETE",
-    })
+    // Set the income to delete and show the modal for confirmation
+    setIncomeToDelete(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteIncome = () => {
+    fetch(
+      `http://localhost:5000/api/finance/incomes/delete-income/${incomeToDelete}`,
+      {
+        method: "DELETE",
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         console.log("Income deleted successfully");
         // Update the incomes state by removing the deleted income
-        setIncomes(incomes.filter((inc) => inc._id !== id));
+        setIncomes(incomes.filter((inc) => inc._id !== incomeToDelete));
+        // Close the modal after deletion
+        setShowDeleteModal(false);
       })
       .catch((error) => console.error("Error deleting income:", error));
+  };
+
+  const handleCloseModal = () => {
+    setShowDeleteModal(false);
   };
 
   // Function to generate ID in the format IN0001, IN0002, etc.
@@ -97,6 +115,21 @@ const Incomes = () => {
           </tbody>
         </Table>
       </div>
+      {/* Delete confirmation modal */}
+      <Modal show={showDeleteModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this income?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDeleteIncome}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </main>
   );
 };

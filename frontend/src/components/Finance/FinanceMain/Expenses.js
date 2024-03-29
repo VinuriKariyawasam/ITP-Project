@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 import PageTitle from "./PageTitle";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
+import Modal from "react-bootstrap/Modal";
 
 const Expenses = () => {
   const navigate = useNavigate();
   const [expenses, setExpenses] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [expenseToDelete, setExpenseToDelete] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/finance/expenses")
@@ -29,16 +32,28 @@ const Expenses = () => {
   };
 
   const handleDeleteExpense = (id) => {
-    fetch(`http://localhost:5000/api/finance/expenses/delete-expense/${id}`, {
+    // Set the expense to delete and show the modal for confirmation
+    setExpenseToDelete(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteExpense = () => {
+    fetch(`http://localhost:5000/api/finance/expenses/delete-expense/${expenseToDelete}`, {
       method: "DELETE",
     })
       .then((response) => response.json())
       .then((data) => {
         console.log("Expense deleted successfully");
         // Update the expenses state by removing the deleted expense
-        setExpenses(expenses.filter((exp) => exp._id !== id));
+        setExpenses(expenses.filter((exp) => exp._id !== expenseToDelete));
+        // Close the modal after deletion
+        setShowDeleteModal(false);
       })
       .catch((error) => console.error("Error deleting expense:", error));
+  };
+
+  const handleCloseModal = () => {
+    setShowDeleteModal(false);
   };
 
   // Function to generate ID in the format EX0001, EX0002, etc.
@@ -93,6 +108,23 @@ const Expenses = () => {
           </tbody>
         </Table>
       </div>
+      {/* Delete confirmation modal */}
+      <Modal show={showDeleteModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this expense?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDeleteExpense}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </main>
   );
 };

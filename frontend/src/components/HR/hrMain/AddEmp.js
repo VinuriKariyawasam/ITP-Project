@@ -16,6 +16,8 @@ import ImageUpload from "../HrUtil/ImageUpload";
 import FileUpload from "../HrUtil/FileUpload";
 
 function AddEmp() {
+  const [errorMessage, setErrorMessage] = useState("");
+
   //to redirect after success
   const navigate = useNavigate();
 
@@ -67,17 +69,36 @@ function AddEmp() {
         }
       );
 
-      if (!response.ok) {
+      if (response.status === 201) {
+        // Employee created successfully
+        const result = await response.json();
+        console.log("Data submitted successfully:", result);
+        alert("Employee Registered Successfully!");
+        // Redirect to the specified URL after successful submission
+        navigate("/staff/hr/employee");
+      } else if (response.status === 422) {
+        // Handle validation errors (e.g., NIC already exists)
+        const errorData = await response.json();
+        alert("Employee alredy exist with this NIC number or Email.Try Again!");
+        navigate("/staff/hr/employee");
+      } else {
+        // Handle other error cases
         throw new Error("Failed to submit data");
       }
 
       const result = await response.json();
       console.log("Data submitted successfully:", result);
-
+      alert("Employee Registered Succesfully!");
       // Redirect to the specified URL after successful submission
       navigate("/hr/employee");
     } catch (error) {
-      console.error("Error submitting data:", error.message);
+      if (error.response && error.response.status === 422) {
+        // Display error message using alert box
+        setErrorMessage(error.response.data.error);
+        alert(error.response.data.error); // Display error message in an alert box
+      } else {
+        console.error("Error:", error.message);
+      }
     }
   };
 
@@ -99,6 +120,14 @@ function AddEmp() {
       // Handle invalid files if needed
       console.log("Invalid file:", file);
     }
+  };
+
+  const defaultValues = {
+    photo: null,
+    documents: null,
+    otherDetails: null,
+    email: null,
+    password: null,
   };
 
   return (
@@ -254,7 +283,7 @@ function AddEmp() {
                 placeholder="0715897598"
                 {...field}
                 pattern="[0-9]{10}"
-                maxLength="10"
+                length="10"
               />
             )}
           />
