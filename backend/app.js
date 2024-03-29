@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cors = require("cors");
 const { db } = require("./db/db");
@@ -30,6 +29,9 @@ const periodicalroute = require("./routes/appointment-routes");
 app.use("/appointment", periodicalroute);
 
 //Load Inventory
+readdirSync("./routes/").map((route) =>
+  app.use("/Product", require("./routes/" + route))
+);
 
 //CAS
 
