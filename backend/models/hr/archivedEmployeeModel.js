@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 
 const archivedEmployeeSchema = new mongoose.Schema({
-  // Define schema for archived employees
-  // Example: firstName, lastName, etc.
+  empId: {
+    type: String,
+    required: true,
+  },
   firstName: {
     type: String,
     required: true,
