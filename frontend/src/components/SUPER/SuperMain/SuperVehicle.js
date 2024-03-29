@@ -14,7 +14,7 @@ function SuperVehicle() {
           path="/"
           element={
             <>
-              <SuperPageTitle title="Vehicle" url="supervisor/vehicle/" />
+              <SuperPageTitle title="Vehicle" url="staff/supervisor/vehicle/" />
               <VehicleDash />
             </>
           }
@@ -23,7 +23,7 @@ function SuperVehicle() {
           path="/add"
           element={
             <>
-              <SuperPageTitle title="Vehicle" url="supervisor/vehicle/" />
+              <SuperPageTitle title="Vehicle" url="staff/supervisor/vehicle/" />
               <AddVehicle />
             </>
           }
@@ -32,7 +32,7 @@ function SuperVehicle() {
           path="/update/*"
           element={
             <>
-              <SuperPageTitle title="Update Records" url="supervisor/vehicle/update" />
+              <SuperPageTitle title="Update Records" url="staff/supervisor/vehicle/update" />
               <UpdateVehicle />
             </>
           }

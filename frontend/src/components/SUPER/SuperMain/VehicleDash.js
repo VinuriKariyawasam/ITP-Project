@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Row, Stack } from "react-bootstrap";
+import { Button, Form, Modal, Row, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 function VehicleDash() {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false); // State for showing modal
 
   useEffect(() => {
     fetchData();
@@ -15,16 +16,16 @@ function VehicleDash() {
       const response = await fetch("http://localhost:5000/api/vehicle/vehicles");
       if (response.ok) {
         const data = await response.json();
-        console.log("Fetched data:", data); // Log the fetched data
-        setVehicles(data.vehicles); // Update vehicles state with fetched data
-        setLoading(false); // Set loading state to false
+        console.log("Fetched data:", data);
+        setVehicles(data.vehicles);
+        setLoading(false);
       } else {
         console.error("Failed to fetch data");
-        setLoading(false); // Set loading state to false in case of failure
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-      setLoading(false); // Set loading state to false in case of error
+      setLoading(false);
     }
   };
 
@@ -37,8 +38,8 @@ function VehicleDash() {
         }
       });
       if (response.ok) {
-        // Remove the deleted vehicle from the state
         setVehicles(vehicles.filter(vehicle => vehicle._id !== id));
+        setShowModal(true); // Show modal on successful deletion
       } else {
         console.error("Failed to delete vehicle");
       }
@@ -47,10 +48,15 @@ function VehicleDash() {
     }
   };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <div className="table">
       <Row>
         <Stack direction="horizontal" gap={3}>
+          {/* Search form */}
           <div className="p-2">
             <Form className="d-flex">
               <Form.Control
@@ -62,9 +68,10 @@ function VehicleDash() {
               <Button variant="outline-dark">Search</Button>
             </Form>
           </div>
+          {/* Register button */}
           <div className="p-2 ms-auto">
             <Button variant="success" size="md">
-              <Link to="/staff/supervisor/vehicle/add" className="text-light text-decoration-none">
+              <Link to="/staff/supervisor/vehicle/add" className="text-dark text-decoration-none font-weight-bold">
                 Register Vehicle
               </Link>
             </Button>
@@ -99,8 +106,9 @@ function VehicleDash() {
                   <td>{vehicle.contact}</td>
                   <td>{vehicle.records}</td>
                   <td>
-                    <Link to={`/staff/supervisor/vehicle/update/${vehicle._id}`} className="btn btn-success">Update</Link>
-                    <button onClick={() => handleDelete(vehicle._id)} className="btn btn-danger">Delete</button>
+                    {/* Update and Delete buttons */}
+                    <Link to={`/staff/supervisor/vehicle/update/${vehicle._id}`} className="btn btn-warning me-2 text-dark font-weight-bold">Update</Link>
+                    <button onClick={() => handleDelete(vehicle._id)} className="btn btn-danger text-dark font-weight-bold">Delete</button>
                   </td>
                 </tr>
               ))}
@@ -108,6 +116,18 @@ function VehicleDash() {
           </table>
         )}
       </div>
+      {/* Modal for success message */}
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Success</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Vehicle deleted successfully.</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

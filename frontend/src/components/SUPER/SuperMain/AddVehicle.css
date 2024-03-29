@@ -25,4 +25,17 @@
     margin-left: auto; /* Push the Register button to the right */
   }
   
+  .error {
+    border-color: red !important; /* Highlight the border of error fields */
+  }
+  
+  .exclamation-mark {
+    color: red;
+    font-weight: bold;
+    margin-left: 5px;
+  }
+
+  .error-message {
+    color: red;
+  }
   
