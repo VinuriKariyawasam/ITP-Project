@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Row, Stack, Badge } from "react-bootstrap";
+import { Button, Form, Row, Stack, Badge, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import LeaveUpdateModal from "./LeaveUpdateModal";
 
@@ -8,6 +8,9 @@ function Leaves() {
   const [leaveRecords, setLeaveRecords] = useState([]);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedLeaveId, setSelectedLeaveId] = useState(null);
+  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
+    useState(false);
+  const [recordToDelete, setRecordToDelete] = useState(null);
 
   useEffect(() => {
     // Fetch leave records from the backend when the component mounts
@@ -48,15 +51,16 @@ function Leaves() {
         setLeaveRecords(
           leaveRecords.filter((record) => record._id !== recordId)
         );
-        window.alert("Leave request deleted successfully");
+        alert("Leave request deleted successfully"); // Show success alert
         console.log("Leave record deleted successfully");
       } else {
         throw new Error("Failed to delete leave record");
       }
     } catch (error) {
-      window.alert("Error deleting leave record");
+      alert("Error deleting leave record"); // Show error alert
       console.error("Error deleting leave record:", error);
     }
+    setShowDeleteConfirmationModal(false);
   };
 
   //update related things
@@ -75,6 +79,12 @@ function Leaves() {
     console.log("Updated leave data:", updatedLeave);
     // Close the modal
     setShowUpdateModal(false);
+  };
+
+  //delete confirm modal handeling
+  const handleDeleteConfirmation = (recordId) => {
+    setRecordToDelete(recordId);
+    setShowDeleteConfirmationModal(true);
   };
 
   return (
@@ -178,7 +188,7 @@ function Leaves() {
                           variant="dark"
                           size="sm"
                           style={{ margin: "5px" }}
-                          onClick={() => deleteLeaveRecord(record._id)}
+                          onClick={() => handleDeleteConfirmation(record._id)}
                         >
                           <i className="bi bi-trash"></i> {/* Delete icon */}
                         </Button>{" "}
@@ -198,6 +208,32 @@ function Leaves() {
           handleSubmit={handleUpdateSubmit}
         />
       </div>
+      {/* Delete confirmation modal */}
+      <Modal
+        show={showDeleteConfirmationModal}
+        onHide={() => setShowDeleteConfirmationModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Confirmation</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this leave record?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowDeleteConfirmationModal(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => deleteLeaveRecord(recordToDelete)}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </section>
   );
 }
