@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Row, Stack, Badge, Modal } from "react-bootstrap";
+import { Button, Form, Row, Stack, Badge, Modal, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import LeaveUpdateModal from "./LeaveUpdateModal";
 
@@ -89,151 +89,164 @@ function Leaves() {
 
   return (
     <section>
-      <Row>
-        <Stack direction="horizontal">
-          <div className="p-2">
-            <Button
-              variant="dark"
-              size="md"
-              onClick={() => navigate("add")}
-              style={{ margin: "10px" }}
-            >
-              Create New Leave
-            </Button>
-            <Button
-              variant="dark"
-              size="md"
-              onClick={() => navigate("add")}
-              style={{ margin: "10px" }}
-            >
-              Create Report
-            </Button>
-            <Button
-              variant="dark"
-              size="md"
-              onClick={() => navigate("add")}
-              style={{ margin: "10px" }}
-            >
-              Archive Records
-            </Button>
-          </div>
-        </Stack>
-      </Row>
+      <Card>
+        <Card.Body style={{ backgroundColor: "white", padding: "25px" }}>
+          <Row>
+            <Stack direction="horizontal">
+              <div className="p-2">
+                <Button
+                  variant="dark"
+                  size="md"
+                  onClick={() => navigate("add")}
+                  style={{ margin: "10px" }}
+                >
+                  Create New Leave
+                </Button>
+                <Button
+                  variant="dark"
+                  size="md"
+                  onClick={() => navigate("add")}
+                  style={{ margin: "10px" }}
+                >
+                  Create Report
+                </Button>
+                <Button
+                  variant="dark"
+                  size="md"
+                  onClick={() => navigate("add")}
+                  style={{ margin: "10px" }}
+                >
+                  Archive Records
+                </Button>
+              </div>
+            </Stack>
+          </Row>
 
-      <div className="table">
-        <table className="table table-rounded">
-          <thead>
-            <tr>
-              <th style={{ backgroundColor: "black", color: "white" }}>Id</th>
-              <th style={{ backgroundColor: "black", color: "white" }}>Name</th>
-              <th style={{ backgroundColor: "black", color: "white" }}>Days</th>
-              <th style={{ backgroundColor: "black", color: "white" }}>
-                Date Range
-              </th>
-              <th style={{ backgroundColor: "black", color: "white" }}>
-                Reason
-              </th>
-              <th style={{ backgroundColor: "black", color: "white" }}>
-                Status
-              </th>
-              <th style={{ backgroundColor: "black", color: "white" }}>
-                Actions
-              </th>
-              <th style={{ backgroundColor: "black", color: "white" }}></th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.isArray(leaveRecords) &&
-              leaveRecords.map((record) => {
-                if (record && record.status === "Pending") {
-                  return (
-                    <tr key={record._id}>
-                      <td>{record.empId}</td>
-                      <td>{record.name}</td>
-                      <td>{record.days}</td>
-                      <td>{`${new Date(
-                        record.fromDate
-                      ).toLocaleDateString()} - ${new Date(
-                        record.toDate
-                      ).toLocaleDateString()}`}</td>
-                      <td>{record.reason}</td>
-                      <td>{record.status}</td>
-                      <td>
-                        <Button
-                          variant="outline-success"
-                          size="sm"
-                          style={{ margin: "5px" }}
-                        >
-                          Approve
-                        </Button>{" "}
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
-                          style={{ margin: "5px" }}
-                        >
-                          Reject
-                        </Button>{" "}
-                      </td>
-                      <td>
-                        <Button
-                          variant="dark"
-                          size="sm"
-                          style={{ margin: "5px" }}
-                          onClick={() => handleUpdateClick(record._id)}
-                        >
-                          <i className="bi bi-pencil-square"></i>{" "}
-                          {/* Update icon */}
-                        </Button>{" "}
-                        <Button
-                          variant="dark"
-                          size="sm"
-                          style={{ margin: "5px" }}
-                          onClick={() => handleDeleteConfirmation(record._id)}
-                        >
-                          <i className="bi bi-trash"></i> {/* Delete icon */}
-                        </Button>{" "}
-                      </td>
-                    </tr>
-                  );
-                } else {
-                  return null;
-                }
-              })}
-          </tbody>
-        </table>
-        <LeaveUpdateModal
-          show={showUpdateModal}
-          handleClose={handleCloseUpdateModal}
-          leaveId={selectedLeaveId}
-          handleSubmit={handleUpdateSubmit}
-        />
-      </div>
-      {/* Delete confirmation modal */}
-      <Modal
-        show={showDeleteConfirmationModal}
-        onHide={() => setShowDeleteConfirmationModal(false)}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Delete Confirmation</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete this leave record?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowDeleteConfirmationModal(false)}
+          <div className="table">
+            <table className="table table-rounded">
+              <thead>
+                <tr>
+                  <th style={{ backgroundColor: "black", color: "white" }}>
+                    Id
+                  </th>
+                  <th style={{ backgroundColor: "black", color: "white" }}>
+                    Name
+                  </th>
+                  <th style={{ backgroundColor: "black", color: "white" }}>
+                    Days
+                  </th>
+                  <th style={{ backgroundColor: "black", color: "white" }}>
+                    Date Range
+                  </th>
+                  <th style={{ backgroundColor: "black", color: "white" }}>
+                    Reason
+                  </th>
+                  <th style={{ backgroundColor: "black", color: "white" }}>
+                    Status
+                  </th>
+                  <th style={{ backgroundColor: "black", color: "white" }}>
+                    Actions
+                  </th>
+                  <th style={{ backgroundColor: "black", color: "white" }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.isArray(leaveRecords) &&
+                  leaveRecords.map((record) => {
+                    if (record && record.status === "Pending") {
+                      return (
+                        <tr key={record._id}>
+                          <td>{record.empId}</td>
+                          <td>{record.name}</td>
+                          <td>{record.days}</td>
+                          <td>{`${new Date(
+                            record.fromDate
+                          ).toLocaleDateString()} - ${new Date(
+                            record.toDate
+                          ).toLocaleDateString()}`}</td>
+                          <td>{record.reason}</td>
+                          <td>{record.status}</td>
+                          <td>
+                            <Button
+                              variant="outline-success"
+                              size="sm"
+                              style={{ margin: "5px" }}
+                            >
+                              Approve
+                            </Button>{" "}
+                            <Button
+                              variant="outline-danger"
+                              size="sm"
+                              style={{ margin: "5px" }}
+                            >
+                              Reject
+                            </Button>{" "}
+                          </td>
+                          <td>
+                            <Button
+                              variant="dark"
+                              size="sm"
+                              style={{ margin: "5px" }}
+                              onClick={() => handleUpdateClick(record._id)}
+                            >
+                              <i className="bi bi-pencil-square"></i>{" "}
+                              {/* Update icon */}
+                            </Button>{" "}
+                            <Button
+                              variant="dark"
+                              size="sm"
+                              style={{ margin: "5px" }}
+                              onClick={() =>
+                                handleDeleteConfirmation(record._id)
+                              }
+                            >
+                              <i className="bi bi-trash"></i>{" "}
+                              {/* Delete icon */}
+                            </Button>{" "}
+                          </td>
+                        </tr>
+                      );
+                    } else {
+                      return null;
+                    }
+                  })}
+              </tbody>
+            </table>
+            <LeaveUpdateModal
+              show={showUpdateModal}
+              handleClose={handleCloseUpdateModal}
+              leaveId={selectedLeaveId}
+              handleSubmit={handleUpdateSubmit}
+            />
+          </div>
+          {/* Delete confirmation modal */}
+          <Modal
+            show={showDeleteConfirmationModal}
+            onHide={() => setShowDeleteConfirmationModal(false)}
           >
-            Cancel
-          </Button>
-          <Button
-            variant="danger"
-            onClick={() => deleteLeaveRecord(recordToDelete)}
-          >
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+            <Modal.Header closeButton>
+              <Modal.Title>Delete Confirmation</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Are you sure you want to delete this leave record?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => setShowDeleteConfirmationModal(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="danger"
+                onClick={() => deleteLeaveRecord(recordToDelete)}
+              >
+                Delete
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </Card.Body>
+      </Card>
     </section>
   );
 }
