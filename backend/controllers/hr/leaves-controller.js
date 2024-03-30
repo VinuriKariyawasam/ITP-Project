@@ -55,7 +55,7 @@ const leavesController = {
         toDate,
         reason,
         status,
-        days: daysDifference,
+        days: daysDifference + 1,
         reqDate: today,
       });
       const savedLeave = await newLeave.save();

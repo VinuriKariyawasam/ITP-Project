@@ -171,7 +171,7 @@ const AddLeave = () => {
         <Card.Header style={{ backgroundColor: "black", color: "white" }}>
           Create Leave Request
         </Card.Header>
-        <Card.Body style={{ padding: "20px" }}>
+        <Card.Body style={{ padding: "20px", backgroundColor: "white" }}>
           <Form onSubmit={handleSubmit}>
             <Row>
               <Col>
