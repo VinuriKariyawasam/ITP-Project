@@ -3,7 +3,7 @@ import { Button, Form, Row, Stack } from "react-bootstrap";
 import "./recdash.css";
 import Table from "./Table";
 import RecordDetailsModal from "./RecordDetailsModal";
-
+import Card  from "react-bootstrap/Card";
 import { useNavigate } from "react-router-dom";
 
 function RecDash() {
@@ -17,6 +17,26 @@ function RecDash() {
   const [selectedRecordId, setSelectedRecordId] = useState(null);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [isDataUpdated, setIsDataUpdated] = useState(false);
+
+  //refresh details modal after update
+  // useEffect to listen for changes in isDataUpdated
+  useEffect(() => {
+    if (isDataUpdated) {
+      setShowModal(true); // Show the modal when data is updated
+      setIsDataUpdated(false); // Reset isDataUpdated after refreshing modal
+    }
+  }, [isDataUpdated]);
+
+  // handleUpdateRecord function to pass to RecordDetailsModal
+  const handleUpdateRecord = (updatedData) => {
+    // Logic to update employee data
+    console.log("Updated record data:", updatedData);
+    //chatgpt change
+    setIsDataUpdated(true); // Set isDataUpdated to trigger modal refresh
+    // Call the onUpdate prop to trigger refresh in RecDash
+  //onUpdate(updatedData); // Use onUpdate prop here
+  };
 
   //To modal data fetch
   // Assume you have a function to fetch record data by ID
@@ -87,6 +107,8 @@ function RecDash() {
 
   return (
     <section>
+       <Card>
+        <Card.Body style={{ backgroundColor: "white", padding: "25px" }}>
       <Row>
         <Stack direction="horizontal" gap={3}>
           <div className="p-2">
@@ -143,7 +165,11 @@ function RecDash() {
         show={showModal}
         onHide={handleCloseModal}
         record={selectedRecord}
+        isDataUpdated={isDataUpdated}
+        onUpdate={handleUpdateRecord}
       />
+      </Card.Body>
+      </Card>
     </section>
   );
 }

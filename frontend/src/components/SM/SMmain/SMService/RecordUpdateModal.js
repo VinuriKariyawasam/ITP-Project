@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Button,
@@ -8,28 +8,35 @@ import {
   Row,
   OverlayTrigger,
   Tooltip,
+ // Card
+  //Image
 } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ImageUpload from "../../SMUtil/ImageUpload";
 import FileUpload from "../../SMUtil/FileUpload";
+import axios from "axios"; // Import axios for HTTP requests
+import { useNavigate } from "react-router-dom";
 
-function RecordUpdateModal({ show, onHide, record, onUpdate }) {
+function RecordUpdateModal({ show, onHide, record, onUpdate })  {
+   //to redirect after success
+   const navigate = useNavigate();
+
   //file uplood funxtions
   // State to store the uploaded files
   // State to store the uploaded files
   const [uploadedFile, setUploadedFile] = useState(null);
 
-  // File input handler for SingleFileUpload component
+   //File input handler for SingleFileUpload component
   const fileInputHandler = (id, file, isValid) => {
     if (isValid) {
       // Set the uploaded file in state
-      setUploadedFile(file);
-    } else {
+     setUploadedFile(file);
+   } else {
       // Handle invalid files if needed
-      console.log("Invalid file:", file);
-    }
+     console.log("Invalid file:", file);
+   }
   };
 
   //to tool tip
@@ -48,20 +55,68 @@ function RecordUpdateModal({ show, onHide, record, onUpdate }) {
     formState: { errors },
   } = useForm({ defaultValues: record });
 
-  const onSubmit = (data) => {
-    onUpdate(data);
-    onHide();
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+
+      // Append regular form data
+      Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+      });
+
+      // Log FormData object
+      console.log("FormData:", formData);
+
+      console.log("FormData Entries:");
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      const response = await axios.patch(
+        `http://localhost:5000/api/sm/update-record/${record.id}`,
+        Object.fromEntries(formData.entries())
+      );
+
+      if (!response.status === 200) {
+        throw new Error("Failed to update data");
+      }
+
+      // Redirect to the specified URL after successful submission
+      navigate("/sm/record");
+      // Optionally update the UI or perform any other actions after successful submission
+      onUpdate(response.data); // Assuming onUpdate is a function to update the UI with the updated data
+
+      // Close the modal or redirect to another page after successful submission
+      onHide(); // Close the modal
+    } catch (error) {
+      console.error("Error updating data:", error.message);
+    }
   };
 
   // State to track selected position
-  const [selectedPosition, setSelectedPosition] = useState("");
+  //const [selectedPosition, setSelectedPosition] = useState("");
 
-  const handlePositionChange = (e) => {
-    setSelectedPosition(e.target.value); // Update selected position
-  };
+ // const handlePositionChange = (e) => {
+  //  setSelectedPosition(e.target.value); // Update selected position
+  //};
+//chatgpt part
+  useEffect(() => {
+    // Code to run on component mount
+    console.log("Component mounted");
+
+    return () => {
+      // Code to run on component unmount (cleanup)
+      console.log("Component unmounted");
+    };
+  }, []); // Empty dependency array means the effect runs only once on mount
+
+
+
+
+
 
   return (
-    <Modal show={show} onHide={onHide} size="lg" centered>
+    <Modal show={show} onHide={onHide} size="lg" centered style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
       <Modal.Header closeButton>
         <Modal.Title>
           Update Record{" "}
@@ -78,7 +133,7 @@ function RecordUpdateModal({ show, onHide, record, onUpdate }) {
       </Modal.Header>
       <Modal.Body>
       <Form onSubmit={handleSubmit(onSubmit)}>
-      <h3>Create Record</h3>
+      
 
  {/* Vehicle Number */}
  <Form.Group className="mb-3" controlId="formVehiNumber">
@@ -223,56 +278,10 @@ function RecordUpdateModal({ show, onHide, record, onUpdate }) {
         </Form.Text>
       </Form.Group>
 
-      {/* System Credentials */}
-      {/* Email */}
-      <Row className="mb-3">
-        <h5 className="text-dark">System Credentials</h5>
-        <h6 className="text-primary">*Only need for manager or supervisor</h6>
-        <Form.Group as={Col} controlId="formGridEmail">
-          <Form.Label>Email</Form.Label>
-          <Controller
-            name="email"
-            control={control}
-            rules={{
-              required: "Email is required",
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                message: "Invalid email address",
-              },
-            }}
-            render={({ field }) => (
-              <Form.Control type="email" placeholder="Enter email" {...field} />
-            )}
-          />
-          <Form.Text className="text-danger">{errors.email?.message}</Form.Text>
-        </Form.Group>
-
-        {/* Password */}
-        <Form.Group as={Col} controlId="formGridPassword">
-          <Form.Label>Password</Form.Label>
-          <Controller
-            name="password"
-            control={control}
-            rules={{ required: "Password is required" ,
-            pattern: {
-                value:
-                  /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$/,
-                message:
-                  "Password must have at least one uppercase letter, one number, one symbol, and be at least 8 characters long",
-              },}}
-            render={({ field }) => (
-              <Form.Control type="password" placeholder="Password" {...field}
-              pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$" />
-            )}
-          />
-          <Form.Text className="text-danger">
-            {errors.password?.message}
-          </Form.Text>
-        </Form.Group>
-      </Row> )
+     )
 
           <Button variant="dark" type="submit">
-            Submit
+            update
           </Button>
         </Form>
       </Modal.Body>

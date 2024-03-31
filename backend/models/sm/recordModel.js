@@ -20,7 +20,7 @@ const recordSchema = new mongoose.Schema({
     required: true,
   },
 
-  quotation: {
+  photo: {
     type: String, // You may want to store the file path or a reference here
   },
   documents: [
@@ -31,24 +31,7 @@ const recordSchema = new mongoose.Schema({
   otherDetails: {
     type: String,
   },
-  email: {
-    type: String,
-    required: function () {
-      // Require email field only for manager or supervisor positions
-      return this.position === "Manager" || this.position === "Supervisor";
-    },
-    match: [
-      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-      "Invalid email address",
-    ],
-  },
-  password: {
-    type: String,
-    required: function () {
-      // Require password field only for manager or supervisor positions
-      return this.position === "Manager" || this.position === "Supervisor";
-    },
-  },
+ 
 });
 
 const Record = mongoose.model("Record", recordSchema);

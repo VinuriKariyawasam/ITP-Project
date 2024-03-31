@@ -8,7 +8,17 @@ router.get("/records/:id", RecordController.getRecordById);
 
 router.post("/records", RecordController.createRecord);
 
-router.delete("/archive-records/:id", RecordController.deleteRecordById);
-
+router.delete("/archive-record/:id", RecordController.deleteRecordById);
+router.patch(
+    "/update-record/:id",
+    //updateRecordValidationRules,
+    RecordController.updateRecordById
+  );
+  
+/*router.post(
+  "/add-employee",
+  createEmployeeValidationRules,
+  EmployeeController.createEmployee
+);*/
 
 module.exports = router;

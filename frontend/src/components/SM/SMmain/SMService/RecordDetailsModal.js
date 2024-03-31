@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -8,22 +8,52 @@ import axios from "axios";
 import Image from "react-bootstrap/Image";
 import RecordUpdateModal from "./RecordUpdateModal";
 
-function RecordDetailsModal({ show, onHide, record }) {
+
+function RecordDetailsModal({ show, onHide, record ,onUpdate }) {
   //------------------------------------------
   //code snippets for  archiving records(delete)
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
+  // State to track whether data has been updated
+  const [isDataUpdated, setIsDataUpdated] = useState(false);
+
+  // Helper function to check if data has been updated
+  const checkDataUpdate = () => {
+    // Logic to check if data has been updated
+    // For demonstration purposes, we'll use a simple condition here
+    setIsDataUpdated(true); // Set to true when data is updated
+  };
+
   //for update part
   const handleUpdateClick = () => {
     setShowUpdateModal(true);
   };
 
-  const handleUpdateRecord = (updatedData) => {
+   // Handle update record data
+   const handleUpdateRecord = async (updatedData) => {
     // Logic to update record data
     console.log("Updated record data:", updatedData);
+    // Call the onUpdate prop to trigger refresh in RecDash
+    onUpdate(updatedData);
   };
+
+ // Function to refresh the modal with updated data
+ const handleRefreshModal = () => {
+  setIsDataUpdated(false); // Reset data updated flag
+};
+
+// Effect to re-render modal when data is updated
+useEffect(() => {
+  if (isDataUpdated) {
+    // Data has been updated, trigger re-render
+    console.log("Data updated, re-rendering modal...");
+  }
+}, [isDataUpdated]);
+
+
+
 
   const handleDeleteClick = () => {
     // Show confirmation dialog box
@@ -34,12 +64,19 @@ function RecordDetailsModal({ show, onHide, record }) {
     try {
        //newline
        // Access _id from the record object
-            const { _id } = record;
+         //   const { _id } = record;
 
       // Send DELETE request to backend API
       await axios.delete(
-        `http://localhost:5000/api/sm/archive-record/${_id}`
-      ); // Adjust the endpoint URL accordingly
+        `http://localhost:5000/api/sm/archive-record/${_id}`,{
+       // Adjust the endpoint URL accordingly
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+      
+      
       // Close the modal
       onHide();
       // Show success dialog
@@ -69,9 +106,7 @@ function RecordDetailsModal({ show, onHide, record }) {
     inumber,
     EndDate,
     otherDetails,
-    email,
-    password,
-    _v,
+   _v,
     photo,
     documents,
     photoUrl,
@@ -115,16 +150,6 @@ function RecordDetailsModal({ show, onHide, record }) {
             </Col>
             <Col xs={6} md={4}>
               <strong>Service End Date</strong> {formatDate(EndDate)}
-            </Col>
-          </Row>
-
-
-          <Row style={{ marginBottom: "10px" }}>
-            <Col xs={12} md={8}>
-              <strong>Email:</strong> {email}
-            </Col>
-            <Col xs={6} md={4}>
-              <strong>Password:</strong> {password}
             </Col>
           </Row>
 

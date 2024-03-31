@@ -1,6 +1,5 @@
 const RecordModel = require("../../models/sm/recordModel"); // Import your record model
 const HttpError = require("../../models/sm/http-error");
-const ArchivedEmployee = require("../../models/sm/archivedRecordModel"); //to save archive records
 const multer = require("multer");
 const path = require("path");
 const { validationResult } = require("express-validator");
@@ -59,11 +58,11 @@ class RecordController {
 
         // Use the correct URLs when constructing file paths
         const photoPath = req.files["photo"]
-          ? `/uploads/hr/${path.basename(req.files["photo"][0].path)}`
+          ? `/uploads/${path.basename(req.files["photo"][0].path)}`
           : null;
         const documentPaths = req.files["documents"]
           ? req.files["documents"].map(
-              (file) => `/uploads/hr/${path.basename(file.path)}`
+              (file) => `/uploads/${path.basename(file.path)}`
             )
           : [];
 
@@ -77,9 +76,14 @@ class RecordController {
         res.status(201).json(savedRecord);
       });
     } catch (error) {
-      // Log the error for debugging purposes
-      console.error("Error while fetching(sending) record to db:", error);
-      res.status(500).json({ error: error.message });
+     // Log the error for debugging purposes
+     console.error("Error while fetching(sending) record to db:", error);
+     // Handle any errors that occur during employee creation
+     const err = new HttpError(
+       "Failed to create record. Please try again.",
+       500
+     );
+     return next(err);
     }
   }
 
@@ -106,6 +110,15 @@ class RecordController {
   // Get record by ID
   static async getRecordById(req, res) {
     try {
+
+       // Check for validation errors using express-validator
+       const errors = validationResult(req);
+       if (!errors.isEmpty()) {
+         new HttpError("Invalid inputs passed, please check your data.", 422);
+       }
+      
+      
+      
       const record = await RecordModel.findById(req.params.id);
       if (!record) {
         throw new HttpError("Record not found", 404);
@@ -137,7 +150,7 @@ class RecordController {
     );
 
     if (!deletedRecord) {
-      throw new HttpError("Record not found", 404);
+      return res.status(404).json({ error: "Record not found" });
     }
 
     // Create an instance of ArchivedRecord using the deleted data
@@ -149,7 +162,10 @@ class RecordController {
     });
 
     // Save the archived employee to the archive table
-    await archivedRecord.save();
+  const archived = await archivedRecord.save();
+    if (!archived) {
+      return res.status(500).json({ error: "Employee archive faild" });
+    }
 
     // Respond with success (204 No Content) as the record has been successfully moved
     res.status(204).json(); // No content in response for successful deletion
@@ -159,70 +175,84 @@ class RecordController {
 }
 
 
-/*class RecordController {
-  // Create record
-  static async createRecord(req, res) {
-    try {
-      const newRecord = new RecordModel(req.body);
-      const savedRecord = await newRecord.save();
-      res.status(201).json(savedRecord);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
-  // Get all records
-  static async getRecords(req, res) {
-    try {
-      const records = await RecordModel.find();
-      res.status(200).json(records);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
-  // Get record by ID
-  static async getRecordById(req, res) {
-    try {
-      const record = await RecordModel.findById(req.params.id);
-      if (!record) {
-        throw new HttpError("Record not found", 404);
-      }
-      res.status(200).json(record);
-    } catch (error) {
-      res.status(error.code || 500).json({ error: error.message });
-    }
-  }
-  // Delete record by ID
-  static async deleteRecordById(req, res) {
-    try {
-      const deletedRecord = await RecordModel.findByIdAndDelete(
-        req.params.id
-      );
-      if (!deletedRecord) {
-        throw new HttpError("Record not found", 404);
-      }
-      res.status(204).json(); // No content in response for successful deletion
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
-  /* Update record by ID
-  static async updateRecordById(req, res) {
-    try {
-      const updatedRecord = await RecordModel.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-      );
-      if (!updatedRecord) {
-        throw new HttpError("Employee not found", 404);
-      }
-      res.status(200).json(updatedRecord);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }*/
+  //Update record by id
+  static async updateRecordById(req, res, next) {
+    console.log("Request Body:", req.params.id);
+    console.log("Request Body:", req.body.otherDetails);
+    console.log("Request Body:", req.body);
 
-  
+    const { vnumber, startDate, inumber, EndDate, photo, documents, otherDetails } =
+      req.body;
+    const recordId = req.params.id;
+
+    let rec;
+    try {
+     rec = await RecordModel.findById(recordId);
+    } catch (err) {
+      const error = new HttpError(
+        "Something went wrong, could not find any.",
+        404
+      );
+      return next(error);
+    }
+
+    if (!rec) {
+      const error = new HttpError("Record not found", 404);
+      return next(error);
+    }
+
+    // Update record fields with values from req.body
+    rec.vnumber=vnumber;
+    rec.startDate=startDate;
+    rec.inumber=inumber;
+    rec.EndDate=EndDate;
+    rec.photo=photo;
+    rec.documents=documents;
+    rec.otherDetails=otherDetails;
+
+    try {
+      // Check if there are file uploads for photo
+      upload(req, res, async function (err) {
+        if (err instanceof multer.MulterError) {
+          console.error("File upload error:", err.message);
+          return res.status(400).json({ error: err.message });
+        } else if (err) {
+          console.error("File upload error:", err.message);
+          return res.status(500).json({ error: err.message });
+        }
+
+        // Handle photo upload if needed
+        if (req.files && req.files["photo"]) {
+          const uploadedPhotoName = req.files["photo"][0].originalname;
+
+          const dbPhotoName = rec.photo ? path.basename(rec.photo) : null;
+
+          if (!dbPhotoName || uploadedPhotoName !== dbPhotoName) {
+            // Upload photo and update photo URL in rec object
+            const photoPath = `/uploads/${path.basename(
+              req.files["photo"][0].path
+            )}`;
+            rec.photo = photoPath;
+          }
+        }
+
+        // Save the updated record
+        try {
+          const updatedRecord = await rec.save();
+          res.status(200).json(updatedRecord);
+        } catch (err) {
+          const error = new HttpError(
+            "Something went wrong, could not update.",
+            500
+          );
+          return next(error);
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
 }
 
 module.exports = RecordController;
