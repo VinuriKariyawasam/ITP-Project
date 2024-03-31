@@ -5,7 +5,7 @@ exports.addReply = async (req,res)=>{
     const {reply}= req.body
 
 
-    const newReply=consultSchema({
+    const newReply = consultSchema({
         reply
     })
     try {

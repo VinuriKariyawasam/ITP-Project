@@ -23,7 +23,7 @@ function sendData(e){
     reply
   }
 
-  axios.post("http://localhost:5000/consultancy/add-reply",newReply).then(()=>{
+  axios.post("http://localhost:5000/CAM/add-reply",newReply).then(()=>{
     alert("Reply Added")
     setReply("");
     //navigate("getreply");

@@ -1,10 +1,10 @@
 const express = require('express')
 const cors = require ('cors')
 const { db } = require('./db/db')
-const {readdirSync}=require('fs')
-//const { route } = require('./routes/CAM-routes')
-const app= express()
+const {readdirSync} = require('fs')
+const path = require("path");
 
+const app= express()
 require ('dotenv').config()
 const PORT=process.env.PORT
 
@@ -17,7 +17,7 @@ readdirSync('./routes').map((route) =>
 );
 
 readdirSync("./routes").map((route) =>
-  app.use("/consultancy", require("./routes/CAM-routes"))
+  app.use("/CAM", require("./routes/" + route))
 );
 
 
