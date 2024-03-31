@@ -213,7 +213,7 @@ function Feedback() {
           <StarRating />
         </Form.Group>
       </Row>
-      <Button variant="success" type="submit">
+      <Button variant="success" type="submit" className="cam-btn-success">
         Submit
       </Button>
       <Button variant="secondary" onClick={handleCancelClick}>

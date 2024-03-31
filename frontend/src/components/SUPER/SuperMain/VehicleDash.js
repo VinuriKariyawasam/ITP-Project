@@ -17,7 +17,9 @@ function VehicleDash() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/vehicle/vehicles");
+      const response = await fetch(
+        "http://localhost:5000/api/vehicle/vehicles"
+      );
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched data:", data);
@@ -34,17 +36,22 @@ function VehicleDash() {
   };
 
   const handleDelete = async (id) => {
-    const shouldDelete = window.confirm("Are you sure you want to delete this vehicle?");
+    const shouldDelete = window.confirm(
+      "Are you sure you want to delete this vehicle?"
+    );
     if (shouldDelete) {
       try {
-        const response = await fetch(`http://localhost:5000/api/vehicle/delete-vehicle/${id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `http://localhost:5000/api/vehicle/delete-vehicle/${id}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (response.ok) {
-          const deletedVehicle = vehicles.find(vehicle => vehicle._id === id);
+          const deletedVehicle = vehicles.find((vehicle) => vehicle._id === id);
           setDeletedVehicle(deletedVehicle);
           setVehicles(vehicles.filter((vehicle) => vehicle._id !== id));
           setShowModal(true); // Show modal with deleted vehicle information
@@ -104,66 +111,68 @@ function VehicleDash() {
       model: vehicle.model,
       year: vehicle.year,
       name: vehicle.name,
-      contact: vehicle.contact
+      contact: vehicle.contact,
     });
     setShowModal(true);
   };
 
   const validate = (name, value) => {
-    if (name === 'vehicleNo') {
+    if (name === "vehicleNo") {
       if (!/^[A-Za-z]{10}$/.test(value.trim())) {
-        return 'Invalid Vehicle No. Enter again.';
+        return "Invalid Vehicle No. Enter again.";
       }
     }
-    if (name === 'brand' && !value.trim()) {
-      return 'Brand is required';
+    if (name === "brand" && !value.trim()) {
+      return "Brand is required";
     }
-    if (name === 'model' && !value.trim()) {
-      return 'Model is required';
+    if (name === "model" && !value.trim()) {
+      return "Model is required";
     }
-    if (name === 'year') {
+    if (name === "year") {
       const currentYear = new Date().getFullYear();
       if (!/^\d{4}$/.test(value)) {
-        return 'Year must be four digits';
+        return "Year must be four digits";
       }
       if (parseInt(value, 10) >= currentYear) {
-        return 'Year must be less than ' + currentYear;
+        return "Year must be less than " + currentYear;
       }
     }
-    if (name === 'name' && !value.trim()) {
-      return 'Name is required';
+    if (name === "name" && !value.trim()) {
+      return "Name is required";
     }
-    if (name === 'contact') {
+    if (name === "contact") {
       if (!/^\d{10}$/.test(value)) {
-        return 'Contact No. must be 10 digits';
+        return "Contact No. must be 10 digits";
       }
     }
-    return '';
+    return "";
   };
-  
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     const error = validate(name, value);
-  
+
     if (error) {
       alert(error);
       return;
     }
-  
+
     setFormData({ ...formData, [name]: value });
   };
   const handleSubmit = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/vehicle/update-vehicle/${selectedVehicle._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/vehicle/update-vehicle/${selectedVehicle._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       if (response.ok) {
-        const updatedVehicles = vehicles.map(vehicle => {
+        const updatedVehicles = vehicles.map((vehicle) => {
           if (vehicle._id === selectedVehicle._id) {
             return { ...vehicle, ...formData };
           }
@@ -195,8 +204,11 @@ function VehicleDash() {
             </Form>
           </div>
           <div className="p-2 ms-auto">
-            <Button variant="success" size="md">
-              <Link to="/staff/supervisor/vehicle/add" className="text-dark text-decoration-none font-weight-bold">
+            <Button variant="success">
+              <Link
+                to="/staff/supervisor/vehicle/add"
+                className="text-dark text-decoration-none font-weight-bold"
+              >
                 Register Vehicle
               </Link>
             </Button>
@@ -230,23 +242,33 @@ function VehicleDash() {
                   <td>{vehicle.name}</td>
                   <td>{vehicle.contact}</td>
                   <td>
-                  <Link
-                    to={`/vehicle/${vehicle._id}/records`}
-                    className="btn"
-                    style={{
-                      backgroundColor: "#d3d3d3", // Ash color
-                      borderColor: "#d3d3d3", // Border color
-                      color: "#000", // Text color
-                      textDecoration: "none", // Remove underline
-                      fontWeight: "bold" // Make text bold
-                    }}
-                  >
-                    More
-                  </Link>
+                    <Link
+                      to={`/vehicle/${vehicle._id}/records`}
+                      className="btn"
+                      style={{
+                        backgroundColor: "#d3d3d3", // Ash color
+                        borderColor: "#d3d3d3", // Border color
+                        color: "#000", // Text color
+                        textDecoration: "none", // Remove underline
+                        fontWeight: "bold", // Make text bold
+                      }}
+                    >
+                      More
+                    </Link>
                   </td>
                   <td>
-                    <button onClick={() => handleShowUpdateModal(vehicle)} className="btn btn-warning me-2 text-dark font-weight-bold">Update</button>
-                    <button onClick={() => handleDelete(vehicle._id)} className="btn btn-danger text-dark font-weight-bold">Delete</button>
+                    <button
+                      onClick={() => handleShowUpdateModal(vehicle)}
+                      className="btn btn-warning me-2 text-dark font-weight-bold"
+                    >
+                      Update
+                    </button>
+                    <button
+                      onClick={() => handleDelete(vehicle._id)}
+                      className="btn btn-danger text-dark font-weight-bold"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -269,7 +291,9 @@ function VehicleDash() {
               <p>Contact: {deletedVehicle.contact}</p>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                Close
+              </Button>
             </Modal.Footer>
           </>
         ) : (
@@ -281,38 +305,74 @@ function VehicleDash() {
               <Form>
                 <Form.Group className="mb-3" controlId="formVehicleNo">
                   <Form.Label>Vehicle No.</Form.Label>
-                  <Form.Control type="text" name="vehicleNo" value={formData.vehicleNo} onChange={handleChange} />
+                  <Form.Control
+                    type="text"
+                    name="vehicleNo"
+                    value={formData.vehicleNo}
+                    onChange={handleChange}
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBrand">
                   <Form.Label>Brand</Form.Label>
-                  <Form.Control type="text" name="brand" value={formData.brand} onChange={handleChange} />
+                  <Form.Control
+                    type="text"
+                    name="brand"
+                    value={formData.brand}
+                    onChange={handleChange}
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formModel">
                   <Form.Label>Model</Form.Label>
-                  <Form.Control type="text" name="model" value={formData.model} onChange={handleChange} />
+                  <Form.Control
+                    type="text"
+                    name="model"
+                    value={formData.model}
+                    onChange={handleChange}
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formYear">
                   <Form.Label>Year</Form.Label>
-                  <Form.Control type="text" name="year" value={formData.year} onChange={handleChange} />
+                  <Form.Control
+                    type="text"
+                    name="year"
+                    value={formData.year}
+                    onChange={handleChange}
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formName">
                   <Form.Label>Name</Form.Label>
-                  <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} />
+                  <Form.Control
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formContact">
                   <Form.Label>Contact No.</Form.Label>
-                  <Form.Control type="text" name="contact" value={formData.contact} onChange={handleChange} />
+                  <Form.Control
+                    type="text"
+                    name="contact"
+                    value={formData.contact}
+                    onChange={handleChange}
+                  />
                 </Form.Group>
               </Form>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
-              <Button variant="primary" onClick={handleSubmit}>Update</Button>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                Close
+              </Button>
+              <Button variant="primary" onClick={handleSubmit}>
+                Update
+              </Button>
             </Modal.Footer>
           </>
         )}
       </Modal>
-      <Button variant="primary" onClick={handleTakeReport}>Take a Report</Button>
+      <Button variant="primary" onClick={handleTakeReport}>
+        Take a Report
+      </Button>
     </div>
   );
 }
