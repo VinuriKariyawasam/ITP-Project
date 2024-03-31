@@ -63,10 +63,10 @@ function MyFeedback(){
 
 
     return(
-    <main className="allFeedback">
+    <main className="cam-allFeedback">
         <h3>My FeedBack</h3>
         <StarRating/>
-        <FloatingLabel className="floatingLabel" controlId="floatingTextarea">
+        <FloatingLabel className="cam-floatingLabel" controlId="floatingTextarea">
       <Form.Control
         as="textarea"
         placeholder="Leave a comment here"
@@ -76,8 +76,8 @@ function MyFeedback(){
         // Assuming 'text' is the property in your reply object  
       />
     </FloatingLabel>
-    <Button className='myfeedbackbtn' variant="dark" size="md" onClick={Update}>Update</Button>
-    <Button className='myfeedbackbtn' variant="dark" size="md" onClick={Delete}>Delete</Button>
+    <Button className='cam-myfeedbackbtn' variant="dark" size="md" onClick={Update}>Update</Button>
+    <Button className='cam-myfeedbackbtn' variant="dark" size="md" onClick={Delete}>Delete</Button>
     </main>
     );
 }

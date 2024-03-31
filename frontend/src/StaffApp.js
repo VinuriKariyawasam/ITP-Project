@@ -18,7 +18,7 @@ import HR from "./components/HR/HrPages/HR";
 import SM from "./components/SM/SMpages/SM";
 import Finance from "./components/Finance/FinancePages/Finance";
 import Common from "./components/Pages/Common";
-import SUPER from "./components/Super/SuperPages/SUPER";
+import SUPER from "./components/SUPER/SuperPages/SUPER";
 import IM from "./components/IM/IMPages/IM";
 import CAM from "./components/CAM/CAM_pages/CAM";
 
