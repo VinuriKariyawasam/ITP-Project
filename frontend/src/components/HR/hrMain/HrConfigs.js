@@ -1,7 +1,7 @@
 import React from "react";
 import "./hrMain.css";
 import HrPageTitle from "./HRPageTitle";
-import Salary from "./Salary";
+import Configs from "./ConfihurationsHr";
 
 // Import front end routes
 import {
@@ -11,16 +11,17 @@ import {
   Navigate,
 } from "react-router-dom";
 
-function HrSalary() {
+function HrConfigs() {
   return (
     <main id="main" className="main">
-      <HrPageTitle title="Salary" url="hr/salary" />
+      <HrPageTitle title="Configurations" url="hr/configs" />
 
       <Routes>
-        <Route path="/" element={<Salary />} />
+        <Route path="/" element={<Configs />} />
+        <Route path="add" element={<AddEmp />} />
       </Routes>
     </main>
   );
 }
 
-export default HrSalary;
+export default HrConfigs;

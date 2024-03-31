@@ -1,5 +1,6 @@
 const EmployeeController = require("../controllers/hr/employe-controller");
 const LeavesController = require("../controllers/hr/leaves-controller");
+const DesignationsController = require("../controllers/hr/desigantion-controller");
 const bodyParser = require("body-parser");
 const { body } = require("express-validator");
 const router = require("express").Router();
@@ -130,5 +131,18 @@ router.patch(
   "/update-leave-status/:id",
   LeavesController.updateLeaveStatusById
 );
+
+//---------Designation Routes-------------------
+// CREATE
+router.post("/add-designation", DesignationsController.create);
+
+// READ
+router.get("/designations", DesignationsController.getAll);
+
+// UPDATE
+router.patch("/update-designation/:id", DesignationsController.update);
+
+// DELETE
+router.delete("/delete-designation/:id", DesignationsController.delete);
 
 module.exports = router;
