@@ -38,6 +38,9 @@ readdirSync("./routes").map((route) =>
 );
 
 //Vehicle
+readdirSync("./routes").map((route) =>
+  app.use("/api/vehicle", require("./routes/" + route))
+);
 
 //Appointment
 
