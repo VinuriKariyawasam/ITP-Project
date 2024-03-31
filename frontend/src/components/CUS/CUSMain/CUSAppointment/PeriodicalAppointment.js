@@ -43,7 +43,7 @@ function PeriodicalAppointment() {
       msg
     }
 
-    axios.post("http://localhost:5000/appointment/addPeriodicalData", newPeriodicalAppointment).then(() => {
+    axios.post("http://localhost:5000/appointment/add", newPeriodicalAppointment).then(() => {
       alert("Your Appointment Success")
       setname = ("");
       setvType("");

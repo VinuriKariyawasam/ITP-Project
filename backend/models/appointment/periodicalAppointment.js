@@ -1,6 +1,7 @@
-
+//To connect with mongoDB
 const mongoose = require("mongoose");
 
+//Inside a schema we declare attributes
 const schema = mongoose.Schema;
 const periodicalSchema = new schema({
     name: {
@@ -26,6 +27,7 @@ const periodicalSchema = new schema({
     lastServiceYear: {
         type: String,
         required: true,
+        maxLength: 6
     },
     lastServiceMonth: {
         type: String,
@@ -34,6 +36,7 @@ const periodicalSchema = new schema({
     mileage: {
         type: String,
         required: true,
+        maxLength: 20,
     },
     phone: {
         type: String,
@@ -54,6 +57,7 @@ const periodicalSchema = new schema({
     }
 });
 
+//To pass this schema to a cluster in Mongo DB
 const periodicalAppointment = mongoose.model("PeiodicalAppointment", periodicalSchema);
 
 module.exports = periodicalAppointment;

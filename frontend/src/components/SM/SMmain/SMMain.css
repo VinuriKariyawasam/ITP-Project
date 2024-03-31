@@ -1,19 +1,5 @@
-/*--------------------------------------------------------------
-# Main
---------------------------------------------------------------*/
-#main {
-  margin-top: 60px;
-  padding: 20px 30px;
-  transition: all 0.3s;
-}
 
-@media (max-width: 1199px) {
-  #main {
-    padding: 20px;
-  }
-}
-
-.SMmainsubHead {
+.SMMainmainsubHead {
   color: #141414;
   margin-bottom: 40px;
   font-feature-settings: 'dlig' on;
@@ -27,11 +13,7 @@
   margin-top: 50px;
 }
 
-.list-group {
+.SMMainlist-group {
   margin-top: 10px;
 }
 
-.card {
-  background: none;
-  border: none;
-}

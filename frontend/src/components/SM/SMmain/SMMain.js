@@ -10,30 +10,30 @@ function SMMain() {
       <h1>Service Manager </h1>
       <h3 className="SMmainsubHead"> Here's a quick summary of what's happening in your team.</h3>
       <SMDashboard />
-      <div class="card">
-        <ul class="list-group">
-          <li class="list-group-item">New service Requests
+      <div class="SMMain-card">
+        <ul class="SMMainlist-group">
+          <li class="SMMainlist-group-item">New service Requests
             <Button variant="primary" style={{ float: 'right' }}>
               Explore
             </Button>
           </li>
         </ul>
-        <ul class="list-group">
-          <li class="list-group-item">Add a Service record
+        <ul class="SMMainlist-group">
+          <li class="SMMainlist-group-item">Add a Service record
             <Button variant="primary" style={{ float: 'right' }}>
               Explore
             </Button>
           </li>
         </ul>
-        <ul class="list-group">
-          <li class="list-group-item">Create a service report
+        <ul class="SMMainlist-group">
+          <li class="SMMainlist-group-item">Create a service report
             <Button variant="primary" style={{ float: 'right' }}>
               Explore
             </Button>
           </li>
         </ul>
-        <ul class="list-group">
-          <li class="list-group-item">View Service History
+        <ul class="SMMainlist-group">
+          <li class="SMMainlist-group-item">View Service History
             <Button variant="primary" style={{ float: 'right' }}>
               Explore
             </Button>

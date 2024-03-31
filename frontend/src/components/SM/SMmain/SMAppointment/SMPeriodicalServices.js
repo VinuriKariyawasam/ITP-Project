@@ -12,7 +12,7 @@ const SMPeriodicalServices = props => {
   useEffect(() => {
 
     function getPeriodicalAppointment() {
-      axios.get("http://localhost:5000/appointment/find").then((res) => {
+      axios.get("http://localhost:5000/appointment/get-periodicalAppointment").then((res) => {
         setperiodicalAppointment(res.data);
       }).catch((err) => {
         alert(err.message);
@@ -25,7 +25,7 @@ const SMPeriodicalServices = props => {
     const shouldDelete = window.confirm("please confirm deletion!");
 
     if (shouldDelete) {
-      axios.delete(`http://localhost:5000/appointment/delete/${id}`)
+      axios.delete(`http://localhost:5000/appointment/delete-periodicalAppointment/${id}`)
         .then(response => {
           console.log(response);
           window.location.reload();
@@ -40,7 +40,7 @@ const SMPeriodicalServices = props => {
     <main id="main" className="main">
       <div>
 
-        <h2 className="Appheading">Periodical Services</h2>
+        <h2 className="SMAPeriodical-Appheading">Periodical Services</h2>
         <Table striped bordered hover>
           <thead>
             <tr>

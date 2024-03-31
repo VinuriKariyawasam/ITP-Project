@@ -1,7 +1,7 @@
 import React from 'react'
 import PeriodicalAppointment from '../CUSMain/CUSAppointment/PeriodicalAppointment'
 import Header from '../CusHeader/Header'
-import MyAppointment from '../CUSMain/CUSAppointment/MyAppointment';
+
 import {
   BrowserRouter as Router,
   Route,
@@ -9,17 +9,17 @@ import {
   Navigate,
 } from "react-router-dom";
 
-function Customer() {
+function CUSAppointment() {
   return (
     <>
     <Header/>
     <Routes>
-    <Route path="/" element={<PeriodicalAppointment/>} />
-    <Route path="/customer/MyAppointment" element={<MyAppointment/>} />
+    <Route path="periodicalappointment/" element={<PeriodicalAppointment/>} />
+   
     
     </Routes>
     </>
   )
 }
 
-export default Customer
+export default CUSAppointment;
