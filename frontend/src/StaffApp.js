@@ -19,6 +19,7 @@ import SM from "./components/SM/SMpages/SM";
 import Finance from "./components/Finance/FinancePages/Finance";
 import Common from "./components/Pages/Common";
 import IM from "./components/IM/IMPages/IM";
+import CAM from "./components/CAM/CAM_pages/CAM";
 
 
 function StaffApp() {
@@ -31,6 +32,7 @@ function StaffApp() {
         <Route path="/sm/*" element={<SM />} />
         <Route path="/finance/*" element={<Finance />} />
         <Route path="/im/*" element={<IM />} />
+        <Route path="/CAM/*" element={<CAM/>}/>
       </Routes>
     </>
   );
@@ -38,4 +40,3 @@ function StaffApp() {
 
 
 export default StaffApp;
-

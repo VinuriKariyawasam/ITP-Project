@@ -1,0 +1,29 @@
+/*--------------------------------------------------------------
+# Main
+--------------------------------------------------------------*/
+#main {
+    margin-top: 60px;
+    padding: 20px 30px;
+    transition: all 0.3s;
+  }
+  
+  @media (max-width: 1199px) {
+    #main {
+      padding: 20px;
+    }
+  }
+
+  .replybtn{
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 5px;
+    font-size: medium;
+  }
+  
+  .editbtn{
+    margin-right: 5px;
+  }
+
+  .gotobtn{
+    margin-left: 5px;
+  }

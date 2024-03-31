@@ -21,7 +21,7 @@ function CusnavItem() {
             <Nav.Link href="#pricing">About Us</Nav.Link>
             <NavDropdown title="Customer Care" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Consultation</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
+              <NavDropdown.Item href="customer/CUS_CAM/Feedback">
                 Feedback
               </NavDropdown.Item>
             </NavDropdown>
@@ -31,6 +31,5 @@ function CusnavItem() {
       </>
   );
 }
-
 
 export default CusnavItem;
