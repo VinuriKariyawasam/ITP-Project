@@ -34,10 +34,10 @@ const IncomeSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      
     },
   },
   { timestamps: true }
 );
+
 
 module.exports = mongoose.model("Income", IncomeSchema);

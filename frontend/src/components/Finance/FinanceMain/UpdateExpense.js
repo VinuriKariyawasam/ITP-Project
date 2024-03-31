@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import PageTitle from './PageTitle';
 
 const UpdateExpense = () => {
     const navigate = useNavigate();
@@ -18,7 +19,7 @@ const UpdateExpense = () => {
     useEffect(() => {
         const fetchExpense = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/finance/expenses/get-expense/${id}`);
+                const response = await fetch(`http://localhost:5000/api/finance/expenses/get-expense/${id}`);
                 if (response.ok) {
                     const data = await response.json();
                     // Update formData state with existing expense data
@@ -46,7 +47,7 @@ const UpdateExpense = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:5000/finance/expenses/update-expense/${id}`, {
+            const response = await fetch(`http://localhost:5000/api/finance/expenses/update-expense/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -74,8 +75,14 @@ const UpdateExpense = () => {
         }
     };
 
+    const handleCancel = () => {
+        // Navigate back to the previous page
+        navigate(-1);
+    };
+
     return (
         <main id="main" className="main">
+              <PageTitle path="Finance / Expenses / Edit-Expense"  title="Edit-Expense"/>
             <Form onSubmit={handleSubmit}>
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
                 <Form.Group controlId="title">
@@ -100,6 +107,9 @@ const UpdateExpense = () => {
                 </Form.Group>
                 <Button variant="primary" type="submit">
                     Update Expense
+                </Button>{" "}
+                <Button variant="secondary" onClick={handleCancel}>
+                    Cancel
                 </Button>
             </Form>
         </main>

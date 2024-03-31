@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Row, Stack } from "react-bootstrap";
+import { Button, Form, Row, Stack, Card } from "react-bootstrap";
 import "./empdash.css";
 import EmployeeDetailsModal from "./EmployeeDetailsModal";
 import Table from "./Table";
@@ -17,6 +17,23 @@ function EmpDash() {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [isDataUpdated, setIsDataUpdated] = useState(false);
+
+  //refresh details modal after update
+  // useEffect to listen for changes in isDataUpdated
+  useEffect(() => {
+    if (isDataUpdated) {
+      setShowModal(true); // Show the modal when data is updated
+      setIsDataUpdated(false); // Reset isDataUpdated after refreshing modal
+    }
+  }, [isDataUpdated]);
+
+  // handleUpdateEmployee function to pass to EmployeeDetailsModal
+  const handleUpdateEmployee = (updatedData) => {
+    // Logic to update employee data
+    console.log("Updated employee data:", updatedData);
+    setIsDataUpdated(true); // Set isDataUpdated to trigger modal refresh
+  };
 
   //To modal data fetch
   // Assume you have a function to fetch employee data by ID
@@ -87,63 +104,83 @@ function EmpDash() {
 
   return (
     <section>
-      <Row>
-        <Stack direction="horizontal" gap={3}>
-          <div className="p-2">
-            <Form className="d-flex">
-              <Form.Control
-                type="search"
-                placeholder="Search"
-                className="me-2 custom-input"
-                aria-label="Search"
-              />
-              <Button variant="outline-dark">Search</Button>
-            </Form>
-          </div>
-          <div className="p-2 ms-auto">
-            <Button variant="dark" size="md" onClick={() => navigate("add")}>
-              Create Employee
-            </Button>
-          </div>
-        </Stack>
-      </Row>
+      <Card>
+        <Card.Body style={{ backgroundColor: "white", padding: "25px" }}>
+          <Row>
+            <Stack direction="horizontal" gap={3}>
+              <div className="p-2">
+                <Form className="d-flex">
+                  <Form.Control
+                    type="search"
+                    placeholder="Search"
+                    className="me-2 custom-input"
+                    aria-label="Search"
+                  />
+                  <Button variant="outline-dark">Search</Button>
+                </Form>
+              </div>
+              <div className="p-2 ms-auto">
+                <Button
+                  variant="dark"
+                  size="md"
+                  onClick={() => navigate("add")}
+                >
+                  Create Employee
+                </Button>
+              </div>
+            </Stack>
+          </Row>
 
-      <div className="table">
-        <table className="table table-rounded">
-          <thead>
-            <tr>
-              {columns.map((column, index) => (
-                <th key={index}>{column}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.map((employee, index) => (
-              <tr key={index}>
-                <td>{employee.firstName}</td>
-                <td>{employee.lastName}</td>
-                <td>{employee.position}</td>
-                <td>{employee.contact}</td>
-                <td>
-                  <Button
-                    variant="dark"
-                    className="d-flex mx-auto"
-                    onClick={() => handleMoreButtonClick(employee._id)}
-                  >
-                    More
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          <div className="table">
+            <table
+              className="table table-rounded"
+              style={{
+                backgroundColor: "white",
+              }}
+            >
+              <thead>
+                <tr>
+                  {columns.map((column, index) => (
+                    <th
+                      key={index}
+                      style={{ backgroundColor: "black", color: "white" }}
+                    >
+                      {column}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {tableData.map((employee, index) => (
+                  <tr key={index}>
+                    <td>{employee.firstName}</td>
+                    <td>{employee.lastName}</td>
+                    <td>{employee.position}</td>
+                    <td>{employee.contact}</td>
+                    <td>
+                      <Button
+                        variant="dark"
+                        className="d-flex mx-auto"
+                        onClick={() => handleMoreButtonClick(employee._id)}
+                      >
+                        More
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-      <EmployeeDetailsModal
-        show={showModal}
-        onHide={handleCloseModal}
-        employee={selectedEmployee}
-      />
+          <EmployeeDetailsModal
+            show={showModal}
+            onHide={handleCloseModal}
+            employee={selectedEmployee}
+            isDataUpdated={isDataUpdated}
+            onUpdate={handleUpdateEmployee}
+          />
+        </Card.Body>
+      </Card>
     </section>
   );
 }

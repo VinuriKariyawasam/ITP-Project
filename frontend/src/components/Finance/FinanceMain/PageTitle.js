@@ -12,7 +12,7 @@ function PageTitle(props) {
               <i className="bi bi-house-door"></i>
             </a>
           </li>
-          <li className="breadcrumb-item active">{props.title}</li>
+          <li className="breadcrumb-item active">{props.path}</li>
         </ol>
       </nav>
     </div>

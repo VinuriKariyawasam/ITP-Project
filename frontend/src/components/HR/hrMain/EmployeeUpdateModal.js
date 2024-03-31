@@ -8,29 +8,21 @@ import {
   Row,
   OverlayTrigger,
   Tooltip,
+  Card,
+  Image,
 } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ImageUpload from "../HrUtil/ImageUpload";
 import FileUpload from "../HrUtil/FileUpload";
+import pdfImage from "../HrImages/pdf-file.png"; // Path to your custom PDF image
+import axios from "axios"; // Import axios for HTTP requests
+import { useNavigate } from "react-router-dom";
 
 function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
-  //file uplood funxtions
-  // State to store the uploaded files
-  // State to store the uploaded files
-  const [uploadedFile, setUploadedFile] = useState(null);
-
-  // File input handler for SingleFileUpload component
-  const fileInputHandler = (id, file, isValid) => {
-    if (isValid) {
-      // Set the uploaded file in state
-      setUploadedFile(file);
-    } else {
-      // Handle invalid files if needed
-      console.log("Invalid file:", file);
-    }
-  };
+  //to redirect after success
+  const navigate = useNavigate();
 
   //to tool tip
   const renderTooltip = (props) => (
@@ -48,20 +40,59 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
     formState: { errors },
   } = useForm({ defaultValues: employee });
 
-  const onSubmit = (data) => {
-    onUpdate(data);
-    onHide();
-  };
-
   // State to track selected position
-  const [selectedPosition, setSelectedPosition] = useState("");
+  const [selectedPosition, setSelectedPosition] = useState(employee.position);
 
   const handlePositionChange = (e) => {
     setSelectedPosition(e.target.value); // Update selected position
   };
 
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+
+      // Append regular form data
+      Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+      });
+
+      // Log FormData object
+      console.log("FormData:", formData);
+
+      console.log("FormData Entries:");
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      const response = await axios.patch(
+        `http://localhost:5000/api/hr/update-employee/${employee.id}`,
+        Object.fromEntries(formData.entries())
+      );
+
+      if (!response.status === 200) {
+        throw new Error("Failed to update data");
+      }
+
+      // Redirect to the specified URL after successful submission
+      navigate("/staff/hr/employee");
+      // Optionally update the UI or perform any other actions after successful submission
+      onUpdate(response.data); // Assuming onUpdate is a function to update the UI with the updated data
+
+      // Close the modal or redirect to another page after successful submission
+      onHide(); // Close the modal
+    } catch (error) {
+      console.error("Error updating data:", error.message);
+    }
+  };
+
   return (
-    <Modal show={show} onHide={onHide} size="lg" centered>
+    <Modal
+      show={show}
+      onHide={onHide}
+      size="lg"
+      centered
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+    >
       <Modal.Header closeButton>
         <Modal.Title>
           Update Employee{" "}
@@ -150,7 +181,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
           {/* Address */}
           <Form.Group className="mb-3" controlId="formGridAddress">
             <Form.Label>
-              Address <i class="bi bi-pencil-square"></i>
+              Address <i className="bi bi-pencil-square"></i>
             </Form.Label>
             <Controller
               name="address"
@@ -189,7 +220,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
             {/* Contact No. */}
             <Form.Group as={Col} controlId="formGridContact">
               <Form.Label>
-                Contact No. <i class="bi bi-pencil-square"></i>
+                Contact No. <i className="bi bi-pencil-square"></i>
               </Form.Label>
               <Controller
                 name="contact"
@@ -201,7 +232,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
                     placeholder="0715897598"
                     {...field}
                     pattern="[0-9]{10}"
-                    maxLength="10"
+                    length="10"
                   />
                 )}
               />
@@ -239,7 +270,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
             {/* Position */}
             <Form.Group as={Col} controlId="formGridRole">
               <Form.Label>
-                Position <i class="bi bi-pencil-square"></i>
+                Position <i className="bi bi-pencil-square"></i>
               </Form.Label>
               <Controller
                 name="position"
@@ -247,7 +278,6 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
                 rules={{ required: "Position is required" }}
                 render={({ field }) => (
                   <Form.Select
-                    defaultValue="Choose..."
                     {...field}
                     onChange={(e) => {
                       field.onChange(e);
@@ -270,42 +300,10 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
             </Form.Group>
           </Row>
 
-          {/* Add a photo and other documents */}
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formImage">
-              <Form.Label>Add a photo *(.jpg, .jpeg, .png only)</Form.Label>
-              <Controller
-                name="photo"
-                control={control}
-                render={({ field }) => (
-                  <ImageUpload
-                    id="photo" // Pass the ID for the ImageUpload component
-                    onInput={(id, file, isValid) => {
-                      field.onChange(file); // Trigger the onChange event for the photo field
-                      field.onBlur(); // Trigger the onBlur event for validation
-                    }}
-                    errorText={errors.photo?.message}
-                    existingImageUrl={employee.photoUrl}
-                  />
-                )}
-              />
-            </Form.Group>
-            {/* Documents */}
-            <Form.Group as={Col} controlId="formFileDocuments">
-              <Form.Label>Add other documents *(.pdf only)</Form.Label>
-              <FileUpload
-                id="documents"
-                accept=".pdf"
-                onInput={fileInputHandler}
-                errorText={errors.documents?.message}
-              />
-            </Form.Group>
-          </Row>
-
           {/* Other Details */}
           <Form.Group className="mb-3" controlId="formGridExtra">
             <Form.Label>
-              Other Details <i class="bi bi-pencil-square"></i>
+              Other Details <i className="bi bi-pencil-square"></i>
             </Form.Label>
             <Controller
               name="otherDetails"
@@ -331,7 +329,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
               {/* Email */}
               <Form.Group as={Col} controlId="formGridEmail">
                 <Form.Label>
-                  Email <i class="bi bi-pencil-square"></i>
+                  Email <i className="bi bi-pencil-square"></i>
                 </Form.Label>
                 <Controller
                   name="email"
@@ -359,7 +357,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
               {/* Password */}
               <Form.Group as={Col} controlId="formGridPassword">
                 <Form.Label>
-                  Password <i class="bi bi-pencil-square"></i>
+                  Password <i className="bi bi-pencil-square"></i>
                 </Form.Label>
                 <Controller
                   name="password"
@@ -390,7 +388,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
           )}
 
           <Button variant="dark" type="submit">
-            Submit
+            Update
           </Button>
         </Form>
       </Modal.Body>

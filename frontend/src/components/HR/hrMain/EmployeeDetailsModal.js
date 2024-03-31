@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -8,22 +8,50 @@ import axios from "axios";
 import Image from "react-bootstrap/Image";
 import EmployeeUpdateModal from "./EmployeeUpdateModal";
 
-function EmployeeDetailsModal({ show, onHide, employee }) {
+function EmployeeDetailsModal({ show, onHide, employee, onUpdate }) {
   //------------------------------------------
   //code snippets for  archiving employees(delete)
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+
+  // State for showing the update form modal
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+
+  // State to track whether data has been updated
+  const [isDataUpdated, setIsDataUpdated] = useState(false);
+
+  // Helper function to check if data has been updated
+  const checkDataUpdate = () => {
+    // Logic to check if data has been updated
+    // For demonstration purposes, we'll use a simple condition here
+    setIsDataUpdated(true); // Set to true when data is updated
+  };
 
   //for update part
   const handleUpdateClick = () => {
     setShowUpdateModal(true);
   };
 
-  const handleUpdateEmployee = (updatedData) => {
+  // Handle update employee data
+  const handleUpdateEmployee = async (updatedData) => {
     // Logic to update employee data
     console.log("Updated employee data:", updatedData);
+    // Call the onUpdate prop to trigger refresh in EmpDash
+    onUpdate(updatedData);
   };
+
+  // Function to refresh the modal with updated data
+  const handleRefreshModal = () => {
+    setIsDataUpdated(false); // Reset data updated flag
+  };
+
+  // Effect to re-render modal when data is updated
+  useEffect(() => {
+    if (isDataUpdated) {
+      // Data has been updated, trigger re-render
+      console.log("Data updated, re-rendering modal...");
+    }
+  }, [isDataUpdated]);
 
   const handleDeleteClick = () => {
     // Show confirmation dialog box
@@ -32,10 +60,17 @@ function EmployeeDetailsModal({ show, onHide, employee }) {
 
   const handleConfirmDelete = async () => {
     try {
-      // Send DELETE request to backend API
-      await axios.delete(
-        `http://localhost:5000/api/hr/archive-employee/${_id}`
-      ); // Adjust the endpoint URL accordingly
+      // Send DELETE request to backend API using fetch
+      await fetch(`http://localhost:5000/api/hr/archive-employee/${_id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          // Add any additional headers if required
+        },
+        // Optionally, include credentials if necessary
+        // credentials: 'include',
+      });
+
       // Close the modal
       onHide();
       // Show success dialog
@@ -60,6 +95,7 @@ function EmployeeDetailsModal({ show, onHide, employee }) {
 
   const {
     _id,
+    empId,
     firstName,
     lastName,
     birthDate,
@@ -96,11 +132,17 @@ function EmployeeDetailsModal({ show, onHide, employee }) {
             <Col xs={6} md={4}>
               <Image
                 src={photoUrl}
-                rounded
-                style={{ width: "150px", height: "150px" }}
+                roundedCircle
+                style={{ width: "200px", height: "150px" }}
               />
             </Col>
           </Row>
+          <Row style={{ marginBottom: "10px" }}>
+            <Col>
+              <strong>Employee Id:</strong> {empId}
+            </Col>
+          </Row>
+
           <Row style={{ marginBottom: "10px" }}>
             <Col xs={12} md={8}>
               <strong>First Name:</strong> {firstName}
