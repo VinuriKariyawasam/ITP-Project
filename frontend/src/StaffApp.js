@@ -15,22 +15,28 @@ import {
 import "./App.css";
 import Header from "./components/Header/Header";
 import HR from "./components/HR/HrPages/HR";
+import SM from "./components/SM/SMpages/SM";
+import Finance from "./components/Finance/FinancePages/Finance";
 import Common from "./components/Pages/Common";
+import IM from "./components/IM/IMPages/IM";
 import CAM from "./components/CAM/CAM_pages/CAM";
 
-function StaffApp(){
-    return(
-        <>
+
+function StaffApp() {
+  return (
+    <>
       <Header />
-      
-        <Routes>
-          <Route path="/" element={<Common />} />
-          <Route path="/hr/*" element={<HR />} />
-          <Route path="/CAM/*" element={<CAM/>}/>
-        </Routes>
-      
+      <Routes>
+        <Route path="/" element={<Common />} />
+        <Route path="/hr/*" element={<HR />} />
+        <Route path="/sm/*" element={<SM />} />
+        <Route path="/finance/*" element={<Finance />} />
+        <Route path="/im/*" element={<IM />} />
+        <Route path="/CAM/*" element={<CAM/>}/>
+      </Routes>
     </>
-    );
+  );
 }
+
 
 export default StaffApp;
