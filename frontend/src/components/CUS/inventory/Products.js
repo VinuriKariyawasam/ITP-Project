@@ -47,9 +47,12 @@ function Products() {
           <Card.Body>
             <Card.Title>Lubricants</Card.Title>
             <Card.Text>
-            "Keep your vehicle running smoothly with our top-quality lubricants for lasting performance."
+              "Keep your vehicle running smoothly with our top-quality
+              lubricants for lasting performance."
             </Card.Text>
-            <Button variant="primary" className="exbtn">Explore</Button>
+            <Button variant="primary" className="exbtn">
+              Explore
+            </Button>
           </Card.Body>
         </Card>
         <Card style={{ width: "30%" }}>
@@ -60,7 +63,9 @@ function Products() {
               Explore our wide selection of quality tire stocks, ensuring smooth
               rides for every vehicle.
             </Card.Text>
-            <Button variant="primary" className="exbtn">Explore</Button>
+            <Button variant="primary" className="exbtn">
+              Explore
+            </Button>
           </Card.Body>
         </Card>
         <Card style={{ width: "30%" }}>
@@ -71,7 +76,10 @@ function Products() {
               Acquire your vehicle spare parts swiftly and seamlessly with our
               top-notch procurement assistance.
             </Card.Text>
-            <Button variant="primary" className="exbtn"> Explore</Button>
+            <Button variant="primary" className="exbtn">
+              {" "}
+              Explore
+            </Button>
           </Card.Body>
         </Card>
       </div>

@@ -1,58 +1,56 @@
-.para1{
-    font-size:medium;
-    font-size:large;
-  }
-  
-  .h5{
-    font-weight: 600;
-    font-family:'Nunito', sans-serif;
-  }
-  
-  .btn-success{
-    font-size: smaller;
-    font-weight: 400;
-    margin-right: 10px;
-    margin-left: 1200px;
-    margin-top: 1px;
-  }
-  
-  .btn-secondary{
-    font-size: smaller;
-    font-weight: 400;
-    margin-top: 1px;  
-    
-  }
+.cam-para1 {
+  font-size: medium;
+  font-size: large;
+}
 
-  .form{
-    padding-top: 80px;
-    margin-left: 20px;
-    margin-right: 20px;
-  }
-  
-  .form h3{
-    font-weight: bold;
-    font-size:xx-large;
-  }
+.h5 {
+  font-weight: 600;
+  font-family: "Nunito", sans-serif;
+}
 
-  .mb-3{
-    padding-top: 0px;
-  }
+.btn-success {
+  font-size: smaller;
+  font-weight: 400;
+  margin-right: 10px;
+  margin-left: 1200px;
+  margin-top: 1px;
+}
 
-  .allFeedback{
-    padding-top: 100px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-  .floatingLabel{
-    padding-bottom: 10px;
-  }
-  .components{
-    padding-top: 10px;
-  }
-  .newfeedbackbtn{
-    margin-left: 1000px;
-  }
-  .myfeedbackbtn{
-    margin-left: 5px;
-  }
-  
+.btn-secondary {
+  font-size: smaller;
+  font-weight: 400;
+  margin-top: 1px;
+}
+
+.form {
+  padding-top: 80px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.form h3 {
+  font-weight: bold;
+  font-size: xx-large;
+}
+
+.mb-3 {
+  padding-top: 0px;
+}
+
+.allFeedback {
+  padding-top: 100px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.floatingLabel {
+  padding-bottom: 10px;
+}
+.components {
+  padding-top: 10px;
+}
+.newfeedbackbtn {
+  margin-left: 1000px;
+}
+.myfeedbackbtn {
+  margin-left: 5px;
+}
