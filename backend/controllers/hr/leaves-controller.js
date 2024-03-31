@@ -91,6 +91,13 @@ const leavesController = {
   // Update a leave record by ID
   updateLeaveById: async (req, res) => {
     try {
+      // Check for validation errors
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          error: "Inavalid values passed in the form.",
+        });
+      }
       const updatedLeave = await Leaves.findByIdAndUpdate(
         req.params.id,
         req.body,
@@ -113,6 +120,30 @@ const leavesController = {
         return res.status(404).json({ error: "Leave not found" });
       }
       res.status(204).send(); // No content in response for successful deletion
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  // Approve or reject a leave record by ID
+  updateLeaveStatusById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      if (!status || (status !== "Approved" && status !== "Rejected")) {
+        return res.status(400).json({ error: "Invalid status provided" });
+      }
+
+      const updatedLeave = await Leaves.findByIdAndUpdate(
+        id,
+        { status }, // Update status to the provided value
+        { new: true }
+      );
+      if (!updatedLeave) {
+        return res.status(404).json({ error: "Leave not found" });
+      }
+      res.json(updatedLeave);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
