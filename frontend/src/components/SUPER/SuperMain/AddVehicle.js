@@ -192,12 +192,12 @@ function AddVehicle() {
           </div>
 
           <div className="d-flex justify-content-center mt-3">
-            <Button variant="secondary" className="me-5">
+            <Button variant="primary" className="me-5">
               <Link to="/staff/supervisor/vehicle" className="text-light text-decoration-none">
                 Back
               </Link>
             </Button>
-            <Button type="submit" onClick={handleClick}>Register</Button>
+            <Button type="submit" onClick={handleClick} variant="success">Register</Button>
           </div>
 
           <Modal show={showModal} onHide={handleCloseModal}>
