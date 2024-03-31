@@ -106,12 +106,23 @@ class EmployeeController {
             )
           : [];
 
-        const newEmployee = new EmployeeModel({
-          ...req.body,
-          empId: employeeId,
-          photo: photoPath,
-          documents: documentPaths,
-        });
+        const newEmployee = new EmployeeModel();
+        newEmployee.empId = employeeId;
+        newEmployee.photo = photoPath;
+        newEmployee.documents = documentPaths;
+        // Assign other properties one by one
+        newEmployee.firstName = req.body.firstName;
+        newEmployee.lastName = req.body.lastName;
+        newEmployee.birthDate = req.body.birthDate;
+        newEmployee.nic = req.body.nic;
+        newEmployee.address = req.body.address;
+        newEmployee.gender = req.body.gender;
+        newEmployee.contact = req.body.contact;
+        newEmployee.startDate = req.body.startDate;
+        newEmployee.position = req.body.position;
+        newEmployee.otherDetails = req.body.otherDetails;
+        newEmployee.email = req.body.email;
+        newEmployee.password = req.body.password;
         //save employee to database
         const savedEmployee = await newEmployee.save();
         res.status(201).json(savedEmployee);
