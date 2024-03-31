@@ -109,11 +109,50 @@ function VehicleDash() {
     setShowModal(true);
   };
 
+  const validate = (name, value) => {
+    if (name === 'vehicleNo') {
+      if (!/^[A-Za-z]{10}$/.test(value.trim())) {
+        return 'Invalid Vehicle No. Enter again.';
+      }
+    }
+    if (name === 'brand' && !value.trim()) {
+      return 'Brand is required';
+    }
+    if (name === 'model' && !value.trim()) {
+      return 'Model is required';
+    }
+    if (name === 'year') {
+      const currentYear = new Date().getFullYear();
+      if (!/^\d{4}$/.test(value)) {
+        return 'Year must be four digits';
+      }
+      if (parseInt(value, 10) >= currentYear) {
+        return 'Year must be less than ' + currentYear;
+      }
+    }
+    if (name === 'name' && !value.trim()) {
+      return 'Name is required';
+    }
+    if (name === 'contact') {
+      if (!/^\d{10}$/.test(value)) {
+        return 'Contact No. must be 10 digits';
+      }
+    }
+    return '';
+  };
+  
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const error = validate(name, value);
+  
+    if (error) {
+      alert(error);
+      return;
+    }
+  
     setFormData({ ...formData, [name]: value });
   };
-
   const handleSubmit = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/vehicle/update-vehicle/${selectedVehicle._id}`, {
@@ -190,7 +229,21 @@ function VehicleDash() {
                   <td>{vehicle.year}</td>
                   <td>{vehicle.name}</td>
                   <td>{vehicle.contact}</td>
-                  <td>{vehicle.records}</td>
+                  <td>
+                  <Link
+                    to={`/vehicle/${vehicle._id}/records`}
+                    className="btn"
+                    style={{
+                      backgroundColor: "#d3d3d3", // Ash color
+                      borderColor: "#d3d3d3", // Border color
+                      color: "#000", // Text color
+                      textDecoration: "none", // Remove underline
+                      fontWeight: "bold" // Make text bold
+                    }}
+                  >
+                    More
+                  </Link>
+                  </td>
                   <td>
                     <button onClick={() => handleShowUpdateModal(vehicle)} className="btn btn-warning me-2 text-dark font-weight-bold">Update</button>
                     <button onClick={() => handleDelete(vehicle._id)} className="btn btn-danger text-dark font-weight-bold">Delete</button>

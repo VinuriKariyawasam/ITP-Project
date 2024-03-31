@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Modal, Row, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import jsPDF from "jspdf";
 
 function VehicleDash() {
   const [vehicles, setVehicles] = useState([]);
@@ -64,38 +63,6 @@ function VehicleDash() {
     setDeletedVehicle(null);
   };
 
-  const handleTakeReport = () => {
-    const doc = new jsPDF();
-    doc.setFont("helvetica");
-    doc.setFontSize(16); // Increase font size for the topic
-    doc.setTextColor(0, 0, 255); // Set text color to blue
-
-    doc.text("Vehicle Report", 10, 10);
-
-    // Reset font size and color for the rest of the content
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0); // Set text color to black
-
-    const startY = 20;
-    const lineHeight = 10;
-    const xOffset = 10;
-    let yOffset = startY;
-
-    vehicles.forEach((vehicle, index) => {
-      doc.text(`Vehicle ${index + 1}:`, xOffset, yOffset);
-      doc.text(`Vehicle No: ${vehicle.vehicleNo}`, xOffset + 30, yOffset);
-      doc.text(`Brand: ${vehicle.brand}`, xOffset + 90, yOffset);
-      doc.text(`Model: ${vehicle.model}`, xOffset + 130, yOffset);
-      doc.text(`Year: ${vehicle.year}`, xOffset + 170, yOffset);
-      doc.text(`Name: ${vehicle.name}`, xOffset + 200, yOffset);
-      doc.text(`Contact Number: ${vehicle.contact}`, xOffset + 240, yOffset);
-
-      yOffset += lineHeight;
-    });
-
-    doc.save("vehicle_report.pdf");
-  };
-
   const handleShowUpdateModal = (vehicle) => {
     setSelectedVehicle(vehicle);
     setFormData({
@@ -109,45 +76,11 @@ function VehicleDash() {
     setShowModal(true);
   };
 
-  const validate = (name, value) => {
-    if (name === 'vehicleNo' && !value.trim()) {
-      return 'Vehicle No. is required';
-    }
-    if (name === 'brand' && !value.trim()) {
-      return 'Brand is required';
-    }
-    if (name === 'model' && !value.trim()) {
-      return 'Model is required';
-    }
-    if (name === 'year') {
-      const currentYear = new Date().getFullYear();
-      if (!/^\d+$/.test(value)) {
-        return 'Year must be an integer';
-      }
-      if (parseInt(value, 10) >= currentYear)  {
-        return 'Enter valid year ';
-      }
-    }
-    if (name === 'name' && !value.trim()) {
-      return 'Name is required';
-    }
-    if (name === 'contact' && !value.trim()) {
-      return 'Contact No. is required';
-    }
-    return '';
-  };
-  
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const error = validate(name, value);
-  
-    if (error) {
-      alert(error);
-      return;
-    }
-  
     setFormData({ ...formData, [name]: value });
   };
+
   const handleSubmit = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/vehicle/update-vehicle/${selectedVehicle._id}`, {
@@ -293,9 +226,9 @@ function VehicleDash() {
           </>
         )}
       </Modal>
-      <Button variant="primary" onClick={handleTakeReport}>Take a Report</Button>
     </div>
   );
 }
 
 export default VehicleDash;
+
