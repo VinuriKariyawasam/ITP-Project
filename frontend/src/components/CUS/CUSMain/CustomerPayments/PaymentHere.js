@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import md5 from 'md5'; // Import the md5 library
-import { Button } from 'react-bootstrap';
+import md5 from 'md5';
+import { Button, Form, Carousel } from 'react-bootstrap';
+import neotechpay from '../../../../images/Payment/neotechpay.png';
+import payhere from '../../../../images/Payment/payhere.png';
+
 
 const PayHereIntegration = () => {
     const [paymentData, setPaymentData] = useState({
@@ -22,22 +25,6 @@ const PayHereIntegration = () => {
         hash: ''
     });
 
-    useEffect(() => {
-        // Include PayHere script
-        const script = document.createElement('script');
-        script.src = 'https://www.payhere.lk/lib/payhere.js';
-        script.async = true;
-        script.onload = () => {
-            console.log('PayHere script loaded');
-        };
-        document.body.appendChild(script);
-
-        return () => {
-            // Clean up script
-            document.body.removeChild(script);
-        };
-    }, []);
-
     const handleChange = (e) => {
         setPaymentData({ ...paymentData, [e.target.name]: e.target.value });
     };
@@ -45,7 +32,7 @@ const PayHereIntegration = () => {
     const handlePayment = () => {
         // Generate hash value
         const merchant_secret = 'MjgyNTg0MDA0NDI0NDgwNjczNTYzOTQwNjA4OTQwMjgzMzMyMDc4Nw==';
-        const hashms = md5(merchant_secret).toUpperCase(); // Replace with your actual Merchant Secret
+        const hashms = md5(merchant_secret).toUpperCase();
         const { merchant_id, order_id, amount, currency } = paymentData;
         const hashString = `${merchant_id}${order_id}${amount}${currency}${hashms}`;
         const hash = md5(hashString).toUpperCase();
@@ -64,18 +51,73 @@ const PayHereIntegration = () => {
         }
     };
 
-    return (
-        <main id="main" className="main">
-            <div>
-                {/* Payment form */}
-                <input type="text" name="first_name" placeholder="First Name" onChange={handleChange} />
-                <input type="text" name="last_name" placeholder="Last Name" onChange={handleChange} />
-                <input type="email" name="email" placeholder="Email" onChange={handleChange} />
-                <input type="text" name="phone" placeholder="Phone" onChange={handleChange} />
-                {/* Add more input fields as needed */}
+    useEffect(() => {
+        // Include PayHere script
+        const script = document.createElement('script');
+        script.src = 'https://www.payhere.lk/lib/payhere.js';
+        script.async = true;
+        script.onload = () => {
+            console.log('PayHere script loaded');
+        };
+        document.body.appendChild(script);
 
-                {/* Button to initiate payment */}
-                <Button onClick={handlePayment}>Pay with PayHere</Button>
+        return () => {
+            // Cleanup script after component unmounts
+            document.body.removeChild(script);
+        };
+    }, []);
+
+    return (
+        <main id="cusmain" className="cusmain">
+            <div className="container">
+                <h1 className="text-center mb-5">Pay Online</h1>
+                <div className="row">
+                    <div className="col-md-6">
+                        <Carousel>
+                            <Carousel.Item style={{ height: '500px' }}>
+                                <img
+                                    className="d-block w-100"
+                                    src={neotechpay}
+                                    alt="First slide"
+                                    style={{ height: '450px' }}
+                                    
+                                />
+                            </Carousel.Item>
+                            <Carousel.Item style={{ height: '500px' }}>
+                                <img
+                                    className="d-block w-100"
+                                    src={payhere}
+                                    alt="Second slide"
+                                    style={{ height: '450px' }}
+                                />
+                            </Carousel.Item>
+                        </Carousel>
+                    </div>
+                    <div className="col-md-6">
+                        <Form>
+                            <Form.Group controlId="first_name">
+                                <Form.Label>First Name</Form.Label>
+                                <Form.Control type="text" name="first_name" placeholder="Enter your first name" onChange={handleChange} />
+                            </Form.Group>
+                            <Form.Group controlId="last_name">
+                                <Form.Label>Last Name</Form.Label>
+                                <Form.Control type="text" name="last_name" placeholder="Enter your last name" onChange={handleChange} />
+                            </Form.Group>
+                            <Form.Group controlId="email">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control type="email" name="email" placeholder="Enter your email address" onChange={handleChange} />
+                            </Form.Group>
+                            <Form.Group controlId="phone">
+                                <Form.Label>Phone</Form.Label>
+                                <Form.Control type="text" name="phone" placeholder="Enter your phone number" onChange={handleChange} />
+                            </Form.Group>
+                            {/* Add more input fields as needed */}
+
+                            <br></br>
+                            <Button onClick={handlePayment}>Pay with PayHere</Button>
+                        </Form>
+                    </div>
+                </div>
             </div>
         </main>
     );

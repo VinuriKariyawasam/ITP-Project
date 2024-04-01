@@ -24,7 +24,7 @@ function CusnavItem() {
               <NavDropdown.Item href="#action/3.2">
                 Feedback
               </NavDropdown.Item>
-              <NavDropdown.Item href="payonline">My Payments</NavDropdown.Item>
+              <NavDropdown.Item href="http://localhost:3000/customer/payments/payonline">My Payments</NavDropdown.Item>
 
             </NavDropdown>
           </Nav>
