@@ -19,7 +19,7 @@
 body {
   font-family: "Open Sans", sans-serif;
   color: #000000;
-  background: rgb(225, 235, 240);
+  background: rgb(250, 250, 250);
 }
 
 a {
@@ -146,8 +146,8 @@ h6 {
 }
 
 .bg-secondary-light {
-  background-color: #e2e3e5;
-  border-color: #e2e3e5;
+  background-color: #ffffff;
+  border-color: #ffffff;
 }
 
 .bg-success-light {

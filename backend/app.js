@@ -9,7 +9,6 @@ const app = express();
 require("dotenv").config();
 const PORT = process.env.PORT || 5000;
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
@@ -34,8 +33,14 @@ readdirSync("./routes/").map((route) =>
 );
 
 //CAS
+readdirSync("./routes").map((route) =>
+  app.use("/CAM", require("./routes/" + route))
+);
 
 //Vehicle
+readdirSync("./routes").map((route) =>
+  app.use("/api/vehicle", require("./routes/" + route))
+);
 
 //Appointment
 
@@ -64,6 +69,5 @@ const server = () => {
     console.log("Listening to port:", PORT);
   });
 };
-
 
 server();

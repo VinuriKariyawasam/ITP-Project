@@ -11,6 +11,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import HrSalary from "../hrMain/HrSalary";
 
 function HR() {
   return (
@@ -20,8 +21,10 @@ function HR() {
       <Routes>
         <Route path="/" element={<HrMain />} />
         <Route path="employee/*" element={<HrEmployee />} />
+        <Route path="salary/*" element={<HrSalary />} />
         <Route path="attendance/*" element={<HrAttendance />} />
         <Route path="leaves/*" element={<HrLeaves />} />
+        <Route path="configs/*" element={<HrLeaves />} />
       </Routes>
     </>
   );

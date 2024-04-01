@@ -22,8 +22,7 @@ import Common from "./components/Pages/Common";
 function App() {
   return (
     <>
-    
-      <Router>
+       <Router>
         <Routes>
           <Route path="/" element={<Common />} />
           <Route path="/staff/*" element={<StaffApp />} />

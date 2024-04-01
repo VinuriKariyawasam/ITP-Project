@@ -1,0 +1,33 @@
+.star-filled {
+    color: gold;
+  }
+  
+.star-outline {
+    color: #a9a0a0;
+    cursor: pointer;
+    
+  }
+
+.star-text{
+  font-size: medium;
+  font-family: 'Nunito', sans-serif;
+}  
+
+.star-rating-container {
+  display: flex;
+  align-items: center;
+}
+
+.star-container {
+  display: flex;
+  align-items: center;
+  margin-right: 10px; /* Adjust spacing between stars and progress bars */
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: #ffc107;
+  margin-left: 5px;
+  border-radius: 5px;
+  
+}
