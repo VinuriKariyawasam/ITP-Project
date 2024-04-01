@@ -1,12 +1,52 @@
 const mongoose = require("mongoose");
 
 const salarySchema = new mongoose.Schema({
+  empId: {
+    type: String,
+    required: true,
+  },
+  empDBId: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
   position: {
     type: String,
     required: true,
   },
   basicSalary: {
-    type: String,
+    type: Number,
+    required: true,
+  },
+  allowance: {
+    type: Number,
+    required: true,
+  },
+  noPay: {
+    type: Number,
+    required: true,
+  },
+  EPFC: {
+    type: Number,
+    required: true,
+  },
+  EPFE: {
+    type: Number,
+    required: true,
+  },
+  EPFT: {
+    type: Number,
+    required: true,
+  },
+  ETF: {
+    type: Number,
+    required: true,
+  },
+  totalSal: {
+    type: Number,
     required: true,
   },
 });

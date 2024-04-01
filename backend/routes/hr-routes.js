@@ -1,6 +1,7 @@
 const EmployeeController = require("../controllers/hr/employe-controller");
 const LeavesController = require("../controllers/hr/leaves-controller");
 const DesignationsController = require("../controllers/hr/desigantion-controller");
+const SalaryController = require("../controllers/hr/salary-controller");
 const bodyParser = require("body-parser");
 const { body } = require("express-validator");
 const router = require("express").Router();
@@ -133,16 +134,52 @@ router.patch(
 );
 
 //---------Designation Routes-------------------
+
+// Validation middleware function for validating the designation request data
+const validateDesignationRequest = [
+  body("position").notEmpty().withMessage("Positione is required"),
+  body("basicSalary").notEmpty().withMessage("BasicSalary is required"),
+];
+// Validation middleware function for validating the update designation request data
+const validateUpdateDesignationRequest = [
+  body("basicSalary").notEmpty().withMessage("BasicSalary is required"),
+];
+
 // CREATE
-router.post("/add-designation", DesignationsController.create);
+router.post(
+  "/add-designation",
+  validateDesignationRequest,
+  DesignationsController.create
+);
 
 // READ
-router.get("/designations", DesignationsController.getAll);
+router.get(
+  "/designations",
+  validateUpdateDesignationRequest,
+  DesignationsController.getAll
+);
 
 // UPDATE
 router.patch("/update-designation/:id", DesignationsController.update);
 
 // DELETE
 router.delete("/delete-designation/:id", DesignationsController.delete);
+
+//---------Salary Routes-------------------
+
+// Create Salary
+router.post("/add-salary", SalaryController.createSalary);
+
+// Update Salary
+router.put("/update-salary/:id", SalaryController.updateSalary);
+
+// Delete Salary
+router.delete("/delete-salary/:id", SalaryController.deleteSalary);
+
+// Get all Salaries
+router.get("/", SalaryController.getAllSalaries);
+
+// Get Salary by ID
+router.get("/:id", SalaryController.getSalaryById);
 
 module.exports = router;

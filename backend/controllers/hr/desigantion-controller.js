@@ -1,9 +1,17 @@
 const Designations = require("../../models/hr/designationsModel");
+const { validationResult } = require("express-validator");
 
 class DesignationsController {
   // CREATE - POST
   static async create(req, res) {
     try {
+      // Check for validation errors
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          error: "Inavalid values passed in the form.",
+        });
+      }
       // Check if the position already exists
       const existingDesignation = await Designations.findOne({
         position: req.body.position,
@@ -33,6 +41,13 @@ class DesignationsController {
   // UPDATE - PUT
   static async update(req, res) {
     try {
+      // Check for validation errors
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          error: "Inavalid values passed in the form.",
+        });
+      }
       const updatedDesignation = await Designations.findByIdAndUpdate(
         req.params.id,
         req.body,

@@ -1,5 +1,6 @@
 const EmployeeModel = require("../../models/hr/employeeModel"); // Import your employee model
 const ArchivedEmployee = require("../../models/hr/archivedEmployeeModel"); //to save archive employees
+const Salary = require("../../models/hr/salaryModel");
 const HttpError = require("../../models/http-error");
 const multer = require("multer");
 const path = require("path");
@@ -125,6 +126,27 @@ class EmployeeController {
         newEmployee.password = req.body.password;
         //save employee to database
         const savedEmployee = await newEmployee.save();
+
+        // Create a new salary record
+        const newSalary = new Salary();
+        newSalary.empId = employeeId;
+        newSalary.empDBId = savedEmployee._id;
+        newSalary.position = savedEmployee.position;
+        newSalary.basicSalary = req.body.basicSalary;
+        newSalary.allowance = 10000.0;
+        newSalary.noPay = 0.0;
+        newSalary.EPFC = newSalary.basicSalary * 0.12;
+        newSalary.EPFE = newSalary.basicSalary * 0.08;
+        newSalary.EPFT = newSalary.EPFC + newSalary.EPFE;
+        newSalary.ETF = newSalary.basicSalary * 0.03;
+        newSalary.totalSal = newSalary.basicSalary + newSalary.allowance;
+        newSalary.netSal =
+          newSalary.totalSal -
+          (newSalary.noPay + newSalary.EPFC + newSalary.ETF);
+
+        // Save the new salary record
+        await newSalary.save();
+
         res.status(201).json(savedEmployee);
       });
     } catch (error) {

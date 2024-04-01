@@ -127,7 +127,7 @@ function Designations() {
         className={`bg-${toastType}`}
         style={{
           position: "fixed",
-          top: "20px", // Adjust top position as needed
+          top: "70px", // Adjust top position as needed
           right: "20px", // Adjust right position as needed
           zIndex: 9999, // Ensure it overlays other content
         }}

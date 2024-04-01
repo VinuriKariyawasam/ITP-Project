@@ -41,34 +41,37 @@ function Leaves() {
         <table className="table table-rounded">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Date</th>
-              <th>Reason</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th style={{ backgroundColor: "black", color: "white" }}>Id</th>
+              <th style={{ backgroundColor: "black", color: "white" }}>Name</th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                Basic
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                Allowance
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                Deduction(Nopay)
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                EPF-8%
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                ETF-3%
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                Total Salary
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                EPF-12%
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                Actions
+              </th>
             </tr>
           </thead>
+
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Mark Otto</td>
-              <td>04/03/2024</td>
-              <td>Sick Leave</td>
-              <td>Paid</td>
-              <td>
-                <Badge bg="success">Approved</Badge>
-              </td>
-              <td>
-                <Button variant="outline-success" size="sm">
-                  Approve
-                </Button>{" "}
-                <Button variant="outline-danger" size="sm">
-                  Reject
-                </Button>{" "}
-              </td>
-            </tr>
+            <tr></tr>
           </tbody>
         </table>
       </div>
