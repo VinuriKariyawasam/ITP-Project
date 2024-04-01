@@ -17,7 +17,7 @@ function Customer() {
     <Header/>
     <Routes>
     <Route path="/payonline" element={<PayHereIntegration/>} />
-    <Route path="/successpayment" element={<PaymentSuccess/>} />
+    <Route path="/successpayment/*" element={<PaymentSuccess/>} />
     <Route path="/failpayment" element={<PaymentFailure/>} />
     
 

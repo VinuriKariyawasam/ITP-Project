@@ -1,6 +1,7 @@
+// backend/paymentsController.js
+
 const md5 = require('md5');
 require('dotenv').config();
-
 
 exports.paymentinitiate = async (req, res) => {
     try {
@@ -31,36 +32,38 @@ exports.paymentinitiate = async (req, res) => {
         const hashString = `${merchant_id}${order_id}${amount}${currency}${hashms}`;
         const hash = md5(hashString).toUpperCase();
 
-        // Arrange payment data in the required order
-        const paymentData = {
-            merchant_id,
-            return_url,
-            cancel_url,
-            notify_url,
-            first_name,
-            last_name,
-            email,
-            phone,
-            address,
-            city,
-            country,
-            order_id,
-            items,
-            currency,
-            amount,
-            hash
-        };
+        // Construct the payment portal URL
+        const paymentUrl = `https://sandbox.payhere.lk/pay/checkout`;
 
-        // Send a POST request to PayHere's checkout endpoint
-       
+        // Construct a form with hidden inputs for redirection
+        const form = `
+            <form id="paymentForm" action="${paymentUrl}" method="post">
+                <input type="hidden" name="merchant_id" value="${merchant_id}">
+                <input type="hidden" name="return_url" value="${return_url}">
+                <input type="hidden" name="cancel_url" value="${cancel_url}">
+                <input type="hidden" name="notify_url" value="${notify_url}">
+                <input type="hidden" name="first_name" value="${first_name}">
+                <input type="hidden" name="last_name" value="${last_name}">
+                <input type="hidden" name="email" value="${email}">
+                <input type="hidden" name="phone" value="${phone}">
+                <input type="hidden" name="address" value="${address}">
+                <input type="hidden" name="city" value="${city}">
+                <input type="hidden" name="country" value="${country}">
+                <input type="hidden" name="order_id" value="${order_id}">
+                <input type="hidden" name="items" value="${items}">
+                <input type="hidden" name="currency" value="${currency}">
+                <input type="hidden" name="amount" value="${amount}">
+                <input type="hidden" name="hash" value="${hash}">
+            </form>
+            <script>
+                document.getElementById("paymentForm").submit();
+            </script>
+        `;
 
-        // Extract HTML content from the response
-       
-
-        // Send the HTML content back to the client
-        res.send(paymentData);
+        // Send the form back to the client
+        res.send(form);
     } catch (error) {
-       
+        console.error('Error initiating payment:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };

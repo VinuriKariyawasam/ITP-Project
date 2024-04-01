@@ -1,3 +1,5 @@
+// frontend/PayHereIntegration.js
+
 import React, { useState } from "react";
 import { Button, Form, Carousel } from "react-bootstrap";
 import neotechpay from "../../../../images/Payment/neotechpay.png";
@@ -39,31 +41,26 @@ const PayHereIntegration = () => {
 
       if (response.ok) {
         // Payment data sent successfully, handle response
-        const responseData = await response.json();
+        const responseData = await response.text();
 
-        // Create a form element
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = "https://sandbox.payhere.lk/pay/checkout"; // PayHere checkout URL
+        // Create a temporary div to hold the form
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = responseData;
 
-        // Append each key-value pair in responseData as a hidden input field in the form
-        Object.keys(responseData).forEach((key) => {
-          const input = document.createElement("input");
-          input.type = "hidden";
-          input.name = key;
-          input.value = responseData[key];
-          form.appendChild(input);
-        });
+        // Extract the form element from the temporary div
+        const form = tempDiv.querySelector("form");
 
-        // Append the form to the document body and submit it
+        // Append the form to the document body
         document.body.appendChild(form);
+
+        // Submit the form
         form.submit();
       } else {
         // Handle errors if any
-        console.error("Failed to send payment data:", response.statusText);
+        console.error("Failed to initiate payment:", response.statusText);
       }
     } catch (error) {
-      console.error("Error sending payment data:", error.message);
+      console.error("Error initiating payment:", error.message);
     }
   };
 
