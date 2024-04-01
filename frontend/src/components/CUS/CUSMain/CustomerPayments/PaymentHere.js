@@ -8,8 +8,8 @@ import payhere from '../../../../images/Payment/payhere.png';
 const PayHereIntegration = () => {
     const [paymentData, setPaymentData] = useState({
         merchant_id: '1226324',
-        return_url: 'http://localhost:3000/customer',
-        cancel_url: 'http://localhost:3000/staff',
+        return_url: 'http://localhost:3000/customer/payments/successpayment',
+        cancel_url: 'http://localhost:3000/customer/payments/failpayment',
         notify_url: 'http://localhost:3000/customer',
         first_name: 'John',
         last_name: 'Smith',
@@ -21,7 +21,7 @@ const PayHereIntegration = () => {
         order_id: 'M01',
         items: 'M01',
         currency: 'LKR',
-        amount: '1000.00',
+        amount: '1500.00',
         hash: ''
     });
 

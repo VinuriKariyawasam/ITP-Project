@@ -1,6 +1,8 @@
 import React from 'react'
 import Header from '../CusHeader/Header';
 import PayHereIntegration from '../CUSMain/CustomerPayments/PaymentHere';
+import PaymentSuccess from '../CUSMain/CustomerPayments/PaymentSuccess';
+import PaymentFailure from '../CUSMain/CustomerPayments/PaymentFailure';
 
 import {
   BrowserRouter as Router,
@@ -15,6 +17,10 @@ function Customer() {
     <Header/>
     <Routes>
     <Route path="/payonline" element={<PayHereIntegration/>} />
+    <Route path="/successpayment" element={<PaymentSuccess/>} />
+    <Route path="/failpayment" element={<PaymentFailure/>} />
+    
+
    
     
     </Routes>
