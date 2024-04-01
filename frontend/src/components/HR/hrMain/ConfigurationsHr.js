@@ -8,13 +8,19 @@ import {
   Stack,
   Tab,
   Tabs,
+  Toast,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-//import DesignationUpdateModal from "./DesignationUpdateModal";
+import CreateDesignationModal from "./DesignationCreateModal";
+
+import UpdateDesignationModal from "./DesignationUpdateModal";
 
 function Designations() {
   const navigate = useNavigate();
   const [designations, setDesignations] = useState([]);
+  //crete modal state
+  const [showModal, setShowModal] = useState(false);
+  //update modal state
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedDesignationId, setSelectedDesignationId] = useState(null);
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
@@ -22,6 +28,11 @@ function Designations() {
   const [designationToDelete, setDesignationToDelete] = useState(null);
   const [reloadDesignations, setReloadDesignations] = useState(false);
   const [key, setKey] = useState("pending");
+  // Define state variables for toast message
+  const [toastHeader, setToastHeader] = useState("");
+  const [toastBody, setToastBody] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState("");
 
   useEffect(() => {
     // Fetch designation records from the backend when the component mounts
@@ -64,7 +75,11 @@ function Designations() {
             (designation) => designation._id !== designationId
           )
         );
-        alert("Designation deleted successfully"); // Show success alert
+        // Set toast message for success
+        setToastType("success");
+        setToastHeader("Success");
+        setToastBody("Designation deleted successfully");
+        setShowToast(true);
       } else {
         throw new Error("Failed to delete designation");
       }
@@ -92,8 +107,36 @@ function Designations() {
     setShowDeleteConfirmationModal(true);
   };
 
+  //Create designation part
+  const handleCreateNewDesignation = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
-    <section>
+    <section style={{ position: "relative" }}>
+      {/* Toast Component */}
+      <Toast
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        delay={6000}
+        autohide
+        className={`bg-${toastType}`}
+        style={{
+          position: "fixed",
+          top: "20px", // Adjust top position as needed
+          right: "20px", // Adjust right position as needed
+          zIndex: 9999, // Ensure it overlays other content
+        }}
+      >
+        <Toast.Header>
+          <strong className="me-auto">{toastHeader}</strong>
+        </Toast.Header>
+        <Toast.Body>{toastBody}</Toast.Body>
+      </Toast>
       <Card>
         <Card.Body style={{ backgroundColor: "white", padding: "25px" }}>
           <Tabs
@@ -109,7 +152,7 @@ function Designations() {
                     <Button
                       variant="dark"
                       size="md"
-                      onClick={() => navigate("add")}
+                      onClick={handleCreateNewDesignation}
                       style={{ margin: "10px" }}
                     >
                       Create New Designation
@@ -182,7 +225,6 @@ function Designations() {
                           })}
                       </tbody>
                     </table>
-
                     {/* Delete confirmation modal */}
                     <Modal
                       show={showDeleteConfirmationModal}
@@ -212,6 +254,37 @@ function Designations() {
                   </div>
                 </Col>
               </Row>
+              {/* Create Desigantion content here */}
+              <CreateDesignationModal
+                showModal={showModal}
+                handleClose={handleCloseModal}
+                setToastHeader={setToastHeader}
+                setToastBody={setToastBody}
+                setShowToast={setShowToast}
+                setReloadDesignations={setReloadDesignations}
+                setToastType={setToastType} // or "warning", "error", etc.
+              />
+              {/* Update Desigantion content here */}
+              {showUpdateModal && (
+                <UpdateDesignationModal
+                  showModal={showUpdateModal}
+                  handleClose={handleCloseUpdateModal}
+                  setToastHeader={setToastHeader}
+                  setToastBody={setToastBody}
+                  setShowToast={setShowToast}
+                  setReloadDesignations={setReloadDesignations}
+                  setToastType={setToastType}
+                  selectedDesignationId={selectedDesignationId}
+                  position={
+                    designations.find((d) => d._id === selectedDesignationId)
+                      ?.position
+                  }
+                  basicSalary={
+                    designations.find((d) => d._id === selectedDesignationId)
+                      ?.basicSalary
+                  }
+                />
+              )}
             </Tab>
           </Tabs>
         </Card.Body>
