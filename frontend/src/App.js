@@ -17,6 +17,7 @@ import "./App.css";
 import StaffApp from "./StaffApp";
 import CustomerApp from "./CustomerApp";
 import Common from "./components/Pages/Common";
+import Invoice from "./components/CUS/CUSMain/CustomerPayments/PaymentInvoice";
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path="/" element={<Common />} />
           <Route path="/staff/*" element={<StaffApp />} />
           <Route path="/customer/*" element={<CustomerApp />} />
+          <Route path="/invoice" element={<Invoice/>}/>
         </Routes>
       </Router>
     </>
