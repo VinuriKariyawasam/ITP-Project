@@ -4,7 +4,7 @@ const router = require("express").Router();
 
 router.get("/records", RecordController.getRecords);
 
-router.get("/records/:id", RecordController.getRecordById);
+router.get("/record/:id", RecordController.getRecordById);
 
 router.post("/records", RecordController.createRecord);
 

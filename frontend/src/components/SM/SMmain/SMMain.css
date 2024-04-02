@@ -1,0 +1,13 @@
+.SMMainmainsubHead {
+  color: #141414;
+  margin-bottom: 40px;
+  font-feature-settings: 'dlig' on;
+  font-family: Inter;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 30px;
+  /* 125% */
+  letter-spacing: -0.6px;
+  margin-top: 50px;
+}

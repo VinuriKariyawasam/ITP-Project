@@ -244,7 +244,7 @@ function Addrecord() {
         </Form.Group>
         {/* Documents */}
         <Form.Group as={Col} controlId="formFileDocuments">
-          <Form.Label>Add other documents *(.pdf only)</Form.Label>
+          <Form.Label>Add Service Report here *(.pdf only)</Form.Label>
           <FileUpload
             id="documents"
             accept=".pdf"

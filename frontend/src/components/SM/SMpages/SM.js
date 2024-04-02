@@ -1,6 +1,6 @@
 import React from "react";
 import SMSidebar from "../SMsidebar/SMSidebar"
-import SMMain from "../SMmain/SMService/SMMain"
+import SMMain from "../SMmain/SMMain"
 import Smrecords from "../SMmain/SMService/Smrecords"
 import Header from "../../Header/Header";
 

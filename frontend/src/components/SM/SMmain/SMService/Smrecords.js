@@ -1,8 +1,8 @@
 import React from "react";
-import SMPageTitle from "./SMPageTitle";
+//import SMPageTitle from "./SMPageTitle";
 import Addrecord from "./Addrecord";
 import RecDash from "./RecDash";
-import "./SMMain.css";
+import "../SMMain";
 
 
 // Import front end routes
@@ -16,7 +16,8 @@ import {
 function Smrecords() {
   return (
     <main id="main" className="main">
-      <SMPageTitle title="Service Records" url="sm/record" />
+      
+      
 
       <Routes>
         <Route path="/" element={<RecDash />} />

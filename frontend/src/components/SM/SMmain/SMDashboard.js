@@ -1,5 +1,5 @@
 import React from "react";
-import DbCard from "../SMService/SMDbCard";
+import DbCard from "./SMDbCard";
 
 function SMDashboard() {
   return (

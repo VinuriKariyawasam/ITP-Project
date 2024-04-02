@@ -63,8 +63,8 @@ useEffect(() => {
   const handleConfirmDelete = async () => {
     try {
        //newline
-       // Access _id from the record object
-         //   const { _id } = record;
+      //  Access _id from the record object
+          const { _id } = record;
 
       // Send DELETE request to backend API
       await axios.delete(
@@ -120,7 +120,7 @@ useEffect(() => {
   };
 
   return (
-    <Modal show={show} onHide={onHide} size="lg" centered>
+    <Modal show={show} onHide={onHide} size="md" centered>
       <Modal.Header closeButton>
         <Modal.Title>Record Details</Modal.Title>
       </Modal.Header>

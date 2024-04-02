@@ -7,7 +7,7 @@ const ArchivedRecord = require("../../models/sm/archivedRecordModel");
 
 // Specify the new upload directory
 // Specify the relative upload directory
-const uploadDirectory = path.join(__dirname, "..", "..", "uploads");
+const uploadDirectory = path.join(__dirname, "..", "..", "uploads","SM");
 
 // Create a multer storage instance with the destination set to the new directory
 const storage = multer.diskStorage({
@@ -58,11 +58,11 @@ class RecordController {
 
         // Use the correct URLs when constructing file paths
         const photoPath = req.files["photo"]
-          ? `/uploads/${path.basename(req.files["photo"][0].path)}`
+          ? `/uploads/SM/${path.basename(req.files["photo"][0].path)}`
           : null;
         const documentPaths = req.files["documents"]
           ? req.files["documents"].map(
-              (file) => `/uploads/${path.basename(file.path)}`
+              (file) => `/uploads/SM/${path.basename(file.path)}`
             )
           : [];
 

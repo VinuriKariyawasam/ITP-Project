@@ -43,7 +43,7 @@ function RecDash() {
   const fetchRecordById = async (recordId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/sm/records/${recordId}`
+        `http://localhost:5000/api/sm/record/${recordId}`
       );
 
       if (!response.ok) {
@@ -149,7 +149,7 @@ function RecDash() {
         </Stack>
       </Row>
 
-      <div className="table">
+      <div className="SMrecordstable">
         <table className="table table-rounded">
           <thead>
             <tr>
