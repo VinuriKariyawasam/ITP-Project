@@ -229,7 +229,7 @@ class RecordController {
 
           if (!dbPhotoName || uploadedPhotoName !== dbPhotoName) {
             // Upload photo and update photo URL in rec object
-            const photoPath = `/uploads/${path.basename(
+            const photoPath = `/uploads/SM/${path.basename(
               req.files["photo"][0].path
             )}`;
             rec.photo = photoPath;

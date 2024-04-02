@@ -92,13 +92,7 @@ function RecordUpdateModal({ show, onHide, record, onUpdate })  {
       console.error("Error updating data:", error.message);
     }
   };
-
-  // State to track selected position
-  //const [selectedPosition, setSelectedPosition] = useState("");
-
- // const handlePositionChange = (e) => {
-  //  setSelectedPosition(e.target.value); // Update selected position
-  //};
+ 
 //chatgpt part
   useEffect(() => {
     // Code to run on component mount
@@ -109,8 +103,6 @@ function RecordUpdateModal({ show, onHide, record, onUpdate })  {
       console.log("Component unmounted");
     };
   }, []); // Empty dependency array means the effect runs only once on mount
-
-
 
 
 

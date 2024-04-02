@@ -9,16 +9,7 @@ router.get("/records/:id", RecordController.getRecordById);
 router.post("/records", RecordController.createRecord);
 
 router.delete("/archive-record/:id", RecordController.deleteRecordById);
-router.patch(
-    "/update-record/:id",
-    //updateRecordValidationRules,
-    RecordController.updateRecordById
-  );
-  
-/*router.post(
-  "/add-employee",
-  createEmployeeValidationRules,
-  EmployeeController.createEmployee
-);*/
 
+router.patch("/update-record/:id",RecordController.updateRecordById );
+  
 module.exports = router;

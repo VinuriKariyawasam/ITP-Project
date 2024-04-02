@@ -30,7 +30,7 @@ function RecDash() {
 
   // handleUpdateRecord function to pass to RecordDetailsModal
   const handleUpdateRecord = (updatedData) => {
-    // Logic to update employee data
+    // Logic to update record data
     console.log("Updated record data:", updatedData);
     //chatgpt change
     setIsDataUpdated(true); // Set isDataUpdated to trigger modal refresh
@@ -43,7 +43,7 @@ function RecDash() {
   const fetchRecordById = async (recordId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/sm/record/${recordId}`
+        `http://localhost:5000/api/sm/records/${recordId}`
       );
 
       if (!response.ok) {
@@ -53,10 +53,29 @@ function RecDash() {
       const data = await response.json();
       console.log("Fetched record data from fetch:", data);
       return data;
+
+      //Chatgpt part
     } catch (error) {
       console.error("Error fetching record data:", error);
-      return null;
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
+        // Handle network errors
+        // For example, show a message to the user
+        alert("Failed to fetch record data. Please check your network connection.");
+      } else {
+        // Handle other errors, including 404
+        // For example, show a message to the user indicating that the record was not found
+        alert("Record not found. Please try again or contact support.");
+      }
+      // Return something meaningful to indicate error
+      return { error: error.message };
     }
+    
+
+
+   // } catch (error) {
+   //   console.error("Error fetching record data:", error);
+   //   return null;
+   // }
   };
 
   //to all record details fetch
@@ -123,7 +142,7 @@ function RecDash() {
             </Form>
           </div>
           <div className="p-2 ms-auto">
-            <Button variant="dark" size="md" onClick={() => navigate("add")}>
+            <Button variant="dark" size="sm" onClick={() => navigate("add")}>
               Create Record
             </Button>
           </div>

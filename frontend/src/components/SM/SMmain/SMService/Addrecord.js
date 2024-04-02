@@ -22,11 +22,6 @@ function Addrecord() {
   //to redirect after success
   const navigate = useNavigate();
 
-  // State to track selected position
-  //const [selectedPosition, setSelectedPosition] = useState("");
-
-
-
   //for date picker
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -113,10 +108,6 @@ function Addrecord() {
     } catch (error) {
       console.error("Error submitting data:", error.message);
     }
-  };*/
-
-  /*const handlePositionChange = (e) => {
-    setSelectedPosition(e.target.value); // Update selected position
   };*/
 
   //file uplood funxtions

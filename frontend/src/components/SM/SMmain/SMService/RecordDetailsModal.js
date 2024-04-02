@@ -127,15 +127,6 @@ useEffect(() => {
       <Modal.Body>
         <Container>
           <Row style={{ marginBottom: "10px" }}>
-            <Col xs={6} md={4}>
-              <Image
-                src={photoUrl}
-                rounded
-                style={{ width: "150px", height: "150px" }}
-              />
-            </Col>
-          </Row>
-          <Row style={{ marginBottom: "10px" }}>
             <Col xs={12} md={8}>
               <strong>Vehicle Number:</strong> {vnumber}
             </Col>
@@ -158,12 +149,22 @@ useEffect(() => {
               <strong>Other Details:</strong> {otherDetails}
             </Col>
           </Row>
-
+     
           <Row style={{ marginBottom: "10px" }}>
+            <Col xs={6} md={4}>
+            <strong>Quotation:</strong>
+              <Image
+                src={photoUrl}
+                style={{ width: "200px", height: "150px" }}
+              />
+            </Col>
+         
+
+          
             <Col>
               <strong>Documents:</strong>
               <ul>
-                {documentUrls.map((docUrl) => {
+              {Array.isArray(documentUrls) && documentUrls.map((docUrl) => {
                   // Extract the file name from the URL
                   const fileName = docUrl.substring(
                     docUrl.lastIndexOf("/") + 1
@@ -180,6 +181,7 @@ useEffect(() => {
               </ul>
             </Col>
           </Row>
+
         </Container>
       </Modal.Body>
       <Modal.Footer>
@@ -189,12 +191,7 @@ useEffect(() => {
         <Button variant="danger" onClick={handleDeleteClick}>
           Delete
         </Button>
-        <Button
-          variant="success"
-          onClick={() => console.log("Evaluate clicked")}
-        >
-          Evaluate
-        </Button>
+        
         <Button variant="dark" onClick={onHide}>
           Close
         </Button>
