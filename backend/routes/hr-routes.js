@@ -1,5 +1,6 @@
 const EmployeeController = require("../controllers/hr/employe-controller");
 const LeavesController = require("../controllers/hr/leaves-controller");
+const DesignationsController = require("../controllers/hr/desigantion-controller");
 const bodyParser = require("body-parser");
 const { body } = require("express-validator");
 const router = require("express").Router();
@@ -98,6 +99,14 @@ const validateLeaveRequest = [
     .withMessage("Invalid status"),
 ];
 
+// Validation middleware function for validating the update leave request data
+const validateUpdateLeaveRequest = [
+  body("name").notEmpty().withMessage("Employee name is required"),
+  body("fromDate").isISO8601().withMessage("Invalid fromDate format"),
+  body("toDate").isISO8601().withMessage("Invalid toDate format"),
+  body("reason").notEmpty().withMessage("Reason is required"),
+];
+
 // Route for creating a new leave record
 router.post("/add-leave", validateLeaveRequest, LeavesController.createLeave);
 
@@ -108,9 +117,32 @@ router.get("/leaves", LeavesController.getAllLeaves);
 router.get("/leaves/:id", LeavesController.getLeaveById);
 
 // Route for updating a leave record by ID
-router.patch("/update-leave/:id", LeavesController.updateLeaveById);
+router.patch(
+  "/update-leave/:id",
+  validateUpdateLeaveRequest,
+  LeavesController.updateLeaveById
+);
 
 // Route for deleting a leave record by ID
 router.delete("/delete-leave/:id", LeavesController.deleteLeaveById);
+
+// Route for updating leave status
+router.patch(
+  "/update-leave-status/:id",
+  LeavesController.updateLeaveStatusById
+);
+
+//---------Designation Routes-------------------
+// CREATE
+router.post("/add-designation", DesignationsController.create);
+
+// READ
+router.get("/designations", DesignationsController.getAll);
+
+// UPDATE
+router.patch("/update-designation/:id", DesignationsController.update);
+
+// DELETE
+router.delete("/delete-designation/:id", DesignationsController.delete);
 
 module.exports = router;

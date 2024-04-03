@@ -12,6 +12,7 @@ const UpdateLeaveModal = ({ show, handleClose, leaveId, handleSubmit }) => {
     fromDate: new Date(),
     toDate: new Date(),
     reason: "",
+    name: "",
   });
 
   const [validationErrors, setValidationErrors] = useState({});
@@ -31,6 +32,7 @@ const UpdateLeaveModal = ({ show, handleClose, leaveId, handleSubmit }) => {
           fromDate: new Date(data.fromDate),
           toDate: new Date(data.toDate),
           reason: data.reason,
+          name: data.name,
         });
       } catch (error) {
         console.error("Error fetching leave data:", error);
@@ -80,12 +82,32 @@ const UpdateLeaveModal = ({ show, handleClose, leaveId, handleSubmit }) => {
     return errors;
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     const errors = validateForm();
 
+    console.log(leaveData);
     if (Object.keys(errors).length === 0) {
-      handleSubmit(leaveData);
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/hr/update-leave/${leaveId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(leaveData),
+          }
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        console.log("Leave updated successfully");
+        navigate("/staff/hr/leaves");
+        handleClose();
+      } catch (error) {
+        console.error("Error updating leave:", error);
+      }
     }
   };
 
@@ -96,9 +118,15 @@ const UpdateLeaveModal = ({ show, handleClose, leaveId, handleSubmit }) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleFormSubmit}>
+          {/* Display name as a disabled field */}
+          <Form.Group className="mb-3" controlId="formName">
+            <Form.Label>Name</Form.Label>
+            <Form.Control type="text" value={leaveData.name} disabled />
+          </Form.Group>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formFromDate">
               <Form.Label>From Date</Form.Label>
+              <br />
               <DateRange
                 editableDateInputs={true}
                 onChange={handleDateChange}

@@ -11,6 +11,6 @@ const salarySchema = new mongoose.Schema({
   },
 });
 
-const Leaves = mongoose.model("Salary", salarySchema);
+const Salary = mongoose.model("Salary", salarySchema);
 
 module.exports = Salary;

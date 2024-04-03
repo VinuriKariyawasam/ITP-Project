@@ -11,6 +11,6 @@ const designationsSchema = new mongoose.Schema({
   },
 });
 
-const Leaves = mongoose.model("Designations", designationsSchema);
+const Designations = mongoose.model("Designations", designationsSchema);
 
 module.exports = Designations;

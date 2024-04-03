@@ -27,6 +27,7 @@ function App() {
           <Route path="/" element={<Common />} />
           <Route path="/staff/*" element={<StaffApp />} />
           <Route path="/customer/*" element={<CustomerApp />} />
+          
         </Routes>
       </Router>
     </>
