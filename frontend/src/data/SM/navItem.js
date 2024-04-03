@@ -14,6 +14,7 @@ const navList = [
     _id: 3,
     name: "Service Records",
     icon: "bi bi-journal-text",
+    href:"/staff/sm/record"
   },
   {
     _id: 4,
@@ -30,6 +31,7 @@ const navList = [
     name: "Appointments",
     icon: "bi bi-car-front",
     href: "/staff/sm/appointmentMain",
+
   },
 ];
 
