@@ -1,4 +1,4 @@
-const { addmechanicalreqdata,getMechanical,deleteMechanical } = require('../controllers/mobile/mobileController')
+const { addmechanicalreqdata,getMechanical,updatemechanical,deleteMechanical } = require('../controllers/mobile/mobileController')
 
 
 // get this page if main route would be 'MobileService'

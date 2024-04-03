@@ -5,6 +5,7 @@ exports.addmechanicalreqdata = async (req,res)=>{
     const {cusName,cusEmail,vehicleNo,reqDate,reqTime,reqLocation,issue,contactNo}= req.body
 
 
+
     const mobileS= new MobileSchema({
         cusName,
 		cusEmail,
