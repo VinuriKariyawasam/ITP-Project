@@ -13,6 +13,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/uploads/hr", express.static(path.join(__dirname, "uploads", "hr")));
+app.use("/uploads/SM", express.static(path.join(__dirname, "uploads", "SM")));
 
 
 // Load finance routes

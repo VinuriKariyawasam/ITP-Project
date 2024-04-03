@@ -13,19 +13,20 @@ import {
 } from "react-router-dom";
 
 import "./App.css";
-import HR from "./components/HR/HrPages/HR";
-import SM from "./components/SM/SMpages/SM";
+
+import StaffApp from "./StaffApp";
+//import CustomerApp from "./CustomerApp";
 import Common from "./components/Pages/Common";
+
 
 function App() {
   return (
     <>
-      
-      <Router>
+       <Router>
         <Routes>
           <Route path="/" element={<Common />} />
-          <Route path="/hr/*" element={<HR />} />
-          <Route path="/sm/*" element={<SM />} />
+          <Route path="/staff/*" element={<StaffApp />} />
+          
         </Routes>
       </Router>
     </>

@@ -82,7 +82,7 @@ function RecordUpdateModal({ show, onHide, record, onUpdate })  {
       }
 
       // Redirect to the specified URL after successful submission
-      navigate("/sm/record");
+      navigate("/staff/sm/record");
       // Optionally update the UI or perform any other actions after successful submission
       onUpdate(response.data); // Assuming onUpdate is a function to update the UI with the updated data
 
