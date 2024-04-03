@@ -74,7 +74,7 @@ function Addrecord() {
         console.log("Data submitted successfully:", result);
         alert("Record Created Successfully!");
         // Redirect to the specified URL after successful submission
-        navigate("/sm/record");
+        navigate("/staff/sm/record");
       } else {
         // Handle other error cases
         throw new Error("Failed to submit data");
