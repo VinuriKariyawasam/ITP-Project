@@ -1,5 +1,3 @@
-// frontend/PayHereIntegration.js
-
 import React, { useState } from "react";
 import { Button, Form, Carousel } from "react-bootstrap";
 import neotechpay from "../../../../images/Payment/neotechpay.png";
@@ -115,6 +113,24 @@ const PayHereIntegration = () => {
                   type="text"
                   name="address"
                   placeholder="Enter your address"
+                  onChange={handleChange}
+                />
+              </Form.Group>
+              <Form.Group controlId="order_id">
+                <Form.Label>Order ID</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="order_id"
+                  placeholder="Enter the order ID"
+                  onChange={handleChange}
+                />
+              </Form.Group>
+              <Form.Group controlId="items">
+                <Form.Label>Items</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="items"
+                  placeholder="Enter the items"
                   onChange={handleChange}
                 />
               </Form.Group>
