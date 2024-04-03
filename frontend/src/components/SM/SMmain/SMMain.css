@@ -1,8 +1,22 @@
+/*--------------------------------------------------------------
+# Main
+--------------------------------------------------------------*/
+#main {
+  margin-top: 60px;
+  padding: 20px 30px;
+  transition: all 0.3s;
+}
 
-.SMMainmainsubHead {
+@media (max-width: 1199px) {
+  #main {
+    padding: 20px;
+  }
+}
+
+.SMmainsubHead {
   color: #141414;
   margin-bottom: 40px;
-  font-feature-settings: 'dlig' on;
+  font-feature-settings: "dlig" on;
   font-family: Inter;
   font-size: 24px;
   font-style: normal;
@@ -11,4 +25,8 @@
   /* 125% */
   letter-spacing: -0.6px;
   margin-top: 50px;
+}
+
+.list-group {
+  margin-top: 10px;
 }
