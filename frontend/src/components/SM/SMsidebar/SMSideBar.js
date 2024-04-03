@@ -1,9 +1,9 @@
 import React from "react";
-import "./SMSideBar.css";
+import "./SMSidebar.css";
 import SMnavList from "../../../data/SM/navItem";
 import SMNavItem from "./SMNavItem";
 
-function SMSideBar() {
+function SMSidebar() {
   return (
     <aside id="sidebar" className="sidebar">
       <ul className="sidebar-nav" id="sidebar-nav">
@@ -15,4 +15,4 @@ function SMSideBar() {
   );
 }
 
-export default SMSideBar;
+export default SMSidebar;
