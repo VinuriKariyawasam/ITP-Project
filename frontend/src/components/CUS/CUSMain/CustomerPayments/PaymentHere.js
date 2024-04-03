@@ -14,8 +14,8 @@ const PayHereIntegration = () => {
     address: "Kandy",
     city: "Kandy",
     country: "Sri Lanka",
-    order_id: "S01",
-    items: "S01",
+    order_id: "SM005",
+    items: "SM005",
     currency: "LKR",
     amount: "1200.00",
     // Add other necessary payment data fields here
