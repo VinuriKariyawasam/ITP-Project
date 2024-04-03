@@ -158,10 +158,11 @@ useEffect(() => {
                 style={{ width: "200px", height: "150px" }}
               />
             </Col>
-         
+            </Row>
+            <Row style={{ marginBottom: "10px" }}>
 
           
-            <Col>
+            <Col xs={12} md={8}>
               <strong>Documents:</strong>
               <ul>
               {Array.isArray(documentUrls) && documentUrls.map((docUrl) => {
