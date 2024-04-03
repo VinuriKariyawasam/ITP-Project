@@ -81,10 +81,10 @@ return (
         onChange={handleEdit}
       />
     </FloatingLabel>
-    <div className="replybtn">
-     <Button className='editbtn' variant="dark" size="md" onClick={handleUpdate}>Update</Button>
-     <Button className='deletebtn' variant="dark" size="md" onClick={handleDelete}>Delete</Button>
-     <Button className='gotobtn' variant="dark" size="md" onClick={handleAdd}>Add New Reply</Button>
+    <div className="cam-replybtn">
+     <Button className='cam-editbtn' variant="dark" size="md" onClick={handleUpdate}>Update</Button>
+     <Button className='cam-deletebtn' variant="dark" size="md" onClick={handleDelete}>Delete</Button>
+     <Button className='cam-gotobtn' variant="dark" size="md" onClick={handleAdd}>Add New Reply</Button>
      </div>
   </>
        

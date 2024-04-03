@@ -57,7 +57,7 @@ function sendData(e){
           }}
         />
       </FloatingLabel>
-      <div className="replybtn">
+      <div className="cam-replybtn">
       <Button variant="dark" size="md" onClick={sendData}>Post</Button>
       </div>
     </>
