@@ -1,9 +1,10 @@
 import React from "react";
-import SMSidebar from "../SMsidebar/SMSidebar"
-import SMMain from "../SMmain/SMMain"
+import SMSideBar from "../SMsidebar/SMSideBar"
+import SMmain from "../SMmain/SMMain"
+import SMAppointmentMain from "../SMmain/SMAppointment/SMAppointmentMain"
+import Header from '../../Header/Header'
+import SMPeriodicalServices from "../SMmain/SMAppointment/SMPeriodicalServices";
 import Smrecords from "../SMmain/SMService/Smrecords"
-import Header from "../../Header/Header";
-
 
 // Import front end routes
 import {
@@ -13,18 +14,17 @@ import {
   Navigate,
 } from "react-router-dom";
 
-
 function SM() {
   return (
     <>
-      <SMSidebar />
-       <Header> </Header>
+     <Header />
+      <SMSideBar />
+
       <Routes>
-        <Route path="/" element={<SMMain/>} />
-       
- /*Add udara's route here*/
+        <Route path="/" exact element={<SMmain/>} />
+        <Route path="appointmentMain/" element={<SMAppointmentMain/>} />
+        <Route path="pappointmentMain" exact element={<SMPeriodicalServices />} />
         <Route path="record/*" element={<Smrecords/>} />
-        
 
       </Routes>
     </>

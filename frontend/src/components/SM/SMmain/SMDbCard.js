@@ -8,7 +8,7 @@ const dbCard = ({ title, value, iconClass, duration }) => {
           <Card.Title>
             {title}
             <span>|{duration} </span>
-            <i className={'bi ${iconClass} fa-9x float-end'}></i>
+            <i className={`bi ${iconClass} fa-9x float-end`}></i>
           </Card.Title>
           <Card.Text>
             <h2 className="mb-2 text-body-secondary">
@@ -22,5 +22,6 @@ const dbCard = ({ title, value, iconClass, duration }) => {
     </div>
   );
 };
+
 
 export default dbCard;
