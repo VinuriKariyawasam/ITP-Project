@@ -1,7 +1,28 @@
 /*--------------------------------------------------------------
 # Main
 --------------------------------------------------------------*/
-#main {
+.SMMainmainsubHead {
+  color: #141414;
+  margin-bottom: 40px;
+  font-feature-settings: 'dlig' on;
+  font-family: Inter;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 30px;
+  /* 125% */
+  letter-spacing: -0.6px;
+  margin-top: 50px;
+}
+
+.SMMainlist-group {
+  margin-top: 10px;
+}
+
+
+
+
+/*#main {
   margin-top: 60px;
   padding: 20px 30px;
   transition: all 0.3s;
@@ -20,7 +41,7 @@ font-family: Inter;
 font-size: 24px;
 font-style: normal;
 font-weight: 700;
-line-height: 30px; /* 125% */
+line-height: 30px; // 125% 
 letter-spacing: -0.6px;
 margin-top: 50px;
 }
@@ -44,7 +65,7 @@ font-family: Inter;
 font-size: 20px;
 font-style:oblique;
 font-weight: 700;
-line-height: 20px; /* 100% */
+line-height: 20px; // 100% 
 display: inline-block;
 margin-right: 150px;
 margin-top: 20px;
@@ -66,4 +87,4 @@ margin-top: 20px;
 .card{
   background: none;
   border: none;
-}
+}*/

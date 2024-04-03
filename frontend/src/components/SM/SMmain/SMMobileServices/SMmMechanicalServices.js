@@ -1,22 +1,29 @@
 import React from "react";
+import '../SMMobileServices/SMmMechanicalServices'
 
 
 
 const SMmMechanicalServices = props => {
+
+  
     return (
+      <main id="main" className="main">
         <div>
 
-            <h2 className="pHeading">Mobile Mechanical Services</h2>
+            <h2 className="pHeading">Mobile Mechanical Service Requests</h2>
             <div className="ptable">
                 <table className='table table-bordered'>
                     <thead>
                         <tr>
 
-                            <th>Vehicle No</th>
                             <th>Customer Name</th>
-                            <th>Date and Time</th>
+                            <th>Customer Email</th>
+                            <th>Vehicle No</th>
+                            <th>Request Date</th>
+                            <th>Request Time</th>
+                            <th>Location</th>
+                            <th>Issue</th>
                             <th>Contact No</th>
-                            <th>Description</th>
 
 
 
@@ -30,18 +37,16 @@ const SMmMechanicalServices = props => {
                         </tr>
                     </thead>
                     <tbody>
-                        {
-
-                            <tr>
-                                
-                            </tr>
-
-                        }
+                        <tr>
+                        
+                        
+                        </tr>
                     </tbody>
                 </table>
             </div>
 
         </div>
+        </main>
 
     )
 }

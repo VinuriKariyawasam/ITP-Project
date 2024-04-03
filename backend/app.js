@@ -15,6 +15,10 @@ readdirSync('./routes').map((route) =>
   app.use('/api/finance', require('./routes/' + route))
 );
 
+readdirSync("./routes").map((route) =>
+  app.use("/api/mobile", require("./routes/" + route))
+);
+
 
 const server = () =>{
     db()
