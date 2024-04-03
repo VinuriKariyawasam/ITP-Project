@@ -16,7 +16,7 @@
 .SMmainsubHead {
   color: #141414;
   margin-bottom: 40px;
-  font-feature-settings: 'dlig' on;
+  font-feature-settings: "dlig" on;
   font-family: Inter;
   font-size: 24px;
   font-style: normal;
@@ -31,7 +31,3 @@
   margin-top: 10px;
 }
 
-.card {
-  background: none;
-  border: none;
-}

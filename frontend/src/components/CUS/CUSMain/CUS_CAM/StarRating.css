@@ -1,0 +1,33 @@
+.cam-star-filled {
+    color: gold;
+  }
+  
+.cam-star-outline {
+    color: #a9a0a0;
+    cursor: pointer;
+    
+  }
+
+.cam-star-text{
+  font-size: medium;
+  font-family: 'Nunito', sans-serif;
+}  
+
+.cam-star-rating-container {
+  display: flex;
+  align-items: center;
+}
+
+.cam-star-container {
+  display: flex;
+  align-items: center;
+  margin-right: 10px; /* Adjust spacing between stars and progress bars */
+}
+
+.cam-progress-bar {
+  height: 8px;
+  background-color: #ffc107;
+  margin-left: 5px;
+  border-radius: 5px;
+  
+}

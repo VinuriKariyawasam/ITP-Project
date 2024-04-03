@@ -135,6 +135,7 @@ router.patch(
 
 //---------Designation Routes-------------------
 
+
 // Validation middleware function for validating the designation request data
 const validateDesignationRequest = [
   body("position").notEmpty().withMessage("Positione is required"),
@@ -155,15 +156,16 @@ router.post(
 // READ
 router.get(
   "/designations",
-  validateUpdateDesignationRequest,
-  DesignationsController.getAll
+   DesignationsController.getAll
 );
 
+
 // UPDATE
-router.patch("/update-designation/:id", DesignationsController.update);
+router.patch("/update-designation/:id",validateUpdateDesignationRequest, DesignationsController.update);
 
 // DELETE
 router.delete("/delete-designation/:id", DesignationsController.delete);
+
 
 //---------Salary Routes-------------------
 

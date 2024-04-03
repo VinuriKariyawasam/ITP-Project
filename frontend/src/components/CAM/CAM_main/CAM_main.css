@@ -1,0 +1,29 @@
+/*--------------------------------------------------------------
+# Main
+--------------------------------------------------------------*/
+#cam-main {
+    margin-top: 60px;
+    padding: 20px 30px;
+    transition: all 0.3s;
+  }
+  
+  @media (max-width: 1199px) {
+    #cam-main {
+      padding: 20px;
+    }
+  }
+
+  .cam-replybtn{
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 5px;
+    font-size: medium;
+  }
+  
+  .cam-editbtn{
+    margin-right: 5px;
+  }
+
+  .cam-gotobtn{
+    margin-left: 5px;
+  }

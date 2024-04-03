@@ -36,7 +36,7 @@ const navList = [
     },
     {
       _id: 6,
-      name: "Payment Receipts",
+      name: "Payment Invoices",
       icon: "bi bi-file-earmark-fill",
     },
   ];

@@ -3,6 +3,7 @@ import "./hrMain.css";
 import HrPageTitle from "./HRPageTitle";
 import Configs from "./ConfigurationsHr";
 
+
 // Import front end routes
 import {
   BrowserRouter as Router,

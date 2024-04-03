@@ -15,7 +15,6 @@ function HrSalary() {
   return (
     <main id="main" className="main">
       <HrPageTitle title="Salary" url="staff/hr/salary" />
-
       <Routes>
         <Route path="/" element={<Salary />} />
       </Routes>

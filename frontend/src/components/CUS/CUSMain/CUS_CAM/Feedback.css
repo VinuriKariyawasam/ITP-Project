@@ -1,0 +1,56 @@
+.cam-para1 {
+  font-size: medium;
+  font-size: large;
+}
+
+.cam-h5 {
+  font-weight: 600;
+  font-family: "Nunito", sans-serif;
+}
+
+.cam-btn-success {
+  font-size: smaller;
+  font-weight: 400;
+  margin-right: 10px;
+  margin-left: 1200px;
+  margin-top: 1px;
+}
+
+.cam-btn-secondary {
+  font-size: smaller;
+  font-weight: 400;
+  margin-top: 1px;
+}
+
+.cam-form {
+  padding-top: 80px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.cam-form h3 {
+  font-weight: bold;
+  font-size: xx-large;
+}
+
+.cam-mb-3 {
+  padding-top: 0px;
+}
+
+.cam-allFeedback {
+  padding-top: 100px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.cam-floatingLabel {
+  padding-bottom: 10px;
+}
+.cam-components {
+  padding-top: 10px;
+}
+.cam-newfeedbackbtn {
+  margin-left: 1000px;
+}
+.cam-myfeedbackbtn {
+  margin-left: 5px;
+}
