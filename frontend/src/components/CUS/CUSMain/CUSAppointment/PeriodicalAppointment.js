@@ -6,6 +6,8 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 
 function PeriodicalAppointment() {
@@ -27,7 +29,7 @@ function PeriodicalAppointment() {
 
   function sendata(e) {
     e.preventDefault();
-
+    const dateOnly = appointmentdate ? appointmentdate.toISOString().split('T')[0] : null;
     //create javascript object
     const newPeriodicalAppointment = {
       name,
@@ -38,7 +40,7 @@ function PeriodicalAppointment() {
       lastServiceMonth,
       mileage,
       phone,
-      appointmentdate,
+      appointmentdate: dateOnly,
       appointmenttime,
       msg
     }
@@ -53,7 +55,7 @@ function PeriodicalAppointment() {
       setlastServiceMonth("");
       setmileage("");
       setphone("");
-      setappointmentdate("");
+      setappointmentdate(null);
       setappointmenttime("");
       setmsg("");
 
@@ -147,10 +149,17 @@ function PeriodicalAppointment() {
           </Form.Group>
         </Row>
         <Row className="mb-3">
-          <Form.Group as={Col} md='5'>
-            <Form.Label>Appointment date</Form.Label>
-            <Form.Control placeholder="Enter Appointment Date" value={appointmentdate} onChange={(e) => setappointmentdate(e.target.value)} required />
-          </Form.Group>
+        <Form.Group as={Col} md='5'>
+                  <Form.Label>Appointment Date</Form.Label>
+                  <DatePicker
+                    placeholderText='Appointment Date'
+                    selected={appointmentdate} // Use state variable here
+                    onChange={(date) => setappointmentdate(date)} // Set state with selected date
+                    dateFormat='MM/dd/yyyy'
+                    required
+                  />
+                </Form.Group>
+      
 
           <Form.Group as={Col} md='5'>
             <Form.Label>Appointment Time</Form.Label>

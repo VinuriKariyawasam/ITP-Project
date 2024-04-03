@@ -5,6 +5,8 @@ import SMAppointmentMain from "../SMmain/SMAppointment/SMAppointmentMain"
 import Header from '../../Header/Header'
 import SMPeriodicalServices from "../SMmain/SMAppointment/SMPeriodicalServices";
 import SMMechanicalRepairs from "../SMmain/SMAppointment/SMMechanicalRepairs"
+import Shedules from "../SMmain/SMAppointment/Shedules"
+
 // Import front end routes
 import {
   BrowserRouter as Router,
@@ -24,6 +26,7 @@ function SM() {
         <Route path="appointmentmain/" element={<SMAppointmentMain/>} />
         <Route path="periodicalappointment" exact element={<SMPeriodicalServices />} />
         <Route path="mechanicalappointment" exact element={<SMMechanicalRepairs />} />
+        <Route path="shedules" exact element={<Shedules />} />
         
       </Routes>
     </>

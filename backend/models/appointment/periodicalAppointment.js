@@ -44,7 +44,7 @@ const periodicalSchema = new schema({
         maxLength: 10,
     },
     appointmentdate: {
-        type: String,
+        type: Date,
         required: true,
     },
     appointmenttime: {

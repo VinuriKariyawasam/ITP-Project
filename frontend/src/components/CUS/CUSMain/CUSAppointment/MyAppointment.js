@@ -8,7 +8,7 @@ const MyAppointment = props => {
 
   return(
   <div>
-  <h1>Upcoming Appointments</h1>
+  <h1>Approved Appointments</h1>
     <Table class="table">
   <thead>
     <tr>

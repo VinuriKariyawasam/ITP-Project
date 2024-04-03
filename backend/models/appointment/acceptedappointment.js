@@ -19,7 +19,7 @@ const acceptedappointmentSchema = new schema({
         required: true,
         
     },
-    sType: {
+    serviceType: {
         type: String,
         required: true,
     },
@@ -33,7 +33,7 @@ const acceptedappointmentSchema = new schema({
         maxLength: 10,
     },
     appointmentdate: {
-        type: String,
+        type: Date,
         required: true,
     },
     appointmenttime: {

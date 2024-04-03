@@ -30,7 +30,7 @@ const accidentalSchema = new Schema({
         maxLength: 10,
     },
     appointmentdate: {
-        type: String,
+        type: Date,
         required: true,
     },
     appointmenttime: {

@@ -2,12 +2,62 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
+import Card from 'react-bootstrap/Card';
+import Row from 'react-bootstrap/Row';
 
 
 const SMMechanicalRepairs= props => {
 
   //create an empty array to store details
   const [mechanicalAppointment, setmechanicalAppointment] = useState([]);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+
+  const [name, setname] = useState("");
+  const [vType, setvType] = useState("");
+  const [vNo, setvNo] = useState("");
+  const [sType, setsType] = useState("");
+  const [issue,setissue]=useState("");
+  const [contactNo, setcontactNo] = useState("");
+  const [appointmentdate, setappointmentdate] = useState("");
+  const [appointmenttime, setappointmenttime] = useState("");
+  
+
+  function sendata(e) {
+    e.preventDefault();
+    const sType = "Mechanical Repairs";
+    //create javascript object
+    const newacceptedappointment = {
+      name,
+      vType,
+      vNo,
+      sType,
+      issue,
+      contactNo,
+      appointmentdate,
+      appointmenttime,
+      
+    }
+
+    axios.post("http://localhost:5000/appointment/addacceptedappointment", newacceptedappointment).then(() => {
+      alert("Your Appointment Success")  
+      Delete(selectedAppointment._id);
+
+    }).catch((err) => {
+      alert(err)
+    })
+
+  }
+  //set values to columnns in accepted appointment
+  const handleTableRowClick = (appointment) => {
+    setname(appointment.name);
+    setvType(appointment.vType);
+    setvNo(appointment.vNo);
+    setsType(appointment.sType);
+    setissue(appointment.issue);
+    setcontactNo(appointment.phone);
+    setappointmentdate(appointment.appointmentdate);
+    setappointmenttime(appointment.appointmenttime);
+  };
 
   useEffect(() => {
 
@@ -21,6 +71,15 @@ const SMMechanicalRepairs= props => {
     getmechanicalAppointment();
 
   }, [])
+
+  const handleMoreButtonClick = (appointment) => {
+    setSelectedAppointment(appointment);
+  };
+
+  const handleCardClose = () => {
+    setSelectedAppointment(null);
+  };
+
   const Delete = (id) => {
     const shouldDelete = window.confirm("please confirm deletion!");
 
@@ -39,8 +98,40 @@ const SMMechanicalRepairs= props => {
   return (
     <main id="main" className="main">
       <div>
+        <h2 className="SMAppheading">Mechanical Services</h2>
+        {selectedAppointment && (
+          <div className="SmCard">
+          <Card style={{width:"50%"}}>
+            <Card.Body>
+            <button type="button" class="btn-close" aria-label="Close"  onClick={handleCardClose}></button>
+              <Card.Title>Selected Appointment Details</Card.Title>
+              <Row>
+              <Card.Text  >
+                <strong >Vehicle No: </strong>{selectedAppointment.vNo}<br />
+                <strong >Customer Name: </strong>{selectedAppointment.name}<br />
+                </Card.Text>
+                </Row>
+                <Row>
+                <Card.Text>
+                <strong>Vehicle Type: </strong>{selectedAppointment.vType}<br />
+                <strong>Requesting service: </strong>{selectedAppointment.issue}<br />
+                </Card.Text>
+                </Row>
+                <Row>
+                <Card.Text>
+                <strong>Date and Time: </strong>{`${selectedAppointment.appointmentdate} ${selectedAppointment.appointmenttime}`}<br />
+                <strong>Contact No: </strong>{selectedAppointment.phone}<br />
+                </Card.Text>
+                </Row >
+                <Row style={{marginTop:"4%", display:"flex"}}>
+                <Button variant="danger" onClick={() => Delete(selectedAppointment._id)} style={{marginLeft:"20%",width:"100px"}}>Cancel</Button>
+                <Button variant="primary" onClick={sendata} style={{marginLeft:"20%",width:"100px"}}>Approve</Button>
+                </Row>
+            </Card.Body>
+          </Card>
+          </div>
+        )}
 
-        <h2 >Mechanical Services</h2>
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -55,27 +146,22 @@ const SMMechanicalRepairs= props => {
 
             </tr>
           </thead>
-          <thead>
-            <tr>
-              {
-
-              }
-            </tr>
-          </thead>
+          
           <tbody>
             {mechanicalAppointment.map((appointment) => (
-              <tr key={appointment._id}>
+              <tr key={appointment._id} onClick={() => handleTableRowClick(appointment)}>
 
                 <td>{appointment.vNo}</td>
                 <td>{appointment.name}</td>
                 <td>{`${appointment.appointmentdate} ${appointment.appointmenttime}`}</td>
                 <td>{appointment.contactNo}</td>
                 <td>{appointment.issue}</td>
-                <td style={{ display: 'flex', gap: '5px' }}>
-                  <Button variant="secondary" onClick={() => Delete(appointment._id)}>Cancel</Button>
-                  <Button variant="secondary">Approve</Button>
-
-                </td>
+                
+                <td>
+                  <Button variant="secondary" style={{marginLeft:"35%"}} onClick={() => handleMoreButtonClick(appointment)}>
+                    More
+                  </Button></td>
+             
               </tr>
 
             ))}

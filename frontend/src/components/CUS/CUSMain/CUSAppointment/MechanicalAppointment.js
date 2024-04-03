@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+
 import mechanicalrepairs from '../../../../images/CUS/Appointment/mechanical repairs.jpg'
 import axios from "axios";
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-
+import { useForm } from 'react-hook-form';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 function MechanicalAppointment() { // Corrected function name
-  const { register, handleSubmit, formState: { errors } } = useForm();
-
+  
+  const { } = useForm();
   const [name, setname] = useState("");
   const [vType, setvType] = useState("");
   const [vNo, setvNo] = useState("");
@@ -20,7 +22,7 @@ function MechanicalAppointment() { // Corrected function name
 
   function sendata(e) {
     e.preventDefault();
-
+    const dateOnly = appointmentdate ? appointmentdate.toISOString().split('T')[0] : null;
     //create javascript object
     const newmechanicalAppointment = {
       name,
@@ -28,7 +30,7 @@ function MechanicalAppointment() { // Corrected function name
       vNo,
       issue,
       contactNo,
-      appointmentdate,
+      appointmentdate: dateOnly,
       appointmenttime,
     };
 
@@ -40,7 +42,7 @@ function MechanicalAppointment() { // Corrected function name
         setvNo("");
         setissue("");
         setcontactNo("");
-        setappointmentdate("");
+        setappointmentdate(null);
         setappointmenttime("");
       })
       .catch((err) => {
@@ -90,9 +92,15 @@ function MechanicalAppointment() { // Corrected function name
         
        
           <Form.Group as={Col} md='5'>
-            <Form.Label>Appointment date</Form.Label>
-            <Form.Control placeholder="Enter Appointment Date" value={appointmentdate} onChange={(e) => setappointmentdate(e.target.value)} required />
-          </Form.Group>
+          <Form.Label>Appointment Date</Form.Label>
+                  <DatePicker
+                    placeholderText='Appointment Date'
+                    selected={appointmentdate} // Use state variable here
+                    onChange={(date) => setappointmentdate(date)} // Set state with selected date
+                    dateFormat='MM/dd/yyyy'
+                    required
+                  />
+                </Form.Group>
           </Row>
     
           <Form.Group as={Col} md='5'>

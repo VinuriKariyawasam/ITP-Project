@@ -8,10 +8,10 @@ exports.addacceptedappointment = async (req, res) => {
     const name = req.body.name;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
-    const sType = req.body.sType;
+    const serviceType = req.body.serviceType;
     const issue = req.body.issue;
     const contactNo = Number(req.body.contactNo);
-    const appointmentdate = req.body.appointmentdate;
+    const appointmentdate =Date(req.body.appointmentdate);
     const appointmenttime = req.body.appointmenttime;
     
 
@@ -19,7 +19,7 @@ exports.addacceptedappointment = async (req, res) => {
         name,
         vType,
         vNo,
-        sType,
+        serviceType,
         issue,
         contactNo,
         appointmentdate,
@@ -27,7 +27,7 @@ exports.addacceptedappointment = async (req, res) => {
     });
 
     try {
-        if (!name || !vType || !vNo || !sType || !issue ||  !contactNo || !appointmentdate || !appointmenttime ) {
+        if (!name || !vType || !vNo || !serviceType || !issue ||  !contactNo || !appointmentdate || !appointmenttime ) {
             return res.status(400).json({ message: 'All Fields Required' })
         }
         await newacceptedappointment.save()
@@ -58,13 +58,14 @@ exports.getacceptedappointment = async (req, res) => {
 exports.updateacceptedappointment= async (req, res) => {
     let acceptedappointmentId = req.params.id;
     //to get existing values
-    const { name, vType, vNo,issue, contactNo, appointmentdate, appointmenttime } = req.body
+    const { name, vType, vNo,serviceType,issue, contactNo, appointmentdate, appointmenttime } = req.body
 
     //object to store new values
     const updateacceptedappointment = {
         name,
         vType,
         vNo,
+        serviceType,
         issue,
         contactNo,
         appointmentdate,
