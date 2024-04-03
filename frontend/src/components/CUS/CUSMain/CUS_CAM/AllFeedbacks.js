@@ -26,15 +26,15 @@ function AllFeedbacks(){
     },  []);
 
     return(
-        <main className="allFeedback">
+        <main className="cam-allFeedback">
             <div>
                 <h2><b>FeedBack</b></h2>
-                <Button className='newfeedbackbtn' variant="dark" size="md" onClick={() => navigate("feedback")}>Give a Feedback</Button>
-                <Button className='myfeedbackbtn' variant="dark" size="md" onClick={() => navigate("myfeedback")}>Go to My Feedback</Button>
+                <Button className='cam-newfeedbackbtn' variant="dark" size="md" onClick={() => navigate("feedback")}>Give a Feedback</Button>
+                <Button className='cam-myfeedbackbtn' variant="dark" size="md" onClick={() => navigate("myfeedback")}>Go to My Feedback</Button>
                 {Feedback.map((feedback) => (
                     <div key={feedback.id}>
                         <div className="components">
-      <FloatingLabel className="floatingLabel" controlId="floatingTextarea" label={feedback.firstName + feedback.lastName}>
+      <FloatingLabel className="cam-floatingLabel" controlId="floatingTextarea" label={feedback.firstName + feedback.lastName}>
       <Form.Control
         as="textarea"
         placeholder="Leave a comment here"

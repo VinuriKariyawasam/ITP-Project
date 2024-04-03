@@ -5,7 +5,7 @@ import CAM_pageTitle from "./CAM_pageTitle";
 
 function CAM_main() {
   return (
-    <main id="main" className="main">
+    <main id="main" className="cam-main">
       <CAM_pageTitle title="Customer Affairs Management Dashboard" url="/CAM" />
       <CAM_dashboard />
     </main>

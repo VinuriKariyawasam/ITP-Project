@@ -3,7 +3,7 @@
   font-size: large;
 }
 
-.h5 {
+.cam-h5 {
   font-weight: 600;
   font-family: "Nunito", sans-serif;
 }
@@ -16,41 +16,41 @@
   margin-top: 1px;
 }
 
-.btn-secondary {
+.cam-btn-secondary {
   font-size: smaller;
   font-weight: 400;
   margin-top: 1px;
 }
 
-.form {
+.cam-form {
   padding-top: 80px;
   margin-left: 20px;
   margin-right: 20px;
 }
 
-.form h3 {
+.cam-form h3 {
   font-weight: bold;
   font-size: xx-large;
 }
 
-.mb-3 {
+.cam-mb-3 {
   padding-top: 0px;
 }
 
-.allFeedback {
+.cam-allFeedback {
   padding-top: 100px;
   padding-left: 20px;
   padding-right: 20px;
 }
-.floatingLabel {
+.cam-floatingLabel {
   padding-bottom: 10px;
 }
-.components {
+.cam-components {
   padding-top: 10px;
 }
-.newfeedbackbtn {
+.cam-newfeedbackbtn {
   margin-left: 1000px;
 }
-.myfeedbackbtn {
+.cam-myfeedbackbtn {
   margin-left: 5px;
 }
