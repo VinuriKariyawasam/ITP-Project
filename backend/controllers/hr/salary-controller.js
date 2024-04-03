@@ -1,7 +1,7 @@
-const Salary = require("../models/Salary");
+const Salary = require("../../models/hr/salaryModel");
 
 class SalaryController {
-  async createSalary(req, res) {
+  /*async createSalary(req, res) {
     try {
       const { empId, empDBId, name, position, basicSalary } = req.body;
       // Calculations based on provided fields
@@ -39,7 +39,7 @@ class SalaryController {
         .status(400)
         .json({ message: "Failed to create salary", error: error.message });
     }
-  }
+  }*/
 
   async updateSalary(req, res) {
     try {

@@ -25,6 +25,10 @@ const salarySchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  totalSal: {
+    type: Number,
+    required: true,
+  },
   noPay: {
     type: Number,
     required: true,
@@ -45,7 +49,19 @@ const salarySchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  totalSal: {
+  netSal: {
+    type: Number,
+    required: true,
+  },
+  bank: {
+    type: String,
+    required: true,
+  },
+  branch: {
+    type: String,
+    required: true,
+  },
+  account: {
     type: Number,
     required: true,
   },

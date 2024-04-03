@@ -168,7 +168,7 @@ router.delete("/delete-designation/:id", DesignationsController.delete);
 //---------Salary Routes-------------------
 
 // Create Salary
-router.post("/add-salary", SalaryController.createSalary);
+//router.post("/add-salary", SalaryController.createSalary);
 
 // Update Salary
 router.put("/update-salary/:id", SalaryController.updateSalary);
@@ -177,9 +177,9 @@ router.put("/update-salary/:id", SalaryController.updateSalary);
 router.delete("/delete-salary/:id", SalaryController.deleteSalary);
 
 // Get all Salaries
-router.get("/", SalaryController.getAllSalaries);
+router.get("/salaries", SalaryController.getAllSalaries);
 
 // Get Salary by ID
-router.get("/:id", SalaryController.getSalaryById);
+router.get("/salaries/:id", SalaryController.getSalaryById);
 
 module.exports = router;
