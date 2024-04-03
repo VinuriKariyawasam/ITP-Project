@@ -1,4 +1,6 @@
 // backend/paymentsController.js
+const onlinePaymentSchema = require('../../models/finance/onlinepaymentModel')
+
 
 const md5 = require('md5');
 require('dotenv').config();
@@ -64,6 +66,87 @@ exports.paymentinitiate = async (req, res) => {
         res.send(form);
     } catch (error) {
         console.error('Error initiating payment:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+
+exports.handlePaymentNotification = (req, res) => {
+    const {
+        merchant_id,
+        order_id,
+        payment_id,
+        payhere_amount,
+        payhere_currency,
+        status_code,
+        md5sig, // Get the md5sig from the request
+        custom_1,
+        custom_2,
+        method,
+        status_message,
+        card_holder_name,
+        card_no,
+        card_expiry
+    } = req.body;
+
+  
+    mid=process.env.MERCHANT_ID;
+
+    // Generate the local md5sig for verification
+    const merchant_secret = process.env.MS;
+    const hashms = md5(merchant_secret).toUpperCase();
+    const hashString = `${mid}${order_id}${payhere_amount}${payhere_currency}${status_code}${hashms}`;
+    const local_md5sig = md5(hashString).toUpperCase();
+
+    // Create a new OnlinePayment instance
+    const onlinePayment = new onlinePaymentSchema({
+        merchant_id,
+        order_id,
+        payment_id,
+        payhere_amount,
+        payhere_currency,
+        status_code,
+        custom_1,
+        custom_2,
+        method,
+        status_message,
+        card_holder_name,
+        card_no,
+        card_expiry,
+        sv: local_md5sig === md5sig 
+    });
+
+    // Save the payment data to the database
+    onlinePayment.save()
+        .then(savedPayment => {
+            
+
+            // Respond to PayHere to acknowledge the notification
+            res.status(200).end();
+        })
+        .catch(error => {
+            console.error('Error saving payment:', error);
+            res.status(500).json({ error: 'Error saving payment data' });
+        });
+};
+
+
+
+
+exports.getPaymentbyOrderID = async (req, res) => {
+    try {
+        const { order_id } = req.params;
+
+        const payment = await onlinePaymentSchema.findOne({ order_id });
+
+        if (!payment) {
+            return res.status(404).json({ error: 'Payment not found' });
+        }
+
+        res.json(payment);
+    } catch (error) {
+        console.error('Error retrieving payment by order ID:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };

@@ -32,10 +32,11 @@ const PaymentSuccess = () => {
                         <img src={successpay} style={{ height: '150px', width: '150px' }} alt="Payment Success" />
                         <h1 className="mb-4">Payment Successful</h1>
                         <p>Thank you for your payment!</p>
+                        <p>Your Payment Successfully Verified.</p>
                         <p>You will be redirected to the My Payments Page in {countdown} seconds</p>
                         <div className="mt-4">
                             <Link to="/customer/payments/payonline">
-                                <Button variant="primary">Go to Homepage</Button>
+                                <Button variant="primary">Go to My Payments</Button>
                             </Link>
                         </div>
                     </Col>

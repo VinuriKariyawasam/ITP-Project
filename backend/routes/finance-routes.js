@@ -16,7 +16,7 @@ const {
   getIncomeById,
 } = require("../controllers/finance/income");
 
-const {paymentinitiate} = require ("../controllers/finance/payment")
+const {paymentinitiate,handlePaymentNotification,getPaymentbyOrderID} = require ("../controllers/finance/payment")
 
 
 // Income routes
@@ -35,6 +35,8 @@ router.get("/expenses", getExpenses);
 
 //payment routes
 router.post("/payments/initiatepayment", paymentinitiate);
+router.post("/payments/handlenotification",handlePaymentNotification);
+router.get("/payments/verifypayment/:order_id", getPaymentbyOrderID);
 
 
 
