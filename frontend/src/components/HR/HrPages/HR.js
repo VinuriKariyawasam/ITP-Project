@@ -4,6 +4,8 @@ import HrSideBar from "../hrSidebar/HrSideBar";
 import HrEmployee from "../hrMain/HrEmployee";
 import HrAttendance from "../hrMain/HrAttendance";
 import HrLeaves from "../hrMain/HrLeaves";
+import HrSalary from "../hrMain/HrSalary";
+import HrConfigs from "../hrMain/HrConfigs";
 // Import front end routes
 import {
   BrowserRouter as Router,
@@ -24,7 +26,8 @@ function HR() {
         <Route path="salary/*" element={<HrSalary />} />
         <Route path="attendance/*" element={<HrAttendance />} />
         <Route path="leaves/*" element={<HrLeaves />} />
-        <Route path="configs/*" element={<HrLeaves />} />
+        <Route path="configs/*" element={<HrConfigs />} />
+
       </Routes>
     </>
   );

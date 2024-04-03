@@ -1,7 +1,8 @@
 import React from "react";
 import "./hrMain.css";
 import HrPageTitle from "./HRPageTitle";
-import Configs from "./ConfihurationsHr";
+import Configs from "./ConfigurationsHr";
+
 
 // Import front end routes
 import {
@@ -14,11 +15,10 @@ import {
 function HrConfigs() {
   return (
     <main id="main" className="main">
-      <HrPageTitle title="Configurations" url="hr/configs" />
+      <HrPageTitle title="Configurations" url="staff/hr/configs" />
 
       <Routes>
         <Route path="/" element={<Configs />} />
-        <Route path="add" element={<AddEmp />} />
       </Routes>
     </main>
   );
