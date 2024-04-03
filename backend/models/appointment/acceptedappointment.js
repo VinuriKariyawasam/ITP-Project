@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 //Inside a schema we declare attributes
 const schema = mongoose.Schema;
-const periodicalSchema = new schema({
+const acceptedappointmentSchema = new schema({
     name: {
         type: String,
         required: true,
@@ -23,22 +23,11 @@ const periodicalSchema = new schema({
         type: String,
         required: true,
     },
-    lastServiceYear: {
-        type: Number,
-        required: true,
-        maxLength: 5,
-     
-    },
-    lastServiceMonth: {
+    issue:{
         type: String,
         required: true,
     },
-    mileage: {
-        type: Number,
-        required: true,
-        maxLength: 20,
-    },
-    phone: {
+    contactNo: {
         type: Number,
         required: true,
         maxLength: 10,
@@ -50,14 +39,11 @@ const periodicalSchema = new schema({
     appointmenttime: {
         type: String,
         required: true,
-    },
-    msg: {
-        type: String,
-       
     }
+   
 });
 
 //To pass this schema to a cluster in Mongo DB
-const periodicalAppointment = mongoose.model("PeriodicalAppointment", periodicalSchema);
+const acceptedappointment = mongoose.model("acceptedappointment", acceptedappointmentSchema);
 
-module.exports = periodicalAppointment;
+module.exports = acceptedappointment;

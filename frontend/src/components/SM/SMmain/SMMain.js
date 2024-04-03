@@ -2,7 +2,7 @@ import React from "react";
 import "./SMMain.css";
 import SMDashboard from "../SMmain/SMDashboard"
 import Button from 'react-bootstrap/Button';
-
+import Card from 'react-bootstrap/Card';
 
 function SMMain() {
   return (
@@ -10,36 +10,35 @@ function SMMain() {
       <h1>Service Manager </h1>
       <h3 className="SMmainsubHead"> Here's a quick summary of what's happening in your team.</h3>
       <SMDashboard />
-      <div class="SMMain-card">
-        <ul class="SMMainlist-group">
-          <li class="SMMainlist-group-item">New service Requests
-            <Button variant="primary" style={{ float: 'right' }}>
-              Explore
-            </Button>
-          </li>
-        </ul>
-        <ul class="SMMainlist-group">
-          <li class="SMMainlist-group-item">Add a Service record
-            <Button variant="primary" style={{ float: 'right' }}>
-              Explore
-            </Button>
-          </li>
-        </ul>
-        <ul class="SMMainlist-group">
-          <li class="SMMainlist-group-item">Create a service report
-            <Button variant="primary" style={{ float: 'right' }}>
-              Explore
-            </Button>
-          </li>
-        </ul>
-        <ul class="SMMainlist-group">
-          <li class="SMMainlist-group-item">View Service History
-            <Button variant="primary" style={{ float: 'right' }}>
-              Explore
-            </Button>
-          </li>
-        </ul>
-      </div>
+
+      <Card>
+        <Card.Body>
+          <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>new service Requests</Card.Text>
+          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}}>explore</Button>
+        </Card.Body>
+      </Card>
+
+      <Card>
+        <Card.Body>
+          <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>Add a Service record</Card.Text>
+          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}}>explore</Button>
+        </Card.Body>
+      </Card>
+
+
+      <Card>
+        <Card.Body>
+          <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>Create a service report</Card.Text>
+          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}}>explore</Button>
+        </Card.Body>
+      </Card>
+
+      <Card>
+        <Card.Body>
+          <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>View Service History</Card.Text>
+          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}}>explore</Button>
+        </Card.Body>
+      </Card>
     </main>
   );
 }

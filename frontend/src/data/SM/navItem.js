@@ -29,8 +29,9 @@ const navList = [
     _id: 6,
     name: "Appointments",
     icon: "bi bi-car-front",
-    href: "/staff/sm/appointmentMain",
+    href: "/staff/sm/appointmentmain",
   },
+  
 ];
 
 export default navList;
