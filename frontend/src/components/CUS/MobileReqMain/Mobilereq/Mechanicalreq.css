@@ -3,14 +3,14 @@ body {
     color: #384047;
   }
   
-  .form {
+  .mobform {
     max-width: 480px;
     margin: 10px auto;
     padding: 10px 20px;
     background: #f4f7f8;
     border-radius: 8px;
   }
-  .heading{
+  .mobheading{
     margin-top: 80px;
     margin-left: 370px;
   }
@@ -43,30 +43,13 @@ body {
     margin-right: auto;
   }
   
-  button {
-    padding: 19px 39px 18px 39px;
-    color: #FFF;
-    background-color: #4bc970;
-    font-size: 18px;
-    text-align: center;
-    font-style: normal;
-    border-radius: 5px;
-    width: 90%;
-    border: 1px solid #3ac162;
-    border-width: 1px 1px 3px;
-    box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.1) inset;
-    margin-bottom: 10px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
   
-  .form-element {
+  .mobform-element {
     margin-bottom: 0px;
     margin-top: 0px;
   }
   
-  .form-check-label {
+  .mobform-check-label {
     font-size: 20px;
     font-style: italic;
     font-weight: 600;
@@ -75,7 +58,7 @@ body {
     text-align: center;
   }
   
-  #exampleCheck1 {
+  #mobexampleCheck1 {
     width: 29px;
     height: 26px;
     background-color: #cccccc;
@@ -87,28 +70,28 @@ body {
     }
   }
   
-  .year-month-container {
+  .mobyear-month-container {
     display: flex;
     align-items: center;
   }
   
-  .year-input,
+  .mobyear-input,
   .month-input {
     flex: 1;
     margin-right: 10px;
   }
   
-  .year-input label,
+  .mobyear-input label,
   .month-input label {
     display: block;
   }
-  .L1{
+  .mobL1{
     font-size: 17px;
     margin-top: 0px;
   
   }
-  .checkbox-container input[type="checkbox"],
-  .checkbox-container label {
+  .mobcheckbox-container input[type="checkbox"],
+  .mobcheckbox-container label {
       display: inline;
       margin-right: 8px; /* Optional: Add some spacing between the checkbox and the label */
   }

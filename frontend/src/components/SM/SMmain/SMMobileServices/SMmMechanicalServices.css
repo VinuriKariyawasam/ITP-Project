@@ -1,4 +1,4 @@
-.pHeading {
+.SMMechpHeading {
     width: 587px;
     height: 42px;
     flex-shrink: 0;
@@ -16,13 +16,13 @@
 
 }
 
-.table table-bordered {
+.SMMechtable table-bordered {
     margin: 15px;
     border-top: 52px;
 
 }
 
-.ptable {
+.SMMechptable {
     margin: 90px;
 
 }

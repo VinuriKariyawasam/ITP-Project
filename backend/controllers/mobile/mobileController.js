@@ -5,7 +5,7 @@ exports.addmechanicalreqdata = async (req,res)=>{
     const {cusName,cusEmail,vehicleNo,reqDate,reqTime,reqLocation,issue,contactNo}= req.body
 
 
-    const mobileS=MobileSchema({
+    const mobileS= new MobileSchema({
         cusName,
 		cusEmail,
 		vehicleNo,
@@ -20,25 +20,26 @@ exports.addmechanicalreqdata = async (req,res)=>{
             return res.status(400).json({message:'All Fields Required'})
         }
         await mobileS.save()
-         res.status(200).json({message:'Mobile service added to DB'})
+        return res.status(200).json({message:'Mobile request added to DB'})
     } catch (error) {
-        
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 }
 
 exports.getMechanical = async (req,res)=>{
-    try {
-        const mobile= await MobileSchema.find().sort({createdAt:-1})
+    MobileSchema.find().then((mobile)=>{
         res.status(200).json(mobile)
-    } catch (error) {
+    }) .catch ((error)=>{
         res.status(500).json({message :'Server Error'})
-    }
+    })
 }
+
 
 exports.deleteMechanical = async (req,res)=>{
     const {id}= req.params;
     MobileSchema.findByIdAndDelete(id).then((expense)=>{
-        res.status(200).json({message :'Expense Deleted Sucessfully'})
+        res.status(200).json({message :'Request Deleted Sucessfully'})
     }).catch((error)=>{
         res.status(500).json({message :'Server Error'})
     })

@@ -7,8 +7,9 @@ const router = require ('express').Router()
 
 
 router.post('/add-mechanical',addmechanicalreqdata )
-    .get('/get-mechanical',getMechanical)
-    .delete('/delete-mechanical/:id',deleteMechanical)
+router.get('/get-mechanical',getMechanical)
+//router.put('/update-periodicalAppointment/:id,',updateperiodicalAppointment)
+router.delete('/delete-mechanical/:id',deleteMechanical)
 
 
 module.exports=router
