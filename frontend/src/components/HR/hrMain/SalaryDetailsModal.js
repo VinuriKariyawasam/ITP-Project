@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Container, Row, Col } from "react-bootstrap";
+import UpdateSalaryModal from "./SalaryUpdateModal";
 
 function SalaryDetailsModal({ show, handleClose, id }) {
   const [salaryDetails, setSalaryDetails] = useState(null);
-  const [updatedSalary, setUpdatedSalary] = useState(null);
+  const [updateModalShow, setUpdateModalShow] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -18,6 +19,7 @@ function SalaryDetailsModal({ show, handleClose, id }) {
         }
 
         const data = await response.json();
+        console.log(data);
         setSalaryDetails(data);
       } catch (error) {
         console.error("Error fetching salary details:", error);
@@ -25,26 +27,18 @@ function SalaryDetailsModal({ show, handleClose, id }) {
     };
 
     fetchSalaryDetails();
-  }, [id]);
+  }, [id, show]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUpdatedSalary((prevSalary) => ({
-      ...prevSalary,
-      [name]: value,
-    }));
-  };
-
-  const handleUpdate = async () => {
+  const handleUpdate = async (updatedData) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/hr/salaries/${id}`,
+        `http://localhost:5000/api/hr/update-salaries/${id}`,
         {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(updatedSalary),
+          body: JSON.stringify(updatedData),
         }
       );
 
@@ -52,31 +46,14 @@ function SalaryDetailsModal({ show, handleClose, id }) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      // Assuming the backend returns the updated salary details
-      const updatedData = await response.json();
-      setSalaryDetails(updatedData);
-      setIsEditing(false);
+      const updatedDetails = await response.json();
+      if (!updatedDetails) {
+        throw new Error("Invalid response from server");
+      }
+      setSalaryDetails(updatedDetails);
+      setUpdateModalShow(false); // Close the update modal
     } catch (error) {
       console.error("Error updating salary:", error);
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/hr/salaries/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      handleClose();
-    } catch (error) {
-      console.error("Error deleting salary:", error);
     }
   };
 
@@ -86,117 +63,146 @@ function SalaryDetailsModal({ show, handleClose, id }) {
         <Modal.Title>Salary Details</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Container>
-          <Row style={{ marginBottom: "10px" }}>
-            <Col xs={12} md={8}>
-              <strong>Employee Id:</strong> {empId}
-            </Col>
-            <Col xs={6} md={4}>
-              <strong>Position:</strong> {position}
-            </Col>
-          </Row>
+        {salaryDetails && (
+          <Container>
+            <Row style={{ marginBottom: "10px" }}>
+              <Col>
+                <strong>Employee Id:</strong>
+                {salaryDetails.empId}
+              </Col>
+            </Row>
+            <Row style={{ marginBottom: "10px" }}>
+              <Col>
+                <strong>Position:</strong> {salaryDetails.position}
+              </Col>
+            </Row>
+            <Row style={{ marginBottom: "10px" }}>
+              <Col>
+                <strong>Name:</strong>
+                {salaryDetails.name}
+              </Col>
+            </Row>
+            <br />
+            <Row style={{ marginBottom: "10px" }}>
+              <Col xs={12} md={8}>
+                <strong>Basic Salary:</strong>
+              </Col>
+              <Col xs={6} md={4} className="text-end">
+                <strong>Rs.{salaryDetails.basicSalary.toFixed(2)}</strong>
+              </Col>
+            </Row>
 
-          <Row style={{ marginBottom: "10px" }}>
-            <Col>
-              <strong>Name:</strong> {name}
-            </Col>
-          </Row>
-          <br />
-          <Row style={{ marginBottom: "10px" }}>
-            <Col xs={12} md={8}>
-              <strong>Birth Date:</strong> {formatDate(birthDate)}
-            </Col>
-            <Col xs={6} md={4}>
-              <strong>NIC:</strong> {nic}
-            </Col>
-          </Row>
+            <Row style={{ marginBottom: "10px" }}>
+              <Col xs={12} md={8}>
+                <strong>Allowance:</strong>
+              </Col>
+              <Col xs={6} md={4} className="text-end">
+                <strong>Rs.{salaryDetails.allowance.toFixed(2)}</strong>
+              </Col>
+            </Row>
 
-          <Row style={{ marginBottom: "10px" }}>
-            <Col>
-              <strong>Address:</strong> {address}
-            </Col>
-          </Row>
+            <Row style={{ marginBottom: "10px" }}>
+              <Col xs={12} md={8}>
+                <strong>Total Salary:</strong>
+              </Col>
+              <Col xs={6} md={4} className="text-end">
+                <strong>Rs.{salaryDetails.totalSal.toFixed(2)}</strong>
+              </Col>
+            </Row>
 
-          <Row style={{ marginBottom: "10px" }}>
-            <Col xs={12} md={8}>
-              <strong>Gender:</strong> {gender}
-            </Col>
-            <Col xs={6} md={4}>
-              <strong>Contact:</strong> {contact}
-            </Col>
-          </Row>
+            <Row style={{ marginBottom: "10px" }}>
+              <Col xs={12} md={8}>
+                <strong>Nopay deductions:</strong>
+              </Col>
+              <Col xs={6} md={4} className="text-end">
+                <strong>Rs.{salaryDetails.noPay.toFixed(2)}</strong>
+              </Col>
+            </Row>
 
-          <Row style={{ marginBottom: "10px" }}>
-            <Col xs={12} md={8}>
-              <strong>Start Date:</strong> {formatDate(startDate)}
-            </Col>
-            <Col xs={6} md={4}>
-              <strong>Position:</strong> {position}
-            </Col>
-          </Row>
+            <Row style={{ marginBottom: "10px" }}>
+              <Col xs={12} md={8}>
+                <strong>EPF-8%:</strong>
+              </Col>
+              <Col xs={6} md={4} className="text-end">
+                <strong>Rs.{salaryDetails.EPFE.toFixed(2)}</strong>
+              </Col>
+            </Row>
 
-          <Row style={{ marginBottom: "10px" }}>
-            <Col xs={12} md={8}>
-              <strong>Email:</strong> {email}
-            </Col>
-            <Col xs={6} md={4}>
-              <strong>Password:</strong> {password}
-            </Col>
-          </Row>
+            <Row style={{ marginBottom: "10px" }}>
+              <Col xs={12} md={8}>
+                <strong>ETF-3%:</strong>
+              </Col>
+              <Col
+                xs={6}
+                md={4}
+                className="text-end"
+                style={{ borderBottom: "1px solid black" }}
+              >
+                <strong>Rs.{salaryDetails.ETF.toFixed(2)}</strong>
+              </Col>
+            </Row>
 
-          <Row style={{ marginBottom: "10px" }}>
-            <Col>
-              <strong>Other Details:</strong> {otherDetails}
-            </Col>
-          </Row>
+            <Row style={{ marginBottom: "10px" }}>
+              <Col xs={12} md={8}>
+                <strong>Net Salary:</strong>
+              </Col>
+              <Col
+                xs={6}
+                md={4}
+                className="text-end"
+                style={{ borderBottom: "3px double black" }}
+              >
+                <strong>Rs.{salaryDetails.netSal.toFixed(2)}</strong>
+              </Col>
+            </Row>
 
-          <Row style={{ marginBottom: "10px" }}>
-            <Col>
-              <strong>Documents:</strong>
-              <ul>
-                {documentUrls.map((docUrl) => {
-                  // Extract the file name from the URL
-                  const fileName = docUrl.substring(
-                    docUrl.lastIndexOf("/") + 1
-                  );
+            <Row style={{ marginBottom: "10px" }}>
+              <Col xs={12} md={8}>
+                <strong>EPF-12%:</strong>
+              </Col>
+              <Col xs={6} md={4} className="text-end">
+                <strong>Rs.{salaryDetails.EPFC.toFixed(2)}</strong>
+              </Col>
+            </Row>
 
-                  return (
-                    <li key={docUrl}>
-                      <a href={docUrl} target="_blank">
-                        {fileName}
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </Col>
-          </Row>
-        </Container>
+            <br />
+            <Row style={{ marginBottom: "10px" }}>
+              <Col>
+                <strong>Bank:</strong>
+                {salaryDetails.bank}
+              </Col>
+            </Row>
+            <Row style={{ marginBottom: "10px" }}>
+              <Col>
+                <strong>Branch:</strong>
+                {salaryDetails.branch}
+              </Col>
+            </Row>
+
+            <Row style={{ marginBottom: "10px" }}>
+              <Col>
+                <strong>Account No:</strong>
+                {salaryDetails.account}
+              </Col>
+            </Row>
+          </Container>
+        )}
       </Modal.Body>
       <Modal.Footer>
-        {isEditing ? (
-          <>
-            <Button variant="success" onClick={handleUpdate}>
-              Update
-            </Button>
-            <Button variant="secondary" onClick={() => setIsEditing(false)}>
-              Cancel
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button variant="primary" onClick={() => setIsEditing(true)}>
-              Edit
-            </Button>
-            <Button variant="danger" onClick={handleDelete}>
-              Delete
-            </Button>
-          </>
-        )}
+        <Button variant="primary" onClick={() => setUpdateModalShow(true)}>
+          Edit
+        </Button>
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
       </Modal.Footer>
+      {/* Update Salary Modal */}
+      <UpdateSalaryModal
+        show={updateModalShow}
+        handleClose={() => setUpdateModalShow(false)}
+        salaryDetails={salaryDetails}
+        handleUpdate={handleUpdate}
+      />
     </Modal>
   );
 }

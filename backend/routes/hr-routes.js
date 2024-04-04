@@ -135,15 +135,26 @@ router.patch(
 
 //---------Designation Routes-------------------
 
-
 // Validation middleware function for validating the designation request data
 const validateDesignationRequest = [
-  body("position").notEmpty().withMessage("Positione is required"),
-  body("basicSalary").notEmpty().withMessage("BasicSalary is required"),
+  body("position").notEmpty().withMessage("Position is required"),
+  body("basicSalary")
+    .notEmpty()
+    .withMessage("Basic Salary is required")
+    .isNumeric()
+    .withMessage("Basic Salary must be a numeric value")
+    .custom((value) => value >= 0)
+    .withMessage("Basic Salary must be a non-negative number"),
 ];
 // Validation middleware function for validating the update designation request data
 const validateUpdateDesignationRequest = [
-  body("basicSalary").notEmpty().withMessage("BasicSalary is required"),
+  body("basicSalary")
+    .notEmpty()
+    .withMessage("Basic Salary is required")
+    .isNumeric()
+    .withMessage("Basic Salary must be a numeric value")
+    .custom((value) => value >= 0)
+    .withMessage("Basic Salary must be a non-negative number"),
 ];
 
 // CREATE
@@ -154,18 +165,17 @@ router.post(
 );
 
 // READ
-router.get(
-  "/designations",
-   DesignationsController.getAll
-);
-
+router.get("/designations", DesignationsController.getAll);
 
 // UPDATE
-router.patch("/update-designation/:id",validateUpdateDesignationRequest, DesignationsController.update);
+router.patch(
+  "/update-designation/:id",
+  validateUpdateDesignationRequest,
+  DesignationsController.update
+);
 
 // DELETE
 router.delete("/delete-designation/:id", DesignationsController.delete);
-
 
 //---------Salary Routes-------------------
 
@@ -173,10 +183,10 @@ router.delete("/delete-designation/:id", DesignationsController.delete);
 //router.post("/add-salary", SalaryController.createSalary);
 
 // Update Salary
-router.put("/update-salary/:id", SalaryController.updateSalary);
+router.patch("/update-salaries/:id", SalaryController.updateSalary);
 
 // Delete Salary
-router.delete("/delete-salary/:id", SalaryController.deleteSalary);
+router.delete("/delete-salaries/:id", SalaryController.deleteSalary);
 
 // Get all Salaries
 router.get("/salaries", SalaryController.getAllSalaries);
