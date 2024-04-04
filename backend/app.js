@@ -48,6 +48,9 @@ readdirSync("./routes").map((route) =>
 
 
 //Mobile
+readdirSync("./routes").map((route) =>
+  app.use("/api/mobile", require("./routes/" + route))
+);
 
 //services
 readdirSync("./routes").map((route) =>

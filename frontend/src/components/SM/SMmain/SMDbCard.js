@@ -23,4 +23,5 @@ const dbCard = ({ title, value, iconClass, duration }) => {
   );
 };
 
+
 export default dbCard;

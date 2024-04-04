@@ -1,5 +1,7 @@
 const EmployeeController = require("../controllers/hr/employe-controller");
 const LeavesController = require("../controllers/hr/leaves-controller");
+const DesignationsController = require("../controllers/hr/desigantion-controller");
+const SalaryController = require("../controllers/hr/salary-controller");
 const bodyParser = require("body-parser");
 const { body } = require("express-validator");
 const router = require("express").Router();
@@ -98,6 +100,14 @@ const validateLeaveRequest = [
     .withMessage("Invalid status"),
 ];
 
+// Validation middleware function for validating the update leave request data
+const validateUpdateLeaveRequest = [
+  body("name").notEmpty().withMessage("Employee name is required"),
+  body("fromDate").isISO8601().withMessage("Invalid fromDate format"),
+  body("toDate").isISO8601().withMessage("Invalid toDate format"),
+  body("reason").notEmpty().withMessage("Reason is required"),
+];
+
 // Route for creating a new leave record
 router.post("/add-leave", validateLeaveRequest, LeavesController.createLeave);
 
@@ -108,9 +118,70 @@ router.get("/leaves", LeavesController.getAllLeaves);
 router.get("/leaves/:id", LeavesController.getLeaveById);
 
 // Route for updating a leave record by ID
-router.patch("/update-leave/:id", LeavesController.updateLeaveById);
+router.patch(
+  "/update-leave/:id",
+  validateUpdateLeaveRequest,
+  LeavesController.updateLeaveById
+);
 
 // Route for deleting a leave record by ID
 router.delete("/delete-leave/:id", LeavesController.deleteLeaveById);
+
+// Route for updating leave status
+router.patch(
+  "/update-leave-status/:id",
+  LeavesController.updateLeaveStatusById
+);
+
+//---------Designation Routes-------------------
+
+
+// Validation middleware function for validating the designation request data
+const validateDesignationRequest = [
+  body("position").notEmpty().withMessage("Positione is required"),
+  body("basicSalary").notEmpty().withMessage("BasicSalary is required"),
+];
+// Validation middleware function for validating the update designation request data
+const validateUpdateDesignationRequest = [
+  body("basicSalary").notEmpty().withMessage("BasicSalary is required"),
+];
+
+// CREATE
+router.post(
+  "/add-designation",
+  validateDesignationRequest,
+  DesignationsController.create
+);
+
+// READ
+router.get(
+  "/designations",
+   DesignationsController.getAll
+);
+
+
+// UPDATE
+router.patch("/update-designation/:id",validateUpdateDesignationRequest, DesignationsController.update);
+
+// DELETE
+router.delete("/delete-designation/:id", DesignationsController.delete);
+
+
+//---------Salary Routes-------------------
+
+// Create Salary
+//router.post("/add-salary", SalaryController.createSalary);
+
+// Update Salary
+router.put("/update-salary/:id", SalaryController.updateSalary);
+
+// Delete Salary
+router.delete("/delete-salary/:id", SalaryController.deleteSalary);
+
+// Get all Salaries
+router.get("/salaries", SalaryController.getAllSalaries);
+
+// Get Salary by ID
+router.get("/salaries/:id", SalaryController.getSalaryById);
 
 module.exports = router;

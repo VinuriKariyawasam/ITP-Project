@@ -1,4 +1,5 @@
 const SMNavLink = ({ href, icon, title, hasSubmenu, children }) => {
+
   return (
     <div className="nav-link-wrapper">
       <a
@@ -21,3 +22,4 @@ const SMNavLink = ({ href, icon, title, hasSubmenu, children }) => {
 };
 
 export default SMNavLink;
+

@@ -6,11 +6,11 @@ const designationsSchema = new mongoose.Schema({
     required: true,
   },
   basicSalary: {
-    type: String,
+    type: Number,
     required: true,
   },
 });
 
-const Leaves = mongoose.model("Designations", designationsSchema);
+const Designations = mongoose.model("Designations", designationsSchema);
 
 module.exports = Designations;

@@ -1,7 +1,7 @@
 import React from "react";
 import "./hrMain.css";
 import HrPageTitle from "./HRPageTitle";
-import Leaves from "./Leaves";
+import Salary from "./Salary";
 
 // Import front end routes
 import {
@@ -14,10 +14,9 @@ import {
 function HrSalary() {
   return (
     <main id="main" className="main">
-      <HrPageTitle title="Leaves" url="hr/leaves" />
-
+      <HrPageTitle title="Salary" url="staff/hr/salary" />
       <Routes>
-        <Route path="/" element={<Leaves />} />
+        <Route path="/" element={<Salary />} />
       </Routes>
     </main>
   );

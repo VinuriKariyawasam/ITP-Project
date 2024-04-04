@@ -1,3 +1,5 @@
+const express = require("express");
+const router = express.Router();
 
 const {
   addExpense,
@@ -14,7 +16,8 @@ const {
   getIncomeById,
 } = require("../controllers/finance/income");
 
-const router = require("express").Router();
+const {paymentinitiate,handlePaymentNotification,getPaymentbyOrderID} = require ("../controllers/finance/payment")
+
 
 // Income routes
 router.post("/incomes/add-income", addIncome);
@@ -29,5 +32,14 @@ router.delete("/expenses/delete-expense/:id", deleteExpense);
 router.patch("/expenses/update-expense/:id", updateExpense);
 router.get("/expenses/get-expense/:id", getExpenseById);
 router.get("/expenses", getExpenses);
+
+//payment routes
+router.post("/payments/initiatepayment", paymentinitiate);
+router.post("/payments/handlenotification",handlePaymentNotification);
+router.get("/payments/verifypayment/:order_id", getPaymentbyOrderID);
+
+
+
+
 
 module.exports = router;
