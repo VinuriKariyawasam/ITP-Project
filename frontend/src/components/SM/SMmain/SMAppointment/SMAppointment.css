@@ -1,15 +1,15 @@
-.div1111 {
+.SMA-div1{
 
     margin-top: 100px;
 
 }
 
-.div2222 {
+.SMA-div2222 {
     margin-top: 40px;
     margin-left: 500px;
 }
 
-.AppMainButtonPageHeading {
+.SMA-AppMainButtonPageHeading {
 
     color: #000;
     font-feature-settings: 'dlig' on;
@@ -25,7 +25,7 @@
     margin-left: 500px;
 }
 
-.SMMainbutton {
+.SMA-SMMainbutton {
     color: white;
     width: 557px;
     height: 89px;
@@ -34,7 +34,7 @@
     font-size: 26px;
 }
 
-.SMMainArrow {
+.SMA-SMMainArrow {
     width: 130px;
     height: 49px;
     flex-shrink: 0;
