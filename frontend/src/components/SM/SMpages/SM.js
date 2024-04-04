@@ -5,6 +5,8 @@ import SMAppointmentMain from "../SMmain/SMAppointment/SMAppointmentMain";
 import Header from "../../Header/Header";
 import SMPeriodicalServices from "../SMmain/SMAppointment/SMPeriodicalServices";
 import Smrecords from "../SMmain/SMService/Smrecords";
+import SMMobileMain from "../SMmain/SMMobileservices/SMMobileMain"
+import SMmMechanicalServices from "../SMmain/SMMobileservices/SMmMechanicalServices";
 
 // Import front end routes
 import {
@@ -29,6 +31,8 @@ function SM() {
           element={<SMPeriodicalServices />}
         />
         <Route path="record/*" element={<Smrecords />} />
+        <Route path="/MobileMain" element={<SMMobileMain/>} />
+        <Route path="/MobileMechanical" exact element={<SMmMechanicalServices/>} />
       </Routes>
     </>
   );

@@ -1,0 +1,97 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    color: #384047;
+  }
+  
+  .mobform {
+    max-width: 480px;
+    margin: 10px auto;
+    padding: 10px 20px;
+    background: #f4f7f8;
+    border-radius: 8px;
+  }
+  .mobheading{
+    margin-top: 80px;
+    margin-left: 370px;
+  }
+  
+  input[type="text"],
+  input[type="password"],
+  input[type="date"],
+  input[type="datetime"],
+  input[type="email"],
+  input[type="number"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="time"],
+  input[type="url"],
+  textarea,
+  select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #000;
+    font-size: 16px;
+    height: auto;
+    margin: 0;
+    outline: 0;
+    padding: 15px;
+    width: 90%;
+    background-color: #e8eeef;
+    color: #8a97a0;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
+    margin-bottom: 30px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  
+  .mobform-element {
+    margin-bottom: 0px;
+    margin-top: 0px;
+  }
+  
+  .mobform-check-label {
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 120%;
+    width: 100%;
+    text-align: center;
+  }
+  
+  #mobexampleCheck1 {
+    width: 29px;
+    height: 26px;
+    background-color: #cccccc;
+  }
+  
+  @media screen and (min-width: 460px) {
+    form {
+      max-width: 460px;
+    }
+  }
+  
+  .mobyear-month-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .mobyear-input,
+  .month-input {
+    flex: 1;
+    margin-right: 10px;
+  }
+  
+  .mobyear-input label,
+  .month-input label {
+    display: block;
+  }
+  .mobL1{
+    font-size: 17px;
+    margin-top: 0px;
+  
+  }
+  .mobcheckbox-container input[type="checkbox"],
+  .mobcheckbox-container label {
+      display: inline;
+      margin-right: 8px; /* Optional: Add some spacing between the checkbox and the label */
+  }
