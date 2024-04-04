@@ -23,9 +23,9 @@ function ConsultancyPage() {
           culpa qui officia deserunt mollit anim id est laborum.
         </Accordion.Body>
       </Accordion.Item>
-      <div className="replybtn">
+      <div className="cam-replybtn">
       <Button variant="dark" size="md" onClick={() => navigate("addreply")}>Reply</Button>
-      <Button className="gotobtn" variant="dark" size="md" onClick={() => navigate("getreply")}>Go To Reply</Button>
+      <Button className="cam-gotobtn" variant="dark" size="md" onClick={() => navigate("getreply")}>Go To Reply</Button>
       </div>
       <br/>
       <Accordion.Item eventKey="1">
@@ -40,9 +40,9 @@ function ConsultancyPage() {
           culpa qui officia deserunt mollit anim id est laborum.
         </Accordion.Body>
       </Accordion.Item>
-      <div className="replybtn">
+      <div className="cam-replybtn">
       <Button variant="dark" size="md" onClick={() => navigate("addreply")}>Reply</Button>
-      <Button className="gotobtn" variant="dark" size="md" onClick={() => navigate("getreply")}>Go To Reply</Button>
+      <Button className="cam-gotobtn" variant="dark" size="md" onClick={() => navigate("getreply")}>Go To Reply</Button>
       </div>
     </Accordion>
 

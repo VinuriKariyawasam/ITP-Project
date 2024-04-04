@@ -104,7 +104,7 @@ function Feedback() {
 
   return (
     <Form
-      className="form"
+      className="cam-form"
       noValidate
       validated={validated}
       onSubmit={sendFeedback}
@@ -114,7 +114,7 @@ function Feedback() {
         At Neo Tech we value your feedback. Please take a moment to share your
         thoughts with us.
       </p>
-      <Row className="mb-3">
+      <Row className="cam-mb-3">
         <Form.Group as={Col} controlId="validationCustom01">
           <Form.Label>First Name</Form.Label>
           <Form.Control
@@ -137,7 +137,7 @@ function Feedback() {
           />
         </Form.Group>
       </Row>
-      <Row className="mb-3">
+      <Row className="cam-mb-3">
         <Form.Group as={Col} controlId="formGridEmail">
           <Form.Label>Email</Form.Label>
           <InputGroup hasValidation>
@@ -170,7 +170,7 @@ function Feedback() {
           </Form.Control.Feedback>
         </Form.Group>
       </Row>
-      <Row className="mb-3">
+      <Row className="cam-mb-3">
         <Form.Group as={Col} controlId="formGridRole">
           <Form.Label>Service Type</Form.Label>
           <Form.Select
@@ -195,7 +195,7 @@ function Feedback() {
           />
         </Form.Group>
       </Row>
-      <Row className="mb-3">
+      <Row className="cam-mb-3">
         <Form.Group as={Col} controlId="formGridExtra">
           <Form.Label>Your FeedBack</Form.Label>
           <Form.Control
@@ -209,7 +209,7 @@ function Feedback() {
           />
         </Form.Group>
         <Form.Group as={Col}>
-          <h5 className="h5">Rate us!!</h5>
+          <h5 className="cam-h5">Rate us!!</h5>
           <StarRating />
         </Form.Group>
       </Row>

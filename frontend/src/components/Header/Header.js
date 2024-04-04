@@ -13,7 +13,7 @@ function Header() {
       {/*{serch bar}*/}
       <SearchBar />
       {/*{nav}*/}
-      <Nav />
+      <Nav />     
     </header>
   );
 }

@@ -1,9 +1,31 @@
-import React from "react";
-import { Button, Form, Row, Stack, Badge } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Row, Stack } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-function Leaves() {
+function Salary() {
   const navigate = useNavigate();
+  const [salaryRecords, setSalaryRecords] = useState([]);
+
+  useEffect(() => {
+    // Fetch salary records from the backend when the component mounts
+    const fetchSalaryRecords = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/hr/salaries");
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        console.log(response);
+        const data = await response.json();
+        console.log(data);
+
+        setSalaryRecords(data);
+      } catch (error) {
+        console.error("Error fetching salary records:", error);
+      }
+    };
+    fetchSalaryRecords();
+  }, []);
   return (
     <section>
       <Row>
@@ -41,34 +63,52 @@ function Leaves() {
         <table className="table table-rounded">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Date</th>
-              <th>Reason</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th style={{ backgroundColor: "black", color: "white" }}>Id</th>
+              <th style={{ backgroundColor: "black", color: "white" }}>Name</th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                Position
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                Basic
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                Allowance
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                Total Salary
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                Deductions
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}>
+                Net Salary
+              </th>
+              <th style={{ backgroundColor: "black", color: "white" }}></th>
             </tr>
           </thead>
+
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Mark Otto</td>
-              <td>04/03/2024</td>
-              <td>Sick Leave</td>
-              <td>Paid</td>
-              <td>
-                <Badge bg="success">Approved</Badge>
-              </td>
-              <td>
-                <Button variant="outline-success" size="sm">
-                  Approve
-                </Button>{" "}
-                <Button variant="outline-danger" size="sm">
-                  Reject
-                </Button>{" "}
-              </td>
-            </tr>
+            {salaryRecords.map((record) => (
+              <tr key={record.id}>
+                {/* Render data for each salary record */}
+                <td>{record.empId}</td>
+                <td>{record.name}</td>
+                <td>{record.position}</td>
+                <td>Rs.{record.basicSalary}</td>
+                <td>Rs.{record.allowance}</td>
+                <td>Rs.{record.totalSal}</td>
+                <td>
+                  Rs.
+                  {record.totalSal - record.noPay - record.ETF - record.EPFE}
+                </td>
+                <td>Rs.{record.netSal}</td>
+                <td>
+                  <Button variant="dark" className="d-flex mx-auto">
+                    More
+                  </Button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -76,4 +116,4 @@ function Leaves() {
   );
 }
 
-export default Leaves;
+export default Salary;

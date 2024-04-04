@@ -210,6 +210,28 @@ function AddEmp() {
           />
           <Form.Text className="text-danger">{errors.nic?.message}</Form.Text>
         </Form.Group>
+
+        {/* Contact No. */}
+        <Form.Group as={Col} controlId="formGridContact">
+          <Form.Label>Contact No.</Form.Label>
+          <Controller
+            name="contact"
+            control={control}
+            rules={{ required: "Contact No. is required" }}
+            render={({ field }) => (
+              <Form.Control
+                type="tel"
+                placeholder="0715897598"
+                {...field}
+                pattern="[0-9]{10}"
+                length="10"
+              />
+            )}
+          />
+          <Form.Text className="text-danger">
+            {errors.contact?.message}
+          </Form.Text>
+        </Form.Group>
       </Row>
 
       {/* Address */}
@@ -270,32 +292,13 @@ function AddEmp() {
           </Form.Text>
         </Form.Group>
 
-        {/* Contact No. */}
-        <Form.Group as={Col} controlId="formGridContact">
-          <Form.Label>Contact No.</Form.Label>
-          <Controller
-            name="contact"
-            control={control}
-            rules={{ required: "Contact No. is required" }}
-            render={({ field }) => (
-              <Form.Control
-                type="tel"
-                placeholder="0715897598"
-                {...field}
-                pattern="[0-9]{10}"
-                length="10"
-              />
-            )}
-          />
-          <Form.Text className="text-danger">
-            {errors.contact?.message}
-          </Form.Text>
-        </Form.Group>
-      </Row>
+        {/* Start Date */}
 
-      {/* Start Date */}
-      <Row className="mb-3">
-        <Form.Group as={Col} controlId="formGridSdate">
+        <Form.Group
+          as={Col}
+          controlId="formGridSdate"
+          style={{ marginRight: "20px", marginLeft: "10px" }}
+        >
           <Row>
             <Form.Label>Start date</Form.Label>
           </Row>
@@ -346,6 +349,55 @@ function AddEmp() {
           />
           <Form.Text className="text-danger">
             {errors.position?.message}
+          </Form.Text>
+        </Form.Group>
+      </Row>
+
+      {/* Bank Details */}
+      <Row className="mb-3">
+        <h5 className="text-dark">Bank Details</h5>
+        <Form.Group as={Col} controlId="formGridBank">
+          <Form.Label>Bank</Form.Label>
+          <Controller
+            name="bank"
+            control={control}
+            rules={{ required: "Bank is required" }}
+            render={({ field }) => (
+              <Form.Control placeholder="Sampath Bank" {...field} />
+            )}
+          />
+          <Form.Text className="text-danger">{errors.bank?.message}</Form.Text>
+        </Form.Group>
+
+        {/* Branch */}
+        <Form.Group as={Col} controlId="formGridBranch">
+          <Form.Label>Branch</Form.Label>
+          <Controller
+            name="branch"
+            control={control}
+            rules={{ required: "Branch is required" }}
+            render={({ field }) => (
+              <Form.Control placeholder="Maharagama" {...field} />
+            )}
+          />
+          <Form.Text className="text-danger">
+            {errors.branch?.message}
+          </Form.Text>
+        </Form.Group>
+
+        {/* Account */}
+        <Form.Group as={Col} controlId="formGridAccount">
+          <Form.Label>Account No</Form.Label>
+          <Controller
+            name="account"
+            control={control}
+            rules={{ required: "Account No is required" }}
+            render={({ field }) => (
+              <Form.Control type="number" placeholder="200045879" {...field} />
+            )}
+          />
+          <Form.Text className="text-danger">
+            {errors.account?.message}
           </Form.Text>
         </Form.Group>
       </Row>
@@ -403,7 +455,7 @@ function AddEmp() {
         <Row className="mb-3 credentials">
           <h5 className="text-dark">System Credentials</h5>
           <h6 className="text-primary">
-            *Only needed for manager or supervisor
+            *Only needed for managers or supervisor
           </h6>
           {/* Email */}
           <Form.Group as={Col} controlId="formGridEmail">

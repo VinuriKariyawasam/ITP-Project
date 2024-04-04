@@ -10,20 +10,24 @@ require("dotenv").config();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 app.use("/uploads/hr", express.static(path.join(__dirname, "uploads", "hr")));
+app.use("/uploads/SM", express.static(path.join(__dirname, "uploads", "SM")));
 
 // Load finance routes
 readdirSync("./routes").map((route) =>
   app.use("/api/finance", require("./routes/" + route))
 );
 
-//Load vehicle routes
+//Load employee routes
 readdirSync("./routes").map((route) =>
   app.use("/api/hr", require("./routes/" + route))
 );
+
+//Appointment
 const periodicalroute = require("./routes/appointment-routes");
 app.use("/appointment", periodicalroute);
 
@@ -42,11 +46,14 @@ readdirSync("./routes").map((route) =>
   app.use("/api/vehicle", require("./routes/" + route))
 );
 
-//Appointment
 
 //Mobile
 
 //services
+readdirSync("./routes").map((route) =>
+  app.use("/api/sm", require("./routes/" + route))
+);
+
 
 //handle 404 errors
 
@@ -68,6 +75,7 @@ const server = () => {
   app.listen(PORT, () => {
     console.log("Listening to port:", PORT);
   });
+
 };
 
 server();
