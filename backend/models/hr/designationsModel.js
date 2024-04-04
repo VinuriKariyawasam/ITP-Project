@@ -6,7 +6,7 @@ const designationsSchema = new mongoose.Schema({
     required: true,
   },
   basicSalary: {
-    type: String,
+    type: Number,
     required: true,
   },
 });

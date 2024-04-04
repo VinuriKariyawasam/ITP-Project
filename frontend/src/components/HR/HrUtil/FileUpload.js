@@ -49,8 +49,8 @@ const FileUpload = (props) => {
         accept=".pdf"
         onChange={pickedHandler}
       />
-      <div className={`image-upload ${props.center && "center"}`}>
-        <div className="image-upload__preview">
+      <div className={`hr-image-upload ${props.center && "center"}`}>
+        <div className="hr-image-upload__preview">
           {previewUrl && <img src={pdfImage} alt="Preview" />}
           {previewUrl && (
             <p className="file-upload__name">

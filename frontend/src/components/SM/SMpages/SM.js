@@ -26,7 +26,7 @@ function SM() {
         <Route path="/" exact element={<SMmain />} />
         <Route path="appointmentMain/" element={<SMAppointmentMain />} />
         <Route
-          path="pappointmentMain"
+          path="periodicalappointment"
           exact
           element={<SMPeriodicalServices />}
         />
