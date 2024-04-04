@@ -13,7 +13,7 @@ exports.addperiodicalAppointment = async (req, res) => {
     const lastServiceMonth = req.body.lastServiceMonth;
     const mileage = Number(req.body.mileage);
     const phone = Number(req.body.phone);
-    const appointmentdate = Date(req.body.appointmentdate);
+    const appointmentdate =new  Date(req.body.appointmentdate);
     const appointmenttime = req.body.appointmenttime;
     const msg = req.body.msg;
 

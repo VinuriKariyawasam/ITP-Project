@@ -23,6 +23,8 @@ const tileDisabled = ({ date }) => {
 };
 // Function to handle date selection
 const handleDateClick = (date) => {
+
+  console.log(date)
   setSelectedDate(date);
 };
 
@@ -34,9 +36,16 @@ const renderBoard = () => {
       <Card.Body>
       <button type="button" class="btn-close" aria-label="Close"  onClick={handleCardClose}></button>
         <Card.Title>Selected Appointment Details</Card.Title>
-        <Card.Text>
-         
-        </Card.Text>
+        <Card.Text  >
+                <strong >Vehicle No: </strong><br />
+                <strong >Customer Name: </strong><br />
+                <strong >Vehicle Type: </strong><br />
+                <strong >Service Type: </strong><br />
+                <strong >Issue: </strong><br />
+                <strong >Contact Number: </strong><br />
+                <strong >Appointment Date: </strong><br />
+                <strong >Appointment Time: </strong><br />
+                </Card.Text>
       </Card.Body>
     </Card>
     );

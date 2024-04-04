@@ -3,8 +3,28 @@ import axios from "axios";
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 
-
 const MyAppointment = props => {
+
+  const [appointments, setAppointments] = useState([]);
+const vNo=appointments.vNo;
+  useEffect(() => {
+    // Function to fetch appointments based on vNo from mechanical repairs
+    const getMechanicalAppointmentsByVNo = async () => {
+        
+        const response = await axios.get(`http://localhost:5000/appointment/get-onemechanicalAppointmentbyVno/${vNo}`).then((res) => {
+          setAppointments(res.data);
+        console.log(res.data)
+      }).catch((err) => {
+        alert(err.message);
+      })
+    }
+    
+   
+    getMechanicalAppointmentsByVNo();
+    
+
+  }, [])
+
 
   return(
   <div>

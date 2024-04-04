@@ -24,6 +24,7 @@ const navList = [
     _id: 5,
     name: "Schedulings",
     icon: "bi bi-calendar3",
+    href:"/staff/sm/shedules",
   },
   {
     _id: 6,

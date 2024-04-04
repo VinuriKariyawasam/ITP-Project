@@ -10,7 +10,7 @@ exports.addmechanicalAppointment = async (req, res) => {
     const vNo = req.body.vNo;
     const issue = req.body.issue;
     const contactNo = Number(req.body.contactNo);
-    const appointmentdate = Date(req.body.appointmentdate);
+    const appointmentdate = new Date(req.body.appointmentdate);
     const appointmenttime = req.body.appointmenttime;
     
 

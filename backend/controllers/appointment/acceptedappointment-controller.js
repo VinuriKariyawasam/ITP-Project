@@ -115,3 +115,17 @@ exports.getOneacceptedappointmentbyVno = async (req, res) => {
         res.status(500).send({ status: "Error with getting user", error: err.message });
     }
 }
+
+exports.getOneacceptedappointmentbyDate = async (req, res) => {
+    const {appointmentdate} = req.params;
+    try {
+        const acceptedappointment = await acceptedappointmentSchema.findOne({ appointmentdate:appointmentdate });
+        if (acceptedappointment) {
+            res.status(200).send({ status: "User fetched", data: acceptedappointment });
+        } else {
+            res.status(404).send({ status: "User not found" });
+        }
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting user", error: err.message });
+    }
+}

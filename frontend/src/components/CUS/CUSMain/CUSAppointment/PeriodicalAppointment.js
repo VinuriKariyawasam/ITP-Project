@@ -29,7 +29,7 @@ function PeriodicalAppointment() {
 
   function sendata(e) {
     e.preventDefault();
-    const dateOnly = appointmentdate ? appointmentdate.toISOString().split('T')[0] : null;
+    
     //create javascript object
     const newPeriodicalAppointment = {
       name,
@@ -40,12 +40,15 @@ function PeriodicalAppointment() {
       lastServiceMonth,
       mileage,
       phone,
-      appointmentdate: dateOnly,
+      appointmentdate,
       appointmenttime,
       msg
     }
 
-    axios.post("http://localhost:5000/appointment/addperiodicalAppointment", newPeriodicalAppointment).then(() => {
+    axios.post("http://localhost:5000/appointment/addperiodicalAppointment", {
+  ...newPeriodicalAppointment,
+  appointmentdate: new Date(appointmentdate.getTime() + (24 * 60 * 60 * 1000)) // Adding one day
+}).then(() => {
       alert("Your Appointment Success")
       setname("");
       setvType("");
@@ -161,9 +164,19 @@ function PeriodicalAppointment() {
                 </Form.Group>
       
 
-          <Form.Group as={Col} md='5'>
-            <Form.Label>Appointment Time</Form.Label>
-            <Form.Control placeholder="Enter Appointment Time" value={appointmenttime} onChange={(e) => setappointmenttime(e.target.value)} required />
+                <Form.Group as={Col} md='5'>
+            <Form.Label>select a time</Form.Label>
+
+            <select class="form-select" id="validationCustom04" value={appointmenttime} onChange={(e) => setappointmenttime(e.target.value)} required>
+              <option value="">Choose</option>
+              <option value="9.00am">9.00am</option>
+              <option value="10.30am">10.30am</option>
+              <option value="12.00pm">12.00pm</option>
+              <option value="1.30pm">1.30pm</option>
+              <option value="3.00pm">3.00pm</option>
+              <option value="4.30pm">4.30pm</option>
+            </select> 
+
           </Form.Group>
         </Row>
         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1" md='6'>

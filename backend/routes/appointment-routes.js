@@ -1,6 +1,6 @@
 const { addperiodicalAppointment,getperiodicalAppointment,updateperiodicalAppointment, deleteperiodicalAppointment,getOneperiodicalAppointment,getOneperiodicalAppointmentbyVno} = require('../controllers/appointment/periodical-controller');
 const { addmechanicalAppointment,getmechanicalAppointment,updatemechanicalAppointment, deletemechanicalAppointment,getOneMechanicalAppointment,getOneMechanicalAppointmentbyVno} = require('../controllers/appointment/mechanical-controller');
-const { addacceptedappointment,getacceptedappointment,updateacceptedappointment, deleteacceptedappointment,getOneacceptedappointment,getOneacceptedappointmentbyVno} = require('../controllers/appointment/acceptedappointment-controller');
+const { addacceptedappointment,getacceptedappointment,updateacceptedappointment, deleteacceptedappointment,getOneacceptedappointment,getOneacceptedappointmentbyVno,getOneacceptedappointmentbyDate } = require('../controllers/appointment/acceptedappointment-controller');
 const router = require ('express').Router();
 
 //periodical Appointment Routes
@@ -26,5 +26,6 @@ router.put('/update-acceptedappointment/:id',updateacceptedappointment)
 router.delete('/delete-acceptedappointment/:id',deleteacceptedappointment)
 router.get('/get-oneacceptedappointment/:id',getOneacceptedappointment)
 router.get('/get-oneacceptedappointmentbyVno/:vNo',getOneacceptedappointmentbyVno)
+router.get('/get-oneacceptedappointmentbyDate/:appointmentdate',getOneacceptedappointmentbyDate)
 
 module.exports = router;

@@ -15,7 +15,7 @@ const SMMechanicalRepairs= props => {
   const [name, setname] = useState("");
   const [vType, setvType] = useState("");
   const [vNo, setvNo] = useState("");
-  const [sType, setsType] = useState("");
+  const [serviceType, setserviceType] = useState("");
   const [issue,setissue]=useState("");
   const [contactNo, setcontactNo] = useState("");
   const [appointmentdate, setappointmentdate] = useState("");
@@ -24,13 +24,13 @@ const SMMechanicalRepairs= props => {
 
   function sendata(e) {
     e.preventDefault();
-    const sType = "Mechanical Repairs";
+    const serviceType = "Mechanical Repairs";
     //create javascript object
     const newacceptedappointment = {
       name,
       vType,
       vNo,
-      sType,
+      serviceType,
       issue,
       contactNo,
       appointmentdate,
@@ -52,9 +52,9 @@ const SMMechanicalRepairs= props => {
     setname(appointment.name);
     setvType(appointment.vType);
     setvNo(appointment.vNo);
-    setsType(appointment.sType);
+    setserviceType(appointment.serviceType);
     setissue(appointment.issue);
-    setcontactNo(appointment.phone);
+    setcontactNo(appointment.contactNo);
     setappointmentdate(appointment.appointmentdate);
     setappointmenttime(appointment.appointmenttime);
   };
@@ -64,6 +64,7 @@ const SMMechanicalRepairs= props => {
     function getmechanicalAppointment() {
       axios.get("http://localhost:5000/appointment/get-mechanicalAppointment").then((res) => {
         setmechanicalAppointment(res.data);
+        console.log(res.data)
       }).catch((err) => {
         alert(err.message);
       })
@@ -119,8 +120,8 @@ const SMMechanicalRepairs= props => {
                 </Row>
                 <Row>
                 <Card.Text>
-                <strong>Date and Time: </strong>{`${selectedAppointment.appointmentdate} ${selectedAppointment.appointmenttime}`}<br />
-                <strong>Contact No: </strong>{selectedAppointment.phone}<br />
+                <strong>Date and Time: </strong>{selectedAppointment.appointmentdate ? `${selectedAppointment.appointmentdate.split('T')[0]} ${selectedAppointment.appointmenttime}` : ''}<br />
+                <strong>Contact No: </strong>{selectedAppointment.contactNo}<br />
                 </Card.Text>
                 </Row >
                 <Row style={{marginTop:"4%", display:"flex"}}>
@@ -153,7 +154,7 @@ const SMMechanicalRepairs= props => {
 
                 <td>{appointment.vNo}</td>
                 <td>{appointment.name}</td>
-                <td>{`${appointment.appointmentdate} ${appointment.appointmenttime}`}</td>
+                <td>{appointment.appointmentdate ? `${appointment.appointmentdate.split('T')[0]} ${appointment.appointmenttime}` : ''}</td>
                 <td>{appointment.contactNo}</td>
                 <td>{appointment.issue}</td>
                 
