@@ -7,13 +7,13 @@ function CusnavItem() {
     return (
         <>
 
-<Navbar >
+<Navbar bg="#212121" data-bs-theme="dark">
         <Container>
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="/customer">Home</Nav.Link>
             <NavDropdown title="Service" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Product</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
+              <NavDropdown.Item href="/customer/products">Product</NavDropdown.Item>
+              <NavDropdown.Item href="/customer/Periodical">
                 Our Services
               </NavDropdown.Item>
             </NavDropdown>

@@ -1,6 +1,6 @@
 import React from "react";
 import "./Logo.css";
-import neo from '../../../images/logoblack.jpg'
+import neo from '../../../images/neo-tech-high-resolution-logo-transparent.png'
 
 export default function Logo() {
   const handleToggleSideBar = () => {

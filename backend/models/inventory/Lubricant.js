@@ -19,7 +19,10 @@ const LubricantSchema = new schema({
         type: String,
         required: true
     },
-   
+    image:{
+        type: String,
+    },
+
 })
 
 const Lubricant = mongoose.model("Lubricant", LubricantSchema);

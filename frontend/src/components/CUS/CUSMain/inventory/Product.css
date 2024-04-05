@@ -1,4 +1,4 @@
-.h1{
+.inventory_h1{
     text-align: center;
     font-weight: bold;
     
@@ -9,7 +9,8 @@
     background-color: white;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-    border: none;
+    border: solid;
+    border-color: rgb(243, 242, 242);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -22,18 +23,19 @@
     margin-top: 9%;
 }
 .welcome{
+    color:#00224D;
     font-weight: bold;
     text-decoration: none; 
 }
 
 .welcome:hover {
-    color: inherit;
+    color: #00224D;
     text-decoration: none;
 }
-.para1 {
-    max-width: 60%;
+.inventory_para1 {
+    max-width: 57%;
     font-size: 23px;
-    background-color: rgb(243, 243, 243);
+    background-color:white;
     padding-top: 40px;
     padding-bottom: 91px;
     padding-left: 12px;
@@ -44,12 +46,12 @@
 
 }
 
-.h3{
-    margin-top: 6%;
+.inventory_h3{
+    margin-top: 5%;
     font-weight: bold;
 
 }
-.card-container {
+.productcard-container {
     margin-top: 6%;
     display: flex;
     justify-content: space-between; /* Adjust as needed */
@@ -57,7 +59,7 @@
 
 @media only screen and (max-width: 600px) {
 
-    .h1{
+    .inventory_h1{
         text-align: center;
         font-weight: bold;
         
@@ -68,7 +70,8 @@
         background-color: white;
         border-top-right-radius: 10px;
         border-bottom-right-radius: 10px;
-        border: none;
+        border: solid;
+        border-color: rgb(243, 242, 242);
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -89,7 +92,7 @@
         color: inherit;
         text-decoration: none;
     }
-    .para1 {
+    .inventory_para1 {
         max-width: 30%;
         font-size: 23px;
         background-color: rgb(243, 243, 243);

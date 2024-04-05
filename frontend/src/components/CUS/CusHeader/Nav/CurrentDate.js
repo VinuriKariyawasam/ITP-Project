@@ -17,7 +17,7 @@ function CurrentDate() {
   }, []);
 
   return (
-    <div className="current-date">
+    <div className="cus-current-date">
       <p>{currentDate}</p>
     </div>
   );

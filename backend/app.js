@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 app.use("/uploads/hr", express.static(path.join(__dirname, "uploads", "hr")));
-
+app.use("/uploads/im", express.static(path.join(__dirname, "uploads", "im")));
 // Load finance routes
 readdirSync("./routes").map((route) =>
   app.use("/api/finance", require("./routes/" + route))

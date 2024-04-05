@@ -43,9 +43,9 @@ function IMLubricantCard() {
           <div key={product._id} className="product-card-container">
             <div className="product-card">
               <img
-                src={IM}
+                src={`http://localhost:5000/${product.image}`}
                 className="product-image"
-                alt={product.Product_name}
+                alt={product}
               />
               <h4 className="product-header">{product.Product_name}</h4>
               <p className="product-name">

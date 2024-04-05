@@ -5,7 +5,7 @@ import CurrentDate from "./CurrentDate";
 
 function Nav() {
   return (
-    <nav className="header-nav ms-auto">
+    <nav className="cus-header-nav ms-auto">
       <ul className="d-flex align-items-center">
         <CurrentDate />
         <NavAvatar />

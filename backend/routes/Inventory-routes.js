@@ -1,9 +1,11 @@
 
-const { addLubricants, LubricantStock, deleteLubricants} =require('../controllers/Inventory/Lubricants')
+const { addLubricant, LubricantStock, deleteLubricants} =require('../controllers/Inventory/Lubricants')
+const fileUpload = require('../controllers/Inventory/ImageUpload');
 const { addTires, TireStock, deleteTires} = require('../controllers/Inventory/Tires')
+//const upload = require ("./multerStorage")
 const router = require("express").Router();
 
-router.post("/addlubricant",addLubricants)
+router.post("/addlubricant",fileUpload.single('image'),addLubricant)
 router.get("/lubricantstock", LubricantStock)
 router.delete("/deletelubricant/:id",deleteLubricants)
 /*router.route("/updatelubricant/:id").put(async (req, res) => {

@@ -1,28 +1,38 @@
 const { config } = require("dotenv");
 const LubricantSchema = require("../../models/inventory/Lubricant");
+const multer = require("multer");
+const express = require("express");
+const router = express.Router(); // Define router here
+const path = require("path");
 
-exports.addLubricants = async (req, res) => {
-  const Product_name = req.body.Product_name;
-  const Product_code = req.body.Product_code;
-  const Quantity = Number(req.body.Quantity);
-  const Unit_price = req.body.Unit_price;
 
-  const newLubricant = LubricantSchema({
-    Product_name,
-    Product_code,
-    Quantity,
-    Unit_price,
-  });
+exports.addLubricant = async (req, res) => {
+  console.log(req.body)
+    const Product_name = req.body.product_name;
+    const Product_code = req.body.product_code;
+    const Quantity = Number(req.body.quantity);
+    const Unit_price = req.body.unit_price;
+   const image = req.file.path;
 
-  newLubricant
-    .save()
-    .then(() => {
-      res.json("Product added");
-    })
-    .catch((err) => {
-      console.log(err);
+    const newLubricant = new LubricantSchema({
+      Product_name,
+      Product_code,
+      Quantity,
+      Unit_price,
+      image
     });
-};
+
+    newLubricant
+      .save()
+      .then(() => {
+        console.log(newLubricant)
+        res.json("Product added");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
 exports.LubricantStock = async (req, res) => {
   try {
     const Lubricants = await LubricantSchema.find().sort({ createdAt: -1 });
