@@ -1,7 +1,7 @@
-.cus-current-date {
-  font-size: 1rem;
-  color: white;
-  margin-left: auto;
-  margin-right: 5px;
-  margin-top: 15px;
-}
+.current-date {
+    font-size: 1rem;
+    color: #333;
+    margin-left: auto;
+    margin-right: 5px;
+    margin-top: 15px;
+  }
