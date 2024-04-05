@@ -1,5 +1,4 @@
 import React from "react";
-import "./Header.css";
 import Logo from "./Logo";
 import Navitem2 from "./Nav/Nav";
 import CusnavItem from '../../../data/CUS/CusnavItem'
