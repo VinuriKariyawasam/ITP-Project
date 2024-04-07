@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { useForm } from 'react-hook-form';
 import mechanicalrepairs from '../../../../images/CUS/Appointment/mechanical repairs.jpg'
 import axios from "axios";
@@ -10,6 +10,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 function MechanicalAppointment() { // Corrected function name
+  
+  const[availableTimes,setAvailableTimes] = useState([]);
+
 
   const { } = useForm();
 
@@ -23,7 +26,7 @@ function MechanicalAppointment() { // Corrected function name
 
   function sendata(e) {
     e.preventDefault();
-    const dateOnly = appointmentdate ? appointmentdate.toDateString() : null;
+    
     //create javascript object
     const newmechanicalAppointment = {
       name,
@@ -31,12 +34,15 @@ function MechanicalAppointment() { // Corrected function name
       vNo,
       issue,
       contactNo,
-      appointmentdate: dateOnly,
+      appointmentdate,
       appointmenttime,
     };
 
-    axios.post("http://localhost:5000/appointment/addmechanicalAppointment", newmechanicalAppointment)
-      .then(() => {
+    axios.post("http://localhost:5000/appointment/addmechanicalAppointment",{
+      ...newmechanicalAppointment,
+      appointmentdate: new Date(appointmentdate.getTime() + (24 * 60 * 60 * 1000)) // Adding one day
+    }).then(() => {
+      
         alert("Your Appointment Success")
         setname(""); // Corrected assignment, use function instead of assignment
         setvType("");
@@ -50,6 +56,15 @@ function MechanicalAppointment() { // Corrected function name
         alert(err)
       });
   }
+
+  // Function to get tomorrow's date
+  const getTomorrow = () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow;
+  };
+
   return (
 
     <div style={{ marginTop: "10%", marginLeft: "3%" }}>
@@ -97,11 +112,12 @@ function MechanicalAppointment() { // Corrected function name
                   <DatePicker
                     placeholderText='Appointment Date'
                     selected={appointmentdate} // Use state variable here
-                    onChange={(date) => setappointmentdate(date)} // Set state with selected date
+                    onChange={(date) => setappointmentdate(date)}// Set state with selected date
                     dateFormat='MM/dd/yyyy'
+                    minDate={getTomorrow()} // Set minimum selectable date to tomorrow's date
                     required
                   />
-                  =
+                  
                 </Form.Group>
               </Row>
 
