@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import AddAttend from "./AddAttend";
 import {
   Container,
   Row,
@@ -8,25 +9,21 @@ import {
   Button,
   Stack,
   Card,
+  Badge,
 } from "react-bootstrap";
-import DatePicker from "react-datepicker";
 
 function Attendance() {
+  const [attendanceData, setAttendanceData] = useState([]);
   //to button navigates
   const navigate = useNavigate();
 
-  //to all emplyees
-  const [tableData, setTableData] = useState([]);
-
-  //attendance part
-  const [attendanceDate, setAttendanceDate] = useState(new Date());
-  const [attendanceRecords, setAttendanceRecords] = useState({});
-
-  //to all employee details fetch
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAttendance = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/employees");
+        const today = new Date().toISOString().split("T")[0];
+        const response = await fetch(
+          `http://localhost:5000/api/hr/attendance/date/${today}`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -34,34 +31,16 @@ function Attendance() {
 
         const data = await response.json();
 
-        setTableData(data.employees);
+        if (data && data.length > 0) {
+          setAttendanceData(data);
+        }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching attendance records:", error);
       }
     };
 
-    fetchData();
-  }, []); // Runs once on component mount
-
-  // Handle checkbox change
-  const handleCheckboxChange = (employeeId) => {
-    setAttendanceRecords({
-      ...attendanceRecords,
-      [employeeId]: !attendanceRecords[employeeId],
-    });
-  };
-
-  // Handle date change
-  const handleDateChange = (date) => {
-    setAttendanceDate(date);
-  };
-
-  // Handle form submission
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Attendance Records:", attendanceRecords);
-    // You can send attendance records to backend here for processing
-  };
+    fetchAttendance();
+  }, []); // Empty dependency array to run only once on component mount
 
   return (
     <section>
@@ -100,50 +79,71 @@ function Attendance() {
 
           <Row>
             <Col md={6}>
-              <Card>
-                <Card.Header
-                  style={{ backgroundColor: "black", color: "white" }}
-                >
-                  Take Attendance
-                </Card.Header>
-                <Card.Body
-                  style={{
-                    backgroundColor: "white",
-                    border: "1px solid black",
-                  }}
-                >
-                  <Form onSubmit={handleSubmit} style={{ margin: "10px" }}>
-                    <Form.Group>
-                      <Form.Label>Date:</Form.Label>
-                      <DatePicker
-                        selected={attendanceDate}
-                        onChange={handleDateChange}
-                        className="form-control"
-                      />
-                    </Form.Group>
-                    <Form.Group>
-                      <Form.Label>Employees:</Form.Label>
-                      <ol>
-                        {tableData.map((employee) => (
-                          <li key={employee._id}>
-                            <Form.Check
-                              type="checkbox"
-                              label={
-                                employee.firstName + " " + employee.lastName
-                              }
-                              checked={attendanceRecords[employee.id] || false}
-                              onChange={() => handleCheckboxChange(employee.id)}
-                            />
-                          </li>
+              {attendanceData.length > 0 ? (
+                <Card>
+                  <Card.Header
+                    style={{ backgroundColor: "black", color: "white" }}
+                  >
+                    Today Attendance
+                  </Card.Header>
+                  <Card.Body
+                    style={{
+                      backgroundColor: "white",
+                      border: "1px solid black",
+                    }}
+                  >
+                    <table className="table table-rounded">
+                      <thead style={{ backgroundColor: "lightgray" }}>
+                        <tr>
+                          <th>EMPID</th>
+                          <th>Name</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {attendanceData.map((record) => (
+                          <React.Fragment key={record._id}>
+                            {
+                              // Loop through the employeeAttendance array inside each record
+                              record.employeeAttendance.map(
+                                (attendanceRecord) => (
+                                  <tr key={attendanceRecord._id}>
+                                    <td>{attendanceRecord.empId}</td>
+                                    <td>{attendanceRecord.name}</td>
+                                    <td>
+                                      {attendanceRecord.value ? (
+                                        <Badge bg="success">Present</Badge>
+                                      ) : (
+                                        <Badge bg="danger">Absent</Badge>
+                                      )}
+                                    </td>
+                                  </tr>
+                                )
+                              )
+                            }
+                          </React.Fragment>
                         ))}
-                      </ol>
-                    </Form.Group>
-                    <Button variant="dark" type="submit">
-                      Submit
-                    </Button>
-                  </Form>
-                </Card.Body>
-              </Card>
+                      </tbody>
+                    </table>
+                  </Card.Body>
+                </Card>
+              ) : (
+                <Card>
+                  <Card.Header
+                    style={{ backgroundColor: "black", color: "white" }}
+                  >
+                    Take Attendance
+                  </Card.Header>
+                  <Card.Body
+                    style={{
+                      backgroundColor: "white",
+                      border: "1px solid black",
+                    }}
+                  >
+                    <AddAttend />
+                  </Card.Body>
+                </Card>
+              )}
             </Col>
             <Col md={6}>
               <Card>

@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import img1 from "../../../../images/im/lubricants.jpg";
 import img2 from "../../../../images/im/tires.jpg";
-import img3 from "../../../../images/im/spare parts.jpg";
+import img3 from "../../../../images/im/spareparts.jpg";
 
 function Products() {
   const scrollToBottom = () => {
