@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import img1 from "../../../../images/im/lubricants.jpg";
 import img2 from "../../../../images/im/tires.jpg";
-import img3 from "../../../../images/im/spare parts.jpg"
+import img3 from "../../../../images/im/spare parts.jpg";
 
 function Products() {
   const scrollToBottom = () => {
@@ -17,12 +17,14 @@ function Products() {
 
   return (
     <main id="cusmain" className="cusmain">
-      <h1 className="inventory_h1">Explore Our Premium Automotive Essentials</h1>
+      <h1 className="inventory_h1">
+        Explore Our Premium Automotive Essentials
+      </h1>
       <div className="containerProduct">
         <Slideshow />
         <div className="inventory_para1">
           <p>
-            <a className="welcome" style={{fontSize:"30px"}} diabled>
+            <a className="welcome" style={{ fontSize: "30px" }} diabled>
               Welcome to Neo Tech,
             </a>
             <br />
@@ -36,23 +38,28 @@ function Products() {
             class="btn btn-primary btn-lg"
             onClick={scrollToBottom}
           >
-            <b>Discover<span class="bi bi-arrow-right"></span></b>
+            <b>
+              Discover<span class="bi bi-arrow-right"></span>
+            </b>
           </button>
         </div>
       </div>
       <h3 className="inventory_h3"> Our offerings at Neo Tech...</h3>
       <div className="productcard-container">
-        <Card style={{ width: "30%" , backgroundColor: "white"}}>
+        <Card style={{ width: "30%", backgroundColor: "white" }}>
           <Card.Img variant="top" src={img1} />
           <Card.Body>
             <Card.Title>Lubricants</Card.Title>
             <Card.Text>
-            "Keep your vehicle running smoothly with our top-quality lubricants for lasting performance."
+              "Keep your vehicle running smoothly with our top-quality
+              lubricants for lasting performance."
             </Card.Text>
-            <Button variant="primary" className="exbtn">Explore</Button>
+            <Button variant="primary" className="exbtn">
+              Explore
+            </Button>
           </Card.Body>
         </Card>
-        <Card style={{ width: "30%" , backgroundColor: "white"}}>
+        <Card style={{ width: "30%", backgroundColor: "white" }}>
           <Card.Img variant="top" src={img2} />
           <Card.Body>
             <Card.Title>Tires</Card.Title>
@@ -60,10 +67,12 @@ function Products() {
               Explore our wide selection of quality tire stocks, ensuring smooth
               rides for every vehicle.
             </Card.Text>
-            <Button variant="primary" className="exbtn">Explore</Button>
+            <Button variant="primary" className="exbtn">
+              Explore
+            </Button>
           </Card.Body>
         </Card>
-        <Card style={{ width: "30%" , backgroundColor: "white" }}>
+        <Card style={{ width: "30%", backgroundColor: "white" }}>
           <Card.Img variant="top" src={img3} />
           <Card.Body>
             <Card.Title>Spare Parts</Card.Title>
@@ -71,7 +80,10 @@ function Products() {
               Acquire your vehicle spare parts swiftly and seamlessly with our
               top-notch procurement assistance.
             </Card.Text>
-            <Button variant="primary" className="exbtn"> Explore</Button>
+            <Button variant="primary" className="exbtn">
+              {" "}
+              Explore
+            </Button>
           </Card.Body>
         </Card>
       </div>

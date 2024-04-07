@@ -2,7 +2,6 @@
 const { addLubricant, LubricantStock, deleteLubricants,updateLubricant} =require('../controllers/Inventory/Lubricants')
 const fileUpload = require('../controllers/Inventory/ImageUpload');
 const { addTires, TireStock, deleteTires, updateTire} = require('../controllers/Inventory/Tires')
-//const upload = require ("./multerStorage")
 const router = require("express").Router();
 
 router.post("/addlubricant",fileUpload.single('image'),addLubricant)
