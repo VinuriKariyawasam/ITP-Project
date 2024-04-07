@@ -6,6 +6,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 // Import React and React Router
 import React from "react";
 import Header from "../src/components/CUS/CusHeader/Header";
+
 import CUSAppointment from "./components/CUS/Pages/CUSAppointment";
 import Products from "./components/CUS/inventory/Products";
 
@@ -16,6 +17,7 @@ import MyFeedback from "./components/CUS/CUSMain/CUS_CAM/MyFeedback";
 import AllFeedbacks from "./components/CUS/CUSMain/CUS_CAM/AllFeedbacks";
 //import FeedbackMain from './components/CUS/CUSMain/CUS_CAM/FeedbackMain';
 import Mechanicalreq from '../src/components/CUS/CUSMain/CUSMobileReq/Mechanicalreq';
+
 
 
 import {
@@ -34,6 +36,7 @@ function CustomerApp() {
         <Route path="/products" element={<Products />} />
         //appointments-Nihinsa
         <Route path="/appointment/*" element={<CUSAppointment />} />
+
         // payments -kavinda
         <Route path="/payments/*" element={<Payment />} />
         //customer affair-Githadi
@@ -43,6 +46,7 @@ function CustomerApp() {
         <Route path="/consultation/*" element={<OnlineConsultation />}></Route>
         //Mobile service-Isiri
         <Route path="/Mechanical" element={<Mechanicalreq />} />
+
 
       </Routes>
     </div>
