@@ -152,38 +152,38 @@ function AddVehicle() {
 
           <div className='mb-2'>
             <label htmlFor="vehicleNo">Vehicle No.</label>
-            <input type="text" name="vehicleNo" value={formData.vehicleNo} onChange={handleChange} className={`form-control ${errorField === 'vehicleNo' ? 'vehicle-error' : ''}`} required />
-            {errorField === 'vehicleNo' && <span className="vehicle-exclamation-mark">!</span>}
+            <input type="text" name="vehicleNo" value={formData.vehicleNo} onChange={handleChange} className={`form-control ${errorField === 'vehicleNo' ? 'error' : ''}`} required />
+            {errorField === 'vehicleNo' && <span className="exclamation-mark">!</span>}
           </div>
 
           <div className='mb-2'>
             <label htmlFor="brand">Brand</label>
-            <input type="text" name="brand" value={formData.brand} onChange={handleChange} className={`form-control ${errorField === 'brand' ? 'vehicle-error' : ''}`} required />
-            {errorField === 'brand' && <span className="vehicle-exclamation-mark">!</span>}
+            <input type="text" name="brand" value={formData.brand} onChange={handleChange} className={`form-control ${errorField === 'brand' ? 'error' : ''}`} required />
+            {errorField === 'brand' && <span className="exclamation-mark">!</span>}
           </div>
 
           <div className='mb-2'>
             <label htmlFor="model">Model</label>
-            <input type="text" name="model" value={formData.model} onChange={handleChange} className={`form-control ${errorField === 'model' ? 'vehicle-error' : ''}`} required />
-            {errorField === 'model' && <span className="vehicle-exclamation-mark">!</span>}
+            <input type="text" name="model" value={formData.model} onChange={handleChange} className={`form-control ${errorField === 'model' ? 'error' : ''}`} required />
+            {errorField === 'model' && <span className="exclamation-mark">!</span>}
           </div>
 
           <div className='mb-2'>
             <label htmlFor="year">Year</label>
-            <input type="text" name="year" value={formData.year} onChange={handleChange} className={`form-control ${errorField === 'year' ? 'vehicle-error' : ''}`} required />
-            {errorField === 'year' && <span className="vehicle-exclamation-mark">!</span>}
+            <input type="text" name="year" value={formData.year} onChange={handleChange} className={`form-control ${errorField === 'year' ? 'error' : ''}`} required />
+            {errorField === 'year' && <span className="exclamation-mark">!</span>}
           </div>
 
           <div className='mb-2'>
             <label htmlFor="name">Name</label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} className={`form-control ${errorField === 'name' ? 'vehicle-error' : ''}`} required />
-            {errorField === 'name' && <span className="vehicle-exclamation-mark">!</span>}
+            <input type="text" name="name" value={formData.name} onChange={handleChange} className={`form-control ${errorField === 'name' ? 'error' : ''}`} required />
+            {errorField === 'name' && <span className="exclamation-mark">!</span>}
           </div>
 
           <div className='mb-2'>
             <label htmlFor="contact">Contact No.</label>
-            <input type="text" name="contact" value={formData.contact} onChange={handleChange} className={`form-control ${errorField === 'contact' ? 'vehicle-error' : ''}`} required />
-            {errorField === 'contact' && <span className="vehicle-exclamation-mark">!</span>}
+            <input type="text" name="contact" value={formData.contact} onChange={handleChange} className={`form-control ${errorField === 'contact' ? 'error' : ''}`} required />
+            {errorField === 'contact' && <span className="exclamation-mark">!</span>}
           </div>
           
           <div className='mb-2'>
@@ -212,7 +212,7 @@ function AddVehicle() {
             </Modal.Footer>
           </Modal>
 
-          {error && <p className="vehicle-error-message">{error}</p>} {/* Display error message */}
+          {error && <p className="error-message">{error}</p>} {/* Display error message */}
         </form>
       </div>
     </div>

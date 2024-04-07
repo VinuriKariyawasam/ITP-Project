@@ -9,7 +9,6 @@ const supernavList = [
       _id: 2,
       name: "Service Request",
       icon: "bi bi-building-add",
-      href: "/staff/supervisor/serviceReq",
     },
     {
       _id: 3,
