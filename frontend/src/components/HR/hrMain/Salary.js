@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Button, Row, Stack } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import SalaryDetailsModal from "./SalaryDetailsModal";
 
 function Salary() {
   const navigate = useNavigate();
   const [salaryRecords, setSalaryRecords] = useState([]);
+  const [showSalaryModal, setShowSalaryModal] = useState(false);
+  const [selectedRecordId, setSelectedRecordId] = useState(null);
 
   useEffect(() => {
     // Fetch salary records from the backend when the component mounts
@@ -26,6 +29,12 @@ function Salary() {
     };
     fetchSalaryRecords();
   }, []);
+
+  const handleMoreButtonClick = (id) => {
+    setSelectedRecordId(id);
+    setShowSalaryModal(true);
+  };
+
   return (
     <section>
       <Row>
@@ -103,7 +112,12 @@ function Salary() {
                 </td>
                 <td>Rs.{record.netSal}</td>
                 <td>
-                  <Button variant="dark" className="d-flex mx-auto">
+                  {/* More button with onClick handler */}
+                  <Button
+                    variant="dark"
+                    className="d-flex mx-auto"
+                    onClick={() => handleMoreButtonClick(record._id)}
+                  >
                     More
                   </Button>
                 </td>
@@ -112,6 +126,12 @@ function Salary() {
           </tbody>
         </table>
       </div>
+      {/* Render the SalaryDetailsModal with appropriate props */}
+      <SalaryDetailsModal
+        show={showSalaryModal}
+        handleClose={() => setShowSalaryModal(false)}
+        id={selectedRecordId}
+      />
     </section>
   );
 }
