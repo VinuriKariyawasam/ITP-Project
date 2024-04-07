@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const BillingForm = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     serviceRecordId: '',
     paymentInvoiceId: generatePaymentInvoiceId(),
@@ -34,8 +37,8 @@ const BillingForm = () => {
     const subtotal = parseFloat(formData.partsPrice) + parseFloat(formData.servicePrice);
     const totalAfterDiscount =
       subtotal -
-      (subtotal * parseFloat(formData.partsDiscount) / 100) -
-      (subtotal * parseFloat(formData.serviceDiscount) / 100);
+      (formData.partsPrice * parseFloat(formData.partsDiscount) / 100) -
+      (formData.servicePrice * parseFloat(formData.serviceDiscount) / 100);
     const taxAmount = (totalAfterDiscount * parseFloat(formData.taxRate)) / 100;
     const finalTotal = totalAfterDiscount + taxAmount;
     setFormData((prevData) => ({
@@ -78,6 +81,10 @@ const BillingForm = () => {
     const invoiceId = `P${timestamp}-${randomNum}`;
     return invoiceId;
   }
+
+  const handleCancel = () => {
+    navigate('/staff/finance/billing/all')
+  };
 
   return (
     <main id="main" className="main">
@@ -254,7 +261,6 @@ const BillingForm = () => {
               </Form.Group>
             </Col>
           </Row>
-          
           <Row>
             <Col md={6}>
               <Form.Group controlId="total">
@@ -269,7 +275,6 @@ const BillingForm = () => {
               </Form.Group>
             </Col>
           </Row>
-
           <Row>
             <Col md={6}>
               <Form.Group controlId="currentDate">
@@ -290,9 +295,19 @@ const BillingForm = () => {
               </Form.Group>
             </Col>
           </Row>
-          <Button variant="primary" type="submit">
-            Create Bill
-          </Button>
+          <br></br>
+          <Row>
+            <Col md={2}>
+              <Button variant="primary" type="submit">
+                Create Bill
+              </Button>
+            </Col>
+            <Col md={3}>
+              <Button variant="secondary" onClick={handleCancel}>
+                Cancel
+              </Button>
+            </Col>
+          </Row>
         </Form>
       </Container>
     </main>

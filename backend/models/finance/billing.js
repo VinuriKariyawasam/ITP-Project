@@ -14,8 +14,9 @@ const billingSchema = new Schema({
   serviceDiscount: { type: Number, required: true },
   taxRate: { type: Number, required: true },
   total: { type: Number, required: true },
-  currentDate: { type: String},
-  currentTime: { type: String}
+  currentDate: { type: String },
+  currentTime: { type: String },
+  status: { type: String, default: 'pending' } // Added status field with default value
 });
 
 const Billing = mongoose.model('Bill', billingSchema);
