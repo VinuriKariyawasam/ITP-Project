@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Modal, Row, Stack, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import jsPDF from "jspdf";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function ServiceReqDash() {
   const [serviceReqs, setServiceReqs] = useState([]);
@@ -51,7 +52,9 @@ function ServiceReqDash() {
           }
         );
         if (response.ok) {
-          const deletedServiceReq = serviceReqs.find((serviceReq) => serviceReq._id === id);
+          const deletedServiceReq = serviceReqs.find(
+            (serviceReq) => serviceReq._id === id
+          );
           setDeletedServiceReq(deletedServiceReq);
           setServiceReqs(serviceReqs.filter((serviceReq) => serviceReq._id !== id));
           setShowModal(true); // Show modal with deleted serviceReq information
@@ -82,6 +85,7 @@ function ServiceReqDash() {
       request: serviceReq.request,
       report: serviceReq.report,
       status: serviceReq.status,
+      reportFileName: serviceReq.reportFileName // Set reportFileName here
     });
     setShowModal(true);
   };
@@ -93,29 +97,26 @@ function ServiceReqDash() {
       }
     }
     if (name === "date") {
-        const selectedDate = new Date(value);
-        const currentDate = new Date();
-        if (selectedDate > currentDate) {
-          return "Date must not be in the future";
-        }
+      const selectedDate = new Date(value);
+      const currentDate = new Date();
+      if (selectedDate > currentDate) {
+        return "Date must not be in the future";
+      }
     }
     if (name === "name" && !value.trim()) {
       return "Name is required";
     }
     if (name === "issue" && !value.trim()) {
-        return "Issue is required";
+      return "Issue is required";
     }
     if (name === "quotation") {
-        if (!/^\d{20}$/.test(value)) {
-          return "Quotation must be 20 digits";
-        }
+      if (!/^\d{20}$/.test(value)) {
+        return "Quotation must be 20 digits";
+      }
     }
     if (name === "request" && !value.trim()) {
-        return "Request is required";
+      return "Request is required";
     }
-    /*if (name === "status" && !value.trim()) {
-        return "Status is required";
-    }*/
     return "";
   };
 
@@ -128,6 +129,18 @@ function ServiceReqDash() {
     }
 
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileName = file.name;
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFormData({ ...formData, report: reader.result, reportFileName: fileName });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async () => {
@@ -159,6 +172,36 @@ function ServiceReqDash() {
     }
   };
 
+  const viewReport = (report) => {
+    try {
+      const blob = b64toBlob(report, 'application/pdf');
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error('Error viewing report:', error);
+    }
+  };
+
+  const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  };
+
   return (
     <div className="table">
       <Row>
@@ -175,10 +218,11 @@ function ServiceReqDash() {
             </Form>
           </div>
           <div className="p-2 ms-auto">
-            <Button variant="success">
+            <Button variant="success" style={{ backgroundColor: '#9D9BE1', border: '1px solid #9D9BE1' }}>
               <Link
                 to="/staff/supervisor/serviceReq/add"
-                className="text-dark text-decoration-none font-weight-bold"
+                className="text-dark text-decoration-none"
+                style={{ color: '#9D9BE1', fontWeight: 'bold' }}
               >
                 Add Service Request
               </Link>
@@ -193,15 +237,15 @@ function ServiceReqDash() {
           <table className="table">
             <thead>
               <tr>
-                <th>Vehicle No</th>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Issue</th>
-                <th>Quotation</th>
-                <th>Diagnosis Request</th>
-                <th>Diagnosis Report</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th style={{ width: '10%' }}>Vehicle No</th>
+                <th style={{ width: '10%' }}>Date</th>
+                <th style={{ width: '10%' }}>Name</th>
+                <th style={{ width: '10%' }}>Issue</th>
+                <th style={{ width: '10%' }}>Quotation</th>
+                <th style={{ width: '15%' }}>Diagnosis Request</th>
+                <th style={{ width: '15%' }}>Diagnosis Report</th>
+                <th style={{ width: '10%' }}>Status</th>
+                <th style={{ width: '10%' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -213,18 +257,29 @@ function ServiceReqDash() {
                   <td>{serviceReq.issue}</td>
                   <td>{serviceReq.quotation}</td>
                   <td>{serviceReq.request}</td>
-                  <td>{serviceReq.report}</td>
+                  <td>
+                    {serviceReq.reportFileName && (
+                      <button
+                        onClick={() => viewReport(serviceReq.report)}
+                        className="btn btn-link"
+                      >
+                        {serviceReq.reportFileName}
+                      </button>
+                    )}
+                  </td>
                   <td>{serviceReq.status}</td>
                   <td>
                     <button
                       onClick={() => handleShowUpdateModal(serviceReq)}
                       className="btn btn-warning me-2 text-dark font-weight-bold"
+                      style={{ backgroundColor: '#F5EF7C', fontWeight: 'bold' }}
                     >
                       Update
                     </button>
                     <button
                       onClick={() => handleDelete(serviceReq._id)}
-                      className="btn btn-danger text-dark font-weight-bold"
+                      className="btn btn-danger text-dark"
+                      style={{ fontWeight: 'bold', color: '#F78E79' }}
                     >
                       Delete
                     </button>
@@ -277,13 +332,10 @@ function ServiceReqDash() {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBrand">
                   <Form.Label>Date</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="brand"
-                    value={formData.brand}
-                    onChange={(e) =>
-                      handleChange(e.target.name, e.target.value)
-                    }
+                  <DatePicker
+                    selected={formData.date}
+                    onChange={(date) => handleChange("date", date)}
+                    className="form-control"
                   />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formName">
@@ -302,7 +354,7 @@ function ServiceReqDash() {
                   <Form.Control
                     type="text"
                     name="issue"
-                    value={formData.year}
+                    value={formData.issue}
                     onChange={(e) =>
                       handleChange(e.target.name, e.target.value)
                     }
@@ -336,12 +388,10 @@ function ServiceReqDash() {
                 <Form.Group className="mb-3" controlId="formReport">
                   <Form.Label>Diagnosis Report</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="file"
                     name="report"
-                    value={formData.report}
-                    onChange={(e) =>
-                      handleChange(e.target.name, e.target.value)
-                    }
+                    accept=".pdf"
+                    onChange={handleFileChange}
                   />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formStatus">

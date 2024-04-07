@@ -1,12 +1,13 @@
 const mongoose = require("mongoose");
 
-const ServiceRequestSchema = new mongoose.Schema({
+const serviceRequestSchema = new mongoose.Schema({
   vehicleNo: {
     type: String,
     required: true,
   },
   date: {
     type: Date,
+    default: Date.now,
     required: true,
   },
   name: {
@@ -18,7 +19,7 @@ const ServiceRequestSchema = new mongoose.Schema({
     required: true,
   },
   quotation: {
-    type: String,
+    type: Number,
     required: true,
   },
   request: {
@@ -32,12 +33,10 @@ const ServiceRequestSchema = new mongoose.Schema({
   ],
   status: {
     type: String,
+    required: true,
   },
 });
 
-const ServiceRequestModel = mongoose.model(
-  "serviceRequests",
-  ServiceRequestSchema
-);
+const ServiceRequest = mongoose.model("ServiceRequest", serviceRequestSchema);
 
-module.exports = ServiceRequestModel;
+module.exports = ServiceRequest;
