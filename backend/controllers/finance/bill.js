@@ -87,3 +87,30 @@ exports.deleteBill = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+
+
+exports.updatePaymentStatusToCompleted = async (req, res) => {
+    const { paymentInvoiceId } = req.params;
+  
+    try {
+     
+      const payment = await BillingSchema.findOne({ paymentInvoiceId });
+  
+      
+      if (!payment) {
+        return res.status(404).json({ success: false, message: 'Payment not found' });
+      }
+  
+     
+      payment.status = 'completed';
+  
+      
+      await payment.save();
+  
+      // Return success response
+      res.status(200).json({ success: true, message: 'Payment status updated to completed' });
+    } catch (error) {
+      // Return error response if any error occurs
+      res.status(500).json({ success: false, error: error.message });
+    }
+  };

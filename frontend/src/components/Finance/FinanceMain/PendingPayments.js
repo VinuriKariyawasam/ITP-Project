@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table } from 'react-bootstrap';
+import { Container, Table, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 const PendingPayments = () => {
@@ -17,15 +17,29 @@ const PendingPayments = () => {
         throw new Error('Failed to fetch pending payments');
       }
       const data = await response.json();
-      setPayments(data.data); // Adjusted to set only the data array
+      setPayments(data.data);
     } catch (error) {
       console.error('Error fetching pending payments:', error.message);
-      //alert('Failed to fetch pending payments. Please try again later.');
     }
   };
 
-  const handlePaymentClick = (paymentId) => {
-    // navigate(`/staff/finance/payments/${paymentId}`);
+  const markAsCompleted = async (paymentId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/finance/billing/inpersonpayment/${paymentId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'completed' }), // Assuming the field name for status update is 'status'
+      });
+      if (!response.ok) {
+        throw new Error('Failed to mark payment as completed');
+      }
+      // Refresh pending payments after successful update
+      fetchPendingPayments();
+    } catch (error) {
+      console.error('Error marking payment as completed:', error.message);
+    }
   };
 
   return (
@@ -53,7 +67,9 @@ const PendingPayments = () => {
                   <td>Rs.{payment.total}</td> 
                   <td>{payment.status}</td>
                   <td>
-                    <button onClick={() => handlePaymentClick(payment._id)}>View Details</button> {/* Adjusted to use _id */}
+                    {payment.status === 'pending' && (
+                      <Button onClick={() => markAsCompleted(payment.paymentInvoiceId)}>Mark as Completed</Button>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Table, Form, Row, Col, Button } from 'react-bootstrap';
+import { Table, Form, Row, Col, Button, Modal } from 'react-bootstrap';
 import html2pdf from 'html2pdf.js';
 import { useReactToPrint } from 'react-to-print';
 import { CSVLink } from 'react-csv';
@@ -14,6 +14,9 @@ const BillsList = () => {
   const [downloadingPDF, setDownloadingPDF] = useState(false);
   const [printing, setPrinting] = useState(false);
   const [downloadingCSV, setDownloadingCSV] = useState(false);
+  const [selectedBill, setSelectedBill] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState(null);
   const componentRef = useRef(null);
   const navigate = useNavigate();
 
@@ -107,6 +110,27 @@ const BillsList = () => {
     }
   };
 
+  const handleViewDetails = async (bill) => {
+    setSelectedBill(bill);
+    try {
+      const response = await fetch(`http://localhost:5000/api/finance/billing/${bill.paymentInvoiceId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch payment details');
+      }
+      const data = await response.json();
+      setPaymentDetails(data);
+    } catch (error) {
+      console.error('Error fetching payment details:', error.message);
+    }
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedBill(null);
+    setPaymentDetails(null);
+  };
+
   const filteredBills = bills.filter((bill) => {
     return (
       (searchName === '' || bill.name.toLowerCase().includes(searchName.toLowerCase())) &&
@@ -174,18 +198,18 @@ const BillsList = () => {
               <Button variant="secondary" onClick={clearFilters}>Clear Search and Filters</Button>
             </Col>
             <Col>
-              <Button variant="primary" onClick={handleDownloadPDF} disabled={downloadingPDF || printing || downloadingCSV}>
+              <Button variant="primary" onClick={handleDownloadPDF} disabled={downloadingPDF || printing}>
                 {downloadingPDF ? 'Downloading...' : 'Download as PDF'}
               </Button>
             </Col>
             <Col>
-              <Button variant="dark" onClick={handlePrint} disabled={downloadingPDF || printing || downloadingCSV}>
+              <Button variant="dark" onClick={handlePrint} disabled={downloadingPDF || printing}>
                 Print Report
               </Button>
             </Col>
             <Col>
               <CSVLink data={csvData} filename="bills.csv" onClick={() => setDownloadingCSV(true)} onMouseLeave={() => setDownloadingCSV(false)}>
-                <Button variant="success" disabled={downloadingPDF || printing || downloadingCSV}>
+                <Button variant="success" disabled={downloadingPDF || printing}>
                   Download as CSV
                 </Button>
               </CSVLink>
@@ -212,7 +236,7 @@ const BillsList = () => {
                 <th>Created Date</th>
                 <th>Total Price (Rs.)</th>
                 <th>Payment Status</th>
-                {!downloadingPDF && !printing && !downloadingCSV && <th>Actions</th>}
+                {!downloadingPDF && <th>Actions</th>}
               </tr>
             </thead>
             <tbody>
@@ -223,14 +247,15 @@ const BillsList = () => {
                   <td>{bill.currentDate}</td>
                   <td>{parseFloat(bill.total).toFixed(2)}</td>
                   <td>{bill.status}</td>
-                  {!downloadingPDF && !printing && !downloadingCSV &&
+                  {!downloadingPDF &&
                     <td>
                       {bill.status === 'pending' &&
                         <>
                           <Button variant="dark" size="sm" onClick={() => handleEdit(bill._id)}>Edit</Button>{' '}
-                          <Button variant="danger" size="sm" onClick={() => handleDelete(bill._id)}>Delete</Button>
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(bill._id)}>Delete</Button>{' '}
                         </>
                       }
+                      <Button variant="success" size="sm" onClick={() => handleViewDetails(bill)}>View</Button>
                     </td>
                   }
                 </tr>
@@ -238,6 +263,37 @@ const BillsList = () => {
             </tbody>
           </Table>
         </div>
+        <Modal show={showModal} onHide={handleCloseModal}>
+  <Modal.Header closeButton>
+    <Modal.Title>Bill Details</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    {selectedBill && paymentDetails && (
+      <div>
+        <p><strong>Invoice ID:</strong> {selectedBill.paymentInvoiceId}</p>
+        <p><strong>Service Record ID:</strong> {paymentDetails.serviceRecordId}</p>
+        <p><strong>Name:</strong> {selectedBill.name}</p>
+        <p><strong>Address:</strong> {selectedBill.address}</p>
+        <p><strong>Email:</strong> {selectedBill.email}</p>
+        <p><strong>Phone:</strong> {selectedBill.phone}</p>
+        <p><strong>Parts & Accessories Price (Rs.):</strong> {selectedBill.partsPrice}</p>
+        <p><strong>Parts & Accessories Discount(%):</strong> {selectedBill.partsDiscount}</p>
+        <p><strong>Service & Repair Price (Rs.):</strong> {selectedBill.servicePrice}</p>
+        <p><strong>Service & Repair Discount(%):</strong> {selectedBill.serviceDiscount}</p>
+        <p><strong>Tax Rate (%):</strong> {selectedBill.taxRate}</p>
+        <p><strong>Total (Rs.):</strong> {selectedBill.total}</p>
+        <p><strong>Status:</strong> {selectedBill.status}</p>
+        <p><strong> Date:</strong> {selectedBill.currentDate}</p>
+        <p><strong>Time:</strong> {selectedBill.currentTime}</p>
+      </div>
+    )}
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={handleCloseModal}>
+      Close
+    </Button>
+  </Modal.Footer>
+</Modal>
       </div>
     </main>
   );
