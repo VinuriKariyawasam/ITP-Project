@@ -31,8 +31,9 @@ const navList = [
     },
     {
       _id: 5,
-      name: "Summary",
+      name: "Billing",
       icon: "bi bi-card-heading",
+      href:"http://localhost:3000/staff/finance/billing/all"
     },
     {
       _id: 6,

@@ -70,7 +70,7 @@ const Incomes = () => {
       <div>
         <Button variant="primary" onClick={handleAddIncomeClick}>
           Add Income
-        </Button>
+        </Button><br></br>
         <Table striped bordered hover>
           <thead>
             <tr>
