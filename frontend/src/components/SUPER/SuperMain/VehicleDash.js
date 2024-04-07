@@ -89,13 +89,13 @@ function VehicleDash() {
     let yOffset = startY;
 
     vehicles.forEach((vehicle, index) => {
-      doc.text(`${index + 1})`, xOffset, yOffset);
-      doc.text(`VehicleNo: ${vehicle.vehicleNo}`, xOffset + 5, yOffset);
-      doc.text(`Brand: ${vehicle.brand}`, xOffset + 45, yOffset);
-      //doc.text(`Model: ${vehicle.model}`, xOffset + 85, yOffset);
-      doc.text(`Year: ${vehicle.year}`, xOffset + 78, yOffset);
-      doc.text(`Name: ${vehicle.name}`, xOffset + 110, yOffset);
-      doc.text(`Contact: ${vehicle.contact}`, xOffset + 155, yOffset);
+      doc.text(`Vehicle ${index + 1}:`, xOffset, yOffset);
+      doc.text(`Vehicle No: ${vehicle.vehicleNo}`, xOffset + 30, yOffset);
+      doc.text(`Brand: ${vehicle.brand}`, xOffset + 90, yOffset);
+      doc.text(`Model: ${vehicle.model}`, xOffset + 130, yOffset);
+      doc.text(`Year: ${vehicle.year}`, xOffset + 170, yOffset);
+      doc.text(`Name: ${vehicle.name}`, xOffset + 200, yOffset);
+      doc.text(`Contact Number: ${vehicle.contact}`, xOffset + 240, yOffset);
 
       yOffset += lineHeight;
     });
