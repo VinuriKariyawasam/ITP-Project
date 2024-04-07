@@ -25,12 +25,19 @@ const navList = [
     _id: 5,
     name: "Schedulings",
     icon: "bi bi-calendar3",
+    href: "/staff/sm/shedules",
   },
   {
     _id: 6,
     name: "Appointments",
     icon: "bi bi-car-front",
     href: "/staff/sm/appointmentMain",
+  },
+  {
+    _id: 7,
+    name: "Mobile Services",
+    icon: "bi bi-car-front",
+    href: "/staff/sm/MobileMain",
   },
 ];
 

@@ -1,39 +1,42 @@
 import React from "react";
 import "../IMMain/IMMain.css";
 import IMDashboard from "../IMMain/IMDashboard";
-import './Products/Lubricants'
-import ImPageTitle from './ImPageTitle'
-import Button from 'react-bootstrap/Button';
-import {Link} from 'react-router-dom'
+import "./Products/Lubricants";
+import ImPageTitle from "./ImPageTitle";
+import Button from "react-bootstrap/Button";
+import { Link } from "react-router-dom";
+import Card from 'react-bootstrap/Card';
 
 function IMMain() {
   return (
     <main id="main" className="main">
       <ImPageTitle title="Inventory Manager Dashboard" url="/staff/im" />
       <IMDashboard />
-      <br/>
+      <br />
       <h2>Featured Resources</h2>
-      <div class="card2">
-          <ul class="list-group ">
-            
-            <li class="list-group-item">Manage Pending Orders
-            <Button variant="primary" className="btn1">Manage</Button>
-            </li>
-            
-            <li class="list-group-item">Manage Tires Stock
+        <Card >
+          <Card.Body>
+            <Card.Text style={{marginTop:"1.5%" , float:"left", marginbottom:"-1%"}}>Manage Pending Orders</Card.Text>
+            <Button style={{marginTop:"1%", float:"right", marginbottom:"-1%"}}>Mange</Button>
+          </Card.Body>
+        </Card>
+        <Card >
+          <Card.Body>
+            <Card.Text style={{marginTop:"1.5%" , float:"left", marginbottom:"-1.5%"}}>Manage Tires Stock</Card.Text>
             <Link to="Tires">
-            <Button variant="primary" className="btn1">Manage</Button>
+              <Button style={{marginTop:"1%", float:"right", marginbottom:"-1%"}}>Mange</Button>
             </Link>
-            </li>
-            
-            <li class="list-group-item">Manage Lubricant Stock
+          </Card.Body>
+        </Card>
+        <Card >
+          <Card.Body>
+            <Card.Text style={{marginTop:"1.5%" , float:"left", marginbottom:"-1%"}}>Manage Lubricant Stock</Card.Text>
             <Link to="lubricants">
-            <Button variant="primary" className="btn1">Manage</Button>
+              <Button style={{marginTop:"1%", float:"right", marginbottom:"-1%"}}>Mange</Button>
             </Link>
-            </li>
-            
-          </ul>
-        </div>
+          </Card.Body>
+        </Card>
+  
     </main>
   );
 }

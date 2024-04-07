@@ -5,26 +5,28 @@ import { Link } from 'react-router-dom';
 
 const SMAppointmentMain = () => {
     return (
-        <div className="div1111">
-            <h2 className="AppMainButtonPageHeading">Appointments</h2>
-            <div className="div2222">
-                <Link to='/staff/sm/pappointmentMain'>
-                    <button className="SMMainbutton">
+        <div className="SMA-div1">
+            <h2 className="SMA-AppMainButtonPageHeading">Appointments</h2>
+            <div className="SMA-div2222">
+                <Link to='/staff/sm/periodicalappointment'>
+                    <button className="SMA-SMMainbutton">
                         periodical Services
-                        <img src={Arrow} alt="Arrow" className="SMMainArrow" />
+                        <img src={Arrow} alt="Arrow" className="SMA-SMMainArrow" />
                     </button>
                 </Link>
             </div>
-            <div className="div2222">
-                <button className="SMMainbutton">
-                    Mechanical Repairs
-                    <img src={Arrow} alt="Arrow" className="SMMainArrow" />
-                </button>
+            <div className="SMA-div2222">
+            <Link to='/staff/sm/mechanicalappointment'>
+                    <button className="SMA-SMMainbutton">
+                        Mechanical Repairs
+                        <img src={Arrow} alt="Arrow" className="SMA-SMMainArrow" />
+                    </button>
+                </Link>
             </div>
-            <div className="div2222">
-                <button className="SMMainbutton">
+            <div className="SMA-div2222">
+                <button className="SMA-SMMainbutton">
                     Accidental Repairs
-                    <img src={Arrow} alt="Arrow" className="SMMainArrow" />
+                    <img src={Arrow} alt="Arrow" className="SMA-SMMainArrow" />
                 </button>
             </div>
 
