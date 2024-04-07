@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
-
+import { Link } from 'react-router-dom';
 
 const SMMechanicalRepairs = props => {
 
@@ -40,6 +40,7 @@ const SMMechanicalRepairs = props => {
 
     axios.post("http://localhost:5000/appointment/addacceptedappointment", newacceptedappointment).then(() => {
       alert("Your Appointment Success")
+      senddatamechanicalAppointmentHistory(selectedAppointment);
       Delete(selectedAppointment._id);
 
     }).catch((err) => {
@@ -47,6 +48,29 @@ const SMMechanicalRepairs = props => {
     })
 
   }
+  function senddatamechanicalAppointmentHistory() {
+   
+    //create javascript object
+    const newacceptedmechanicalAppointment = {
+      name,
+      vType,
+      vNo,
+      issue,
+      contactNo,
+      appointmentdate,
+      appointmenttime
+    
+    }
+    axios.post("http://localhost:5000/appointment/addacceptedmechanicalAppointment",newacceptedmechanicalAppointment).then(() => {
+      alert("Appointment added to history")  
+      
+
+    }).catch((err) => {
+      alert(err)
+    })
+
+  }
+
   //set values to columnns in accepted appointment
   const handleTableRowClick = (appointment) => {
     setname(appointment.name);
@@ -63,7 +87,10 @@ const SMMechanicalRepairs = props => {
 
     function getmechanicalAppointment() {
       axios.get("http://localhost:5000/appointment/get-mechanicalAppointment").then((res) => {
-        setmechanicalAppointment(res.data);
+        const sortedAppointments = res.data.sort((a, b) => {
+          return new Date(a.appointmentdate) - new Date(b.appointmentdate);
+        });
+        setmechanicalAppointment(sortedAppointments);
         console.log(res.data)
       }).catch((err) => {
         alert(err.message);
@@ -101,7 +128,7 @@ const SMMechanicalRepairs = props => {
       <div>
         <h2 className="SMAppheading">Mechanical Services</h2>
         {selectedAppointment && (
-          <div className="SmCard">
+          <div >
             <Card style={{ width: "50%" }}>
               <Card.Body>
                 <button type="button" class="btn-close" aria-label="Close" onClick={handleCardClose}></button>
@@ -168,6 +195,11 @@ const SMMechanicalRepairs = props => {
             ))}
           </tbody>
         </Table>
+        <Link to='/staff/sm/mechanicalhistory'>
+          <Button variant="secondary" >
+            View History of accepted appointments
+          </Button>
+        </Link>
       </div>
 
 

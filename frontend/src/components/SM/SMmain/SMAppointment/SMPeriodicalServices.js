@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
-
+import { Link } from 'react-router-dom';
 
 const SMPeriodicalServices = props => {
 
@@ -22,7 +22,12 @@ const SMPeriodicalServices = props => {
   const [contactNo, setcontactNo] = useState("");
   const [appointmentdate, setappointmentdate] = useState("");
   const [appointmenttime, setappointmenttime] = useState("");
-  
+  const [sType, setsType] = useState("");
+  const [lastServiceYear, setlastServiceYear] = useState("");
+  const [lastServiceMonth, setlastServiceMonth] = useState("");
+  const [mileage, setmileage] = useState("");
+  const [phone, setphone] = useState("");
+  const [msg, setmsg] = useState("");
 
   function sendata(e) {
     e.preventDefault();
@@ -41,7 +46,8 @@ const SMPeriodicalServices = props => {
     }
 
     axios.post("http://localhost:5000/appointment/addacceptedappointment", newacceptedappointment).then(() => {
-      alert("Your Appointment Success")  
+      alert("Your Appointment Success") 
+      senddataperiodicalAppointmentHistory(selectedAppointment); // Call sendataperiodicalAppointmentHistory function
       Delete(selectedAppointment._id);
 
     }).catch((err) => {
@@ -49,22 +55,63 @@ const SMPeriodicalServices = props => {
     })
 
   }
-  //set values to columnns in accepted appointment
-  const handleTableRowClick = (appointment) => {
-    setname(appointment.name);
-    setvType(appointment.vType);
-    setvNo(appointment.vNo);
-    setserviceType(appointment.serviceType);
-    setissue(appointment.sType);
-    setcontactNo(appointment.phone);
-    setappointmentdate(appointment.appointmentdate);
-    setappointmenttime(appointment.appointmenttime);
-  };
+
+
+  function senddataperiodicalAppointmentHistory() {
+   
+    //create javascript object
+    const newacceptedPeriodicalAppointment = {
+      name,
+      vType,
+      vNo,
+      sType,
+      lastServiceYear, 
+      lastServiceMonth,
+      mileage, 
+      phone, 
+      appointmentdate,
+      appointmenttime,
+      msg
+    }
+    axios.post("http://localhost:5000/appointment/addaceptedperiodicalAppointment",newacceptedPeriodicalAppointment).then(() => {
+      alert("Appointment added to history")  
+      
+
+    }).catch((err) => {
+      alert(err)
+    })
+
+  }
+
+
+       //set values to columnns in accepted appointment
+       const handleTableRowClick = (appointment) => {
+        setname(appointment.name);
+        setvType(appointment.vType);
+        setvNo(appointment.vNo);
+        setserviceType(appointment.serviceType);
+        setissue(appointment.sType);
+        setcontactNo(appointment.phone);
+        setsType(appointment.sType);
+        setappointmentdate(appointment.appointmentdate);
+        setappointmenttime(appointment.appointmenttime);
+        setlastServiceYear(appointment.lastServiceYear);
+        setlastServiceMonth(appointment.lastServiceMonth);
+        setmileage(appointment.mileage);
+        setphone(appointment.phone)
+        setmsg(appointment.msg)
+    
+      };
+    
   useEffect(() => {
 
     function getPeriodicalAppointment() {
       axios.get("http://localhost:5000/appointment/get-periodicalAppointment").then((res) => {
-        setperiodicalAppointment(res.data);
+        const sortedAppointments = res.data.sort((a, b) => {
+          return new Date(a.appointmentdate) - new Date(b.appointmentdate);
+        });
+        setperiodicalAppointment(sortedAppointments);  
+        console.log(res.data)
       }).catch((err) => {
         alert(err.message);
       })
@@ -178,8 +225,11 @@ const SMPeriodicalServices = props => {
             ))}
           </tbody>
         </Table>
-        
-       
+        <Link to='/staff/sm/periodicalhistory'>
+        <Button variant="secondary" >
+                    View History of accepted appointments
+        </Button>
+        </Link>
       </div>
 
     </main>

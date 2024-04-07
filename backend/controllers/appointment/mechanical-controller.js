@@ -112,3 +112,32 @@ exports.getOneMechanicalAppointmentbyVno = async (req, res) => {
         res.status(500).send({ status: "Error with getting user", error: err.message });
     }
 }
+
+exports.getMechanicalAppointmentbyDate = async (req, res) => {
+    const {appointmentdate} = req.params;
+    try {
+        const mechanicalAppointments = await mechanicalSchema.find({ appointmentdate:appointmentdate });
+        if (mechanicalAppointments.length > 0) {
+            res.status(200).send({ status: "User fetched", data: mechanicalAppointments });
+        } else {
+            res.status(404).send({ status: "No appointments found for the given date" });
+        }
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting user", error: err.message });
+    }
+}
+
+exports.getMechanicalAppointmenTimetbyDate= async (req, res) => {
+    const {appointmentdate} = req.params;
+    try {
+        const mechanicalAppointments = await mechanicalSchema.find({ appointmentdate:appointmentdate });
+        if (mechanicalAppointments.length > 0) {
+            const appointmentTimes = mechanicalAppointments.map(appointment => appointment.appointmenttime);
+            res.status(200).send({ status: "User fetched", data: appointmentTimes });
+        } else {
+            res.status(404).send({ status: "No appointments found for the given date" });
+        }
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting user", error: err.message });
+    }
+}
