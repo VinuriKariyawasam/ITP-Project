@@ -22,6 +22,7 @@ import SUPER from "./components/SUPER/SuperPages/SUPER";
 import IM from "./components/IM/IMPages/IM";
 import CAM from "./components/CAM/CAM_pages/CAM";
 
+
 function StaffApp() {
   return (
     <>
@@ -34,9 +35,11 @@ function StaffApp() {
         <Route path="/supervisor/*" element={<SUPER />} />
         <Route path="/im/*" element={<IM />} />
         <Route path="/CAM/*" element={<CAM />} />
+
       </Routes>
     </>
   );
 }
 
 export default StaffApp;
+

@@ -6,12 +6,14 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 function CusnavItem() {
   return (
     <>
-      <Navbar>
+      <Navbar bg="#212121" data-bs-theme="dark">
         <Container>
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="http://localhost:3000/customer">Home</Nav.Link>
             <NavDropdown title="Service" id="basic-nav-dropdown">
-              <NavDropdown.Item href="products">Product</NavDropdown.Item>
+              <NavDropdown.Item href="http://localhost:3000/customer/products">
+                Product
+              </NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
                 Our Services
               </NavDropdown.Item>
@@ -22,7 +24,13 @@ function CusnavItem() {
               <NavDropdown.Item href="#action/3.1">
                 Consultation
               </NavDropdown.Item>
-              <NavDropdown.Item href="feedback">Feedback</NavDropdown.Item>
+
+              <NavDropdown.Item href="http://localhost:3000/customer/feedback">
+                Feedback
+              </NavDropdown.Item>
+              <NavDropdown.Item href="http://localhost:3000/customer/payments/payonline">
+                My Payments
+              </NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Container>

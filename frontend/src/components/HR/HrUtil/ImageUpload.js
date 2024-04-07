@@ -51,8 +51,8 @@ const ImageUpload = (props) => {
         accept=".jpg,.png,.jpeg"
         onChange={pickedHandler}
       />
-      <div className={`image-upload ${props.center && "center"}`}>
-        <div className="image-upload__preview">
+      <div className={`hr-image-upload ${props.center && "center"}`}>
+        <div className="hr-image-upload__preview">
           {previewUrl && <img src={previewUrl} alt="Preview" />}
         </div>
         <Button variant="dark" type="button" onClick={pickImageHandler}>
