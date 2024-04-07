@@ -7,7 +7,7 @@ const LubricantSchema = new schema({
         type: String,
         required: true
     },
-    Product_code: {
+    Product_brand: {
         type: String,
         required: true
     },
