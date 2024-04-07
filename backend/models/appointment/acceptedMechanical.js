@@ -2,31 +2,27 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const accidentalSchema = new Schema({
+const acceptedmechanicalSchema = new Schema({
 
     name: {
-        type: String,
+        type :String,
         required: true
     },
     vType: {
-        type: String,
+        type :String,
         required: true
     },
     vNo: {
         type: String,
         required: true,
     },
-    dateAccidentaOccured: {
+    issue: {
         type: String,
         required: true,
     },
-    damagedOccured: {
-        type: String,
-        required: true,
-    },
-    contactNo: {
-        type: Number,
-        required: true,
+    contactNo:{
+        type:Number,
+        required:true,
         maxLength: 10,
     },
     appointmentdate: {
@@ -36,12 +32,10 @@ const accidentalSchema = new Schema({
     appointmenttime: {
         type: String,
         required: true,
-    },
-    image: {
-        type: String,
-        required: true,
     }
-})
-const accidentalRepairs = mongoose.model("accidentalRepairs", accidentalSchema);
 
-module.exports = accidentalRepairs;
+    
+})
+const acceptedmechanical = mongoose.model("acceptedmechanicalAppointments",acceptedmechanicalSchema);
+
+module.exports=acceptedmechanical;
