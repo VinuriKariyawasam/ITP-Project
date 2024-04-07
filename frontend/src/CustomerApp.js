@@ -8,7 +8,6 @@ import React from "react";
 import Header from "../src/components/CUS/CusHeader/Header";
 
 import CUSAppointment from "./components/CUS/Pages/CUSAppointment";
-import Products from "./components/CUS/inventory/Products";
 
 import Payment from "./components/CUS/Pages/Payment";
 import Feedback from "./components/CUS/CUSMain/CUS_CAM/Feedback";
