@@ -6,7 +6,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 function CusnavItem() {
   return (
     <>
-      <Navbar>
+      <Navbar bg="#212121" data-bs-theme="dark">
         <Container>
           <Nav className="me-auto">
             <Nav.Link href="http://localhost:3000/customer">Home</Nav.Link>
