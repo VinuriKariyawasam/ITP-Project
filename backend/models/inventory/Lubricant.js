@@ -7,7 +7,7 @@ const LubricantSchema = new schema({
         type: String,
         required: true
     },
-    Product_code: {
+    Product_brand: {
         type: String,
         required: true
     },
@@ -16,10 +16,13 @@ const LubricantSchema = new schema({
         required: true
     },
     Unit_price: {
-        type: String,
+        type: Number,
         required: true
     },
-   
+    image:{
+        type: String,
+    },
+
 })
 
 const Lubricant = mongoose.model("Lubricant", LubricantSchema);

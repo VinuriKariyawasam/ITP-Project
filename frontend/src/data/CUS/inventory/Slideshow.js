@@ -6,7 +6,7 @@ import './Slideshow.css'
 function DarkVariantExample() {
   return (
     
-    <Carousel className='Sldieshowcss' > 
+    <Carousel className='ProductsSldieshowcss' > 
       <Carousel.Item interval={2000} >
       <img
           className="d-block "

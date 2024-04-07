@@ -12,10 +12,10 @@ function NavAvatar() {
         <span className="d-none d-md-block dropdown-toggle ps-2">T.Eranga</span>
       </a>
 
-      <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-        <li className="dropdown-header">
+      <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow cus-profile">
+        <li className="cus-dropdown-header">
         <img src={cusavatar} alt="Profile" className="rounded-circle" />
-          <h6>Tharii Eranga</h6>
+          <h6 style={{float:"center"}}>Tharii Eranga</h6>
         </li>
         <li>
           <hr className="dropdown-divider" />
@@ -23,7 +23,7 @@ function NavAvatar() {
 
         <li>
           <a
-            className="dropdown-item d-flex align-items-center"
+            className="cus-dropdown-item d-flex align-items-center"
             href="users-profile.html"
           >
           
@@ -36,7 +36,7 @@ function NavAvatar() {
 
         <li>
           <a
-            className="dropdown-item d-flex align-items-center"
+            className="cus-dropdown-item d-flex align-items-center"
             href="users-profile.html"
           >
             
@@ -49,7 +49,7 @@ function NavAvatar() {
 
         <li>
           <a
-            className="dropdown-item d-flex align-items-center"
+            className="cus-dropdown-item d-flex align-items-center"
             href="pages-faq.html"
           >
            
@@ -61,7 +61,7 @@ function NavAvatar() {
         </li>
 
         <li>
-          <a className="dropdown-item d-flex align-items-center" href="/customer/MyAppointment">
+          <a className="cus-dropdown-item d-flex align-items-center" href="/customer/MyAppointment">
             
             <span>Mobile Services</span>
           </a>

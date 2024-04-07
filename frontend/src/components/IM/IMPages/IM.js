@@ -4,7 +4,7 @@ import IMSideBar from "../IMSidebar/IMSideBar";
 import Lubricants from "../IMMain/Products/Lubricants"
 import Header from "../../Header/Header";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Addlubricant from "../IMMain/Products/Lubricantform";
+import Addlubricant from "../IMMain/Products/lubform";
 import Tires from "../IMMain/Products/Tires";
 import Tireform from "../IMMain/Products/Tireform";
 
