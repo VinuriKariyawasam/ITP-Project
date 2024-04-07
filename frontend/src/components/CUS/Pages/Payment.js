@@ -16,19 +16,13 @@ import {
 function Customer() {
   return (
     <>
-    <Header/>
+    
     <Routes>
     <Route path="/payonline" element={<PayHereIntegration/>} />
     <Route path="/onlinepayment/verify/*" element={<PaymentVerification/>} />
     <Route path="/onlinepayment/fail/*" element ={<PaymentFailure/>}/>
     <Route path="/invoice" element ={<PaymentInvoice/>}/>
-   
-
-    
-    
-
-   
-    
+  
     </Routes>
     </>
   )

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Button } from 'react-bootstrap';
+import { Container, Table, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 const PendingPayments = () => {
   const navigate = useNavigate();
   const [payments, setPayments] = useState([]);
+  const [alert, setAlert] = useState(null); // State for alert message
 
   useEffect(() => {
     fetchPendingPayments();
@@ -30,13 +31,14 @@ const PendingPayments = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status: 'completed' }), // Assuming the field name for status update is 'status'
+        body: JSON.stringify({ status: 'completed' }),
       });
       if (!response.ok) {
         throw new Error('Failed to mark payment as completed');
       }
       // Refresh pending payments after successful update
       fetchPendingPayments();
+      setAlert('Payment marked as completed successfully'); // Set alert message
     } catch (error) {
       console.error('Error marking payment as completed:', error.message);
     }
@@ -46,6 +48,7 @@ const PendingPayments = () => {
     <>
       <Container>
         <h4 className="mb-4">Pending Payments</h4>
+        {alert && <Alert variant="success" onClose={() => setAlert(null)} dismissible>{alert}</Alert>} {/* Display alert */}
         {payments.length === 0 ? (
           <p>No Pending Payments</p>
         ) : (
@@ -65,10 +68,14 @@ const PendingPayments = () => {
                   <td>{payment.paymentInvoiceId}</td>
                   <td>{payment.name}</td>
                   <td>Rs.{payment.total}</td> 
-                  <td>{payment.status}</td>
+                 <td>
+  <span className={`badge ${payment.status === 'pending' ? 'bg-warning' : payment.status === 'completed' ? 'bg-success' : 'bg-danger'}`}>
+    {payment.status}
+  </span>
+</td>
                   <td>
                     {payment.status === 'pending' && (
-                      <Button onClick={() => markAsCompleted(payment.paymentInvoiceId)}>Mark as Completed</Button>
+                      <Button variant="outline-success" onClick={() => markAsCompleted(payment.paymentInvoiceId)}>Mark as Completed</Button>
                     )}
                   </td>
                 </tr>

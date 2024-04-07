@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Table, Form, Row, Col, Button, Modal } from 'react-bootstrap';
+import { Table, Form, Row, Col, Button, Modal,Badge } from 'react-bootstrap';
 import html2pdf from 'html2pdf.js';
 import { useReactToPrint } from 'react-to-print';
 import { CSVLink } from 'react-csv';
@@ -91,17 +91,20 @@ const BillsList = () => {
   const handleEdit = (id) => {
     navigate(`/edit/${id}`);
   };
-
+  
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this bill?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/finance/billing/${id}`, {
+        const response = await fetch(`http://localhost:5000/api/finance/billing/delete/${id}`, {
           method: 'DELETE',
         });
         if (!response.ok) {
           throw new Error('Failed to delete bill');
         }
-        setBills(bills.filter((bill) => bill._id !== id));
+        
+        // Update the bills state to remove the deleted bill
+        setBills(bills.filter((bill) => bill.paymentInvoiceId !== id));
+        
         alert('Bill deleted successfully!');
       } catch (error) {
         console.error('Error deleting bill:', error.message);
@@ -246,16 +249,20 @@ const BillsList = () => {
                   <td>{bill.name}</td>
                   <td>{bill.currentDate}</td>
                   <td>{parseFloat(bill.total).toFixed(2)}</td>
-                  <td>{bill.status}</td>
+                  <td>
+  <span className={`badge ${bill.status === 'pending' ? 'bg-warning' : bill.status === 'completed' ? 'bg-success' : 'bg-danger'}`}>
+    {bill.status}
+  </span>
+</td>
                   {!downloadingPDF &&
                     <td>
                       {bill.status === 'pending' &&
                         <>
-                          <Button variant="dark" size="sm" onClick={() => handleEdit(bill._id)}>Edit</Button>{' '}
-                          <Button variant="danger" size="sm" onClick={() => handleDelete(bill._id)}>Delete</Button>{' '}
+                          <Button variant="dark" size="sm" onClick={() => handleEdit(bill.paymentInvoiceId)}>Edit</Button>{' '}
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(bill.paymentInvoiceId)}>Delete</Button>{' '}
                         </>
                       }
-                      <Button variant="success" size="sm" onClick={() => handleViewDetails(bill)}>View</Button>
+                      <Button variant="primary" size="sm" onClick={() => handleViewDetails(bill)}>View</Button>
                     </td>
                   }
                 </tr>
@@ -264,36 +271,36 @@ const BillsList = () => {
           </Table>
         </div>
         <Modal show={showModal} onHide={handleCloseModal}>
-  <Modal.Header closeButton>
-    <Modal.Title>Bill Details</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    {selectedBill && paymentDetails && (
-      <div>
-        <p><strong>Invoice ID:</strong> {selectedBill.paymentInvoiceId}</p>
-        <p><strong>Service Record ID:</strong> {paymentDetails.serviceRecordId}</p>
-        <p><strong>Name:</strong> {selectedBill.name}</p>
-        <p><strong>Address:</strong> {selectedBill.address}</p>
-        <p><strong>Email:</strong> {selectedBill.email}</p>
-        <p><strong>Phone:</strong> {selectedBill.phone}</p>
-        <p><strong>Parts & Accessories Price (Rs.):</strong> {selectedBill.partsPrice}</p>
-        <p><strong>Parts & Accessories Discount(%):</strong> {selectedBill.partsDiscount}</p>
-        <p><strong>Service & Repair Price (Rs.):</strong> {selectedBill.servicePrice}</p>
-        <p><strong>Service & Repair Discount(%):</strong> {selectedBill.serviceDiscount}</p>
-        <p><strong>Tax Rate (%):</strong> {selectedBill.taxRate}</p>
-        <p><strong>Total (Rs.):</strong> {selectedBill.total}</p>
-        <p><strong>Status:</strong> {selectedBill.status}</p>
-        <p><strong> Date:</strong> {selectedBill.currentDate}</p>
-        <p><strong>Time:</strong> {selectedBill.currentTime}</p>
-      </div>
-    )}
-  </Modal.Body>
-  <Modal.Footer>
-    <Button variant="secondary" onClick={handleCloseModal}>
-      Close
-    </Button>
-  </Modal.Footer>
-</Modal>
+          <Modal.Header closeButton>
+            <Modal.Title>Bill Details</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {selectedBill && paymentDetails && (
+              <div>
+                <p><strong>Invoice ID:</strong> {selectedBill.paymentInvoiceId}</p>
+                <p><strong>Service Record ID:</strong> {paymentDetails.serviceRecordId}</p>
+                <p><strong>Name:</strong> {selectedBill.name}</p>
+                <p><strong>Address:</strong> {selectedBill.address}</p>
+                <p><strong>Email:</strong> {selectedBill.email}</p>
+                <p><strong>Phone:</strong> {selectedBill.phone}</p>
+                <p><strong>Parts & Accessories Price (Rs.):</strong> {selectedBill.partsPrice}</p>
+                <p><strong>Parts & Accessories Discount(%):</strong> {selectedBill.partsDiscount}</p>
+                <p><strong>Service & Repair Price (Rs.):</strong> {selectedBill.servicePrice}</p>
+                <p><strong>Service & Repair Discount(%):</strong> {selectedBill.serviceDiscount}</p>
+                <p><strong>Tax Rate (%):</strong> {selectedBill.taxRate}</p>
+                <p><strong>Total (Rs.):</strong> {selectedBill.total}</p>
+                <p><strong>Status:</strong> {selectedBill.status}</p>
+                <p><strong> Date:</strong> {selectedBill.currentDate}</p>
+                <p><strong>Time:</strong> {selectedBill.currentTime}</p>
+              </div>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </main>
   );

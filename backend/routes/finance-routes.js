@@ -45,7 +45,7 @@ router.post("/billing/createbill",createBilling)
 router.get("/billing/all",getAllBillings)
 router.get("/billing/pendingpayments",getPendingPayments)
 router.get("/billing/:paymentInvoiceId",getPaymentByInvoiceId)
-router.delete("/billing/:paymentInvoiceId",deleteBill)
+router.delete("/billing/delete/:paymentInvoiceId",deleteBill)
 router.patch("/billing/inpersonpayment/:paymentInvoiceId",updatePaymentStatusToCompleted)
 
 

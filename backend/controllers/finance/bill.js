@@ -23,9 +23,7 @@ exports.createBilling = async (req, res) => {
     });
   
     try {
-      if (!serviceRecordId || !paymentInvoiceId || !name || !address || !email || !phone || !partsPrice || !partsDiscount || !servicePrice || !serviceDiscount || !taxRate || !total) {
-        return res.status(400).json({ message: 'All Fields Required' });
-      }
+      
       if (isNaN(partsPrice) || isNaN(partsDiscount) || isNaN(servicePrice) || isNaN(serviceDiscount) || isNaN(taxRate) || isNaN(total) || partsPrice < 0 || partsDiscount < 0 || servicePrice < 0 || serviceDiscount < 0 || taxRate < 0 || total < 0) {
         return res.status(400).json({ message: 'All numerical values should be positive' });
       }
