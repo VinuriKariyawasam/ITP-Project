@@ -7,9 +7,13 @@ const TireSchema = new schema({
         type: String,
         required: true
     },
-    Product_code: {
+    Product_Brand: {
         type: String,
         required: true
+    },
+    vehicle_Type:{
+        type: String,
+        required:true
     },
     Quantity: {
         type: Number,
@@ -19,6 +23,10 @@ const TireSchema = new schema({
         type: String,
         required: true
     },
+    image:{
+        type: String,
+    },
+  
    
 })
 

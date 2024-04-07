@@ -1,0 +1,5 @@
+.remove-spinner::-webkit-inner-spin-button,
+.remove-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

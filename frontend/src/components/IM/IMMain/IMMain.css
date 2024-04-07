@@ -6,23 +6,6 @@
   padding: 20px 30px;
   transition: all 0.3s;
 }
-.card2{
-  margin-top:80px;
-  background: none;
-  margin:48px;
-}
-.list-group-item{
-  font-weight:bold; 
-  margin-top:30px;
-  border-radius: 5px;
-  height:fit-content
-
-}
-.btn1{
-  float:right;
- 
- 
-}
 
 @media (max-width: 1199px) {
   #main {
