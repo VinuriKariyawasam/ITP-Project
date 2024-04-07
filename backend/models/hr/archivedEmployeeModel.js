@@ -78,6 +78,22 @@ const archivedEmployeeSchema = new mongoose.Schema({
       return this.position === "Manager" || this.position === "Supervisor";
     },
   },
+  basicSalary: {
+    type: Number,
+    required: true,
+  },
+  bank: {
+    type: String,
+    required: true,
+  },
+  branch: {
+    type: String,
+    required: true,
+  },
+  account: {
+    type: Number,
+    required: true,
+  },
 });
 
 const ArchivedEmployee = mongoose.model(
