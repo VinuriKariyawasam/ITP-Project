@@ -337,11 +337,22 @@ class EmployeeController {
         return res.status(404).json({ error: "Employee not found" });
       }
 
+      // Find and delete the associated salary document
+      const deletedSalary = await Salary.findOneAndDelete({
+        empDBId: deletedEmployee._id,
+      });
+
+      if (!deletedSalary) {
+        return res.status(404).json({ error: "Salary not found" });
+      }
+
       // Create an instance of ArchivedEmployee using the deleted employee's data
       const archivedEmployee = new ArchivedEmployee({
         // Copy the fields of the deleted employee
         ...deletedEmployee.toObject(),
-        // You may need to modify or add additional fields if needed
+        // Copy the fields of the deleted salary
+        ...deletedSalary.toObject(),
+        // Set the archived field to true
         archived: true,
       });
 

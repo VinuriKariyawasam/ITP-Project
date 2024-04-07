@@ -2,6 +2,7 @@ const EmployeeController = require("../controllers/hr/employe-controller");
 const LeavesController = require("../controllers/hr/leaves-controller");
 const DesignationsController = require("../controllers/hr/desigantion-controller");
 const SalaryController = require("../controllers/hr/salary-controller");
+const attendanceController = require("../controllers/hr/attendance-controller");
 const bodyParser = require("body-parser");
 const { body } = require("express-validator");
 const router = require("express").Router();
@@ -193,5 +194,25 @@ router.get("/salaries", SalaryController.getAllSalaries);
 
 // Get Salary by ID
 router.get("/salaries/:id", SalaryController.getSalaryById);
+
+//---------Salary Routes-------------------
+
+// Route to create new attendance
+router.post("/add-attendance", attendanceController.createAttendance);
+
+// Route to get all attendance records
+router.get("/attendance", attendanceController.getAllAttendance);
+
+// Route to get attendance by ID
+router.get("/attendance/:id", attendanceController.getAttendanceById);
+
+// Route to archive attendance
+router.delete(
+  "/archive-attendance/:id",
+  attendanceController.archiveAttendance
+);
+
+// Route to get attendance by date (using POST request and date in request body)
+router.get("/attendance/date/:date", attendanceController.getAttendanceByDate);
 
 module.exports = router;

@@ -194,7 +194,12 @@ function Designations() {
                               <tr key={designation._id}>
                                 <td>{index + 1}</td>
                                 <td>{designation.position}</td>
-                                <td>Rs.{designation.basicSalary}</td>
+                                <td>
+                                  Rs.
+                                  {designation.basicSalary
+                                    ? Number(designation.basicSalary).toFixed(2)
+                                    : "0.00"}
+                                </td>
 
                                 <td>
                                   <Button
