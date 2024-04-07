@@ -47,3 +47,43 @@ exports.getAllBillings = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+
+
+
+exports.getPendingPayments = async (req, res) => {
+  try {
+    const pendingPayments = await  BillingSchema.find({ status: 'pending' });
+    res.status(200).json({ success: true, data: pendingPayments });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
+
+exports.getPaymentByInvoiceId = async (req, res) => {
+    const { paymentInvoiceId } = req.params;
+    try {
+        const payment = await BillingSchema.findOne({ paymentInvoiceId });
+        if (!payment) {
+            return res.status(404).json({ success: false, message: 'Payment not found' });
+        }
+        res.status(200).json({ success: true, data: payment });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+exports.deleteBill = async (req, res) => {
+    const { paymentInvoiceId } = req.params;
+    try {
+        const deletedRecord = await BillingSchema.findOneAndDelete({ paymentInvoiceId });
+        if (!deletedRecord) {
+            return res.status(404).json({ success: false, message: 'Record not found' });
+        }
+        res.status(200).json({ success: true, message: 'Record deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};

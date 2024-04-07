@@ -77,8 +77,8 @@ const BillingForm = () => {
 
   function generatePaymentInvoiceId() {
     const timestamp = new Date().getTime();
-    const randomNum = Math.floor(Math.random() * 900) + 100;
-    const invoiceId = `P${timestamp}-${randomNum}`;
+    const randomNum = Math.floor(Math.random() * 900000) + 100000; // Generates a 6-digit random number
+    const invoiceId = `P${timestamp}-${randomNum}`.slice(0, 12); // Limiting to 12 characters
     return invoiceId;
   }
 

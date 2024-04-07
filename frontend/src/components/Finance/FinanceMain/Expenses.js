@@ -68,6 +68,7 @@ const Expenses = () => {
         <Button variant="primary" onClick={handleAddExpenseClick}>
           Add Expense
         </Button>
+        <br></br>
         <Table striped bordered hover>
           <thead>
             <tr>
