@@ -38,9 +38,29 @@ const PendingPayments = () => {
       }
       // Refresh pending payments after successful update
       fetchPendingPayments();
-      setAlert('Payment marked as completed successfully'); // Set alert message
+      setAlert('Payment approved successfully'); // Set alert message
     } catch (error) {
       console.error('Error marking payment as completed:', error.message);
+    }
+  };
+
+  const markAsCancelled = async (paymentId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/finance/billing/inpersonpayment/${paymentId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'cancelled' }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to mark payment as cancelled');
+      }
+      // Refresh pending payments after successful update
+      fetchPendingPayments();
+      setAlert('Payment cancelled successfully'); // Set alert message
+    } catch (error) {
+      console.error('Error marking payment as cancelled:', error.message);
     }
   };
 
@@ -67,15 +87,19 @@ const PendingPayments = () => {
                 <tr key={index}>
                   <td>{payment.paymentInvoiceId}</td>
                   <td>{payment.name}</td>
-                  <td>Rs.{payment.total}</td> 
-                 <td>
-  <span className={`badge ${payment.status === 'pending' ? 'bg-warning' : payment.status === 'completed' ? 'bg-success' : 'bg-danger'}`}>
-    {payment.status}
-  </span>
-</td>
+                  <td>Rs.{payment.total}</td>
+                  <td>
+                    <span className={`badge ${payment.status === 'pending' ? 'bg-warning' : payment.status === 'completed' ? 'bg-success' : 'bg-danger'}`}>
+                      {payment.status}
+                    </span>
+                  </td>
                   <td>
                     {payment.status === 'pending' && (
-                      <Button variant="outline-success" onClick={() => markAsCompleted(payment.paymentInvoiceId)}>Mark as Completed</Button>
+                      <Button variant="outline-success" onClick={() => markAsCompleted(payment.paymentInvoiceId)}>Approve</Button>
+                    )}
+                    {' '}
+                    {payment.status === 'pending' && (
+                      <Button variant="outline-danger" onClick={() => markAsCancelled(payment.paymentInvoiceId)}>Cancel</Button>
                     )}
                   </td>
                 </tr>

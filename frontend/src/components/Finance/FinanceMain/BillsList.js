@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Table, Form, Row, Col, Button, Modal,Badge } from 'react-bootstrap';
+import { Table, Form, Row, Col, Button, Modal, Badge } from 'react-bootstrap';
 import html2pdf from 'html2pdf.js';
 import { useReactToPrint } from 'react-to-print';
 import { CSVLink } from 'react-csv';
@@ -19,6 +19,15 @@ const BillsList = () => {
   const [paymentDetails, setPaymentDetails] = useState(null);
   const componentRef = useRef(null);
   const navigate = useNavigate();
+
+  // Moved formatDate function declaration here
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString().padStart(2, '0');
+    let day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   useEffect(() => {
     fetchBills();
@@ -143,14 +152,6 @@ const BillsList = () => {
     );
   });
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    let month = (1 + date.getMonth()).toString().padStart(2, '0');
-    let day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
   const csvData = filteredBills.map((bill) => ({
     'Payment Invoice ID': bill.paymentInvoiceId,
     'Name': bill.name,
@@ -184,7 +185,7 @@ const BillsList = () => {
                 <Form.Control as="select" value={filterStatus} onChange={handleFilterStatusChange}>
                   <option value="">Filter by Status</option>
                   <option value="pending">Pending</option>
-                  <option value="paid">Paid</option>
+                  <option value="completed">Completed</option>
                   <option value="cancelled">Cancelled</option>
                 </Form.Control>
               </Form.Group>
@@ -250,10 +251,10 @@ const BillsList = () => {
                   <td>{bill.currentDate}</td>
                   <td>{parseFloat(bill.total).toFixed(2)}</td>
                   <td>
-  <span className={`badge ${bill.status === 'pending' ? 'bg-warning' : bill.status === 'completed' ? 'bg-success' : 'bg-danger'}`}>
-    {bill.status}
-  </span>
-</td>
+                    <span className={`badge ${bill.status === 'pending' ? 'bg-warning' : bill.status === 'completed' ? 'bg-success' : 'bg-danger'}`}>
+                      {bill.status}
+                    </span>
+                  </td>
                   {!downloadingPDF &&
                     <td>
                       {bill.status === 'pending' &&

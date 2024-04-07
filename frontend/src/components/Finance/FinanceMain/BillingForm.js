@@ -69,6 +69,7 @@ const BillingForm = () => {
         throw new Error('Failed to create bill');
       }
       alert('Bill created successfully!');
+      navigate('/staff/finance/billing/all');
     } catch (error) {
       console.error('Error creating bill:', error.message);
       alert('Failed to create bill. Please try again later.');
@@ -124,7 +125,7 @@ const BillingForm = () => {
                 <Form.Label>Name</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter name"
+                  placeholder="Enter Name"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
@@ -137,7 +138,7 @@ const BillingForm = () => {
                 <Form.Label>Address</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter address"
+                  placeholder="Enter Address"
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
@@ -152,7 +153,7 @@ const BillingForm = () => {
                 <Form.Label>Email</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter email"
+                  placeholder="Enter Email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
@@ -165,7 +166,7 @@ const BillingForm = () => {
                 <Form.Label>Phone</Form.Label>
                 <Form.Control
                   type="tel"
-                  placeholder="Enter phone number"
+                  placeholder="Enter Phone"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
@@ -174,14 +175,14 @@ const BillingForm = () => {
               </Form.Group>
             </Col>
           </Row>
-          <h2 className="mt-4">Parts and Accessories</h2>
+          <h2>Parts and Accessories</h2>
           <Row>
             <Col md={6}>
               <Form.Group controlId="partsPrice">
                 <Form.Label>Price</Form.Label>
                 <Form.Control
                   type="number"
-                  placeholder="Enter price"
+                  placeholder="Enter Price"
                   name="partsPrice"
                   value={formData.partsPrice}
                   onChange={handleChange}
@@ -195,7 +196,7 @@ const BillingForm = () => {
                 <Form.Control
                   type="number"
                   step="0.01"
-                  placeholder="Enter discount"
+                  placeholder="Enter Discount"
                   name="partsDiscount"
                   value={formData.partsDiscount}
                   onChange={handleChange}
@@ -211,7 +212,7 @@ const BillingForm = () => {
                 <Form.Label>Price</Form.Label>
                 <Form.Control
                   type="number"
-                  placeholder="Enter price"
+                  placeholder="Enter Price"
                   name="servicePrice"
                   value={formData.servicePrice}
                   onChange={handleChange}
@@ -225,7 +226,7 @@ const BillingForm = () => {
                 <Form.Control
                   type="number"
                   step="0.01"
-                  placeholder="Enter discount"
+                  placeholder="Enter Discount"
                   name="serviceDiscount"
                   value={formData.serviceDiscount}
                   onChange={handleChange}
@@ -240,7 +241,7 @@ const BillingForm = () => {
                 <Form.Label>Tax (%)</Form.Label>
                 <Form.Control
                   type="number"
-                  placeholder="Enter tax rate"
+                  placeholder="Enter Tax Rate"
                   name="taxRate"
                   value={formData.taxRate}
                   onChange={handleChange}
@@ -295,7 +296,7 @@ const BillingForm = () => {
               </Form.Group>
             </Col>
           </Row>
-          <br></br>
+          <br />
           <Row>
             <Col md={2}>
               <Button variant="primary" type="submit">

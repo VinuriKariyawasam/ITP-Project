@@ -87,8 +87,9 @@ exports.deleteBill = async (req, res) => {
 };
 
 
-exports.updatePaymentStatusToCompleted = async (req, res) => {
+exports.updatePaymentStatus = async (req, res) => {
     const { paymentInvoiceId } = req.params;
+    const {status}=req.body;
   
     try {
      
@@ -100,7 +101,7 @@ exports.updatePaymentStatusToCompleted = async (req, res) => {
       }
   
      
-      payment.status = 'completed';
+      payment.status = status;
   
       
       await payment.save();
