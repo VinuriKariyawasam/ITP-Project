@@ -16,7 +16,7 @@ const LubricantSchema = new schema({
         required: true
     },
     Unit_price: {
-        type: String,
+        type: Number,
         required: true
     },
     image:{

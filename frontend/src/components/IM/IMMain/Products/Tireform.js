@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -6,110 +6,191 @@ import Row from 'react-bootstrap/Row';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ImPageTitle from '../ImPageTitle';
+import { useForm } from "../../../../data/IM/form-hook";
 
-function Tireform() {
-  const [validated, setValidated] = useState(false);
+const Tireform = () => {
+  const navigate = useNavigate();
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [fileError, setFileError] = useState("");
+  const [formState, inputHandler] = useForm(
+    {
+      product_name: {
+        value: "",
+        isValid: false,
+      },
+      product_brand: {
+        value: "",
+        isValid: false,
+      },
+      vehicle_Type:{
+        value: "",
+        isValid: false,
+      },
+      quantity: {
+        value: "",
+        isValid: false,
+      },
+      unit_price: {
+        value: "",
+        isValid: false,
+      },
+      image: {
+        value: null,
+        isValid: false,
+      },
+    },
+    false
+  );
 
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
+  const tireSubmitHandler = async (event) => {
+    event.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append("product_name", formState.inputs.product_name.value);
+      formData.append("product_brand", formState.inputs.product_brand.value);
+      formData.append("vehicle_Type",formState.inputs.vehicle_Type.value);
+      formData.append("quantity", formState.inputs.quantity.value);
+      formData.append("unit_price", formState.inputs.unit_price.value);
+      formData.append("image", formState.inputs.image.value);
+
+      const response = await axios.post(
+        "http://localhost:5000/Product/addTires",
+        formData
+      );
+
+      navigate("staff/im/Tires/");
+      console.log(response);
+      console.log(formState.inputs);
+    } catch (err) {
+      console.log(err);
     }
-
-    setValidated(true);
   };
 
+  useEffect(() => {
+    if (formState.inputs.image.value instanceof Blob) {
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        setPreviewUrl(fileReader.result);
+      };
+      fileReader.onerror = () => {
+        console.error("Error reading the file");
+      };
+      fileReader.readAsDataURL(formState.inputs.image.value);
 
-  const[ Product_name, setName] = useState("");
-  const[Product_code, setCode] = useState("");
-  const[Quantity,setQuantity] = useState("");
-  const[Unit_price, setPrice] = useState("");
-  const navigate = useNavigate();
-
-  function sendData(e){
-      e.preventDefault();
-
-      const newProduct={
-        Product_name,
-        Product_code,
-        Quantity,
-        Unit_price
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+      if (!allowedTypes.includes(formState.inputs.image.value.type)) {
+        setFileError("Please select a valid image file (JPEG, JPG, or PNG).");
+      } else {
+        setFileError("");
       }
-
-      axios.post("http://localhost:5000/Product/addTires",newProduct).then(()=>{
-          navigate('staff/im/Tires/');
-      }).catch((err)=>{
-          alert(err)
-      })  
-      }
-
+    }
+  }, [formState.inputs.image.value]);
 
   return (
     <main id="main" className="main">
-      <ImPageTitle title="Add Tires" url="/staff/im/Tires/addproduct/" />
-    <Form noValidate validated={validated} onSubmit={(event) => {handleSubmit(event); sendData(event);}}>
-      <Row className="mb-3">
-        <Form.Group as={Col} md="5" controlId="validationCustom01">
-          <Form.Label>Product Name</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            onChange={(e)=>{
-              setName(e.target.value);}}
-            
-          />
-          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group as={Col} md="5" controlId="validationCustom02">
-          <Form.Label>Product Code</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            onChange={(e)=>{
-              setCode(e.target.value);}}
-            
-          />
-          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-        </Form.Group>
-        </Row>
+      <ImPageTitle
+        title="Add Lubricants"
+        url="/staff/im/lubricants/addproduct/"
+      />
 
+      <Form onSubmit={tireSubmitHandler}>
         <Row className="mb-3">
-        <Form.Group as={Col} md="5" controlId="validationCustom03">
-          <Form.Label>Quanity</Form.Label>
-          <Form.Control type="number" 
-           required  
-           onChange={(e)=>{
-            setQuantity(e.target.value);}}
-           />
-          <Form.Control.Feedback type="invalid">
-            Please provide a valid city.
-          </Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group as={Col} md="5" controlId="validationCustom04">
-          <Form.Label>Unit Price</Form.Label>
-          <Form.Control type="text"
-            required
-            onChange={(e)=>{
-              setPrice(e.target.value);}}
-            />
-          <Form.Control.Feedback type="invalid">
-            Please provide a valid state.
-          </Form.Control.Feedback>
-        </Form.Group>
-        </Row>
-         <Form.Group as={Col} md="6" controlId="validationCustom05" className="position-relative mb-3">
-            <Form.Label>Product Image</Form.Label>
+          <Form.Group as={Col} md="5" controlId="validationCustom01">
+            <Form.Label>Product Name</Form.Label>
             <Form.Control
-              type="file"
-               />
-            <Form.Control.Feedback type="invalid" tooltip>
-              
-            </Form.Control.Feedback>
+              id="product_name"
+              type="text"
+              placeholder="Enter product name"
+              onInput={(event) =>
+                inputHandler("product_name", event.target.value, true)
+              }
+              required
+            />
           </Form.Group>
-      
-      <Button type="submit">Submit form</Button>
-    </Form>
+          <Form.Group as={Col} md="5" controlId="validationCustom01">
+            <Form.Label>Product Brand</Form.Label>
+            <Form.Control
+              id="product_brand"
+              type="text"
+              placeholder="Enter product brand"
+              onInput={(event) =>
+                inputHandler("product_brand", event.target.value, true)
+              }
+              required
+            />
+          </Form.Group>
+        </Row>
+        <Row className="mb-3">
+        <Form.Group as={Col} md="5" controlId="validationCustom01">
+        <Form.Label>Vehicle type</Form.Label>
+        <Form.Control
+          id="vehicle_Type"
+          type="text"
+          placeholder="Enter vehicle type"
+          onInput={(event) =>
+            inputHandler("vehicle_Type", event.target.value, true)
+          }
+          required
+        />
+      </Form.Group>
+          <Form.Group as={Col} md="5" controlId="validationCustom01">
+            <Form.Label>Quantity</Form.Label>
+            <Form.Control
+              id="quantity"
+              type="number"
+              placeholder="Enter quantity"
+              min="1" 
+              onInput={(event) =>
+                inputHandler("quantity", event.target.value, true)
+              }
+              required
+            />
+          </Form.Group>
+          <Form.Group as={Col} md="5" controlId="validationCustom01">
+            <Form.Label>Unit Price</Form.Label>
+            <Form.Control
+             className="remove-spinner" 
+              id="unit_price"
+              type="number"
+              placeholder="Enter unit price"
+              min="1" 
+              onInput={(event) =>
+                inputHandler("unit_price", event.target.value, true)
+              }
+              required
+            />
+          </Form.Group>
+        </Row>
+        <Row className="mb-3">
+          <Form.Group as={Col} md="5" controlId="validationCustom01">
+            <Form.Label>Image</Form.Label>
+            <Form.Control
+              id="image"
+              type="file"
+              accept=".jpg,.png,.jpeg"
+              placeholder="add image"
+              onInput={(event) =>
+                inputHandler("image", event.target.files[0], true)
+              }
+              required
+            />
+             {fileError && (
+                <Form.Text className="text-danger">{fileError}</Form.Text>
+              )}
+          </Form.Group>
+        
+        {previewUrl && (
+              <img
+                src={previewUrl}
+                alt="product image"
+                style={{ marginTop: "3%", width: "20%", height: "20%" }}
+              />
+             )}
+        </Row>
+        <Button variant="primary" type="submit" disabled={!formState.isValid}>
+          Submit
+        </Button>
+      </Form>
     </main>
   );
 }

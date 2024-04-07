@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./IMProductCard.css";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
 import './Productformsprice.css'
 function IMLubricantCard() {
   const [Products, setProducts] = useState([]);
@@ -37,15 +36,17 @@ function IMLubricantCard() {
   };
 
   const handlePriceChange = (id, value) => {
+    if (value > 0 && Number.isInteger(Number(value))) {
     setProducts(prevProducts =>
       prevProducts.map(product =>
         product._id === id ? { ...product, Unit_price: value } : product
       )
     );
+  }
   };
 
   const handleQuantityChange = (id, value) => {
-    if (value >= 0 && Number.isInteger(Number(value))) {
+    if (value > 0 && Number.isInteger(Number(value))) {
       setProducts(prevProducts =>
         prevProducts.map(product =>
           product._id === id ? { ...product, Quantity: value } : product
@@ -85,6 +86,7 @@ function IMLubricantCard() {
               <div className="product-name">
                 <label htmlFor={`price-${product._id}`}>Price:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rs.</label>
                 <input className="product-price"
+
                   id={`price-${product._id}`}
                   type="number"
                   value={product.Unit_price}
@@ -93,7 +95,8 @@ function IMLubricantCard() {
                 }
                   style={{
                     border: "none", 
-                    outline: "none"
+                    outline: "none",
+                    width:"50%",
                   }}
                 />
               </div>
@@ -108,7 +111,8 @@ function IMLubricantCard() {
                  }
                 style={{
                   border: "none", 
-                  outline: "none" 
+                  outline: "none",
+                  width:"50%", 
                 }}
               />
             </div>
