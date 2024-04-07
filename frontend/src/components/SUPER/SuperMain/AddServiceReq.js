@@ -245,7 +245,7 @@ function AddServiceReq() {
               <Modal.Title>Success</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              Vehicle registered successfully.
+              Service Request added successfully.
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
