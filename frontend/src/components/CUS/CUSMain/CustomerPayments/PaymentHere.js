@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form, Carousel } from "react-bootstrap";
 import neotechpay from "../../../../images/Payment/neotechpay.png";
 import payhere from "../../../../images/Payment/payhere.png";
+import payheremobile from "../../../../images/Payment/payhere_mobile.png";
 
 const PayHereIntegration = () => {
+  const [isMobile, setIsMobile] = useState(false);
   const [paymentData, setPaymentData] = useState({
     first_name: "John",
     last_name: "Smith",
@@ -62,30 +64,52 @@ const PayHereIntegration = () => {
     }
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust the breakpoint as needed
+    };
+
+    handleResize(); // Initial check on component mount
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <main id="cusmain" className="cusmain">
       <div className="container">
         <h1 className="text-center mb-5">Pay Online</h1>
         <div className="row">
           <div className="col-md-6">
-            <Carousel>
-              <Carousel.Item style={{ height: "500px" }}>
-                <img
-                  className="d-block w-100"
-                  src={neotechpay}
-                  alt="First slide"
-                  style={{ height: "450px" }}
-                />
-              </Carousel.Item>
-              <Carousel.Item style={{ height: "500px" }}>
-                <img
-                  className="d-block w-100"
-                  src={payhere}
-                  alt="Second slide"
-                  style={{ height: "450px" }}
-                />
-              </Carousel.Item>
-            </Carousel>
+            {isMobile ? (
+              <img
+                src={payheremobile}
+                alt="PayHere Mobile"
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
+            ) : (
+              <Carousel>
+                <Carousel.Item>
+                  <img
+                    className="d-block w-100"
+                    src={neotechpay}
+                    alt="First slide"
+                    style={{ maxHeight: "450px", objectFit: "cover" }}
+                  />
+                </Carousel.Item>
+                <Carousel.Item>
+                  <img
+                    className="d-block w-100"
+                    src={payhere}
+                    alt="Second slide"
+                    style={{ maxHeight: "450px", objectFit: "cover" }}
+                  />
+                </Carousel.Item>
+              </Carousel>
+            )}
           </div>
           <div className="col-md-6">
             <Form>
