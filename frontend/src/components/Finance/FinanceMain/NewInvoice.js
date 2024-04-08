@@ -1,12 +1,39 @@
-import React from "react";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col, Card, Button, Spinner } from "react-bootstrap";
 import { useReactToPrint } from "react-to-print";
 import html2pdf from "html2pdf.js";
-import logo from "../../../../images/Payment/neotechlogo.jpg";
+import logo from "../../../images/Payment/neotechlogo.jpg";
+import { useLocation } from "react-router-dom";
 
 const InvoiceComponent = () => {
+  const location = useLocation();
+  const { state: { paymentId } } = location;
+
+  const [invoiceData, setInvoiceData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
+
+  useEffect(() => {
+    const fetchInvoiceData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/finance/billing/${paymentId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch invoice data");
+        }
+        const data = await response.json();
+        setInvoiceData(data.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching invoice data:", error.message);
+      }
+    };
+
+    fetchInvoiceData();
+  }, [paymentId]);
+
   const componentRef = React.useRef();
-  const [downloadingPDF, setDownloadingPDF] = React.useState(false);
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -16,7 +43,7 @@ const InvoiceComponent = () => {
     setDownloadingPDF(true);
     const element = componentRef.current;
     const options = {
-      filename: "invoice.pdf",
+      filename: `${paymentId}.pdf`,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
@@ -31,8 +58,48 @@ const InvoiceComponent = () => {
       });
   };
 
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center mt-5">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
+  }
+
+  // Destructure invoice data
+  const {
+    serviceRecordId,
+    paymentInvoiceId,
+    name,
+    address,
+    email,
+    phone,
+    partsPrice,
+    partsDiscount,
+    servicePrice,
+    serviceDiscount,
+    taxRate,
+    total,
+    currentDate,
+    currentTime,
+    status,
+  } = invoiceData || {};
+
+  // Function to format price in Rs.2000.00 format
+  const formatPrice = (price) => {
+    return `Rs.${price.toFixed(2)}`;
+  };
+
+  // Calculate total discount
+  const totalDiscount = (partsPrice * (partsDiscount / 100)) + (servicePrice * (serviceDiscount / 100));
+
+  // Calculate tax amount
+  const taxAmount = (total - totalDiscount) * (taxRate / 100);
+
   return (
-    <main id="cusmain" className="cusmain">
+    <main id="main" className="main">
       <Container>
         <div ref={componentRef}>
           <Row>
@@ -41,9 +108,9 @@ const InvoiceComponent = () => {
                 <Card.Body>
                   <div className="invoice-title">
                     <h4 className="float-end font-size-15">
-                      Invoice #DS0204{" "}
+                      Invoice #{paymentInvoiceId}{" "}
                       <span className="badge bg-success font-size-12 ms-2">
-                        Paid
+                        {status}
                       </span>
                     </h4>
                     <div className="mb-4">
@@ -67,27 +134,27 @@ const InvoiceComponent = () => {
                     <div className="col-sm-6">
                       <div className="text-muted">
                         <h5 className="font-size-16 mb-3">Billed To:</h5>
-                        <h5 className="font-size-15 mb-2">Nimal Perera</h5>
+                        <h5 className="font-size-15 mb-2">{name}</h5>
                         <p className="mb-1">
-                          123, Main Street, Colombo 05, Sri Lanka
+                          {address}
                         </p>
-                        <p className="mb-1">nperera@gmail.com</p>
-                        <p>+94 77 123 4567</p>
+                        <p className="mb-1">{email}</p>
+                        <p>{phone}</p>
                       </div>
                     </div>
                     <div className="col-sm-6">
                       <div className="text-muted text-sm-end">
                         <div>
                           <h5 className="font-size-15 mb-1">Invoice No:</h5>
-                          <p>#DZ0112</p>
+                          <p>{paymentInvoiceId}</p>
                         </div>
                         <div className="mt-4">
                           <h5 className="font-size-15 mb-1">Invoice Date:</h5>
-                          <p>12 Oct, 2020</p>
+                          <p>{currentDate}</p>
                         </div>
                         <div className="mt-4">
-                          <h5 className="font-size-15 mb-1">Order No:</h5>
-                          <p>#1123456</p>
+                          <h5 className="font-size-15 mb-1">Time</h5>
+                          <p>{currentTime}</p>
                         </div>
                       </div>
                     </div>
@@ -119,9 +186,11 @@ const InvoiceComponent = () => {
                                 </h5>
                               </div>
                             </td>
-                            <td>Rs. 5640.00</td>
-                            <td>0</td>
-                            <td className="text-end">Rs. 5640.00</td>
+                            <td>{formatPrice(partsPrice)}</td>
+                            <td>{formatPrice(partsPrice * (partsDiscount / 100))}</td>
+                            <td className="text-end">
+                              {formatPrice(partsPrice - partsPrice * (partsDiscount / 100))}
+                            </td>
                           </tr>
                           <tr>
                             <th scope="row">02</th>
@@ -132,47 +201,44 @@ const InvoiceComponent = () => {
                                 </h5>
                               </div>
                             </td>
-                            <td>Rs. 2000.00</td>
-                            <td>0</td>
-                            <td className="text-end">Rs. 2000.00</td>
+                            <td>{formatPrice(servicePrice)}</td>
+                            <td>{formatPrice(servicePrice * (serviceDiscount / 100))}</td>
+                            <td className="text-end">
+                              {formatPrice(servicePrice - servicePrice * (serviceDiscount / 100))}
+                            </td>
                           </tr>
                           <tr>
-                            <th scope="row" colSpan="4" className="text-end">
+                            <th scope="row" colSpan="4" className="border-0 text-end">
                               Sub Total
                             </th>
-                            <td className="text-end">Rs. 7640.00</td>
+                            <td className="border-0 text-end">
+                              {formatPrice(partsPrice - partsPrice * (partsDiscount / 100) + servicePrice - servicePrice * (serviceDiscount / 100))}
+                            </td>
                           </tr>
                           <tr>
-                            <th
-                              scope="row"
-                              colSpan="4"
-                              className="border-0 text-end"
-                            >
-                              Discount :
+                            <th scope="row" colSpan="4" className="border-0 text-end">
+                              Discount
                             </th>
-                            <td className="border-0 text-end"> 0 </td>
+                            <td className="border-0 text-end">
+                              {formatPrice(totalDiscount)}
+                            </td>
                           </tr>
-
                           <tr>
-                            <th
-                              scope="row"
-                              colSpan="4"
-                              className="border-0 text-end"
-                            >
-                              Tax
+                            <th scope="row" colSpan="4" className="border-0 text-end">
+                              Tax ({taxRate}%)
                             </th>
-                            <td className="border-0 text-end">0</td>
+                            <td className="border-0 text-end">
+                              {formatPrice(taxAmount)}
+                            </td>
                           </tr>
                           <tr>
-                            <th
-                              scope="row"
-                              colSpan="4"
-                              className="border-0 text-end"
-                            >
+                            <th scope="row" colSpan="4" className="border-0 text-end">
                               Total
                             </th>
                             <td className="border-0 text-end">
-                              <h4 className="m-0 fw-semibold">Rs.7640.00</h4>
+                              <h4 className="m-0 fw-semibold">
+                                {formatPrice(total)}
+                              </h4>
                             </td>
                           </tr>
                         </tbody>
