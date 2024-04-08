@@ -17,7 +17,7 @@ const {
 } = require("../controllers/finance/income");
 
 const {paymentinitiate,handlePaymentNotification,getPaymentbyOrderID} = require ("../controllers/finance/payment")
-const {createBilling,getAllBillings,getPendingPayments,deleteBill,getPaymentByInvoiceId,updatePaymentStatus}=require("../controllers/finance/bill")
+const {createBilling,getAllBillings,getPendingPayments,deleteBill,getPaymentByInvoiceId,updatePaymentStatus,getPendingPaymentByInvoiceId}=require("../controllers/finance/bill")
 
 // Income routes
 router.post("/incomes/add-income", addIncome);
@@ -45,6 +45,7 @@ router.post("/billing/createbill",createBilling)
 router.get("/billing/all",getAllBillings)
 router.get("/billing/pendingpayments",getPendingPayments)
 router.get("/billing/:paymentInvoiceId",getPaymentByInvoiceId)
+router.get("/billing/pendingpayment/:paymentInvoiceId",getPendingPaymentByInvoiceId)
 router.delete("/billing/delete/:paymentInvoiceId",deleteBill)
 router.patch("/billing/inpersonpayment/:paymentInvoiceId",updatePaymentStatus)
 
