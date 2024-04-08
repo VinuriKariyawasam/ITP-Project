@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Card, Button, Form, Row, Col } from "react-bootstrap";
+import { Card, Button, Form, Row, Col, Toast } from "react-bootstrap";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // Main style file
 import "react-date-range/dist/theme/default.css"; // Theme CSS file
 import { useNavigate } from "react-router-dom";
+import { BsArrowLeft } from "react-icons/bs";
 
 const AddLeave = () => {
   //to redirect after success
@@ -23,6 +24,13 @@ const AddLeave = () => {
   const [validationErrors, setValidationErrors] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [futureDateError, setFutureDateError] = useState(false);
+  const [nameTouched, setNameTouched] = useState(false);
+  const [reasonTouched, setReasonTouched] = useState(false);
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastHeader, setToastHeader] = useState("");
+  const [toastBody, setToastBody] = useState("");
+  const [toastType, setToastType] = useState("");
 
   useEffect(() => {
     // Fetch employees from the backend when the component mounts
@@ -52,6 +60,7 @@ const AddLeave = () => {
   };
 
   const handleEmployeeChange = (e) => {
+    setNameTouched(true);
     const selectedEmployee = employees.find(
       (emp) => `${emp.firstName} ${emp.lastName}` === e.target.value
     );
@@ -86,6 +95,14 @@ const AddLeave = () => {
     } else {
       setFutureDateError(false);
     }
+
+    // Clear the error messages for fromDate and toDate
+    setValidationErrors((prevErrors) => ({
+      ...prevErrors,
+      fromDate: "",
+      toDate: "",
+    }));
+
     setState([item.selection]);
     const { startDate, endDate } = item.selection;
     setLeaveData((prevData) => ({
@@ -131,9 +148,21 @@ const AddLeave = () => {
 
       console.log("Leave added successfully");
       // Add any additional logic after leave is successfully added
-      navigate("/staff/hr/leaves");
+      setToastType("success");
+      setToastHeader("Success");
+      setToastBody("Designation created successfully");
+      setShowToast(true);
+
+      // Navigate after a delay
+      setTimeout(() => {
+        navigate("/staff/hr/leaves");
+      }, 1250); // Adjust the delay as needed
     } catch (error) {
       console.error("Error adding leave:", error);
+      setToastType("warning");
+      setToastHeader("Warning");
+      setToastBody("Error adding designation. Please try again later.");
+      setShowToast(true);
     }
   };
 
@@ -141,7 +170,7 @@ const AddLeave = () => {
   const validateForm = (data) => {
     let errors = {};
 
-    if (!data.name) {
+    if (!data.name || data.name === "Select Employee" || !nameTouched) {
       errors.name = "Employee name is required";
     }
 
@@ -153,8 +182,9 @@ const AddLeave = () => {
       errors.toDate = "To date is required";
     }
 
-    if (!data.reason) {
-      errors.reason = "Reason is required";
+    if (!data.reason || data.reason.length < 3 || !reasonTouched) {
+      errors.reason =
+        "Reason is required and must be at least 3 characters long";
     }
 
     if (new Date(data.fromDate) < new Date()) {
@@ -167,6 +197,31 @@ const AddLeave = () => {
 
   return (
     <main>
+      <Toast
+        show={showToast}
+        onClose={() => setShowToast(false)}
+        delay={1250}
+        autohide
+        style={{
+          position: "fixed",
+          top: "90px",
+          right: "10px",
+          background: toastType === "success" ? "#28a745" : "#dc3545",
+          color: "white",
+        }}
+      >
+        <Toast.Header closeButton={false}>
+          <strong className="me-auto">{toastHeader}</strong>
+        </Toast.Header>
+        <Toast.Body>{toastBody}</Toast.Body>
+      </Toast>
+      <Button
+        variant="dark"
+        onClick={() => navigate("/staff/hr/leaves")}
+        style={{ margin: "10px" }}
+      >
+        <BsArrowLeft /> Leave
+      </Button>
       <Card>
         <Card.Header style={{ backgroundColor: "black", color: "white" }}>
           Create Leave Request
@@ -214,6 +269,8 @@ const AddLeave = () => {
                     value={leaveData.reason}
                     onChange={handleChange}
                     isInvalid={formSubmitted && !!validationErrors.reason}
+                    onBlur={() => setReasonTouched(true)}
+                    isValid={!!leaveData.reason && leaveData.reason.length >= 3}
                   />
                   {/* Display validation error */}
                   <Form.Control.Feedback type="invalid">
@@ -234,6 +291,16 @@ const AddLeave = () => {
                     moveRangeOnFirstSelection={false}
                     ranges={state}
                   />
+                  {validationErrors.fromDate && (
+                    <div style={{ color: "red" }}>
+                      {validationErrors.fromDate}
+                    </div>
+                  )}
+                  {validationErrors.toDate && (
+                    <div style={{ color: "red" }}>
+                      {validationErrors.toDate}
+                    </div>
+                  )}
                   {futureDateError && (
                     <div style={{ color: "red" }}>
                       From date should be the same as or after the current date

@@ -104,10 +104,11 @@ function UpdateDesignationModal({
               value={designationData.basicSalary}
               onChange={handleInputChange}
               required
+              min="16000.00"
               step="0.01"
             />
             <Form.Control.Feedback type="invalid">
-              Please provide a basic salary.
+              Please provide a valid basic salary.*Minimum wage Rs.16,000.00
             </Form.Control.Feedback>
           </Form.Group>
           <Button variant="primary" type="submit" style={{ margin: "10px" }}>
