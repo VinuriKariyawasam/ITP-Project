@@ -42,7 +42,9 @@ function SalaryDetailsModal({ show, handleClose, id }) {
 
   const generatePDF = () => {
     const element = document.getElementById("salary-details-container");
-    html2pdf().from(element).save();
+    html2pdf()
+      .from(element)
+      .save(`Salary Information of ${salaryDetails.name}.pdf`);
   };
 
   useEffect(() => {
@@ -67,6 +69,8 @@ function SalaryDetailsModal({ show, handleClose, id }) {
     fetchSalaryDetails();
   }, [id, show, key]);
 
+  //get current date
+  const currentDate = new Date().toLocaleDateString();
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -239,7 +243,7 @@ function SalaryDetailsModal({ show, handleClose, id }) {
             </Row>
             <br />
             <h6 style={{ fontSize: "smaller" }}>
-              By NEO TECH Motors and Services
+              NEO TECH Motors and Services {currentDate}
             </h6>
           </Container>
         )}
