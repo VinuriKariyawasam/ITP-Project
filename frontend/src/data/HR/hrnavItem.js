@@ -35,16 +35,6 @@ const navList = [
     icon: "bi bi-person-gear",
     href: "/staff/hr/configs",
   },
-  {
-    _id: 7,
-    name: "Reports",
-    icon: "bi bi-clipboard2-data",
-    children: [
-      { _id: 21, name: "Salary", icon: "bi bi-circle" },
-      { _id: 22, name: "Employee", icon: "bi bi-circle" },
-      { _id: 23, name: "Attendance", icon: "bi bi-circle" },
-    ],
-  },
 ];
 
 export default navList;
