@@ -225,10 +225,10 @@ const InvoiceComponent = () => {
                           </tr>
                           <tr>
                             <th scope="row" colSpan="4" className="border-0 text-end">
-                              Tax (%)
+                              Tax ({taxRate}%)
                             </th>
                             <td className="border-0 text-end">
-                              {(taxRate)}
+                              {formatPrice(taxAmount)}
                             </td>
                           </tr>
                           <tr>
