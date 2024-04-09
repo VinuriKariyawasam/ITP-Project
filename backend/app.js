@@ -34,7 +34,7 @@ readdirSync("./routes/").map((route) =>
 
 //CAS
 readdirSync("./routes").map((route) =>
-  app.use("/CAM", require("./routes/" + route))
+  app.use("/cam", require("./routes/" + route))
 );
 
 //Vehicle
