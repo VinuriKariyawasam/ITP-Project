@@ -58,6 +58,53 @@ const InvoiceComponent = () => {
       });
   };
 
+  const handleUploadPDF = () => {
+    setDownloadingPDF(true);
+    const element = componentRef.current;
+    const options = {
+        filename: `${paymentId}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    };
+
+    html2pdf()
+        .set(options)
+        .from(element)
+        .outputPdf()
+        .then(pdf => {
+            const formData = new FormData();
+            formData.append("file", new File([pdf], `${paymentId}.pdf`, { type: "application/pdf" }));
+
+            fetch("http://localhost:5000/api/finance/billing/uploadinvoice", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                },
+                body: formData,
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to upload PDF");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("PDF uploaded successfully:", data);
+                    setDownloadingPDF(false);
+                })
+                .catch(error => {
+                    console.error("Error uploading PDF:", error);
+                    setDownloadingPDF(false);
+                });
+        })
+        .catch(error => {
+            console.error("Error generating PDF:", error);
+            setDownloadingPDF(false);
+        });
+};
+
+
   if (loading) {
     return (
       <div className="d-flex justify-content-center mt-5">
@@ -261,7 +308,15 @@ const InvoiceComponent = () => {
                             >
                               Download
                             </Button>
+                            <Button
+                              variant="primary"
+                              onClick={handleUploadPDF}
+                            >
+                             Upload
+                            </Button>
                           </>
+
+                          
                         )}
                       </div>
                     </div>
