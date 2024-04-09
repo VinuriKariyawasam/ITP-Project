@@ -20,28 +20,22 @@ import {
   Navigate,
 } from "react-router-dom";
 
-
-
 function CustomerApp() {
   return (
     <div>
       <Header />
       <Routes>
-        <Route path="/"></Route>
+        <Route path="/" element={<Cushome />} />
         //products-Tharindu
-        <Route path="/*" element={<Cushome />} />
         <Route path="/products/*" element={<Products />} />
         //appointments-Nihinsa
         <Route path="/appointment/*" element={<CUSAppointment />} />
         // payments -kavinda
         <Route path="/payments/*" element={<Payment />} />
         //customer affair-Githadi
-
-        <Route path="/cusaffairs/*" element={<CUSAffairs/>}></Route>
-       
+        <Route path="/cusaffairs/*" element={<CUSAffairs />} />
         //Mobile service-Isiri
         <Route path="/Mechanical" element={<Mechanicalreq />} />
-
       </Routes>
     </div>
   );
