@@ -15,7 +15,7 @@ import {
 function HrAttendance() {
   return (
     <main id="main" className="main">
-      <HrPageTitle title="Attendance" url="hr/attendance" />
+      <HrPageTitle title="Attendance" url="staff/hr/attendance" />
 
       <Routes>
         <Route path="/" element={<Attendance />} />

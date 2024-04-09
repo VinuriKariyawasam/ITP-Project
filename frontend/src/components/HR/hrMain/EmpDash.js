@@ -113,7 +113,7 @@ function EmpDash() {
                   <Form.Control
                     type="search"
                     placeholder="Search"
-                    className="me-2 custom-input"
+                    className="me-2 hr-custom-input"
                     aria-label="Search"
                   />
                   <Button variant="outline-dark">Search</Button>
@@ -131,9 +131,9 @@ function EmpDash() {
             </Stack>
           </Row>
 
-          <div className="table">
+          <div className="table hr-t">
             <table
-              className="table table-rounded"
+              className="table table-rounded hr-t"
               style={{
                 backgroundColor: "white",
               }}

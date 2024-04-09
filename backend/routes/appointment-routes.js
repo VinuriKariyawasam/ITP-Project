@@ -1,98 +1,53 @@
-const router = require("express").Router();
-let periodicalSchema = require("../models/appointment/periodicalAppointment");
+const { addperiodicalAppointment,getperiodicalAppointment,updateperiodicalAppointment, deleteperiodicalAppointment,getOneperiodicalAppointment,getOneperiodicalAppointmentbyVno} = require('../controllers/appointment/periodical-controller');
+const { addmechanicalAppointment,getmechanicalAppointment,updatemechanicalAppointment, deletemechanicalAppointment,getOneMechanicalAppointment,getOneMechanicalAppointmentbyVno,getmechanicalappointmentbyDate } = require('../controllers/appointment/mechanical-controller');
+const {addaccidentalAppointment,getaccidentalAppointment,deleteaccidentalAppointment } = require('../controllers/appointment/accidental-controller');
+const { addacceptedappointment,getacceptedappointment,updateacceptedappointment, deleteacceptedappointment,getOneacceptedappointment,getOneacceptedappointmentbyVno,getacceptedappointmentbyDate } = require('../controllers/appointment/acceptedappointment-controller');
+const { addaceptedperiodicalAppointment,getacceptedperiodicalAppointment} = require('../controllers/appointment/acceptedPeriodical-controller');
+const { addacceptedmechanicalAppointment,getacceptedmechanicalAppointment} = require('../controllers/appointment/acceptedmechanical-controller');
+const ImageUpload = require('../controllers/appointment/ImageUpload')
 
 
-router.route("/addPeriodicalData").post((req, res) => {
+const router = require ('express').Router();
 
-    const name = req.body.name;
-    const vType = req.body.vType;
-    const vNo = req.body.vNo;
-    const sType = req.body.sType;
-    const lastServiceYear = req.body.lastServiceYear;
-    const lastServiceMonth = req.body.lastServiceMonth;
-    const mileage = req.body.mileage;
-    const phone = req.body.phone;
-    const appointmentdate = req.body.appointmentdate;
-    const appointmenttime = req.body.appointmenttime;
-    const msg = req.body.msg;
+//periodical Appointment Routes
+router.post('/addperiodicalAppointment',addperiodicalAppointment)
+router.get('/get-periodicalAppointment',getperiodicalAppointment)
+router.put('/update-periodicalAppointment/:id', updateperiodicalAppointment);
+router.delete('/delete-periodicalAppointment/:id',deleteperiodicalAppointment);
+router.get('/get-oneperiodicalAppointment/:id',getOneperiodicalAppointment);
+router.get('/get-oneperiodicalAppointmentbyVno/:vNo',getOneperiodicalAppointmentbyVno)
 
+//Mechanical Appointment Routes
+router.post('/addmechanicalAppointment',addmechanicalAppointment )
+router.get('/get-mechanicalAppointment',getmechanicalAppointment)
+router.put('/update-mechanicalAppointment/:id',updatemechanicalAppointment)
+router.delete('/delete-mechanicalAppointment/:id',deletemechanicalAppointment)
+router.get('/get-onemechanicalAppointment/:id',getOneMechanicalAppointment)
+router.get('/get-onemechanicalAppointmentbyVno/:vNo',getOneMechanicalAppointmentbyVno)
+router.get('/get-mechanicalAppointmentbyDate/:appointmentdate',getmechanicalappointmentbyDate)
+//router.get('/get-mechanicalAppointmentTimebyDate/:appointmentdate',getMechanicalAppointmenTimetbyDate)
 
-    const newPeriodicalAppointment = new periodicalSchema({
-        name,
-        vType,
-        vNo,
-        sType,
-        lastServiceYear,
-        lastServiceMonth,
-        mileage,
-        phone,
-        appointmentdate,
-        appointmenttime,
-        msg,
+//Accidental Appointment Routes
+router.post('/addaccidentalAppointment',ImageUpload.single('image'),addaccidentalAppointment )
+router.get('/get-accidentalAppointment',getaccidentalAppointment )
+router.delete('/delete-accidentalAppointment/:id',deleteaccidentalAppointment)
 
-
-    })
-
-    newPeriodicalAppointment.save().then(() => {
-        res.json("Appointment added");
-    }).catch((err) => {
-        console.log(err);
-    })
-
-})
+//Accepteed Appointment Routes
+router.post('/addacceptedappointment',addacceptedappointment )
+router.get('/get-acceptedappointment',getacceptedappointment)
+router.put('/update-acceptedappointment/:id',updateacceptedappointment)
+router.delete('/delete-acceptedappointment/:id',deleteacceptedappointment)
+router.get('/get-oneacceptedappointment/:id',getOneacceptedappointment)
+router.get('/get-oneacceptedappointmentbyVno/:vNo',getOneacceptedappointmentbyVno)
+router.get('/get-acceptedappointmentbyDate/:appointmentdate',getacceptedappointmentbyDate)
 
 
-router.route("/find").get((req, res) => {
-    periodicalSchema.find().then((periodicalAppointments) => {
-        res.json(periodicalAppointments)
-    }).catch((err) => {
-        console.log(err)
-    })
-})
+//Accepteed Periodical Appointment Routes
+router.post('/addaceptedperiodicalAppointment',addaceptedperiodicalAppointment )
+router.get('/get-acceptedperiodicalAppointment',getacceptedperiodicalAppointment)
 
-
-
-
-router.route("/UpdatePeriodicalData").put(async (req, res) => {
-
-    exports.updateperiodicalAppointment = async (req, res) => {
-        let periodicalappointmentId = req.params.id;
-        //to get existing values
-        const { name, vType, vNo, sType, lastServiceYear, lastServiceMonth, mileage, phone, appointmentdate, appointmenttime, mag } = req.body
-
-        //object to store new values
-        const updatePeriodicalAppointment = {
-            name,
-            vType,
-            vNo,
-            sType,
-            lastServiceYear,
-            lastServiceMonth,
-            mileage,
-            phone,
-            appointmentdate,
-            appointmenttime,
-            msg,
-
-
-        }
-
-        //to find relavant apoointment to update
-        const update = await periodicalSchema.findByIdAndUpdate(periodicalappointmentId, updatePeriodicalAppointment).then(() => {
-            res.status(200).send({ status: "Updated", appointment: update })
-        }).catch((err) => {
-            res.status(500).send({ status: "server error with update data", error: err.message });
-        })
-    }
-})
-router.route("/delete/:id").delete(async (req, res) => {
-
-    const { id } = req.params;
-    periodicalSchema.findByIdAndDelete(id).then(() => {
-        res.status(200).send({ status: 'periodicalAppointment Deleted Sucessfully' })
-    }).catch((error) => {
-        res.status(500).json({ status: 'Server Error' })
-    })
-})
+//Accepteed mechanical Appointment Routes
+router.post('/addacceptedmechanicalAppointment',addacceptedmechanicalAppointment )
+router.get('/get-acceptedmechanicalAppointment',getacceptedmechanicalAppointment)
 
 module.exports = router;

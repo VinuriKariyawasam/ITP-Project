@@ -14,13 +14,13 @@ const navList = [
     _id: 3,
     name: "Tires",
     icon: "bi bi-vinyl",
-    href: "im/Tires",
+    href: "/staff/im/Tires",
   },
   {
     _id: 4,
     name: "Lubricants",
     icon: "bi bi-droplet-half",
-    href: "im/lubricants",
+    href: "/staff/im/lubricants",
   },
   {
     _id: 5,

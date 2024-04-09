@@ -1,6 +1,8 @@
 const EmployeeController = require("../controllers/hr/employe-controller");
 const LeavesController = require("../controllers/hr/leaves-controller");
 const DesignationsController = require("../controllers/hr/desigantion-controller");
+const SalaryController = require("../controllers/hr/salary-controller");
+const attendanceController = require("../controllers/hr/attendance-controller");
 const bodyParser = require("body-parser");
 const { body } = require("express-validator");
 const router = require("express").Router();
@@ -133,16 +135,84 @@ router.patch(
 );
 
 //---------Designation Routes-------------------
+
+// Validation middleware function for validating the designation request data
+const validateDesignationRequest = [
+  body("position").notEmpty().withMessage("Position is required"),
+  body("basicSalary")
+    .notEmpty()
+    .withMessage("Basic Salary is required")
+    .isNumeric()
+    .withMessage("Basic Salary must be a numeric value")
+    .custom((value) => value >= 0)
+    .withMessage("Basic Salary must be a non-negative number"),
+];
+// Validation middleware function for validating the update designation request data
+const validateUpdateDesignationRequest = [
+  body("basicSalary")
+    .notEmpty()
+    .withMessage("Basic Salary is required")
+    .isNumeric()
+    .withMessage("Basic Salary must be a numeric value")
+    .custom((value) => value >= 0)
+    .withMessage("Basic Salary must be a non-negative number"),
+];
+
 // CREATE
-router.post("/add-designation", DesignationsController.create);
+router.post(
+  "/add-designation",
+  validateDesignationRequest,
+  DesignationsController.create
+);
 
 // READ
 router.get("/designations", DesignationsController.getAll);
 
 // UPDATE
-router.patch("/update-designation/:id", DesignationsController.update);
+router.patch(
+  "/update-designation/:id",
+  validateUpdateDesignationRequest,
+  DesignationsController.update
+);
 
 // DELETE
 router.delete("/delete-designation/:id", DesignationsController.delete);
+
+//---------Salary Routes-------------------
+
+// Create Salary
+//router.post("/add-salary", SalaryController.createSalary);
+
+// Update Salary
+router.patch("/update-salaries/:id", SalaryController.updateSalary);
+
+// Delete Salary
+router.delete("/delete-salaries/:id", SalaryController.deleteSalary);
+
+// Get all Salaries
+router.get("/salaries", SalaryController.getAllSalaries);
+
+// Get Salary by ID
+router.get("/salaries/:id", SalaryController.getSalaryById);
+
+//---------Salary Routes-------------------
+
+// Route to create new attendance
+router.post("/add-attendance", attendanceController.createAttendance);
+
+// Route to get all attendance records
+router.get("/attendance", attendanceController.getAllAttendance);
+
+// Route to get attendance by ID
+router.get("/attendance/:id", attendanceController.getAttendanceById);
+
+// Route to archive attendance
+router.delete(
+  "/archive-attendance/:id",
+  attendanceController.archiveAttendance
+);
+
+// Route to get attendance by date (using POST request and date in request body)
+router.get("/attendance/date/:date", attendanceController.getAttendanceByDate);
 
 module.exports = router;

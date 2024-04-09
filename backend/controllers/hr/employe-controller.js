@@ -1,5 +1,7 @@
 const EmployeeModel = require("../../models/hr/employeeModel"); // Import your employee model
 const ArchivedEmployee = require("../../models/hr/archivedEmployeeModel"); //to save archive employees
+const Salary = require("../../models/hr/salaryModel");
+const Designation = require("../../models/hr/designationsModel");
 const HttpError = require("../../models/http-error");
 const multer = require("multer");
 const path = require("path");
@@ -22,7 +24,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1024 * 1024 * 5 }, // Adjust the file size limit as needed
+  limits: { fileSize: 1024 * 1024 * 5 },
 }).fields([
   { name: "photo", maxCount: 1 },
   { name: "documents", maxCount: 10 },
@@ -53,19 +55,21 @@ class EmployeeController {
           return res.status(500).json({ error: err.message });
         }
 
-        // Log the request body to see the uploaded data
+        // Log the request body to see the uploaded data after file upload
         console.log("Request Body:", req.body);
 
         const nic = req.body["nic"];
-        console.log(nic);
         const email = req.body["email"];
-        console.log(nic);
+        const contact = req.body["contact"];
+        const bank = req.body["bank"];
+        const branch = req.body["branch"];
+        const account = req.body["account"];
 
-        //check if employee alredy in db with nic
+        //check if employee alredy in db with nic or contact or email
         let existingEmployee;
         try {
           existingEmployee = await EmployeeModel.findOne({
-            $or: [{ nic: nic }, { email: email }],
+            $or: [{ nic: nic }, { email: email }, { contact: contact }],
           });
         } catch (err) {
           const error = new HttpError(
@@ -76,24 +80,47 @@ class EmployeeController {
         }
 
         if (existingEmployee) {
-          const error = new HttpError(
-            "Employee with this NIC and Email alredy exist.",
-            422
-          );
-          return next(error);
+          if (!existingEmployee.email == "undefined") {
+            const error = new HttpError(
+              "Employee with this NIC and Email alredy exist.",
+              422
+            );
+            return next(error);
+          }
         }
 
-        // Generate the unique employee ID based on the startDate
+        //-----Generating unique emp number---
         const startDate = new Date(req.body.startDate);
         const year = startDate.getFullYear().toString().substring(2); // Get last two digits of the year
         const month = (startDate.getMonth() + 1).toString().padStart(2, "0"); // Get month with leading zero if needed
-        let lastEmployee = await EmployeeModel.findOne().sort({ id: -1 });
-        let nextNumber = 1;
-        if (lastEmployee && lastEmployee.id.startsWith(`EMP${year}${month}`)) {
-          const lastNumber = parseInt(lastEmployee.id.substring(8));
-          nextNumber = lastNumber + 1;
-        }
-        const nextNumberString = nextNumber.toString().padStart(3, "0");
+
+        // Construct the regular expression to match employee IDs starting with EMPYYMM
+        const regexPattern = new RegExp(`^EMP${year}${month}`);
+
+        // Aggregation pipeline to count the number of employees with the given pattern
+        const employeeCountPipeline = [
+          {
+            $match: {
+              id: {
+                $regex: regexPattern,
+              },
+            },
+          },
+          {
+            $count: "count",
+          },
+        ];
+
+        // Execute the aggregation pipeline
+        const countResult = await EmployeeModel.aggregate(
+          employeeCountPipeline
+        );
+
+        // Extract the count from the aggregation result, or default to 0 if no result found
+        const count = countResult.length > 0 ? countResult[0].count : 0;
+
+        // Generate the next employee ID
+        const nextNumberString = (count + 1).toString().padStart(3, "0");
         const employeeId = `EMP${year}${month}${nextNumberString}`;
 
         // Use the correct URLs when constructing file paths
@@ -106,14 +133,70 @@ class EmployeeController {
             )
           : [];
 
-        const newEmployee = new EmployeeModel({
-          ...req.body,
-          empId: employeeId,
-          photo: photoPath,
-          documents: documentPaths,
-        });
+        // Assign properties one by one to the new employee object
+        const newEmployee = new EmployeeModel();
+        newEmployee.empId = employeeId;
+        newEmployee.photo = photoPath;
+        newEmployee.documents = documentPaths;
+        newEmployee.firstName = req.body.firstName;
+        newEmployee.lastName = req.body.lastName;
+        newEmployee.birthDate = req.body.birthDate;
+        newEmployee.nic = req.body.nic;
+        newEmployee.address = req.body.address;
+        newEmployee.gender = req.body.gender;
+        newEmployee.contact = req.body.contact;
+        newEmployee.startDate = req.body.startDate;
+        newEmployee.position = req.body.position;
+        newEmployee.otherDetails = req.body.otherDetails;
+        newEmployee.email = req.body.email;
+        newEmployee.password = req.body.password;
         //save employee to database
         const savedEmployee = await newEmployee.save();
+
+        // Create a new salary record
+        const position = newEmployee.position;
+        console.log(position);
+
+        //get the basic salary from desigantion
+        let getDesignation;
+        try {
+          getDesignation = await Designation.findOne({ position: position });
+        } catch (err) {
+          const error = new HttpError(
+            "Error in finding designation. Try Again",
+            500
+          );
+          return next(error);
+        }
+
+        if (!getDesignation) {
+          const error = new HttpError("There is no such designation.", 422);
+          return next(error);
+        }
+
+        // Assign properties one by one to the new salary object
+        const newSalary = new Salary();
+        newSalary.empId = employeeId;
+        newSalary.empDBId = savedEmployee._id;
+        newSalary.name = `${savedEmployee.firstName} ${savedEmployee.lastName}`;
+        newSalary.position = savedEmployee.position;
+        newSalary.basicSalary = getDesignation.basicSalary;
+        newSalary.allowance = 10000.0;
+        newSalary.noPay = 0.0;
+        newSalary.EPFC = newSalary.basicSalary * 0.12;
+        newSalary.EPFE = newSalary.basicSalary * 0.08;
+        newSalary.EPFT = newSalary.EPFC + newSalary.EPFE;
+        newSalary.ETF = newSalary.basicSalary * 0.03;
+        newSalary.totalSal = newSalary.basicSalary + newSalary.allowance;
+        newSalary.netSal =
+          newSalary.totalSal -
+          (newSalary.noPay + newSalary.EPFC + newSalary.ETF);
+        newSalary.bank = bank;
+        newSalary.branch = branch;
+        newSalary.account = account;
+        // Save the new salary record
+        await newSalary.save();
+
         res.status(201).json(savedEmployee);
       });
     } catch (error) {
@@ -269,11 +352,22 @@ class EmployeeController {
         return res.status(404).json({ error: "Employee not found" });
       }
 
+      // Find and delete the associated salary document
+      const deletedSalary = await Salary.findOneAndDelete({
+        empDBId: deletedEmployee._id,
+      });
+
+      if (!deletedSalary) {
+        return res.status(404).json({ error: "Salary not found" });
+      }
+
       // Create an instance of ArchivedEmployee using the deleted employee's data
       const archivedEmployee = new ArchivedEmployee({
         // Copy the fields of the deleted employee
         ...deletedEmployee.toObject(),
-        // You may need to modify or add additional fields if needed
+        // Copy the fields of the deleted salary
+        ...deletedSalary.toObject(),
+        // Set the archived field to true
         archived: true,
       });
 

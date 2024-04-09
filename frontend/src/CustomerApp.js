@@ -5,12 +5,13 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 // Import React and React Router
 import React from "react";
-import PeriodicalAppointment from "../src/components/CUS/CUSMain/CUSAppointment/PeriodicalAppointment";
 import Header from "../src/components/CUS/CusHeader/Header";
-//import MyAppointment from "./components/CUS/CUSMain/CUSAppointment/MyAppointment";
-import Products from "./components/CUS/inventory/Products";
 import CUSAffairs from "./components/CUS/Pages/CUSAffairs";
-
+import CUSAppointment from "./components/CUS/Pages/CUSAppointment";
+import Payment from "./components/CUS/Pages/Payment";
+import Mechanicalreq from "../src/components/CUS/CUSMain/CUSMobileReq/Mechanicalreq";
+import Products from "../src/components/CUS/Pages/Product";
+import Cushome from "../src/components/CUS/CUSMain/Cushome";
 
 import {
   BrowserRouter as Router,
@@ -28,11 +29,19 @@ function CustomerApp() {
       <Routes>
         <Route path="/"></Route>
         //products-Tharindu
-        <Route path="/products" element={<Products />} />
+        <Route path="/*" element={<Cushome />} />
+        <Route path="/products/*" element={<Products />} />
         //appointments-Nihinsa
-        <Route path="/Periodical" element={<PeriodicalAppointment />} />
+        <Route path="/appointment/*" element={<CUSAppointment />} />
+        // payments -kavinda
+        <Route path="/payments/*" element={<Payment />} />
         //customer affair-Githadi
+
         <Route path="/cusaffairs/*" element={<CUSAffairs/>}></Route>
+       
+        //Mobile service-Isiri
+        <Route path="/Mechanical" element={<Mechanicalreq />} />
+
       </Routes>
     </div>
   );
