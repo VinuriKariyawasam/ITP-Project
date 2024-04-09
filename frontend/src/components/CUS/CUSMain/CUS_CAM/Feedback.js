@@ -50,7 +50,7 @@ function Feedback() {
     };
 
     axios
-      .post("http://localhost:5000/CAM/add-feedback", newFeedback)
+      .post("http://localhost:5000/cam/feedback/add-feedback", newFeedback)
       .then(() => {
         alert("Feedback Added");
         setFirstName("");

@@ -2,7 +2,7 @@ import React from "react";
 
 function FeedbackMain(){
     return(
-        <main>FeedBack</main>
+        <main>CusRegistration</main>
     );
 
 }
