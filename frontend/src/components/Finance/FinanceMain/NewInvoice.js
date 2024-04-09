@@ -27,6 +27,9 @@ const InvoiceComponent = () => {
         const data = await response.json();
         setInvoiceData(data.data);
         setLoading(false);
+        
+        // Automatically trigger upload PDF after fetching invoice data
+        handleUploadPDF();
       } catch (error) {
         console.error("Error fetching invoice data:", error.message);
       }
@@ -298,12 +301,12 @@ const InvoiceComponent = () => {
                             >
                               Download
                             </Button>
-                            <Button
+                            {/* <Button
                               variant="primary"
                               onClick={handleUploadPDF}
                             >
                              Upload
-                            </Button>
+                            </Button> */}
                           </>
 
                           
