@@ -17,20 +17,23 @@ const uploadInvoice = (req, res) => {
         try {
             if (err instanceof multer.MulterError) {
                 // A Multer error occurred when uploading
+                console.error("Multer error occurred:", err);
                 throw new Error("Multer error occurred");
             } else if (err) {
                 // An unknown error occurred
+                console.error("Unknown error occurred:", err);
                 throw new Error("Unknown error occurred");
             }
 
             // Check if file exists in the request
             if (!req.file) {
+                console.error("No file uploaded");
                 throw new Error("No file uploaded");
             }
 
             const dateTime = giveCurrentDateTime();
 
-            const storageRef = ref(storage, `invoices/${req.file.originalname + " " + dateTime}.pdf`);
+            const storageRef = ref(storage, `invoices/${req.file.originalname}_${dateTime}.pdf`);
 
             // Create file metadata including the content type
             const metadata = {
@@ -51,7 +54,7 @@ const uploadInvoice = (req, res) => {
                 downloadURL: downloadURL
             };
             console.log('Response:', response); // Log the response
-            return res.send(response);
+            return res.status(200).json(response);
         } catch (error) {
             console.error('Error uploading file:', error);
             return res.status(400).send(error.message);
@@ -62,8 +65,8 @@ const uploadInvoice = (req, res) => {
 const giveCurrentDateTime = () => {
     const today = new Date();
     const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-    const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    const dateTime = date + ' ' + time;
+    const time = today.getHours() + "-" + today.getMinutes() + "-" + today.getSeconds();
+    const dateTime = date + '_' + time;
     return dateTime;
 };
 

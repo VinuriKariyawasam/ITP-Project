@@ -4,6 +4,8 @@ import { useReactToPrint } from "react-to-print";
 import html2pdf from "html2pdf.js";
 import logo from "../../../images/Payment/neotechlogo.jpg";
 import { useLocation } from "react-router-dom";
+import axios from 'axios';
+
 
 const InvoiceComponent = () => {
   const location = useLocation();
@@ -58,50 +60,38 @@ const InvoiceComponent = () => {
       });
   };
 
-  const handleUploadPDF = () => {
+  const handleUploadPDF =async () => {
     setDownloadingPDF(true);
     const element = componentRef.current;
-    const options = {
-        filename: `${paymentId}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    };
-
-    html2pdf()
-        .set(options)
-        .from(element)
-        .outputPdf()
-        .then(pdf => {
-            const formData = new FormData();
-            formData.append("file", new File([pdf], `${paymentId}.pdf`, { type: "application/pdf" }));
-
-            fetch("http://localhost:5000/api/finance/billing/uploadinvoice", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                },
-                body: formData,
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Failed to upload PDF");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("PDF uploaded successfully:", data);
-                    setDownloadingPDF(false);
-                })
-                .catch(error => {
-                    console.error("Error uploading PDF:", error);
-                    setDownloadingPDF(false);
-                });
-        })
-        .catch(error => {
-            console.error("Error generating PDF:", error);
-            setDownloadingPDF(false);
+  
+    try {
+        const options = {
+            margin: [0, 0, 0, 0],
+            filename: `${paymentId}.pdf`,
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        };
+    
+        // Generate PDF file as blob
+        const pdfBlob = await html2pdf().from(element).set(options).toPdf().output("blob");
+        
+        // Create FormData object
+        const formData = new FormData();
+        formData.append("file", pdfBlob, `${paymentId}.pdf`);
+    
+        // Send PDF file to the server
+        const response = await axios.post("http://localhost:5000/api/finance/billing/uploadinvoice", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
         });
+    
+        console.log("File uploaded successfully:", response.data);
+    } catch (error) {
+        console.error("Error uploading file:", error.message);
+    }
+    
+    setDownloadingPDF(false);
 };
 
 
