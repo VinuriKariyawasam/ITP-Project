@@ -113,7 +113,7 @@ exports.getOneMechanicalAppointmentbyVno = async (req, res) => {
     }
 }
 
-exports.getMechanicalAppointmentbyDate = async (req, res) => {
+/*exports.getMechanicalAppointmentbyDate = async (req, res) => {
     const {appointmentdate} = req.params;
     try {
         const mechanicalAppointments = await mechanicalSchema.find({ appointmentdate:appointmentdate });
@@ -125,9 +125,9 @@ exports.getMechanicalAppointmentbyDate = async (req, res) => {
     } catch (err) {
         res.status(500).send({ status: "Error with getting user", error: err.message });
     }
-}
+}*/
 
-exports.getMechanicalAppointmenTimetbyDate= async (req, res) => {
+/*exports.getMechanicalAppointmenTimetbyDate= async (req, res) => {
     const {appointmentdate} = req.params;
     try {
         const mechanicalAppointments = await mechanicalSchema.find({ appointmentdate:appointmentdate });
@@ -140,4 +140,26 @@ exports.getMechanicalAppointmenTimetbyDate= async (req, res) => {
     } catch (err) {
         res.status(500).send({ status: "Error with getting user", error: err.message });
     }
+}*/
+exports.getmechanicalappointmentbyDate = async (req, res) => {
+    
+    const { appointmentdate } = req.params;
+    const startDate = new Date(appointmentdate);
+    const endDate = new Date(appointmentdate);
+    endDate.setDate(endDate.getDate() + 1); // Increment the date by 1 to get the next day
+
+    try {
+        const mechanicalappointment = await mechanicalSchema.find({
+            appointmentdate: { $gte: startDate, $lt: endDate }
+        });
+
+        if (mechanicalappointment.length > 0) {
+            res.status(200).send({ status: "User fetched", data: mechanicalappointment });
+        } else {
+            res.status(404).send({ status: "No appointments found for the given date" });
+        }
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting user", error: err.message });
+    }
 }
+ 
