@@ -4,16 +4,19 @@ import { useReactToPrint } from "react-to-print";
 import html2pdf from "html2pdf.js";
 import logo from "../../../images/Payment/neotechlogo.jpg";
 import { useLocation } from "react-router-dom";
-import axios from 'axios';
 
+import axios from "axios";
 
 const InvoiceComponent = () => {
   const location = useLocation();
-  const { state: { paymentId } } = location;
+  const {
+    state: { paymentId },
+  } = location;
 
   const [invoiceData, setInvoiceData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
+  const [pdfUploaded, setPdfUploaded] = useState(false);
 
   useEffect(() => {
     const fetchInvoiceData = async () => {
@@ -27,7 +30,7 @@ const InvoiceComponent = () => {
         const data = await response.json();
         setInvoiceData(data.data);
         setLoading(false);
-        
+
         // Automatically trigger upload PDF after fetching invoice data
         handleUploadPDF();
       } catch (error) {
@@ -37,6 +40,14 @@ const InvoiceComponent = () => {
 
     fetchInvoiceData();
   }, [paymentId]);
+
+
+  useEffect(() => {
+    if (!loading && invoiceData && !pdfUploaded) {
+      handleUploadPDF();
+      setPdfUploaded(true);
+    }
+  }, [loading, invoiceData, pdfUploaded]);
 
   const componentRef = React.useRef();
 
@@ -63,40 +74,72 @@ const InvoiceComponent = () => {
       });
   };
 
-  const handleUploadPDF =async () => {
+  const handleUploadPDF = async () => {
     setDownloadingPDF(true);
     const element = componentRef.current;
-  
-    try {
-        const options = {
-            margin: [0, 0, 0, 0],
-            filename: `${paymentId}.pdf`,
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        };
-    
-        // Generate PDF file as blob
-        const pdfBlob = await html2pdf().from(element).set(options).toPdf().output("blob");
-        
-        // Create FormData object
-        const formData = new FormData();
-        formData.append("file", pdfBlob, `${paymentId}.pdf`);
-    
-        // Send PDF file to the server
-        const response = await axios.post("http://localhost:5000/api/finance/billing/uploadinvoice", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
-    
-        console.log("File uploaded successfully:", response.data);
-    } catch (error) {
-        console.error("Error uploading file:", error.message);
-    }
-    
-    setDownloadingPDF(false);
-};
 
+    try {
+      const options = {
+        margin: [0, 0, 0, 0],
+        filename: `${paymentId}.pdf`,
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      };
+
+      // Generate PDF file as blob
+      const pdfBlob = await html2pdf()
+        .from(element)
+        .set(options)
+        .toPdf()
+        .output("blob");
+
+      // Create FormData object
+      const formData = new FormData();
+      formData.append("file", pdfBlob, `${paymentId}.pdf`);
+
+      // Send PDF file to the server
+      const response = await axios.post(
+        "http://localhost:5000/api/finance/billing/uploadinvoice",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("File uploaded successfully:", response.data);
+
+      // Extract necessary data from the response
+      const { name, type, downloadURL } = response.data;
+
+      // Prepare data for the database
+      const postData = {
+        paymentInvoiceId: paymentId,
+        name: name,
+        date: currentDate,
+        amount: total, // Assuming the current date
+        downloadURL: downloadURL,
+      };
+
+      // Send a POST request to the database
+      const dbResponse = await axios.post(
+        "http://localhost:5000/api/finance/invoices/addinperson",
+        postData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Data saved to database:", dbResponse.data);
+    } catch (error) {
+      console.error("Error uploading file:", error.message);
+    }
+
+    setDownloadingPDF(false);
+  };
 
   if (loading) {
     return (
@@ -133,7 +176,8 @@ const InvoiceComponent = () => {
   };
 
   // Calculate total discount
-  const totalDiscount = (partsPrice * (partsDiscount / 100)) + (servicePrice * (serviceDiscount / 100));
+  const totalDiscount =
+    partsPrice * (partsDiscount / 100) + servicePrice * (serviceDiscount / 100);
 
   // Calculate tax amount
   const taxAmount = (total - totalDiscount) * (taxRate / 100);
@@ -175,9 +219,7 @@ const InvoiceComponent = () => {
                       <div className="text-muted">
                         <h5 className="font-size-16 mb-3">Billed To:</h5>
                         <h5 className="font-size-15 mb-2">{name}</h5>
-                        <p className="mb-1">
-                          {address}
-                        </p>
+                        <p className="mb-1">{address}</p>
                         <p className="mb-1">{email}</p>
                         <p>{phone}</p>
                       </div>
@@ -227,9 +269,13 @@ const InvoiceComponent = () => {
                               </div>
                             </td>
                             <td>{formatPrice(partsPrice)}</td>
-                            <td>{formatPrice(partsPrice * (partsDiscount / 100))}</td>
+                            <td>
+                              {formatPrice(partsPrice * (partsDiscount / 100))}
+                            </td>
                             <td className="text-end">
-                              {formatPrice(partsPrice - partsPrice * (partsDiscount / 100))}
+                              {formatPrice(
+                                partsPrice - partsPrice * (partsDiscount / 100)
+                              )}
                             </td>
                           </tr>
                           <tr>
@@ -242,21 +288,41 @@ const InvoiceComponent = () => {
                               </div>
                             </td>
                             <td>{formatPrice(servicePrice)}</td>
-                            <td>{formatPrice(servicePrice * (serviceDiscount / 100))}</td>
+                            <td>
+                              {formatPrice(
+                                servicePrice * (serviceDiscount / 100)
+                              )}
+                            </td>
                             <td className="text-end">
-                              {formatPrice(servicePrice - servicePrice * (serviceDiscount / 100))}
+                              {formatPrice(
+                                servicePrice -
+                                  servicePrice * (serviceDiscount / 100)
+                              )}
                             </td>
                           </tr>
                           <tr>
-                            <th scope="row" colSpan="4" className="border-0 text-end">
+                            <th
+                              scope="row"
+                              colSpan="4"
+                              className="border-0 text-end"
+                            >
                               Sub Total
                             </th>
                             <td className="border-0 text-end">
-                              {formatPrice(partsPrice - partsPrice * (partsDiscount / 100) + servicePrice - servicePrice * (serviceDiscount / 100))}
+                              {formatPrice(
+                                partsPrice -
+                                  partsPrice * (partsDiscount / 100) +
+                                  servicePrice -
+                                  servicePrice * (serviceDiscount / 100)
+                              )}
                             </td>
                           </tr>
                           <tr>
-                            <th scope="row" colSpan="4" className="border-0 text-end">
+                            <th
+                              scope="row"
+                              colSpan="4"
+                              className="border-0 text-end"
+                            >
                               Discount
                             </th>
                             <td className="border-0 text-end">
@@ -264,7 +330,11 @@ const InvoiceComponent = () => {
                             </td>
                           </tr>
                           <tr>
-                            <th scope="row" colSpan="4" className="border-0 text-end">
+                            <th
+                              scope="row"
+                              colSpan="4"
+                              className="border-0 text-end"
+                            >
                               Tax ({taxRate}%)
                             </th>
                             <td className="border-0 text-end">
@@ -272,7 +342,11 @@ const InvoiceComponent = () => {
                             </td>
                           </tr>
                           <tr>
-                            <th scope="row" colSpan="4" className="border-0 text-end">
+                            <th
+                              scope="row"
+                              colSpan="4"
+                              className="border-0 text-end"
+                            >
                               Total
                             </th>
                             <td className="border-0 text-end">
@@ -308,8 +382,6 @@ const InvoiceComponent = () => {
                              Upload
                             </Button> */}
                           </>
-
-                          
                         )}
                       </div>
                     </div>
