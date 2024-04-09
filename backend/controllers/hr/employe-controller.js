@@ -89,23 +89,38 @@ class EmployeeController {
           }
         }
 
-        //Generate unique id for employee
+        //-----Generating unique emp number---
         const startDate = new Date(req.body.startDate);
         const year = startDate.getFullYear().toString().substring(2); // Get last two digits of the year
         const month = (startDate.getMonth() + 1).toString().padStart(2, "0"); // Get month with leading zero if needed
 
-        let lastEmployee = await EmployeeModel.findOne({
-          id: { $regex: `^EMP${year}${month}` },
-        }).sort({ id: -1 });
+        // Construct the regular expression to match employee IDs starting with EMPYYMM
+        const regexPattern = new RegExp(`^EMP${year}${month}`);
 
-        let nextNumber = 1;
-        if (lastEmployee) {
-          // Extract the last three digits after EMPYYMM and convert to a number
-          const lastNumber = parseInt(lastEmployee.id.substring(8));
-          nextNumber = lastNumber + 1;
-        }
+        // Aggregation pipeline to count the number of employees with the given pattern
+        const employeeCountPipeline = [
+          {
+            $match: {
+              id: {
+                $regex: regexPattern,
+              },
+            },
+          },
+          {
+            $count: "count",
+          },
+        ];
 
-        const nextNumberString = nextNumber.toString().padStart(3, "0");
+        // Execute the aggregation pipeline
+        const countResult = await EmployeeModel.aggregate(
+          employeeCountPipeline
+        );
+
+        // Extract the count from the aggregation result, or default to 0 if no result found
+        const count = countResult.length > 0 ? countResult[0].count : 0;
+
+        // Generate the next employee ID
+        const nextNumberString = (count + 1).toString().padStart(3, "0");
         const employeeId = `EMP${year}${month}${nextNumberString}`;
 
         // Use the correct URLs when constructing file paths

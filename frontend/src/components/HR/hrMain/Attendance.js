@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AddAttend from "./AddAttend";
-import {
-  Container,
-  Row,
-  Col,
-  Form,
-  Button,
-  Stack,
-  Card,
-  Badge,
-} from "react-bootstrap";
+import TodayLeaves from "./TodayLeaves";
+import { Row, Col, Button, Stack, Card, Badge } from "react-bootstrap";
+import AttendanceRecords from "./AttendanceRecords";
 
 function Attendance() {
   const [attendanceData, setAttendanceData] = useState([]);
@@ -49,22 +42,6 @@ function Attendance() {
           <Row>
             <Stack direction="horizontal">
               <div className="p-2">
-                <Button
-                  variant="dark"
-                  size="md"
-                  onClick={() => navigate("weekly")}
-                  style={{ margin: "10px" }}
-                >
-                  Weekly Attendance
-                </Button>
-                <Button
-                  variant="dark"
-                  size="md"
-                  onClick={() => navigate("add")}
-                  style={{ margin: "10px" }}
-                >
-                  Monthly Attendance
-                </Button>
                 <Button
                   variant="dark"
                   size="md"
@@ -146,41 +123,12 @@ function Attendance() {
               )}
             </Col>
             <Col md={6}>
-              <Card>
-                <Card.Header
-                  style={{ backgroundColor: "black", color: "white" }}
-                >
-                  Today Leaves
-                </Card.Header>
-                <Card.Body
-                  style={{
-                    backgroundColor: "white",
-                    border: "1px solid black",
-                  }}
-                >
-                  <table className="table table-rounded">
-                    <thead style={{ backgroundColor: "lightgray" }}>
-                      <tr style={{ backgroundColor: "lightgray" }}>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </Card.Body>
-              </Card>
+              <TodayLeaves />
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <AttendanceRecords />
             </Col>
           </Row>
         </Card.Body>

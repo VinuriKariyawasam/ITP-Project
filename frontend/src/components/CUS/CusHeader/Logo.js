@@ -1,6 +1,6 @@
 import React from "react";
 import "./Logo.css";
-import neo from '../../../images/neo-tech-high-resolution-logo-transparent.png'
+import neo from "../../../images/neo-tech-high-resolution-logo-transparent.png";
 
 export default function Logo() {
   const handleToggleSideBar = () => {
@@ -8,7 +8,10 @@ export default function Logo() {
   };
   return (
     <div className="d-flex align-items-center justify-content-between">
-      <a href="/" className="logo d-flex align-items-center">
+      <a
+        href="http://localhost:3000/customer"
+        className="logo d-flex align-items-center"
+      >
         <img src={neo} alt="Logo" />
       </a>
     </div>

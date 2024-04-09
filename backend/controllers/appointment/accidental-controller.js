@@ -15,11 +15,11 @@ exports.addaccidentalAppointment = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    if (typeof contactNo !== "number") {
+   /* if (typeof contactNo !== "number") {
       return res
         .status(400)
         .json({ error: "" });
-    }
+    }*/
 
     const newaccidentalAppointment = new accidentalSchema({
       name,

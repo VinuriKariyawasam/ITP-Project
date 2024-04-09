@@ -1,5 +1,5 @@
-const { addReply,getReply,updateReply,deleteReply, getReplybyId } 
-= require('../controllers/CAM/consult-controller')
+const { addIssue, getAllIssues, updateSolution, deleteSolution, getIssuebyId} 
+= require('../controllers/CAM/consultation-controller')
 
 const { addFeedback, getAllFeedback, updateFeedback, deleteFeedback, getFeedbackbyId} 
 = require("../controllers/CAM/feedback-controller");
@@ -8,19 +8,19 @@ const router = require ('express').Router()
 
 
 //OnlineConsultation Routes
-router.post('/add-reply',addReply)
-    .get('/get-reply',getReply)
-    .put('/update-reply/:id',updateReply)
-    .delete('/delete-reply/:id',deleteReply)
-    .get('/get-onereply/:id',getReplybyId)
+router.post('/consultation/add-issue',addIssue)
+router.get('/consultation/get-issues',getAllIssues)
+router.put('/consultation/update-solution/:consultationId',updateSolution)
+router.delete('/consultation/delete-solution/:id',deleteSolution)
+router.get('/consultation/get-issue/:consultationId',getIssuebyId)
 
 
 //Feedback Routes    
-router.post('/add-feedback',addFeedback)
-router.get('/get-feedbacks',getAllFeedback)
-router.put('/update-feedback/:id',updateFeedback)
-router.delete('/delete-feedback/:id',deleteFeedback)
-router.get('/get-feedback/:id',getFeedbackbyId)
+router.post('/feedback/add-feedback',addFeedback)
+router.get('/feedback/get-feedbacks',getAllFeedback)
+router.put('/feedback/update-feedback/:id',updateFeedback)
+router.delete('/feedback/delete-feedback/:id',deleteFeedback)
+router.get('/feedback/get-feedback/:id',getFeedbackbyId)
     
 
 

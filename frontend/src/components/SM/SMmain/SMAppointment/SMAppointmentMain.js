@@ -24,12 +24,14 @@ const SMAppointmentMain = () => {
                 </Link>
             </div>
             <div className="SMA-div2222">
+            <Link to='/staff/sm/accidentalappointment'>
                 <button className="SMA-SMMainbutton">
                     Accidental Repairs
                     <img src={Arrow} alt="Arrow" className="SMA-SMMainArrow" />
                 </button>
+                </Link>
             </div>
-
+            
 
 
 
