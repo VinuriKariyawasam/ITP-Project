@@ -9,9 +9,18 @@ import Header from "../src/components/CUS/CusHeader/Header";
 import CUSAffairs from "./components/CUS/Pages/CUSAffairs";
 import CUSAppointment from "./components/CUS/Pages/CUSAppointment";
 import Payment from "./components/CUS/Pages/Payment";
-import Mechanicalreq from "../src/components/CUS/CUSMain/CUSMobileReq/Mechanicalreq";
+
+import Feedback from "./components/CUS/CUSMain/CUS_CAM/Feedback";
+import OnlineConsultation from "./components/CUS/CUSMain/CUS_CAM/OnlineConsultation";
+import MyFeedback from "./components/CUS/CUSMain/CUS_CAM/MyFeedback";
+import AllFeedbacks from "./components/CUS/CUSMain/CUS_CAM/AllFeedbacks";
+//import FeedbackMain from './components/CUS/CUSMain/CUS_CAM/FeedbackMain';
+import Mechanicalreq from '../src/components/CUS/CUSMain/CUSMobileReq/Mechanicalreq';
+import VehicleCarrReq from '../src/components/CUS/CUSMain/CUSMobileReq/VehicleCarrierReq'
+
 import Products from "../src/components/CUS/Pages/Product";
 import Cushome from "../src/components/CUS/CUSMain/Cushome";
+
 
 import {
   BrowserRouter as Router,
@@ -35,7 +44,14 @@ function CustomerApp() {
         //customer affair-Githadi
         <Route path="/cusaffairs/*" element={<CUSAffairs />} />
         //Mobile service-Isiri
-        <Route path="/Mechanical" element={<Mechanicalreq />} />
+
+        <Route path="/mobilemechanical" element={<Mechanicalreq />} />
+        <Route path="/vehiclecarriers" element={<VehicleCarrReq/>} />
+
+
+
+       
+
       </Routes>
     </div>
   );
