@@ -25,8 +25,6 @@ function CusnavItem() {
                 Consultation
               </NavDropdown.Item>
               <NavDropdown.Item href="http://localhost:3000/customer/cusaffairs/allfeedback">Feedback</NavDropdown.Item>
-                Feedback
-              </NavDropdown.Item>
               <NavDropdown.Item href="http://localhost:3000/customer/payments/payonline">
                 My Payments
               </NavDropdown.Item>

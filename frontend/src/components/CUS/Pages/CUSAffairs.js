@@ -1,6 +1,5 @@
 import React from 'react'
 
-import Header from '../CusHeader/Header';
 import Feedback from "../CUSMain/CUS_CAM/Feedback";
 import OnlineConsultation from "../CUSMain/CUS_CAM/OnlineConsultation";
 import MyFeedback from "../CUSMain/CUS_CAM/MyFeedback";
@@ -19,7 +18,6 @@ import FeedbackMain from '../CUSMain/CUS_CAM/FeedbackMain';
   function CUSAffairs(){
     return (
     <>
-     <Header/>
       <Routes> 
         <Route path="/allfeedback/*" element={<AllFeedbacks/>}></Route>
         <Route path="/feedback" element={<Feedback/>}></Route>

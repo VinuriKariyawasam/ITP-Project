@@ -12,6 +12,9 @@ import Payment from "./components/CUS/Pages/Payment";
 import Mechanicalreq from "../src/components/CUS/CUSMain/CUSMobileReq/Mechanicalreq";
 import Products from "../src/components/CUS/Pages/Product";
 import Cushome from "../src/components/CUS/CUSMain/Cushome";
+import CusRegistration from "./components/CUS/CUSMain/CusRegistration";
+import CusLogin from "./components/CUS/CUSMain/CusLogin";
+import CusProfile from "./components/CUS/CUSMain/CusProfile";
 
 import {
   BrowserRouter as Router,
@@ -19,6 +22,9 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+
+
+
 
 
 
@@ -38,6 +44,9 @@ function CustomerApp() {
         //customer affair-Githadi
 
         <Route path="/cusaffairs/*" element={<CUSAffairs/>}></Route>
+        <Route path="/cusreg/*" element={<CusRegistration/>}></Route>
+        <Route path="/cuslogin/*" element={<CusLogin/>}></Route>
+        <Route path="/myprofile/*" element={<CusProfile/>}></Route>
        
         //Mobile service-Isiri
         <Route path="/Mechanical" element={<Mechanicalreq />} />

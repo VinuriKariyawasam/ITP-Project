@@ -58,6 +58,11 @@ readdirSync("./routes").map((route) =>
   app.use("/api/sm", require("./routes/" + route))
 );
 
+//Load customer routes
+readdirSync("./routes").map((route) =>
+  app.use("/api/customer", require("./routes/" +route))
+);
+
 //handle 404 errors
 
 app.use((req, res, next) => {
