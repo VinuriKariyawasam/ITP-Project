@@ -17,7 +17,7 @@ const acceptedaccidentalSchema = new Schema({
         required: true,
     },
     dateAccidentaOccured: {
-        type: String,
+        type: Date,
         required: true,
     },
     damagedOccured: {
@@ -36,10 +36,14 @@ const acceptedaccidentalSchema = new Schema({
     appointmenttime: {
         type: String,
         required: true,
+    },
+    image:{
+        type: String,
+    
     }
 
     
 })
-const acceptedaccidentalRepairs = mongoose.model("acceptedaccidentalRepairAppointments",acceptedaccidentalSchema);
+const acceptedaccidentalRepairs = mongoose.model("acceptedaccidental",acceptedaccidentalSchema);
 
 module.exports=acceptedaccidentalRepairs;

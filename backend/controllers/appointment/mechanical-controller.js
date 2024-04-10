@@ -113,7 +113,7 @@ exports.getOneMechanicalAppointmentbyVno = async (req, res) => {
     }
 }
 
-/*exports.getMechanicalAppointmentbyDate = async (req, res) => {
+/*exports.getMechanicaloneAppointmentbyDate = async (req, res) => {
     const {appointmentdate} = req.params;
     try {
         const mechanicalAppointments = await mechanicalSchema.find({ appointmentdate:appointmentdate });

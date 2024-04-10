@@ -14,14 +14,14 @@ function SMMain() {
       <Card>
         <Card.Body>
           <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>new service Requests</Card.Text>
-          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}}>explore</Button>
+          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}} variance="primary">explore</Button>
         </Card.Body>
       </Card>
 
       <Card>
         <Card.Body>
           <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>Add a Service record</Card.Text>
-          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}}>explore</Button>
+          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}} variance="primary">explore</Button>
         </Card.Body>
       </Card>
 
@@ -29,14 +29,14 @@ function SMMain() {
       <Card>
         <Card.Body>
           <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>Create a service report</Card.Text>
-          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}}>explore</Button>
+          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}} variance="primary">explore</Button>
         </Card.Body>
       </Card>
 
       <Card>
         <Card.Body>
           <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>View Service History</Card.Text>
-          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}}>explore</Button>
+          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}} variance="primary">explore</Button>
         </Card.Body>
       </Card>
 
