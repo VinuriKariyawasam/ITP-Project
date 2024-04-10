@@ -2,8 +2,9 @@ const { addperiodicalAppointment,getperiodicalAppointment,updateperiodicalAppoin
 const { addmechanicalAppointment,getmechanicalAppointment,updatemechanicalAppointment, deletemechanicalAppointment,getOneMechanicalAppointment,getOneMechanicalAppointmentbyVno,getmechanicalappointmentbyDate } = require('../controllers/appointment/mechanical-controller');
 const {addaccidentalAppointment,getaccidentalAppointment,deleteaccidentalAppointment } = require('../controllers/appointment/accidental-controller');
 const { addacceptedappointment,getacceptedappointment,updateacceptedappointment, deleteacceptedappointment,getOneacceptedappointment,getOneacceptedappointmentbyVno,getacceptedappointmentbyDate } = require('../controllers/appointment/acceptedappointment-controller');
-const { addaceptedperiodicalAppointment,getacceptedperiodicalAppointment} = require('../controllers/appointment/acceptedPeriodical-controller');
-const { addacceptedmechanicalAppointment,getacceptedmechanicalAppointment} = require('../controllers/appointment/acceptedmechanical-controller');
+const { addaceptedperiodicalAppointment,getacceptedperiodicalAppointment,getacceptedperiodicalappointmentbyDate} = require('../controllers/appointment/acceptedPeriodical-controller');
+const { addacceptedmechanicalAppointment,getacceptedmechanicalAppointment,getacceptedmechanicalappointmentbyDate} = require('../controllers/appointment/acceptedmechanical-controller');
+const {addacceptedaccidentalAppointment,getacceptedaccidentalAppointment,getacceptedaccidentalappointmentbyDate} = require('../controllers/appointment/acceptedAcidental');
 const ImageUpload = require('../controllers/appointment/ImageUpload')
 
 
@@ -45,9 +46,17 @@ router.get('/get-acceptedappointmentbyDate/:appointmentdate',getacceptedappointm
 //Accepteed Periodical Appointment Routes
 router.post('/addaceptedperiodicalAppointment',addaceptedperiodicalAppointment )
 router.get('/get-acceptedperiodicalAppointment',getacceptedperiodicalAppointment)
+router.get('/get-acceptedperiodicalappointmentbyDate/:appointmentdate',getacceptedperiodicalappointmentbyDate)
+
 
 //Accepteed mechanical Appointment Routes
 router.post('/addacceptedmechanicalAppointment',addacceptedmechanicalAppointment )
 router.get('/get-acceptedmechanicalAppointment',getacceptedmechanicalAppointment)
+router.get('/get-acceptedmechanicalappointmentbyDate/:appointmentdate',getacceptedmechanicalappointmentbyDate)
+
+//Accepteed accidental Appointment Routes
+router.post('/addacceptedaccidentalAppointment',addacceptedaccidentalAppointment )
+router.get('/get-acceptedaccidentalAppointment',getacceptedaccidentalAppointment)
+router.get('/get-acceptedaccidentalappointmentbyDate/:appointmentdate',getacceptedaccidentalappointmentbyDate)
 
 module.exports = router;
