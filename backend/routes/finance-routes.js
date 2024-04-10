@@ -21,6 +21,10 @@ const {createBilling,getAllBillings,getPendingPayments,deleteBill,getPaymentByIn
 const {uploadInvoice}= require("../controllers/finance/uploadinvoice")
 const {saveInPersonRecord,saveOnlineRecord,getAllInPersonRecords,getAllOnlineRecords}=require("../controllers/finance/invoicerecord")
 
+
+const {sendMail}=require('../config/nodemailer')
+
+
 // Income routes
 router.post("/incomes/add-income", addIncome);
 router.delete("/incomes/delete-income/:id", deleteIncome);
@@ -60,6 +64,9 @@ router.post("/invoices/addonline",saveOnlineRecord)
 router.post("/invoices/addinperson",saveInPersonRecord)
 router.get("/invoices/online/all",getAllOnlineRecords)
 router.get("/invoices/inperson/all",getAllInPersonRecords)
+
+//email route
+router.post("/send-email",sendMail)
 
 
 
