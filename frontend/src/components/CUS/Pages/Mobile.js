@@ -1,6 +1,7 @@
 import React from 'react'
 import Header from '../CusHeader/Header'
-import Mechanicalreq from '../MobileReqMain/Mobilereq/Mechanicalreq'
+import Mechanicalreq from '../CUSMain/CUSMobileReq/Mechanicalreq'
+import VehicleCarrReq from '../CUSMain/CUSMobileReq/VehicleCarrierReq'
 
 import {
   BrowserRouter as Router,
@@ -14,7 +15,8 @@ function Mobile() {
     <>
     <Header/>
     <Routes>
-    <Route path="/Mechanical" element={<Mechanicalreq/>} />
+    <Route path="/mobilemechanical" element={<Mechanicalreq/>} />
+    <Route path="/vehiclecarriers" element={<VehicleCarrReq/>} />
     </Routes>
     </>
   )
