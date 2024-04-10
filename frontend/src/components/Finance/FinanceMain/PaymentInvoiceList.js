@@ -1,25 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Tab, Tabs } from 'react-bootstrap';
 
 const PaymentRecordPage = () => {
   const [key, setKey] = useState('onlinePayments'); // State to manage active tab
+  const [onlinePayments, setOnlinePayments] = useState([]);
+  const [inPersonPayments, setInPersonPayments] = useState([]);
 
-  const handleView = (id) => {
-    // Handle view action
+  useEffect(() => {
+    const fetchOnlinePayments = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/finance/invoices/online/all');
+        const data = await response.json();
+        setOnlinePayments(data);
+      } catch (error) {
+        console.error('Error fetching online payments:', error.message);
+      }
+    };
+
+    const fetchInPersonPayments = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/finance/invoices/inperson/all');
+        const data = await response.json();
+        setInPersonPayments(data);
+      } catch (error) {
+        console.error('Error fetching in-person payments:', error.message);
+      }
+    };
+
+    fetchOnlinePayments();
+    fetchInPersonPayments();
+  }, []);
+
+  const handleView = (downloadURL) => {
+    window.open(downloadURL);
   };
-
-  // Sample payment records data
-  const onlinePayments = [
-    { id: 1, invoiceId: "INV-001", name: "John Doe", date: "2024-04-01", amount: "$100.00" },
-    { id: 2, invoiceId: "INV-002", name: "Jane Smith", date: "2024-04-05", amount: "$150.00" },
-    // Add more online payment records as needed
-  ];
-
-  const inPersonPayments = [
-    { id: 3, invoiceId: "INV-003", name: "Alice Johnson", date: "2024-04-08", amount: "$75.00" },
-    { id: 4, invoiceId: "INV-004", name: "Bob Brown", date: "2024-04-10", amount: "$200.00" },
-    // Add more in-person payment records as needed
-  ];
 
   return (
     <main id="main" className="main">
@@ -40,14 +54,13 @@ const PaymentRecordPage = () => {
               </thead>
               <tbody>
                 {onlinePayments.map(record => (
-                  <tr key={record.id}>
-                    <td>{record.invoiceId}</td>
+                  <tr key={record._id}>
+                    <td>{record.paymentInvoiceId}</td>
                     <td>{record.name}</td>
                     <td>{record.date}</td>
-                    <td>{record.amount}</td>
+                    <td>Rs.{record.amount.toFixed(2)}</td>
                     <td>
-                      <Button variant="primary" size="sm" onClick={() => handleView(record.id)}>View</Button>
-                      {/* Add other action buttons as needed */}
+                      <Button variant="primary" size="sm" onClick={() => handleView(record.downloadURL)}>View</Button>
                     </td>
                   </tr>
                 ))}
@@ -67,14 +80,13 @@ const PaymentRecordPage = () => {
               </thead>
               <tbody>
                 {inPersonPayments.map(record => (
-                  <tr key={record.id}>
-                    <td>{record.invoiceId}</td>
+                  <tr key={record._id}>
+                    <td>{record.paymentInvoiceId}</td>
                     <td>{record.name}</td>
                     <td>{record.date}</td>
-                    <td>{record.amount}</td>
+                    <td>Rs.{record.amount.toFixed(2)}</td>
                     <td>
-                      <Button variant="primary" size="sm" onClick={() => handleView(record.id)}>View</Button>
-                      {/* Add other action buttons as needed */}
+                      <Button variant="primary" size="sm" onClick={() => handleView(record.downloadURL)}>View</Button>
                     </td>
                   </tr>
                 ))}
