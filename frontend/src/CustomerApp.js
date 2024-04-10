@@ -17,6 +17,7 @@ import MyFeedback from "./components/CUS/CUSMain/CUS_CAM/MyFeedback";
 import AllFeedbacks from "./components/CUS/CUSMain/CUS_CAM/AllFeedbacks";
 //import FeedbackMain from './components/CUS/CUSMain/CUS_CAM/FeedbackMain';
 import Mechanicalreq from '../src/components/CUS/CUSMain/CUSMobileReq/Mechanicalreq';
+import VehicleCarrReq from '../src/components/CUS/CUSMain/CUSMobileReq/VehicleCarrierReq'
 
 
 
@@ -45,7 +46,8 @@ function CustomerApp() {
         <Route path="/myfeedback/*" element={<MyFeedback />}></Route>
         <Route path="/consultation/*" element={<OnlineConsultation />}></Route>
         //Mobile service-Isiri
-        <Route path="/Mechanical" element={<Mechanicalreq />} />
+        <Route path="/mobilemechanical" element={<Mechanicalreq />} />
+        <Route path="/vehiclecarriers" element={<VehicleCarrReq/>} />
 
 
       </Routes>
