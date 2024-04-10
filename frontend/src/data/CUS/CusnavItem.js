@@ -14,7 +14,7 @@ function CusnavItem() {
               <NavDropdown.Item href="http://localhost:3000/customer/products">
                 Product
               </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
+              <NavDropdown.Item href="http://localhost:3000/customer/appointment/appointnmentMain">
                 Our Services
               </NavDropdown.Item>
             </NavDropdown>

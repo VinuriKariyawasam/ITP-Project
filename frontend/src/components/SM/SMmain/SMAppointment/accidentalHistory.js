@@ -4,95 +4,17 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
-import { Link } from 'react-router-dom';
 
-const SMAccidentalRepairs = props => {
-  const [accidentalAppointment, setaccidentalAppointment] = useState([]);
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
+const AccidentalHistory = props => {
 
-  const [name, setname] = useState("");
-  const [vType, setvType] = useState("");
-  const [vNo, setvNo] = useState("");
-  const [serviceType, setserviceType] = useState("");
-  const [issue, setissue] = useState("");
-  const [contactNo, setcontactNo] = useState("");
-  const [appointmentdate, setappointmentdate] = useState("");
-  const [appointmenttime, setappointmenttime] = useState("");
-  const[dateAccidentaOccured,setdateAccidentaOccured]=useState("");
-  const[damagedOccured,setdamagedOccured]=useState("");
-  const[image,setimage]=useState("");
-
-  function sendata(e) {
-    e.preventDefault();
-    const serviceType = "Accidental Repairs";
-    //create javascript object
-    const newacceptedappointment = {
-      name,
-      vType,
-      vNo,
-      serviceType,
-      issue,
-      contactNo,
-      appointmentdate,
-      appointmenttime,
-
-    }
-
-    axios.post("http://localhost:5000/appointment/addacceptedappointment", newacceptedappointment).then(() => {
-      alert("Your Appointment Success")
-      senddataAccidentalAppointmentHistory(selectedAppointment);
-      Delete(selectedAppointment._id);
-
-    }).catch((err) => {
-      alert(err)
-    })
-
-  }
-  function senddataAccidentalAppointmentHistory() {
-   
-    //create javascript object
-    const newacceptedaccidentalAppointment = {
-      name,
-      vType,
-      vNo,
-      dateAccidentaOccured,
-      damagedOccured,
-      contactNo,
-      appointmentdate,
-      appointmenttime,
-      image
+     //create an empty array to store details
+    const [accidentalAppointment, setaccidentalAppointment] = useState([]);
+    const [selectedAppointment, setSelectedAppointment] = useState(null);
     
-    }
-    axios.post("http://localhost:5000/appointment/addacceptedaccidentalAppointment",newacceptedaccidentalAppointment).then(() => {
-      alert("Appointment added to history")  
-      
-
-    }).catch((err) => {
-      alert(err)
-    })
-
-  }
-
-  //set values to columnns in accepted appointment
-  const handleTableRowClick = (appointment) => {
-    setname(appointment.name);
-    setvType(appointment.vType);
-    setvNo(appointment.vNo);
-    setserviceType(appointment.serviceType);
-    setissue(appointment.damagedOccured);
-    setcontactNo(appointment.contactNo);
-    setappointmentdate(appointment.appointmentdate);
-    setappointmenttime(appointment.appointmenttime);
-    setdateAccidentaOccured(appointment.dateAccidentaOccured);
-    setdamagedOccured(appointment.damagedOccured)
-    setimage(appointment.image)
-    
-  };
-
   useEffect(() => {
 
     function getaccidentalAppointment() {
-      axios.get("http://localhost:5000/appointment/get-accidentalAppointment").then((res) => {
+      axios.get("http://localhost:5000/appointment/get-acceptedaccidentalAppointment").then((res) => {
         const sortedAppointments = res.data.sort((a, b) => {
           return new Date(a.appointmentdate) - new Date(b.appointmentdate);
         });
@@ -113,26 +35,11 @@ const SMAccidentalRepairs = props => {
   const handleCardClose = () => {
     setSelectedAppointment(null);
   };
-  const Delete = (id) => {
-    const shouldDelete = window.confirm("please confirm deletion!");
-
-    if (shouldDelete) {
-      axios.delete(`http://localhost:5000/appointment/delete-accidentalAppointment/${id}`)
-        .then(response => {
-          console.log(response);
-          window.location.reload();
-        })
-        .catch(error => {
-          // Handle errors here
-          console.error(error);
-        });
-    }
-  };
 
   return (
     <main id="main" className="main">
       <div>
-        <h2 className="SMAppheading">Accidental Repairs</h2>
+        <h2 className="SMAppheading">History of Accidental Repairs</h2>
         {selectedAppointment && (
           <div >
             <Card style={{ width: "50%" }}>
@@ -170,10 +77,6 @@ const SMAccidentalRepairs = props => {
                 </Row >
                 <Row style={{ marginTop: "4%", display: "flex" }}>
                 </Row>
-                <Row style={{ marginTop: "4%", display: "flex" }}>
-                  <Button variant="danger" onClick={() => Delete(selectedAppointment._id)} style={{ marginLeft: "20%", width: "100px" }}>Cancel</Button>
-                  <Button variant="primary" onClick={sendata} style={{ marginLeft: "20%", width: "100px" }}>Approve</Button>
-                </Row>
               </Card.Body>
             </Card>
           </div>
@@ -192,7 +95,7 @@ const SMAccidentalRepairs = props => {
 
           <tbody>
             {accidentalAppointment.map((appointment) => (
-              <tr key={appointment._id} onClick={() => handleTableRowClick(appointment)}>
+              <tr key={appointment._id} >
 
                 <td>{appointment.vNo}</td>
                 <td>{appointment.name}</td>
@@ -208,14 +111,8 @@ const SMAccidentalRepairs = props => {
             ))}
           </tbody>
         </Table>
-        <Link to='/staff/sm/accidentalhistory'>
-          <Button variant="secondary" >
-            View History of accepted appointments
-          </Button>
-        </Link>
       </div>
     </main>
   )
 }
-export default SMAccidentalRepairs;
-
+export default AccidentalHistory ;

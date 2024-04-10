@@ -1,12 +1,9 @@
 .SMA-div1{
-
-    margin-top: 100px;
-
+    margin-top: 10%;
 }
-
 .SMA-div2222 {
-    margin-top: 40px;
-    margin-left: 500px;
+    margin-top: 2%;
+    margin-left: 35%;
 }
 
 .SMA-AppMainButtonPageHeading {
@@ -27,17 +24,23 @@
 
 .SMA-SMMainbutton {
     color: white;
-    width: 557px;
-    height: 89px;
-    flex-shrink: 0;
+    width: 60%;
+    height: 100%;
     background: #150303;
-    font-size: 26px;
+    font-size: 35px;
 }
 
 .SMA-SMMainArrow {
-    width: 130px;
-    height: 49px;
-    flex-shrink: 0;
+    width: 10%;
+    height: 10%;
     margin-left: 50px;
 
+}
+.SMA-SMMainbutton:hover {
+    border:solid;
+    color: black;
+    width: 60%;
+    height: 100%;
+    background: white;
+    font-size: 35px;
 }
