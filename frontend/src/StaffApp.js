@@ -34,7 +34,7 @@ function StaffApp() {
         <Route path="/finance/*" element={<Finance />} />
         <Route path="/supervisor/*" element={<SUPER />} />
         <Route path="/im/*" element={<IM />} />
-        <Route path="/CAM/*" element={<CAM />} />
+        <Route path="/cam/*" element={<CAM />} />
 
       </Routes>
     </>
