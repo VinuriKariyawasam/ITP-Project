@@ -113,3 +113,18 @@ exports.updatePaymentStatus = async (req, res) => {
       res.status(500).json({ success: false, error: error.message });
     }
   };
+
+
+
+  exports.getPendingPaymentByInvoiceId = async (req, res) => {
+    const { paymentInvoiceId } = req.params;
+    try {
+        const payment = await BillingSchema.findOne({ paymentInvoiceId });
+        if (!payment || payment.status !== 'pending') {
+            return res.status(404).json({ success: false, message: 'Pending payment not found for the provided invoice ID' });
+        }
+        res.status(200).json({ success: true, data: payment });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
