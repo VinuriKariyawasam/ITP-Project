@@ -39,8 +39,9 @@ const navList = [
       _id: 6,
       name: "Payment Invoices",
       icon: "bi bi-file-earmark-fill",
+      href:"http://localhost:3000/staff/finance/invoices/all-invoices"
     },
   ];
   
   export default navList;
-  
+ 
