@@ -48,6 +48,7 @@ function Designations() {
 
         const data = await response.json();
         setDesignations(data);
+        setReloadDesignations(false); // Reset reloadDesignations state
       } catch (error) {
         console.error("Error fetching designation records:", error);
       }
@@ -194,7 +195,12 @@ function Designations() {
                               <tr key={designation._id}>
                                 <td>{index + 1}</td>
                                 <td>{designation.position}</td>
-                                <td>Rs.{designation.basicSalary}</td>
+                                <td>
+                                  Rs.
+                                  {designation.basicSalary
+                                    ? Number(designation.basicSalary).toFixed(2)
+                                    : "0.00"}
+                                </td>
 
                                 <td>
                                   <Button

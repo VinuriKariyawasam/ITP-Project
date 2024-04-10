@@ -6,7 +6,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 function CusnavItem() {
   return (
     <>
-      <Navbar>
+      <Navbar bg="#212121" data-bs-theme="dark">
         <Container>
           <Nav className="me-auto">
             <Nav.Link href="http://localhost:3000/customer">Home</Nav.Link>
@@ -21,13 +21,13 @@ function CusnavItem() {
             <Nav.Link href="#pricing">Contact Us</Nav.Link>
             <Nav.Link href="#pricing">About Us</Nav.Link>
             <NavDropdown title="Customer Care" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">
+              <NavDropdown.Item href="http://localhost:3000/customer/cusaffairs/consultation">
                 Consultation
               </NavDropdown.Item>
-
-              <NavDropdown.Item href="http://localhost:3000/customer/feedback">
+              <NavDropdown.Item href="http://localhost:3000/customer/cusaffairs/allfeedback">
                 Feedback
               </NavDropdown.Item>
+
               <NavDropdown.Item href="http://localhost:3000/customer/payments/payonline">
                 My Payments
               </NavDropdown.Item>

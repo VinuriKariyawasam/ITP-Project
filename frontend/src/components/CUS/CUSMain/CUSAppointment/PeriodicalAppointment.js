@@ -67,6 +67,13 @@ function PeriodicalAppointment() {
     })
 
   }
+  // Function to get tomorrow's date
+  const getTomorrow = () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow;
+  };
   return (
 
     <div style={{marginTop:"6%", marginLeft:"3%"}}>
@@ -159,6 +166,7 @@ function PeriodicalAppointment() {
                     selected={appointmentdate} // Use state variable here
                     onChange={(date) => setappointmentdate(date)} // Set state with selected date
                     dateFormat='MM/dd/yyyy'
+                    minDate={getTomorrow()} // Set minimum selectable date to tomorrow's date
                     required
                   />
                 </Form.Group>

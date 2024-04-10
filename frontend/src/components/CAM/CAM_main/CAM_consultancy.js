@@ -18,7 +18,7 @@ import {
   function CAM_consultancy(){
     return (
       <main id="main" className="main">
-      <CAM_pageTitle title="Consultancy Support" url="/CAM/con_support" />
+      <CAM_pageTitle title="Consultancy Support" url="/cam/con_support" />
        <Routes>
          <Route path="/*" element={<ConsultancyPage/>} />
          <Route path="addreply" element={<AddReply/>}/>

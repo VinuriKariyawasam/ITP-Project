@@ -11,7 +11,7 @@ exports.addacceptedappointment = async (req, res) => {
     const serviceType = req.body.serviceType;
     const issue = req.body.issue;
     const contactNo = Number(req.body.contactNo);
-    const appointmentdate =Date(req.body.appointmentdate);
+    const appointmentdate =new Date(req.body.appointmentdate);
     const appointmenttime = req.body.appointmenttime;
     
 
@@ -116,16 +116,27 @@ exports.getOneacceptedappointmentbyVno = async (req, res) => {
     }
 }
 
-exports.getOneacceptedappointmentbyDate = async (req, res) => {
-    const {appointmentdate} = req.params;
-    try {
-        const acceptedappointment = await acceptedappointmentSchema.findOne({ appointmentdate:appointmentdate });
-        if (acceptedappointment) {
-            res.status(200).send({ status: "User fetched", data: acceptedappointment });
-        } else {
-            res.status(404).send({ status: "User not found" });
+
+exports.getacceptedappointmentbyDate = async (req, res) => {
+    
+        const { appointmentdate } = req.params;
+        const startDate = new Date(appointmentdate);
+        const endDate = new Date(appointmentdate);
+        endDate.setDate(endDate.getDate() + 1); // Increment the date by 1 to get the next day
+    
+        try {
+            const acceptedappointment = await acceptedappointmentSchema.find({
+                appointmentdate: { $gte: startDate, $lt: endDate }
+            });
+    
+            if (acceptedappointment.length > 0) {
+                res.status(200).send({ status: "User fetched", data: acceptedappointment });
+            } else {
+                res.status(404).send({ status: "No appointments found for the given date" });
+            }
+        } catch (err) {
+            res.status(500).send({ status: "Error with getting user", error: err.message });
         }
-    } catch (err) {
-        res.status(500).send({ status: "Error with getting user", error: err.message });
     }
-}
+     
+    

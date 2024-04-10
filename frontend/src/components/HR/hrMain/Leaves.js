@@ -9,9 +9,13 @@ import {
   Card,
   Tab,
   Tabs,
+  Toast,
+  Col,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import LeaveUpdateModal from "./LeaveUpdateModal";
+import LeaveRecordsTable from "./LeaveRecordTable";
+import TodayLeaves from "./TodayLeaves";
 
 function Leaves() {
   const navigate = useNavigate();
@@ -26,6 +30,10 @@ function Leaves() {
     useState(false);
   const [showRejectConfirmationModal, setShowRejectConfirmationModal] =
     useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastHeader, setToastHeader] = useState("");
+  const [toastBody, setToastBody] = useState("");
+  const [toastType, setToastType] = useState("");
 
   const [key, setKey] = useState("pending");
 
@@ -43,6 +51,7 @@ function Leaves() {
         console.log(data);
 
         setLeaveRecords(data);
+        setReloadLeaves(false);
       } catch (error) {
         console.error("Error fetching leave records:", error);
       }
@@ -68,9 +77,16 @@ function Leaves() {
         setLeaveRecords(
           leaveRecords.filter((record) => record._id !== recordId)
         );
-        alert("Leave request deleted successfully"); // Show success alert
+        setToastType("success");
+        setToastHeader("Success");
+        setToastBody("Leave request deleted successfully");
+        setShowToast(true);
       } else {
         throw new Error("Failed to delete leave record");
+        setToastType("error");
+        setToastHeader("Error");
+        setToastBody("Error deleting leave record");
+        setShowToast(true);
       }
     } catch (error) {
       alert("Error deleting leave record"); // Show error alert
@@ -83,6 +99,13 @@ function Leaves() {
   const handleUpdateClick = (leaveId) => {
     setSelectedLeaveId(leaveId);
     setShowUpdateModal(true);
+  };
+  // Function to show toast notification
+  const showToastNotification = (type, header, body) => {
+    setToastType(type);
+    setToastHeader(header);
+    setToastBody(body);
+    setShowToast(true);
   };
 
   const handleCloseUpdateModal = () => {
@@ -131,12 +154,19 @@ function Leaves() {
               : record
           )
         );
+        setToastType("success");
+        setToastHeader("Success");
+        setToastBody("Leave request approved successfully");
+        setShowToast(true);
       } else {
         throw new Error("Failed to approve leave record");
       }
     } catch (error) {
-      alert("Error approving leave record");
       console.error("Error approving leave record:", error);
+      setToastType("error");
+      setToastHeader("Error");
+      setToastBody("Error approving leave record");
+      setShowToast(true);
     }
     setShowApproveConfirmationModal(false);
   };
@@ -164,20 +194,95 @@ function Leaves() {
               : record
           )
         );
+        setToastType("success");
+        setToastHeader("Success");
+        setToastBody("Leave request rejected successfully");
+        setShowToast(true);
       } else {
         throw new Error("Failed to reject leave record");
       }
     } catch (error) {
-      alert("Error rejecting leave record");
+      setToastType("error");
+      setToastHeader("Error");
+      setToastBody("Error rejecting leave record");
+      setShowToast(true);
       console.error("Error rejecting leave record:", error);
     }
     setShowRejectConfirmationModal(false);
   };
 
+  // Function to check if a date range falls within the current week
+  const isWithinThisWeek = (fromDate, toDate) => {
+    const startOfWeek = new Date();
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Get the starting date of the current week (Sunday)
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(endOfWeek.getDate() + 6); // Get the ending date of the current week (Saturday)
+
+    fromDate = new Date(fromDate);
+    toDate = new Date(toDate);
+
+    return fromDate >= startOfWeek && toDate <= endOfWeek;
+  };
+  // Function to get the week range
+  const getWeekRange = () => {
+    const today = new Date();
+    const firstDayOfWeek = new Date(
+      today.setDate(today.getDate() - today.getDay())
+    );
+    const lastDayOfWeek = new Date(
+      today.setDate(today.getDate() - today.getDay() + 6)
+    );
+    return `${firstDayOfWeek.toLocaleDateString()} - ${lastDayOfWeek.toLocaleDateString()}`;
+  };
+
+  // Function to check if a date range falls within the current month
+  const isWithinThisMonth = (fromDate, toDate) => {
+    const today = new Date();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1); // Get the starting date of the current month
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Get the ending date of the current month
+
+    fromDate = new Date(fromDate);
+    toDate = new Date(toDate);
+
+    return fromDate >= startOfMonth && toDate <= endOfMonth;
+  };
+  // Function to get the month and year
+  const getMonthYear = () => {
+    const today = new Date();
+    const month = today.toLocaleString("default", { month: "long" });
+    const year = today.getFullYear();
+    return `${month} ${year}`;
+  };
+
   return (
     <section>
+      {/* Toast Notification */}
+      <Toast
+        show={showToast}
+        onClose={() => setShowToast(false)}
+        delay={3000}
+        autohide
+        style={{
+          position: "fixed",
+          top: 90,
+          right: 20,
+          minWidth: 300,
+          zIndex: 9999,
+        }}
+      >
+        <Toast.Header closeButton={false} className={`bg-${toastType}`}>
+          <strong className="me-auto">{toastHeader}</strong>
+        </Toast.Header>
+        <Toast.Body>{toastBody}</Toast.Body>
+      </Toast>
       <Card>
         <Card.Body style={{ backgroundColor: "white", padding: "25px" }}>
+          <Row>
+            <Col md={6}>
+              <TodayLeaves leaveRecords={leaveRecords} />
+            </Col>
+          </Row>
+          <hr></hr>
           <Row>
             <Stack direction="horizontal">
               <div className="p-2">
@@ -189,14 +294,7 @@ function Leaves() {
                 >
                   Create New Leave
                 </Button>
-                <Button
-                  variant="dark"
-                  size="md"
-                  onClick={() => navigate("add")}
-                  style={{ margin: "10px" }}
-                >
-                  Create Report
-                </Button>
+
                 <Button
                   variant="dark"
                   size="md"
@@ -317,6 +415,7 @@ function Leaves() {
                   show={showUpdateModal}
                   handleClose={handleCloseUpdateModal}
                   leaveId={selectedLeaveId}
+                  showToast={showToastNotification}
                 />
                 {/* Delete confirmation modal */}
                 <Modal
@@ -399,173 +498,110 @@ function Leaves() {
             </Tab>
             <Tab eventKey="approved" title="Approved">
               <div className="table">
-                <table className="table table-rounded">
-                  <thead>
-                    <tr>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Id
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Name
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Days
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Date Range
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Reason
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Array.isArray(leaveRecords) &&
-                      leaveRecords.map((record) => {
-                        if (record && record.status === "Approved") {
-                          return (
-                            <tr key={record._id}>
-                              <td>{record.empId}</td>
-                              <td>{record.name}</td>
-                              <td>{record.days}</td>
-                              <td>{`${new Date(
-                                record.fromDate
-                              ).toLocaleDateString()} - ${new Date(
-                                record.toDate
-                              ).toLocaleDateString()}`}</td>
-                              <td>{record.reason}</td>
-                              <td>
-                                <Badge bg="success">{record.status}</Badge>
-                              </td>
-                            </tr>
-                          );
-                        } else {
-                          return null;
-                        }
-                      })}
-                  </tbody>
-                </table>
+                <Tabs defaultActiveKey="all" id="approved-subtabs">
+                  {/* All Records Subtab */}
+                  <Tab eventKey="all" title="All Records">
+                    {/* Table to display all approved records */}
+                    <LeaveRecordsTable
+                      leaveRecords={leaveRecords}
+                      statusFilter="Approved"
+                      dateFilter={() => true}
+                      tableName={`All Approved Leave Records`}
+                    />
+                  </Tab>
+                  {/* This Week Subtab */}
+                  <Tab eventKey="thisWeek" title="This Week">
+                    {/* Table to display approved records within the current week */}
+                    <LeaveRecordsTable
+                      leaveRecords={leaveRecords}
+                      statusFilter="Approved"
+                      dateFilter={isWithinThisWeek}
+                      tableName={`Approved Leave Records for ${getWeekRange()}`}
+                    />
+                  </Tab>
+                  {/* This Month Subtab */}
+                  <Tab eventKey="thisMonth" title="This Month">
+                    {/* Table to display approved records within the current month */}
+                    <LeaveRecordsTable
+                      leaveRecords={leaveRecords}
+                      statusFilter="Approved"
+                      dateFilter={isWithinThisMonth}
+                      tableName={`Approved Leave Records for ${getMonthYear()}`}
+                    />
+                  </Tab>
+                </Tabs>
               </div>
             </Tab>
             <Tab eventKey="rejected" title="Rejected">
               <div className="table">
-                <table className="table table-rounded">
-                  <thead>
-                    <tr>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Id
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Name
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Days
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Date Range
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Reason
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Array.isArray(leaveRecords) &&
-                      leaveRecords.map((record) => {
-                        if (record && record.status === "Rejected") {
-                          return (
-                            <tr key={record._id}>
-                              <td>{record.empId}</td>
-                              <td>{record.name}</td>
-                              <td>{record.days}</td>
-                              <td>{`${new Date(
-                                record.fromDate
-                              ).toLocaleDateString()} - ${new Date(
-                                record.toDate
-                              ).toLocaleDateString()}`}</td>
-                              <td>{record.reason}</td>
-                              <td>
-                                <Badge bg="danger">{record.status}</Badge>
-                              </td>
-                            </tr>
-                          );
-                        } else {
-                          return null;
-                        }
-                      })}
-                  </tbody>
-                </table>
+                <Tabs defaultActiveKey="all" id="rejected-subtabs">
+                  {/* All Records Subtab */}
+                  <Tab eventKey="all" title="All Records">
+                    {/* Table to display all rejected records */}
+                    <LeaveRecordsTable
+                      leaveRecords={leaveRecords}
+                      statusFilter="Rejected"
+                      dateFilter={() => true}
+                      tableName={`All RejectedLeave Records`}
+                    />
+                  </Tab>
+                  {/* This Week Subtab */}
+                  <Tab eventKey="thisWeek" title="This Week">
+                    {/* Table to display rejected records within the current week */}
+                    <LeaveRecordsTable
+                      leaveRecords={leaveRecords}
+                      statusFilter="Rejected"
+                      dateFilter={isWithinThisWeek}
+                      tableName={`Rejected Leave Records for ${getWeekRange()}`}
+                    />
+                  </Tab>
+                  {/* This Month Subtab */}
+                  <Tab eventKey="thisMonth" title="This Month">
+                    {/* Table to display rejected records within the current month */}
+                    <LeaveRecordsTable
+                      leaveRecords={leaveRecords}
+                      statusFilter="Rejected"
+                      dateFilter={isWithinThisMonth}
+                      tableName={`Rejected Records for ${getMonthYear()}`}
+                    />
+                  </Tab>
+                </Tabs>
               </div>
             </Tab>
             <Tab eventKey="all" title="All Records">
               <div className="table">
-                <table className="table table-rounded">
-                  <thead>
-                    <tr>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Id
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Name
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Days
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Date Range
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Reason
-                      </th>
-                      <th style={{ backgroundColor: "black", color: "white" }}>
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Array.isArray(leaveRecords) &&
-                      leaveRecords.map((record) => {
-                        if (
-                          record &&
-                          (record.status === "Rejected" ||
-                            record.status === "Approved")
-                        ) {
-                          return (
-                            <tr key={record._id}>
-                              <td>{record.empId}</td>
-                              <td>{record.name}</td>
-                              <td>{record.days}</td>
-                              <td>{`${new Date(
-                                record.fromDate
-                              ).toLocaleDateString()} - ${new Date(
-                                record.toDate
-                              ).toLocaleDateString()}`}</td>
-                              <td>{record.reason}</td>
-                              <td>
-                                <Badge
-                                  bg={
-                                    record.status === "Approved"
-                                      ? "success"
-                                      : "danger"
-                                  }
-                                >
-                                  {record.status}
-                                </Badge>
-                              </td>
-                            </tr>
-                          );
-                        } else {
-                          return null;
-                        }
-                      })}
-                  </tbody>
-                </table>
+                <Tabs defaultActiveKey="all" id="allrecords-subtabs">
+                  {/* All Records Subtab */}
+                  <Tab eventKey="all" title="All Records">
+                    {/* Table to display all rejected records */}
+                    <LeaveRecordsTable
+                      leaveRecords={leaveRecords}
+                      statusFilter="all"
+                      dateFilter={() => true}
+                      tableName={`All Leave Records`}
+                    />
+                  </Tab>
+                  {/* This Week Subtab */}
+                  <Tab eventKey="thisWeek" title="This Week">
+                    {/* Table to display all records within the current week */}
+                    <LeaveRecordsTable
+                      leaveRecords={leaveRecords}
+                      statusFilter="all"
+                      dateFilter={isWithinThisWeek}
+                      tableName={`All Leave Records for ${getWeekRange()}`}
+                    />
+                  </Tab>
+                  {/* This Month Subtab */}
+                  <Tab eventKey="thisMonth" title="This Month">
+                    {/* Table to display all records within the current month */}
+                    <LeaveRecordsTable
+                      leaveRecords={leaveRecords}
+                      statusFilter="all"
+                      dateFilter={isWithinThisMonth}
+                      tableName={`All Leave Records for ${getMonthYear()}`}
+                    />
+                  </Tab>
+                </Tabs>
               </div>
             </Tab>
           </Tabs>

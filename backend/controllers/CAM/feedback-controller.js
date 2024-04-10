@@ -44,14 +44,35 @@ exports.getAllFeedback = async (req,res) =>{
 
 exports.updateFeedback = async (req,res) =>{
   const {id} = req.params;
+  const {
+        firstName,
+        lastName,
+        email,
+        contact,
+        serviceType,
+        files,
+        feedback,
+        rating,
+  } =req.body;
 
-  feedbackSchema.findByIdAndUpdate(id).then(() => {
+  try{
+    const feedbackToUpdate = await feedbackSchema.findById(id);
+
+     feedbackToUpdate.firstName = firstName;
+     feedbackToUpdate.lastName = lastName;
+     feedbackToUpdate.email = email;
+     feedbackToUpdate.contact = contact;
+     feedbackToUpdate.serviceType = serviceType;
+     feedbackToUpdate.files = files;
+     feedbackToUpdate.feedback = feedback;
+     feedbackToUpdate.rating = rating;
+
+    await feedbackToUpdate.save();
     res.status(200).send({status: "Feedback updated"});
-  })
-  .catch((err) => {
+  }catch (err) {
     console.log(err);
     res.status(500).send({ status: "error with updating"});
-  });
+  };
 };
 
 exports.deleteFeedback = async (req,res) =>{
@@ -70,7 +91,7 @@ exports.getFeedbackbyId = async (req,res) =>{
   const {id} = req.params;
 
   try{
-    const feedback = await feedbackSchema.find({id}).sort({ createdAt: -1});
+    const feedback = await feedbackSchema.findById(id);
     res.json(feedback);
   }
   catch(err){

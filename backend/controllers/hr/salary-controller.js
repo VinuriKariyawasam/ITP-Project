@@ -47,6 +47,7 @@ class SalaryController {
       const updatedSalary = await Salary.findByIdAndUpdate(id, req.body, {
         new: true,
       });
+      console.log(updatedSalary);
       res.json({ message: "Salary updated successfully", data: updatedSalary });
     } catch (error) {
       res

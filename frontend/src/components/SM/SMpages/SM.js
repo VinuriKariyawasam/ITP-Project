@@ -10,6 +10,9 @@ import Smrecords from "../SMmain/SMService/Smrecords";
 import SMMobileMain from "../SMmain/SMMobileservices/SMMobileMain"
 import SMmMechanicalServices from "../SMmain/SMMobileservices/SMmMechanicalServices";
 import SMmVehicleCarriers from "../SMmain/SMMobileservices/SMmVehicleCarriers";
+import PeriodicalHistory from "../SMmain/SMAppointment/PeriodicalHistory";
+import Mechanicalhistory from "../SMmain/SMAppointment/mechanicalhistory";
+import SMAccidentalRepairs from "../SMmain/SMAppointment/SMAccidental";
 
 // Import front end routes
 import {
@@ -32,10 +35,14 @@ function SM() {
         <Route path="periodicalappointment" exact element={<SMPeriodicalServices />} />
         <Route path="mechanicalappointment" exact element={<SMMechanicalRepairs />} />
         <Route path="shedules" exact element={<Shedules />} />
+        <Route path="/periodicalhistory" exact element={<PeriodicalHistory/>} />
+        <Route path="/mechanicalhistory" exact element={<Mechanicalhistory/>} />
+        <Route path="/accidentalappointment" exact element={<SMAccidentalRepairs />} />
         <Route path="record/*" element={<Smrecords />} />
         <Route path="/mobilemain" element={<SMMobileMain/>} />
         <Route path="/mobilemechanical" exact element={<SMmMechanicalServices/>} />
         <Route path="/vehiclecarriers" exact element={<SMmVehicleCarriers/>} />
+
 
       </Routes>
     </>

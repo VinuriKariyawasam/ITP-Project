@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1024 * 1024 * 5 }, // Adjust the file size limit as needed
+  limits: { fileSize: 1024 * 1024 * 5 },
 }).fields([
   { name: "photo", maxCount: 1 },
   { name: "documents", maxCount: 10 },
@@ -55,22 +55,21 @@ class EmployeeController {
           return res.status(500).json({ error: err.message });
         }
 
-        // Log the request body to see the uploaded data
+        // Log the request body to see the uploaded data after file upload
         console.log("Request Body:", req.body);
 
         const nic = req.body["nic"];
-        console.log(nic);
         const email = req.body["email"];
-        console.log(email);
+        const contact = req.body["contact"];
         const bank = req.body["bank"];
         const branch = req.body["branch"];
         const account = req.body["account"];
 
-        //check if employee alredy in db with nic
+        //check if employee alredy in db with nic or contact or email
         let existingEmployee;
         try {
           existingEmployee = await EmployeeModel.findOne({
-            $or: [{ nic: nic }, { email: email }],
+            $or: [{ nic: nic }, { email: email }, { contact: contact }],
           });
         } catch (err) {
           const error = new HttpError(
@@ -90,22 +89,38 @@ class EmployeeController {
           }
         }
 
+        //-----Generating unique emp number---
         const startDate = new Date(req.body.startDate);
         const year = startDate.getFullYear().toString().substring(2); // Get last two digits of the year
         const month = (startDate.getMonth() + 1).toString().padStart(2, "0"); // Get month with leading zero if needed
 
-        let lastEmployee = await EmployeeModel.findOne({
-          id: { $regex: `^EMP${year}${month}` },
-        }).sort({ id: -1 });
+        // Construct the regular expression to match employee IDs starting with EMPYYMM
+        const regexPattern = new RegExp(`^EMP${year}${month}`);
 
-        let nextNumber = 1;
-        if (lastEmployee) {
-          // Extract the last three digits after EMPYYMM and convert to a number
-          const lastNumber = parseInt(lastEmployee.id.substring(8));
-          nextNumber = lastNumber + 1;
-        }
+        // Aggregation pipeline to count the number of employees with the given pattern
+        const employeeCountPipeline = [
+          {
+            $match: {
+              id: {
+                $regex: regexPattern,
+              },
+            },
+          },
+          {
+            $count: "count",
+          },
+        ];
 
-        const nextNumberString = nextNumber.toString().padStart(3, "0");
+        // Execute the aggregation pipeline
+        const countResult = await EmployeeModel.aggregate(
+          employeeCountPipeline
+        );
+
+        // Extract the count from the aggregation result, or default to 0 if no result found
+        const count = countResult.length > 0 ? countResult[0].count : 0;
+
+        // Generate the next employee ID
+        const nextNumberString = (count + 1).toString().padStart(3, "0");
         const employeeId = `EMP${year}${month}${nextNumberString}`;
 
         // Use the correct URLs when constructing file paths
@@ -118,11 +133,11 @@ class EmployeeController {
             )
           : [];
 
+        // Assign properties one by one to the new employee object
         const newEmployee = new EmployeeModel();
         newEmployee.empId = employeeId;
         newEmployee.photo = photoPath;
         newEmployee.documents = documentPaths;
-        // Assign other properties one by one
         newEmployee.firstName = req.body.firstName;
         newEmployee.lastName = req.body.lastName;
         newEmployee.birthDate = req.body.birthDate;
@@ -159,6 +174,7 @@ class EmployeeController {
           return next(error);
         }
 
+        // Assign properties one by one to the new salary object
         const newSalary = new Salary();
         newSalary.empId = employeeId;
         newSalary.empDBId = savedEmployee._id;
@@ -336,11 +352,22 @@ class EmployeeController {
         return res.status(404).json({ error: "Employee not found" });
       }
 
+      // Find and delete the associated salary document
+      const deletedSalary = await Salary.findOneAndDelete({
+        empDBId: deletedEmployee._id,
+      });
+
+      if (!deletedSalary) {
+        return res.status(404).json({ error: "Salary not found" });
+      }
+
       // Create an instance of ArchivedEmployee using the deleted employee's data
       const archivedEmployee = new ArchivedEmployee({
         // Copy the fields of the deleted employee
         ...deletedEmployee.toObject(),
-        // You may need to modify or add additional fields if needed
+        // Copy the fields of the deleted salary
+        ...deletedSalary.toObject(),
+        // Set the archived field to true
         archived: true,
       });
 

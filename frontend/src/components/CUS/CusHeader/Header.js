@@ -1,22 +1,22 @@
 import React from "react";
-import "./Header.css";
 import Logo from "./Logo";
-import SearchBar from "./SearchBar";
-import Nav from "./Nav/Nav";
+import Navitem2 from "./Nav/Nav";
 import CusnavItem from '../../../data/CUS/CusnavItem'
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
 
 function Header() {
   return (
-    <header id="header" className="header fixed-top d-flex align-items-center">
-      {/*{logo}*/}
-      <Logo />
-      <CusnavItem/>
-      {/*{serch bar}*/}
-      <SearchBar />
-      {/*{nav}*/}
-      <Nav />
-      
-    </header>
+    <Navbar expand="lg" className="bg-body-tertiary" bg="dark" data-bs-theme="dark">
+      <Logo/>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+           <CusnavItem/>
+          </Nav>
+        </Navbar.Collapse>
+        <Navitem2/>
+    </Navbar>
   );
 }
 
