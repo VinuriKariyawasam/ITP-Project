@@ -3,6 +3,7 @@ const { getStorage, ref, getDownloadURL, uploadBytesResumable } = require("fireb
 const multer = require("multer");
 const { firebaseConfig } = require("../../config/firebase-config");
 
+
 // Initialize a firebase application
 const firebaseApp = initializeApp(firebaseConfig);
 

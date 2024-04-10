@@ -194,7 +194,7 @@ const InvoiceComponent = () => {
                     <h4 className="float-end font-size-15">
                       Invoice #{paymentInvoiceId}{" "}
                       <span className="badge bg-success font-size-12 ms-2">
-                        {status}
+                        Paid
                       </span>
                     </h4>
                     <div className="mb-4">
