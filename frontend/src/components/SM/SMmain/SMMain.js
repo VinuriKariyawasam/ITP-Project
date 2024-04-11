@@ -13,7 +13,7 @@ function SMMain() {
       <SMDashboard />
       <Card>
         <Card.Body>
-          <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>new service Requests</Card.Text>
+          <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>Make a new service Quotation</Card.Text>
           <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}} variance="primary">explore</Button>
         </Card.Body>
       </Card>

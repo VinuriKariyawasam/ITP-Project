@@ -7,7 +7,7 @@ function SMDashboard() {
       <div className="col">
         <div className="row">
           <DbCard
-            title="Service Request"
+            title="Service Quatation"
             value="02"
           />
           <DbCard

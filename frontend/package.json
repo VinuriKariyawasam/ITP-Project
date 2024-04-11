@@ -13,6 +13,7 @@
     "boxicons": "^2.1.4",
     "echarts": "^5.5.0",
     "es6-promise": "^4.2.8",
+    "file-saver": "^2.0.5",
     "firebase": "^10.10.0",
     "formik": "^2.4.5",
     "html2canvas": "^1.4.1",

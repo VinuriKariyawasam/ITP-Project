@@ -59,13 +59,7 @@ exports.deleteaccidentalAppointment = async (req, res) => {
     if (!accidentalAppointment) {
       return res.status(404).send({ status: "accidentalAppointment not found" });
     }
-    const imagePath = accidentalAppointment.image;
-
-    fs.unlink(imagePath, (err) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send({ status: "Error deleting file" });
-      }
+   
 
       accidentalSchema.findByIdAndDelete(id)
         .then(() => {
@@ -75,7 +69,7 @@ exports.deleteaccidentalAppointment = async (req, res) => {
           console.log(err);
           res.status(500).send({ status: "Error with deleting Appointment" });
         });
-    });
+
   } catch (err) {
     console.log(err);
     res.status(500).send({ status: "Internal server error" });
