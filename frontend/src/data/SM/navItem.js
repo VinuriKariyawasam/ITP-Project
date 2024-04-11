@@ -40,6 +40,12 @@ const navList = [
     icon: "bi bi-car-front",
     href: "/staff/sm/mobilemain",
   },
+  {
+    _id: 8,
+    name: "Service Quotations",
+    icon: "bi bi-journal-text",
+    href: "/staff/sm/quotation/",
+  },
 ];
 
 export default navList;

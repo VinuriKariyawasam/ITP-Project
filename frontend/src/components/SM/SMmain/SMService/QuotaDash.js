@@ -1,31 +1,63 @@
 import React, { useState, useEffect } from "react";
-import { Table } from "react-bootstrap";
+import { Table, Button, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 function QuotaDash() {
   const [quotations, setQuotations] = useState([]);
+  const navigate = useNavigate();
+
+  const fetchQuotations = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/sm/quotations");
+      if (response.ok) {
+        const data = await response.json();
+        setQuotations(data);
+      } else {
+        throw new Error("Failed to fetch quotations");
+      }
+    } catch (error) {
+      console.error("Error fetching quotations:", error);
+    }
+  };
 
   useEffect(() => {
     // Fetch quotations data from the backend
-    const fetchQuotations = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/sm/quotations");
-        if (response.ok) {
-          const data = await response.json();
-          setQuotations(data);
-        } else {
-          throw new Error("Failed to fetch quotations");
-        }
-      } catch (error) {
-        console.error("Error fetching quotations:", error);
-      }
-    };
-
     fetchQuotations();
   }, []);
 
+  const handleCreateQuotation = () => {
+    navigate("/staff/sm/quotation/add"); // Navigate to AddQuotation component
+  };
+
+  const handleDeleteQuotation = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/sm/quotations/${id}`, {
+        method: "DELETE",
+      });
+      console.log("Delete response:", response);
+      if (response.ok) {
+        // Refresh the quotations list after deletion
+        fetchQuotations();
+      } else {
+        throw new Error("Failed to delete quotation");
+      }
+    } catch (error) {
+      console.error("Error deleting quotation:", error);
+    }
+  };
+
   return (
     <div className="my-4">
-      <h2>Service Quotations Dashboard</h2>
+      <Row className="mb-3">
+        <Col>
+          <h2>Service Quotations Dashboard</h2>
+        </Col>
+        <Col className="d-flex justify-content-end">
+          <Button variant="primary" onClick={handleCreateQuotation}>
+            Create Quotation
+          </Button>
+        </Col>
+      </Row>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -34,6 +66,7 @@ function QuotaDash() {
             <th>Total Price</th>
             <th>Selected Services</th>
             <th>Borrowing Items</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -52,6 +85,11 @@ function QuotaDash() {
                 </ul>
               </td>
               <td>{quotation.borrowingItems}</td>
+              <td>
+                <Button variant="danger" onClick={() => handleDeleteQuotation(quotation._id)}>
+                  Delete
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -61,3 +99,5 @@ function QuotaDash() {
 }
 
 export default QuotaDash;
+
+

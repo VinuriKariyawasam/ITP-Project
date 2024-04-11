@@ -42,8 +42,22 @@ const getAllQuotations = async (req, res) => {
   }
 };
 
+// Delete a quotation by ID
+const deleteQuotation = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedQuotation = await Quotation.findByIdAndDelete(id);
+    if (!deletedQuotation) {
+      return res.status(404).json({ message: "Quotation not found" });
+    }
+    res.status(200).json({ message: "Quotation deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   createQuotation,
   getAllQuotations,
+  deleteQuotation,
 };
