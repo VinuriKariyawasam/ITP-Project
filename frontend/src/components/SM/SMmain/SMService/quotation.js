@@ -28,11 +28,11 @@ function Addquotation() {
     { id: 8, name: "Suspension Inspection", selected: false, price: "" },
     { id: 9, name: "Electrical System Check", selected: false, price: "" },
     { id: 10, name: "General Vehicle Inspection", selected: false, price: "" },
-    { id: 11, name: "Total Cost for Inventory Produts", selected: false, price: "" },
-
-
+    { id: 11, name: "Total Cost for Inventory Products", selected: false, price: "" },
   ]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [borrowingItems, setBorrowingItems] = useState("");
+  const [inventoryInputEnabled, setInventoryInputEnabled] = useState(false);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -49,6 +49,11 @@ function Addquotation() {
       item.id === itemId ? { ...item, selected: !item.selected } : item
     );
     setItems(updatedItems);
+
+    // Enable borrowing items input if "Total Cost for Inventory Products" is selected
+    const totalCostItem = updatedItems.find((item) => item.id === 11);
+    setInventoryInputEnabled(totalCostItem && totalCostItem.selected);
+
     calculateTotalPrice(updatedItems);
   };
 
@@ -82,15 +87,16 @@ function Addquotation() {
 
       console.log("Selected Services:", services);
 
+
       // Handle form submission logic here (e.g., API call)
       // Assuming you will submit the form data (including selected services) to the backend
       // Example fetch API call
-      const response = await fetch("http://localhost:5000/api/sm/quotation", {
+      const response = await fetch("http://localhost:5000/api/sm/quotations", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...data, services }),
+        body: JSON.stringify({ ...data, services, borrowingItems }),
       });
 
       if (response.ok) {
@@ -108,57 +114,55 @@ function Addquotation() {
   };
 
   return (
-   
-    <Container className="my-4">
-        <h1> Quotation Maker is here!</h1>
     <Form onSubmit={handleSubmit(onSubmit)}>
-    <h2>Service Quotation</h2>
-      {/* Vehicle Number */}
-      <FormGroup as={Row} controlId="formVehiNumber">
-        <FormLabel column sm={2}>
-          Vehicle Number
-        </FormLabel>
-        <Col sm={2}>
-          <Controller
-            name="vnumber"
-            control={control}
-            rules={{ required: "Vehicle number is required" }}
-            render={({ field }) => (
-              <FormControl placeholder="Enter vehicle number" {...field} />
-            )}
-          />
-          <Form.Text className="text-danger">
-            {errors.vnumber && errors.vnumber.message}
-          </Form.Text>
-        </Col>
-      </FormGroup>
+      <Container className="my-4">
+        <h2>Service Quotation</h2>
+        {/* Vehicle Number */}
+        <FormGroup as={Row} controlId="formVehiNumber">
+          <FormLabel column sm={2}>
+            Vehicle Number
+          </FormLabel>
+          <Col sm={2}>
+            <Controller
+              name="vnumber"
+              control={control}
+              rules={{ required: "Vehicle number is required" }}
+              render={({ field }) => (
+                <FormControl placeholder="Enter vehicle number" {...field} />
+              )}
+            />
+            <Form.Text className="text-danger">
+              {errors.vnumber && errors.vnumber.message}
+            </Form.Text>
+          </Col>
+        </FormGroup>
 
-      {/* Date */}
-      <FormGroup as={Row} controlId="formStartDate">
-        <FormLabel column sm={2}>
-          Date
-        </FormLabel>
-        <Col sm={2}>
-          <Controller
-            name="startDate"
-            control={control}
-            rules={{ required: "Date is required" }}
-            render={({ field }) => (
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date) => handleDateChange(date)}
-                className="form-control"
-                {...field}
-              />
-            )}
-          />
-          <Form.Text className="text-danger">
-            {errors.startDate && errors.startDate.message}
-          </Form.Text>
-        </Col>
-      </FormGroup>
+        {/* Date */}
+        <FormGroup as={Row} controlId="formStartDate">
+          <FormLabel column sm={2}>
+            Date
+          </FormLabel>
+          <Col sm={2}>
+            <Controller
+              name="startDate"
+              control={control}
+              rules={{ required: "Date is required" }}
+              render={({ field }) => (
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date) => handleDateChange(date)}
+                  className="form-control"
+                  {...field}
+                />
+              )}
+            />
+            <Form.Text className="text-danger">
+              {errors.startDate && errors.startDate.message}
+            </Form.Text>
+          </Col>
+        </FormGroup>
 
-     {/* Services Table */}
+        {/* Services Table */}
 <h4>Select Services</h4>
 <table className="table">
   <tbody>
@@ -223,44 +227,41 @@ function Addquotation() {
   </tbody>
 </table>
 
+        {/* Borrowing Items Input */}
+        {inventoryInputEnabled && (
+          <FormGroup as={Row} controlId="formBorrowingItems">
+            <FormLabel column sm={2}>
+              Borrowing Items
+            </FormLabel>
+            <Col sm={10}>
+              <Controller
+                name="borrowingItems"
+                control={control}
+                render={({ field }) => (
+                  <FormControl as="textarea" rows={3} {...field} />
+                )}
+              />
+              <Form.Text className="text-danger">
+                {errors.borrowingItems && errors.borrowingItems.message}
+              </Form.Text>
+            </Col>
+          </FormGroup>
+        )}
 
-      {/* Total Price */}
-      <FormGroup as={Row} controlId="formTotalPrice">
-        <FormLabel column sm={2}>
-          Total Price
-        </FormLabel>
-        <Col sm={2}>
-          <FormControl
-            type="text"
-            value={totalPrice}
-            readOnly
-          />
-        </Col>
-      </FormGroup>
+        {/* Total Price */}
+        <FormGroup as={Row} controlId="formTotalPrice">
+          <FormLabel column sm={2}>
+            Total Price
+          </FormLabel>
+          <Col sm={2}>
+            <FormControl type="text" value={totalPrice} readOnly />
+          </Col>
+        </FormGroup>
 
-      {/* Other Details */}
-      <FormGroup as={Row} controlId="formOtherDetails">
-        <FormLabel column sm={2}>
-          Other Details
-        </FormLabel>
-        <Col sm={10}>
-          <Controller
-            name="otherDetails"
-            control={control}
-            render={({ field }) => (
-              <FormControl as="textarea" rows={3} {...field} />
-            )}
-          />
-          <Form.Text className="text-danger">
-            {errors.otherDetails && errors.otherDetails.message}
-          </Form.Text>
-        </Col>
-      </FormGroup>
-
-      {/* Submit Button */}
-      <Button type="submit">Submit</Button>
+        {/* Submit Button */}
+        <Button type="submit">Submit</Button>
+      </Container>
     </Form>
-    </Container>
   );
 }
 

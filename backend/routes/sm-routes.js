@@ -14,7 +14,7 @@ router.delete("/archive-record/:id", RecordController.deleteRecordById);
 router.patch("/update-record/:id",RecordController.updateRecordById );
 
 // Route to create a new quotation
-router.post("/quotation", quotationController.createQuotation);
+router.post("/quotations", quotationController.createQuotation);
 
   
 module.exports = router;

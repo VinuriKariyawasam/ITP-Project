@@ -3,7 +3,7 @@ const Quotation = require("../../models/sm/quotationModel");
 // Controller function to create a new quotation
 const createQuotation = async (req, res) => {
   try {
-    const { vnumber, startDate, services, otherDetails } = req.body;
+    const { vnumber, startDate, services, borrowingItems } = req.body;
 
     // Calculate total price based on selected services
     const totalPrice = services
@@ -15,8 +15,8 @@ const createQuotation = async (req, res) => {
       vnumber,
       startDate,
       services,
+      borrowingItems,
       totalPrice,
-      otherDetails,
     });
 
     // Save the new quotation to the database

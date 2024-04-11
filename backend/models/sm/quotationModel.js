@@ -19,11 +19,12 @@ const quotationSchema = new mongoose.Schema({
         type: Number,
         required: true,
       },
+      
     },
   ],
-  otherDetails: {
-    type: String,
-    required: true,
+  borrowingItems: {
+    type: String, // Assuming borrowingItems is a single string value
+    required: false, // Set to true if borrowingItems is required
   },
   totalPrice: {
     type: Number,
