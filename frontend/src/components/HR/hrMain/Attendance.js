@@ -112,9 +112,7 @@ function Attendance() {
             </Col>
           </Row>
           <Row>
-            <Col md={6}>
-              <AttendanceRecords />
-            </Col>
+            <AttendanceRecords />
           </Row>
         </Card.Body>
       </Card>
