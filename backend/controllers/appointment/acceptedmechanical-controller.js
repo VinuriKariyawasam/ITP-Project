@@ -52,3 +52,25 @@ exports.getacceptedmechanicalAppointment= async (req, res) => {
     })
 
 }
+
+exports.getacceptedmechanicalappointmentbyDate = async (req, res) => {
+    
+    const { appointmentdate } = req.params;
+    const startDate = new Date(appointmentdate);
+    const endDate = new Date(appointmentdate);
+    endDate.setDate(endDate.getDate() + 1); // Increment the date by 1 to get the next day
+
+    try {
+        const acceptedmechanicalappointment = await acceptedmechanicalSchema.find({
+            appointmentdate: { $gte: startDate, $lt: endDate }
+        });
+
+        if (acceptedmechanicalappointment.length > 0) {
+            res.status(200).send({ status: "User fetched", data: acceptedmechanicalappointment });
+        } else {
+            res.status(404).send({ status: "No appointments found for the given date" });
+        }
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting user", error: err.message });
+    }
+}

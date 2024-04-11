@@ -3,6 +3,8 @@ import Header from '../CusHeader/Header';
 import PayHereIntegration from '../CUSMain/CustomerPayments/PaymentHere';
 import PaymentVerification from '../CUSMain/CustomerPayments/PaymentVerification';
 import PaymentFailure from '../CUSMain/CustomerPayments/PaymentFailure';
+import OnlineInvoice from '../CUSMain/CustomerPayments/OnlineInvoice';
+
 
 import {
   BrowserRouter as Router,
@@ -14,16 +16,13 @@ import {
 function Customer() {
   return (
     <>
-    <Header/>
+    
     <Routes>
     <Route path="/payonline" element={<PayHereIntegration/>} />
     <Route path="/onlinepayment/verify/*" element={<PaymentVerification/>} />
     <Route path="/onlinepayment/fail/*" element ={<PaymentFailure/>}/>
-    
-    
-
-   
-    
+    <Route path="/onlinepayment/invoice" element ={<OnlineInvoice/>}/>
+  
     </Routes>
     </>
   )

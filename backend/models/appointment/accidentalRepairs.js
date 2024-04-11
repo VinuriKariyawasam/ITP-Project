@@ -17,7 +17,7 @@ const accidentalSchema = new Schema({
         required: true,
     },
     dateAccidentaOccured: {
-        type: String,
+        type: Date,
         required: true,
     },
     damagedOccured: {
@@ -37,10 +37,12 @@ const accidentalSchema = new Schema({
         type: String,
         required: true,
     },
-    image: {
+    image:{
         type: String,
-        required: true,
-    }
+    
+    },
+
+
 })
 const accidentalRepairs = mongoose.model("accidentalRepairs", accidentalSchema);
 

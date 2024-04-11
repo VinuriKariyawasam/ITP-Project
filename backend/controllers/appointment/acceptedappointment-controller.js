@@ -138,3 +138,5 @@ exports.getacceptedappointmentbyDate = async (req, res) => {
             res.status(500).send({ status: "Error with getting user", error: err.message });
         }
     }
+     
+    

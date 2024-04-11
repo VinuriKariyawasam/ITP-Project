@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -14,7 +15,7 @@ function AllFeedbacks(){
 
     useEffect(() => {
         function getFeedbacks() {
-            axios.get("http://localhost:5000/CAM/get-feedbacks")
+            axios.get("http://localhost:5000/cam/feedback/get-feedbacks")
             .then((res) => {
                 setfeedback(res.data);
             })

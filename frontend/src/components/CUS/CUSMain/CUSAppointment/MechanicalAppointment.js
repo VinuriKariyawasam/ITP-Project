@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import mechanicalrepairs from '../../../../images/CUS/Appointment/mechanical repairs.jpg'
 import axios from "axios";
@@ -10,8 +10,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 function MechanicalAppointment() { // Corrected function name
-  
-  const[availableTimes,setAvailableTimes] = useState([]);
+
+  const { register, handleSubmit } = useForm();
+  const [availableTimes, setAvailableTimes] = useState([]);
+
 
 
   const { } = useForm();
@@ -26,7 +28,7 @@ function MechanicalAppointment() { // Corrected function name
 
   function sendata(e) {
     e.preventDefault();
-    
+
     //create javascript object
     const newmechanicalAppointment = {
       name,
@@ -38,20 +40,20 @@ function MechanicalAppointment() { // Corrected function name
       appointmenttime,
     };
 
-    axios.post("http://localhost:5000/appointment/addmechanicalAppointment",{
+    axios.post("http://localhost:5000/appointment/addmechanicalAppointment", {
       ...newmechanicalAppointment,
       appointmentdate: new Date(appointmentdate.getTime() + (24 * 60 * 60 * 1000)) // Adding one day
     }).then(() => {
-      
-        alert("Your Appointment Success")
-        setname(""); // Corrected assignment, use function instead of assignment
-        setvType("");
-        setvNo("");
-        setissue("");
-        setcontactNo("");
-        setappointmentdate("");
-        setappointmenttime("");
-      })
+
+      alert("Your Appointment Success")
+      setname(""); // Corrected assignment, use function instead of assignment
+      setvType("");
+      setvNo("");
+      setissue("");
+      setcontactNo("");
+      setappointmentdate("");
+      setappointmenttime("");
+    })
       .catch((err) => {
         alert(err)
       });
@@ -64,10 +66,50 @@ function MechanicalAppointment() { // Corrected function name
     tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow;
   };
+  // Function to format the date correctly
+  const changedatetoformet = (date) => {
+    const formattedDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+    return formattedDate;
+  };
 
+
+  useEffect(() => {
+    if (appointmentdate) {
+      fetchAvailableTimes(appointmentdate);
+    }
+  }, [appointmentdate]);
+
+  
+  const fetchAvailableTimes = async (date) => {
+    try {
+      const formattedDate = changedatetoformet(date);
+      const response = await axios.get(`http://localhost:5000/appointment/get-acceptedmechanicalappointmentbyDate/${formattedDate}`);
+      const appointments = response.data.data;
+      console.log(appointments);
+      const allTimes = ["9.00am", "10.30am", "12.00pm", "1.30pm", "3.00pm", "4.30pm"]; // Define allTimes here
+      if (appointments.length === 0) { // If no appointments found for the selected date
+        setAvailableTimes(allTimes); // Set available times to all available times
+      } else {
+        const bookedTimes = appointments.map(appointment => appointment.appointmenttime);
+        const availableTimes = allTimes.filter(time => !bookedTimes.includes(time));
+        setAvailableTimes(availableTimes);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        // Handle 404 error (no appointments found for the date)
+        const allTimes = ["9.00am", "10.30am", "12.00pm", "1.30pm", "3.00pm", "4.30pm"]; // Define allTimes here
+        setAvailableTimes(allTimes); // Set available times to all available times
+      } else {
+        // Handle other errors
+        console.error("Error fetching available times:", error);
+      }
+    }
+  };
+ 
+  
   return (
 
-    <div style={{ marginTop: "10%", marginLeft: "3%" }}>
+    <div style={{ marginTop: "2%", marginLeft: "3%" }}>
 
       <div style={{ flex: "1", marginRight: "6%" }}>
         <h2 className='Appheading'>Make an Appointment for Mechanical Repairs</h2>
@@ -117,24 +159,29 @@ function MechanicalAppointment() { // Corrected function name
                     minDate={getTomorrow()} // Set minimum selectable date to tomorrow's date
                     required
                   />
-                  
+
                 </Form.Group>
               </Row>
 
+
               <Form.Group as={Col} md='5'>
-            <Form.Label>select a time</Form.Label>
-
-            <select class="form-select" id="validationCustom04" value={appointmenttime} onChange={(e) => setappointmenttime(e.target.value)} required>
-              <option value="">Choose</option>
-              <option value="9.00am">9.00am</option>
-              <option value="10.30am">10.30am</option>
-              <option value="12.00pm">12.00pm</option>
-              <option value="1.30pm">1.30pm</option>
-              <option value="3.00pm">3.00pm</option>
-              <option value="4.30pm">4.30pm</option>
-            </select>
-
-          </Form.Group>
+                <Form.Label>Select a time</Form.Label>
+                <select
+                  className="form-select"
+                  value={appointmenttime}
+                  onChange={(e) => setappointmenttime(e.target.value)}
+                  required
+                >
+                  <option value="">Choose</option>
+                  {availableTimes.length > 0 ? (
+                    availableTimes.map((time, index) => (
+                      <option key={index} value={time}>{time}</option>
+                    ))
+                  ) : (
+                    <option value="" disabled>No available times</option>
+                  )}
+                </select>
+              </Form.Group>
 
               <Form.Group className="mb-3" id="formGridCheckbox" rows='3' md='5' >
                 <Form.Check type="checkbox" label="By scheduling your appointment you agree to accept our terms and regulations" id="invalidCheck" required />

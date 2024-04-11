@@ -1,9 +1,13 @@
 import React from "react";
 import DbCard from "./hrdbCard";
+import PendingPayments from "./PendingPayments";
 
 function FinanceDashboard() {
   return (
-    <div className="row">
+    <>
+      <PendingPayments/>
+      
+    {/* <div className="row">
       <DbCard
         title="Total Things"
         value=""
@@ -16,7 +20,8 @@ function FinanceDashboard() {
         iconClass="bi-coin"
         duration="Monthly"
       />
-    </div>
+    </div> */}
+    </>
   );
 }
 

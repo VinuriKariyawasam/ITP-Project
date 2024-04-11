@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -9,59 +9,75 @@ import Button from 'react-bootstrap/Button';
 
 import './CAM_main.css';
 
-
-
 function AddReply(){
 
-const [reply,setReply] = useState("");
 const navigate = useNavigate();
-
-function sendData(e){
-  e.preventDefault();
-  
-  const newReply ={
-    reply
-  }
-
-  axios.post("http://localhost:5000/CAM/add-reply",newReply).then(()=>{
-    alert("Reply Added")
-    setReply("");
-    //navigate("getreply");
-  }).catch((err)=>{
-    alert(err)
-  })
-}
-    return(
-      <>
-     <Accordion defaultActiveKey="0">
-      <Accordion.Item eventKey="0">
-        <Accordion.Header>@UserName1010</Accordion.Header>
-        <Accordion.Body>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </Accordion.Body>
-      </Accordion.Item>
-      </Accordion><br/>
-      <FloatingLabel controlId="floatingTextarea2" label="Reply">
-        <Form.Control
-          as="textarea"
-          placeholder="Leave a comment here"
-          style={{ height: '100px' }}
-          onChange = {(e)=>{
-            setReply(e.target.value);
-          }}
-        />
-      </FloatingLabel>
-      <div className="cam-replybtn">
-      <Button variant="dark" size="md" onClick={sendData}>Post</Button>
-      </div>
-    </>
+const [Issue, setIssue] = useState([]);
+const [Solution,setSolution] = useState([]);
+/*
+const fetchIssueById = async (ObjectId) => {
+  try {
+    const response = await fetch(
+      `http://localhost:5000/cam/consultation/get-issue/${ObjectId}`
     );
+    setIssue(res.data);
+    if(!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log("Fetched issue", data);
+    return data;
+  }catch (error) {
+    console.error("Error fetching employee data:", error);
+      return null;
+  }
+};
+
+useEffect((ObjectId) => {
+  function getIssue() {
+    axios.get(`http://localhost:5000/cam/consultation/get-issue/${ObjectId}`)
+    .then((res) => {
+      setIssue(res.data);
+    })
+    .catch((err) => {
+      alert("error");
+    });
+  }
+  getIssue();
+}, []);*/
+
+useEffect(() => {
+  function sendData(e){
+    e.preventDefault();
+    const newSolution ={
+      Solution
+    }
+    axios.post("http://localhost:5000/cam/consultation/add-issue",newSolution).then(()=>{
+      alert("Solution Added")
+      setSolution("");
+      //navigate("getreply");
+    }).catch((err)=>{
+      alert(err)
+    })
+  }
+});
+return(
+  <main>
+        <div>
+            <h2><b>Issue</b></h2>
+              <Accordion defaultActiveKey="0" >
+                
+                    <Accordion.Item  style={{marginTop:"5px"}}>
+                      <Accordion.Header>@UserName1010</Accordion.Header>
+                      <Accordion.Body>body</Accordion.Body>
+                      
+                    </Accordion.Item>
+               </Accordion>      
+          </div>
+  </main>
+);
+
+    
 }
 
 export default AddReply;
