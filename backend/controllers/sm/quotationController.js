@@ -3,12 +3,16 @@ const Quotation = require("../../models/sm/quotationModel");
 // Controller function to create a new quotation
 const createQuotation = async (req, res) => {
   try {
+    console.log("Request Body:", req.body); // Log request body for debugging
     const { vnumber, startDate, services, borrowingItems } = req.body;
 
     // Calculate total price based on selected services
-    const totalPrice = services
-      .filter((service) => service.selected && service.price)
-      .reduce((total, service) => total + parseFloat(service.price), 0);
+const totalPrice = services.reduce((total, service) => {
+  if (service.selected && service.price) {
+    return total + parseFloat(service.price);
+  }
+  return total;
+}, 0);
 
     // Create a new Quotation instance with the provided data including totalPrice
     const newQuotation = new Quotation({
@@ -28,6 +32,18 @@ const createQuotation = async (req, res) => {
   }
 };
 
+// Controller function to get all quotations
+const getAllQuotations = async (req, res) => {
+  try {
+    const quotations = await Quotation.find();
+    res.status(200).json(quotations);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 module.exports = {
   createQuotation,
+  getAllQuotations,
 };

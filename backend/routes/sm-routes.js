@@ -16,5 +16,8 @@ router.patch("/update-record/:id",RecordController.updateRecordById );
 // Route to create a new quotation
 router.post("/quotations", quotationController.createQuotation);
 
+// Route to get all quotations
+router.get("/quotations", quotationController.getAllQuotations);
+
   
 module.exports = router;

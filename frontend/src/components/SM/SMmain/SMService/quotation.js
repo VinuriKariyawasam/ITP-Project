@@ -14,7 +14,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 
-function Addquotation() {
+function AddQuotation() {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [items, setItems] = useState([
@@ -24,7 +24,7 @@ function Addquotation() {
     { id: 4, name: "Body Wash and Interior Cleaning", selected: false, price: "" },
     { id: 5, name: "Wheel Alignment", selected: false, price: "" },
     { id: 6, name: "Battery Inspection and Replacement", selected: false, price: "" },
-    { id: 7, name: "Coolent System Flush and Fill", selected: false, price: "" },
+    { id: 7, name: "Coolant System Flush and Fill", selected: false, price: "" },
     { id: 8, name: "Suspension Inspection", selected: false, price: "" },
     { id: 9, name: "Electrical System Check", selected: false, price: "" },
     { id: 10, name: "General Vehicle Inspection", selected: false, price: "" },
@@ -50,7 +50,6 @@ function Addquotation() {
     );
     setItems(updatedItems);
 
-    // Enable borrowing items input if "Total Cost for Inventory Products" is selected
     const totalCostItem = updatedItems.find((item) => item.id === 11);
     setInventoryInputEnabled(totalCostItem && totalCostItem.selected);
 
@@ -67,43 +66,38 @@ function Addquotation() {
 
   const calculateTotalPrice = (updatedItems) => {
     const totalPrice = updatedItems
-      .filter((item) => item.selected && item.price)
+      .filter((item) => item.selected && item.price !== "")
       .reduce((acc, item) => acc + parseFloat(item.price), 0);
     setTotalPrice(totalPrice);
   };
 
   const onSubmit = async (data) => {
     try {
-      console.log("Form Data:", data);
-
-      // Filter selected items
       const selectedItems = items.filter((item) => item.selected);
-
-      // Prepare selected services with prices
       const services = selectedItems.map((item) => ({
         name: item.name,
-        price: item.price,
+        price: item.price !== "" ? parseFloat(item.price) : 0,
+        selected: item.selected,
       }));
 
-      console.log("Selected Services:", services);
-
-
-      // Handle form submission logic here (e.g., API call)
-      // Assuming you will submit the form data (including selected services) to the backend
-      // Example fetch API call
       const response = await fetch("http://localhost:5000/api/sm/quotations", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...data, services, borrowingItems }),
+        body: JSON.stringify({
+          vnumber: data.vnumber,
+          startDate: data.startDate,
+          services,
+          borrowingItems,
+          totalPrice,
+        }),
       });
 
       if (response.ok) {
         const result = await response.json();
-        console.log("Form submitted successfully:", result);
         alert("Form submitted successfully!");
-        navigate("/staff/sm"); // Redirect to success page after successful submission
+        navigate("/staff/sm");
       } else {
         throw new Error("Failed to submit form");
       }
@@ -117,7 +111,7 @@ function Addquotation() {
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Container className="my-4">
         <h2>Service Quotation</h2>
-        {/* Vehicle Number */}
+        
         <FormGroup as={Row} controlId="formVehiNumber">
           <FormLabel column sm={2}>
             Vehicle Number
@@ -137,7 +131,6 @@ function Addquotation() {
           </Col>
         </FormGroup>
 
-        {/* Date */}
         <FormGroup as={Row} controlId="formStartDate">
           <FormLabel column sm={2}>
             Date
@@ -162,72 +155,65 @@ function Addquotation() {
           </Col>
         </FormGroup>
 
-        {/* Services Table */}
-<h4>Select Services</h4>
-<table className="table">
-  <tbody>
-    {items.map((item, index) => {
-      // Check if the current item and the next item exist
-      const hasNextItem = index + 1 < items.length;
-      const nextItem = hasNextItem ? items[index + 1] : null;
+        <h4>Select Services</h4>
+        <table className="table">
+          <tbody>
+            {items.map((item, index) => {
+              const hasNextItem = index + 1 < items.length;
+              const nextItem = hasNextItem ? items[index + 1] : null;
 
-      // Render a row for every pair of items
-      if (index % 2 === 0) {
-        return (
-          <tr key={item.id}>
-            {/* First item */}
-            <td>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={item.selected}
-                  onChange={() => handleCheckboxChange(item.id)}
-                />{" "}
-                {item.name}
-              </label>
-            </td>
-            <td>
-              <input
-                type="text"
-                value={item.price}
-                onChange={(e) => handlePriceChange(item.id, e.target.value)}
-                disabled={!item.selected}
-              />
-            </td>
+              if (index % 2 === 0) {
+                return (
+                  <tr key={item.id}>
+                    <td>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={item.selected}
+                          onChange={() => handleCheckboxChange(item.id)}
+                        />{" "}
+                        {item.name}
+                      </label>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={item.price}
+                        onChange={(e) => handlePriceChange(item.id, e.target.value)}
+                        disabled={!item.selected}
+                      />
+                    </td>
+                    {nextItem && (
+                      <>
+                        <td>
+                          <label>
+                            <input
+                              type="checkbox"
+                              checked={nextItem.selected}
+                              onChange={() => handleCheckboxChange(nextItem.id)}
+                            />{" "}
+                            {nextItem.name}
+                          </label>
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            value={nextItem.price}
+                            onChange={(e) => handlePriceChange(nextItem.id, e.target.value)}
+                            disabled={!nextItem.selected}
+                          />
+                        </td>
+                      </>
+                    )}
+                  </tr>
+                );
+              }
 
-            {/* Second item (if exists) */}
-            {nextItem && (
-              <>
-                <td>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={nextItem.selected}
-                      onChange={() => handleCheckboxChange(nextItem.id)}
-                    />{" "}
-                    {nextItem.name}
-                  </label>
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={nextItem.price}
-                    onChange={(e) => handlePriceChange(nextItem.id, e.target.value)}
-                    disabled={!nextItem.selected}
-                  />
-                </td>
-              </>
-            )}
-          </tr>
-        );
-      }
+              return null;
+            })}
+          </tbody>
+        </table>
 
-      return null; // Skip rendering for odd-indexed items
-    })}
-  </tbody>
-</table>
-
-        {/* Borrowing Items Input */}
         {inventoryInputEnabled && (
           <FormGroup as={Row} controlId="formBorrowingItems">
             <FormLabel column sm={2}>
@@ -238,7 +224,12 @@ function Addquotation() {
                 name="borrowingItems"
                 control={control}
                 render={({ field }) => (
-                  <FormControl as="textarea" rows={3} {...field} />
+                  <FormControl
+                    as="textarea"
+                    rows={3}
+                    {...field}
+                    onChange={(e) => setBorrowingItems(e.target.value)}
+                  />
                 )}
               />
               <Form.Text className="text-danger">
@@ -248,7 +239,6 @@ function Addquotation() {
           </FormGroup>
         )}
 
-        {/* Total Price */}
         <FormGroup as={Row} controlId="formTotalPrice">
           <FormLabel column sm={2}>
             Total Price
@@ -258,11 +248,10 @@ function Addquotation() {
           </Col>
         </FormGroup>
 
-        {/* Submit Button */}
         <Button type="submit">Submit</Button>
       </Container>
     </Form>
   );
 }
 
-export default Addquotation;
+export default AddQuotation;
