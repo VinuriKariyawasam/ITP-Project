@@ -259,7 +259,7 @@ const BillsList = () => {
                     <td>
                       {bill.status === 'pending' &&
                         <>
-                          <Button variant="dark" size="sm" onClick={() => handleEdit(bill.paymentInvoiceId)}>Edit</Button>{' '}
+                          {/* <Button variant="dark" size="sm" onClick={() => handleEdit(bill.paymentInvoiceId)}>Edit</Button>{' '} */}
                           <Button variant="danger" size="sm" onClick={() => handleDelete(bill.paymentInvoiceId)}>Delete</Button>{' '}
                         </>
                       }

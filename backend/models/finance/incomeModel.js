@@ -20,16 +20,14 @@ const IncomeSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      default: "Income",
     },
     date: {
-      type: Date,
+      type: String,
       required: true,
     },
     time: {
       type: String,
       required: true,
-      maxLength: 10,
     },
 
     status: {

@@ -134,13 +134,36 @@ const OnlineInvoice = () => {
 
       console.log("Data saved to database:", dbResponse.data);
 
+
+      const incomeData = {
+        title: `Invoice ${paymentId}`,
+        serviceInvoiceId: postData.paymentInvoiceId,
+        amount: postData.amount,
+        type: "Online Payment",
+        date: postData.date,
+        time: currentTime,
+        status: "Received",
+      };
+      console.log(incomeData)
+      
+      const incomeResponse = await axios.post(
+        "http://localhost:5000/api/finance/incomes/add-income",
+        incomeData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+
       // Send email with the PDF attachment
       const emailOptions = {
         to: `${email}`, // Replace with recipient email address
         subject: `Online Payment Confirmation for Invoice ${paymentId}`,
         
         html: `<p><b>Dear Valued Customer</b></p>
-              <p>We hope this message finds you well. We're delighted to inform you that your invoice is now ready for download. Please click the link below to download your invoice:</p>
+              <p>We're delighted to inform you that your invoice is now ready for download. Please click the link below to download your invoice:</p>
               <p><a href="${downloadURL}" download>Download Invoice</a></p>
               <p>Should you have any questions or require further assistance, please don't hesitate to reach out to our team. We're always here to help.</p>
               <p>Thank you for choosing us as your trusted partner. We appreciate your business.</p>
@@ -161,7 +184,10 @@ const OnlineInvoice = () => {
           html: emailOptions.html,
         }),
       });
+
       console.log("Email sent successfully");
+
+
     } catch (error) {
       console.error("Error uploading file:", error.message);
     }
@@ -279,8 +305,8 @@ const OnlineInvoice = () => {
                           <tr>
                             <th style={{ width: "70px" }}>No.</th>
                             <th>Item</th>
-                            <th>Price</th>
-                            <th>Discount</th>
+                            <th>Unit Price</th>
+                            <th>Quantity</th>
                             <th className="text-end" style={{ width: "120px" }}>
                               Total
                             </th>
