@@ -1,20 +1,15 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
-const CreateReviewModal = ({
-  show,
-  handleClose,
-  handleSubmit,
-  empId,
-  empDBId,
-  name,
-}) => {
-  const [formData, setFormData] = useState({
+const CreateReviewModal = ({ show, handleClose, empId, empDBId, name }) => {
+  const initialFormData = {
     empId: empId || "",
     empDBId: empDBId || "",
     type: "",
     review: "",
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,6 +17,11 @@ const CreateReviewModal = ({
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const handleModalClose = () => {
+    setFormData(initialFormData); // Reset form data when modal is closed
+    handleClose();
   };
 
   const handleFormSubmit = async (e) => {
@@ -51,7 +51,7 @@ const CreateReviewModal = ({
   return (
     <Modal
       show={show}
-      onHide={handleClose}
+      onHide={handleModalClose}
       style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
     >
       <Modal.Header closeButton>

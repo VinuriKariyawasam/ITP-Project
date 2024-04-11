@@ -1,4 +1,5 @@
 const Salary = require("../../models/hr/salaryModel");
+const MonthlySalary = require("../../models/hr/monthlySalary-model");
 
 class SalaryController {
   /*async createSalary(req, res) {
@@ -136,12 +137,35 @@ class SalaryController {
       }
       res.json(salary);
     } catch (error) {
+      res.status(500).json({
+        message: "Failed to retrieve salary record",
+        error: error.message,
+      });
+    }
+  }
+
+  //pass salaries to monthly-salary db
+  async passSalariesToMonthlySalary(req, res) {
+    try {
+      // Fetch all salaries from the Salary database
+      const allSalaries = await Salary.find();
+
+      // Create a new MonthlySalary document
+      const monthlySalary = new MonthlySalary({
+        date: new Date(), // Set the current date
+        month: req.body.month, // Assuming the month is sent in the request body
+        salaries: allSalaries,
+      });
+
+      // Save the monthly salary document to the database
+      await monthlySalary.save();
+
       res
-        .status(500)
-        .json({
-          message: "Failed to retrieve salary record",
-          error: error.message,
-        });
+        .status(201)
+        .json({ message: "Salaries passed successfully", monthlySalary });
+    } catch (error) {
+      console.error("Error fetching and saving salaries:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 }

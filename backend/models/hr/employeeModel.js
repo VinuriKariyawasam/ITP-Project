@@ -66,6 +66,10 @@ const employeeSchema = new mongoose.Schema({
   password: {
     type: String,
   },
+  points: {
+    type: Number,
+    required: true,
+  },
 });
 
 const Employee = mongoose.model("Employee", employeeSchema);
