@@ -4,19 +4,18 @@ const nodemailer = require("nodemailer");
 require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.outlook365.com",
+  service: "gmail",
+  host: "smtp.gmail.com",
   port: 587,
   secure: false,
   auth: {
     user: process.env.EMAIL,
-    pass: process.env.PASSWORD
+    pass:process.env.PASSWORD
   },
-  tls: {
-    ciphers: 'SSLv3'
-  }
+  
 });
 
-const sendMail = async (req, res) => {
+exports.sendMail = async (req, res) => {
   const { to, subject, text, html, attachments } = req.body;
 
   try {
@@ -30,6 +29,7 @@ const sendMail = async (req, res) => {
       subject,
       text,
       html,
+      attachments
     
     };
 
@@ -39,8 +39,7 @@ const sendMail = async (req, res) => {
     res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
     console.error('Error sending email:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: error });
   }
 }
 
-module.exports = { sendMail };

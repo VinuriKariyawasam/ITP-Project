@@ -41,7 +41,6 @@ const OnlineInvoice = () => {
     fetchInvoiceData();
   }, [paymentId]);
 
-
   useEffect(() => {
     if (!loading && invoiceData && !pdfUploaded) {
       handleUploadPDF();
@@ -134,6 +133,35 @@ const OnlineInvoice = () => {
       );
 
       console.log("Data saved to database:", dbResponse.data);
+
+      // Send email with the PDF attachment
+      const emailOptions = {
+        to: `${email}`, // Replace with recipient email address
+        subject: `Online Payment Confirmation for Invoice ${paymentId}`,
+        
+        html: `<p><b>Dear Valued Customer</b></p>
+              <p>We hope this message finds you well. We're delighted to inform you that your invoice is now ready for download. Please click the link below to download your invoice:</p>
+              <p><a href="${downloadURL}" download>Download Invoice</a></p>
+              <p>Should you have any questions or require further assistance, please don't hesitate to reach out to our team. We're always here to help.</p>
+              <p>Thank you for choosing us as your trusted partner. We appreciate your business.</p>
+              <p>Warm regards,</p>
+              <p><b><i>Finance Division- Neo Tech Motors</i></b></p>`,
+      };
+
+      // Send a fetch request to the backend controller for sending email
+      await fetch("http://localhost:5000/api/finance/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: emailOptions.to,
+          subject: emailOptions.subject,
+          text: emailOptions.text,
+          html: emailOptions.html,
+        }),
+      });
+      console.log("Email sent successfully");
     } catch (error) {
       console.error("Error uploading file:", error.message);
     }
@@ -330,10 +358,11 @@ const OnlineInvoice = () => {
                             </td>
                           </tr>
                           <tr>
-
-                           
-                            <th scope="row" colSpan="4" className="border-0 text-end">
-
+                            <th
+                              scope="row"
+                              colSpan="4"
+                              className="border-0 text-end"
+                            >
                               Tax ({taxRate}%)
                             </th>
                             <td className="border-0 text-end">
