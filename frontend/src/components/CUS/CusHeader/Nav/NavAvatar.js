@@ -24,7 +24,7 @@ function NavAvatar() {
         <li>
           <a
             className="cus-dropdown-item d-flex align-items-center"
-            href="http://localhost:3000/customer/myprofile"
+            href="http://localhost:3000/customer/cusprofile"
           >
           
             <span>My Profile</span>

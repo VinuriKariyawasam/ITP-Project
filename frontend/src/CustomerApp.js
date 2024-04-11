@@ -50,6 +50,12 @@ function CustomerApp() {
         <Route path="/payments/*" element={<Payment />} />
         //customer affair-Githadi
         <Route path="/cusaffairs/*" element={<CUSAffairs />} />
+
+        //customer
+        <Route path="/cusprofile/*" element={<CusProfile/>}/>
+        <Route path="/cusreg/*" element={<CusRegistration/>}/>
+        <Route path="/cuslogin/*" element={<CusLogin/>}/>
+
         //Mobile service-Isiri
 
         <Route path="/mobilemechanical" element={<Mechanicalreq />} />
