@@ -17,7 +17,7 @@ function CUSAppointment() {
   return (
     <>
 
-    <Header/>
+    
     <Routes>
     <Route path="periodicalappointment/" element={<PeriodicalAppointment/>} />
     <Route path="mechanicalAppointment/" element={<MechanicalAppointment/>} />

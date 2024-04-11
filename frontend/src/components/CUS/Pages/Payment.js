@@ -14,7 +14,7 @@ import {
 function Customer() {
   return (
     <>
-    <Header/>
+    
     <Routes>
     <Route path="/payonline" element={<PayHereIntegration/>} />
     <Route path="/onlinepayment/verify/*" element={<PaymentVerification/>} />

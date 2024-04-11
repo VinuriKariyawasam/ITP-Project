@@ -12,7 +12,7 @@ import {
 function Mobile() {
   return (
     <>
-    <Header/>
+    
     <Routes>
     <Route path="/Mechanical" element={<Mechanicalreq/>} />
     </Routes>
