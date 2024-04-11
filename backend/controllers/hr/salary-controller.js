@@ -3,9 +3,8 @@ const Salary = require("../../models/hr/salaryModel");
 class SalaryController {
   /*async createSalary(req, res) {
     try {
-      const { empId, empDBId, name, position, basicSalary } = req.body;
+      const {basicSalary,allowance } = req.body;
       // Calculations based on provided fields
-      const allowance = 10000.0;
       const noPay = 0.0;
       const EPFC = basicSalary * 0.12;
       const EPFE = basicSalary * 0.08;
@@ -40,13 +39,44 @@ class SalaryController {
         .json({ message: "Failed to create salary", error: error.message });
     }
   }*/
-
+  //update salary by id
   async updateSalary(req, res) {
     try {
       const { id } = req.params;
-      const updatedSalary = await Salary.findByIdAndUpdate(id, req.body, {
-        new: true,
-      });
+      const { bank, branch, account } = req.body;
+      const basicSalary = parseFloat(req.body.basicSalary);
+      const allowance = parseFloat(req.body.allowance);
+      const noPay = parseFloat(req.body.noPay);
+
+      // Calculations based on provided fields
+
+      const EPFC = basicSalary * 0.12;
+      const EPFE = basicSalary * 0.08;
+      const EPFT = EPFC + EPFE;
+      const ETF = basicSalary * 0.03;
+      const totalSal = basicSalary + allowance;
+      const netSal = totalSal - noPay - EPFE - ETF;
+
+      // Update the salary record with the new values
+      const updatedSalary = await Salary.findByIdAndUpdate(
+        id,
+        {
+          basicSalary,
+          allowance,
+          noPay,
+          EPFC,
+          EPFE,
+          EPFT,
+          ETF,
+          totalSal,
+          netSal,
+          bank,
+          branch,
+          account,
+        },
+        { new: true }
+      );
+
       console.log(updatedSalary);
       res.json({ message: "Salary updated successfully", data: updatedSalary });
     } catch (error) {
@@ -91,6 +121,27 @@ class SalaryController {
       res
         .status(500)
         .json({ message: "Failed to retrieve salary", error: error.message });
+    }
+  }
+
+  //get slary by empDBId
+  async getSalaryByEmpDBId(req, res) {
+    try {
+      const { empDBId } = req.params;
+      const salary = await Salary.findOne({ empDBId });
+      if (!salary) {
+        return res
+          .status(404)
+          .json({ message: "Salary record not found for empDBId" });
+      }
+      res.json(salary);
+    } catch (error) {
+      res
+        .status(500)
+        .json({
+          message: "Failed to retrieve salary record",
+          error: error.message,
+        });
     }
   }
 }
