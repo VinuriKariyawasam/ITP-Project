@@ -127,10 +127,11 @@ function VehicleDash() {
 
   const validate = (name, value) => {
     if (name === "vehicleNo") {
-      if (!/^[A-Za-z]{10}$/.test(value.trim())) {
+      if (!/^[A-Za-z0-9]{4,10}$/.test(value.trim())) {
         return "Invalid Vehicle No. Enter again.";
       }
     }
+    
     if (name === "brand" && !value.trim()) {
       return "Brand is required";
     }
