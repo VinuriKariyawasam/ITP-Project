@@ -1,0 +1,116 @@
+const { config } = require("dotenv");
+const cartSchema = require("../../models/inventory/cart");
+const express = require("express");
+const router = express.Router(); 
+const path = require("path");
+exports.addcart = async (req, res) => {
+  try {
+    const { product_name, unit_price , quantity,image } = req.body;
+
+    if (!product_name || !unit_price || !quantity || !image) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const Quantity = Number(quantity);
+    const UnitPrice = Number(unit_price);
+
+    if (typeof Quantity !== "number" || isNaN(Quantity) || Quantity <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Quantity must be a positive number" });
+    }
+
+    if (typeof UnitPrice !== "number" || isNaN(UnitPrice) || UnitPrice <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Unit price must be a positive number" });
+    }
+
+    const newcart = new cartSchema({
+      Product_name: product_name,
+      Unit_price: UnitPrice,
+      Quantity: Quantity,
+      image: image,
+    });
+
+    await newcart.save();
+    console.log(newcart);
+    res.json({ message: "Product added", product: newcart });
+  } catch (err) {
+    console.error("Error occurred while adding product:", err);
+    res.status(500).json({ error: "An error occurred while adding product" });
+  }
+};
+
+exports.updatecart = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const { Product_name, Unit_price, Quantity, image } =
+      req.body;
+
+    const updatecart = {
+      Product_name,
+      Unit_price,
+      Quantity,
+      image,
+    };
+
+    const updatedProduct = await cartSchema.findByIdAndUpdate(
+      productId,
+      updatecart,
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res
+      .status(200)
+      .json({ status: "Product updated", product: updatedProduct });
+  } catch (err) {
+    console.error("Error occurred while updating product:", err);
+    res.status(500).json({ error: "An error occurred while updating product" });
+  }
+};
+
+exports.cartStock = async (req, res) => {
+  try {
+    const carts = await cartSchema.find().sort({ createdAt: -1 });
+    res.json(carts);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.deletecarts = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const cart = await cartSchema.findById(id);
+
+    if (!cart) {
+      return res.status(404).send({ status: "cart not found" });
+    }
+      cartSchema.findByIdAndDelete(id)
+        .then(() => {
+          res.status(200).send({ status: "Product deleted" });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).send({ status: "Error with deleting product" });
+        });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ status: "Internal server error" });
+  }
+};
+exports.emptycart = async (req, res) => {
+  try {
+    await cartSchema.deleteMany({});
+    res.status(200).json({ message: 'All items deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting items:', error);
+    res.status(500).json({ error: 'An error occurred while deleting items' });
+  }
+};

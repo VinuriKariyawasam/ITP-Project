@@ -3,6 +3,7 @@ const { addLubricant, LubricantStock, deleteLubricants,updateLubricant} =require
 const fileUpload = require('../controllers/Inventory/ImageUpload');
 const { addTires, TireStock, deleteTires, updateTire} = require('../controllers/Inventory/Tires');
 const { addSP, SPpendingorders, deletependingsp } = require('../controllers/Inventory/SpareParts');
+const{addcart, cartStock, updatecart, deletecarts, emptycart} = require('../controllers/Inventory/carts')
 const router = require("express").Router();
 
 router.post("/addlubricant",fileUpload.single('image'),addLubricant)
@@ -18,5 +19,11 @@ router.put("/updateTire/:id",updateTire)
 router.post("/addsp",fileUpload.single('image'),addSP)
 router.get("/pendingsp", SPpendingorders)
 router.delete('/deletependingsp/:id', deletependingsp )
+
+router.post("/addcart", addcart)
+router.get("/getcart", cartStock)
+router.put("/updatecart/:id",updatecart)
+router.delete("/deletecart/:id",deletecarts)
+router.delete('/emptycart',emptycart)
 
 module.exports = router;

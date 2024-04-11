@@ -1,4 +1,4 @@
-import React , { useState, useEffect }from "react";
+import React from "react";
 import "./Product.css";
 import Slideshow from "../../../../data/CUS/inventory/Slideshow";
 import Button from "react-bootstrap/Button";
@@ -71,7 +71,7 @@ function Products() {
               Explore our wide selection of quality tire stocks, ensuring smooth
               rides for every vehicle.
             </Card.Text>
-            <Link to=" ">
+            <Link to="tires">
             <Button variant="primary" className="exbtn">
               Explore
             </Button>
