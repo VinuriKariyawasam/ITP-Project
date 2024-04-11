@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 
 const consultationSchema = new mongoose.Schema({
 
-    
-
     consultationId :{
         type : String,
         required : true,

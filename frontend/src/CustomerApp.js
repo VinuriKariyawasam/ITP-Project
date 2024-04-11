@@ -20,6 +20,9 @@ import VehicleCarrReq from '../src/components/CUS/CUSMain/CUSMobileReq/VehicleCa
 
 import Products from "../src/components/CUS/Pages/Product";
 import Cushome from "../src/components/CUS/CUSMain/Cushome";
+import CusRegistration from "./components/CUS/CUSMain/CusRegistration";
+import CusLogin from "./components/CUS/CUSMain/CusLogin";
+import CusProfile from "./components/CUS/CUSMain/CusProfile";
 
 
 import {
@@ -29,6 +32,9 @@ import {
   Navigate,
 } from "react-router-dom";
 import CusFooter from "../src/components/CUS/CusFooter/CusFooter";
+
+
+
 
 function CustomerApp() {
   return (
@@ -49,9 +55,6 @@ function CustomerApp() {
         <Route path="/mobilemechanical" element={<Mechanicalreq />} />
         <Route path="/vehiclecarriers" element={<VehicleCarrReq/>} />
 
-
-
-       
 
       </Routes>
       <CusFooter />
