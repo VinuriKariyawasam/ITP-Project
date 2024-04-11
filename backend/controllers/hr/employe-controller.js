@@ -191,8 +191,7 @@ class EmployeeController {
         newSalary.ETF = newSalary.basicSalary * 0.03;
         newSalary.totalSal = newSalary.basicSalary + newSalary.allowance;
         newSalary.netSal =
-          newSalary.totalSal -
-          (newSalary.noPay + newSalary.EPFC + newSalary.ETF);
+          newSalary.totalSal - (newSalary.noPay + newSalary.EPFC);
         newSalary.bank = bank;
         newSalary.branch = branch;
         newSalary.account = account;

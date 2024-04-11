@@ -15,8 +15,8 @@ import html2pdf from "html2pdf.js";
 
 import EmployeeUpdateModal from "./EmployeeUpdateModal";
 import EmpEvaluateModal from "./EmpEvaluateModal";
-import UpdateSalaryModal from "./SalaryUpdateModal";
 import SalaryDetailsModal from "./SalaryDetailsModal";
+import MoreReviewsModal from "./MoreReviewModal";
 
 function EmployeeDetails() {
   const { employeeId } = useParams();
@@ -34,6 +34,7 @@ function EmployeeDetails() {
   const [negativeReviews, setNegativeReviews] = useState([]); // State to store negative reviews count
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [selectedRecordId, setSelectedRecordId] = useState(null);
+  const [showReviewsModal, setShowReviewsModal] = useState(false);
 
   //Function to fetch employee personal data by database
   const fetchEmployeeById = async (employeeId) => {
@@ -235,6 +236,18 @@ function EmployeeDetails() {
   const handleCloseModal = () => {
     setShowSalaryModal(false);
     fetchSalaryDetails(employeeId);
+  };
+
+  /*----Parts regarding more reviews modal-------*/
+  // Function to handle opening the modal
+  const handleOpenReviewsModal = () => {
+    setShowReviewsModal(true);
+  };
+
+  // Function to handle closing the modal
+  const handleCloseReviewModal = () => {
+    setShowReviewsModal(false); // Close the modal
+    fetchReviews(employeeId); // Fetch reviews again to update the count
   };
 
   return (
@@ -458,20 +471,6 @@ function EmployeeDetails() {
                     <Col xs={12} md={8}>
                       <strong>EPF-8%:</strong>
                     </Col>
-                    <Col xs={6} md={4} className="text-end">
-                      <strong>
-                        Rs.
-                        {salaryDetails.EPFE
-                          ? Number(salaryDetails.EPFE).toFixed(2)
-                          : "0.00"}
-                      </strong>
-                    </Col>
-                  </Row>
-
-                  <Row style={{ marginBottom: "10px" }}>
-                    <Col xs={12} md={8}>
-                      <strong>ETF-3%:</strong>
-                    </Col>
                     <Col
                       xs={6}
                       md={4}
@@ -480,8 +479,8 @@ function EmployeeDetails() {
                     >
                       <strong>
                         Rs.
-                        {salaryDetails.ETF
-                          ? Number(salaryDetails.ETF).toFixed(2)
+                        {salaryDetails.EPFE
+                          ? Number(salaryDetails.EPFE).toFixed(2)
                           : "0.00"}
                       </strong>
                     </Col>
@@ -515,6 +514,19 @@ function EmployeeDetails() {
                         Rs.
                         {salaryDetails.EPFC
                           ? Number(salaryDetails.EPFC).toFixed(2)
+                          : "0.00"}
+                      </strong>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginBottom: "10px" }}>
+                    <Col xs={12} md={8}>
+                      <strong>ETF-3%:</strong>
+                    </Col>
+                    <Col xs={6} md={4} className="text-end">
+                      <strong>
+                        Rs.
+                        {salaryDetails.ETF
+                          ? Number(salaryDetails.ETF).toFixed(2)
                           : "0.00"}
                       </strong>
                     </Col>
@@ -554,11 +566,13 @@ function EmployeeDetails() {
                 </h5>
               </Col>
               <Col>
-                <Button variant="primary" style={{ margin: "10px" }}>
+                <Button
+                  variant="primary"
+                  onClick={handleOpenReviewsModal}
+                  style={{ margin: "10px" }}
+                >
                   More
                 </Button>
-              </Col>
-              <Col>
                 <Button
                   variant="success"
                   onClick={handleEvaluateModalShow}
@@ -616,6 +630,14 @@ function EmployeeDetails() {
         show={showSalaryModal}
         handleClose={handleCloseModal}
         id={selectedRecordId}
+      />
+
+      {/* Render the MoreReviewsModal with appropriate props */}
+      <MoreReviewsModal
+        show={showReviewsModal}
+        handleClose={handleCloseReviewModal}
+        reviews={reviews}
+        employeeId={employeeId}
       />
     </Card>
   );
