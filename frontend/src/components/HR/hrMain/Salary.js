@@ -138,6 +138,53 @@ function Salary() {
       .save(`Salary_Records_generated_${currentDate}.pdf`);
   };
 
+  //pass salary to finance
+  const handleSetMonth = async () => {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+    const currentMonthIndex = currentDate.getMonth();
+
+    let previousMonthIndex;
+    let previousYear;
+
+    if (currentMonthIndex === 0) {
+      previousMonthIndex = 11; // December (0-based index)
+      previousYear = currentDate.getFullYear() - 1;
+    } else {
+      previousMonthIndex = currentMonthIndex - 1;
+      previousYear = currentDate.getFullYear();
+    }
+
+    const previousMonth = new Date(
+      previousYear,
+      previousMonthIndex
+    ).toLocaleString("default", { month: "long" });
+    const monthToSet =
+      currentDay > 10
+        ? currentDate.toLocaleString("default", { month: "long" })
+        : previousMonth;
+    console.log("Selected Month:", monthToSet);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/hr/pass-salary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ month: monthToSet }), // Send the selected month in the request body
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to set month");
+      }
+
+      const data = await response.json();
+      console.log("Response:", data); // Log the response from the server
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <section>
       <Row>
@@ -166,6 +213,14 @@ function Salary() {
                 className="bi bi-file-pdf"
                 style={{ marginRight: "5px" }}
               ></span>
+            </Button>
+            <Button
+              variant="dark"
+              size="md"
+              onClick={handleSetMonth}
+              style={{ margin: "10px" }}
+            >
+              Send to Finance
             </Button>
           </div>
           <OverlayTrigger

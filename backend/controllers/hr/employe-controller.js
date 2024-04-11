@@ -6,6 +6,9 @@ const HttpError = require("../../models/http-error");
 const multer = require("multer");
 const path = require("path");
 const { validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const AttendanceModel = require("../../models/hr/attendanceModel");
 
 // Specify the new upload directory
 // Specify the relative upload directory
@@ -64,6 +67,7 @@ class EmployeeController {
         const bank = req.body["bank"];
         const branch = req.body["branch"];
         const account = req.body["account"];
+        const password = req.body["password"];
 
         //check if employee alredy in db with nic or contact or email
         let existingEmployee;
@@ -89,37 +93,34 @@ class EmployeeController {
           }
         }
 
+        //password convert to hashcode
+        let hashedPassword;
+        if (password != null && password != "" && password != "undefined") {
+          try {
+            hashedPassword = await bcrypt.hash(password, 12);
+          } catch (err) {
+            const error = new HttpError(
+              "Could not create user, please try again.",
+              500
+            );
+            return next(error);
+          }
+        }
+
         //-----Generating unique emp number---
         const startDate = new Date(req.body.startDate);
         const year = startDate.getFullYear().toString().substring(2); // Get last two digits of the year
         const month = (startDate.getMonth() + 1).toString().padStart(2, "0"); // Get month with leading zero if needed
 
-        // Construct the regular expression to match employee IDs starting with EMPYYMM
-        const regexPattern = new RegExp(`^EMP${year}${month}`);
+        // Filter employees based on year and month
+        const filteredEmployees = await EmployeeModel.find({
+          empId: { $regex: `^EMP${year}${month}` },
+        });
 
-        // Aggregation pipeline to count the number of employees with the given pattern
-        const employeeCountPipeline = [
-          {
-            $match: {
-              id: {
-                $regex: regexPattern,
-              },
-            },
-          },
-          {
-            $count: "count",
-          },
-        ];
+        // Count the number of filtered employees
+        const count = filteredEmployees.length;
 
-        // Execute the aggregation pipeline
-        const countResult = await EmployeeModel.aggregate(
-          employeeCountPipeline
-        );
-
-        // Extract the count from the aggregation result, or default to 0 if no result found
-        const count = countResult.length > 0 ? countResult[0].count : 0;
-
-        // Generate the next employee ID
+        // Generate the new employee number
         const nextNumberString = (count + 1).toString().padStart(3, "0");
         const employeeId = `EMP${year}${month}${nextNumberString}`;
 
@@ -149,7 +150,8 @@ class EmployeeController {
         newEmployee.position = req.body.position;
         newEmployee.otherDetails = req.body.otherDetails;
         newEmployee.email = req.body.email;
-        newEmployee.password = req.body.password;
+        newEmployee.password = hashedPassword;
+        newEmployee.points = 1;
         //save employee to database
         const savedEmployee = await newEmployee.save();
 
@@ -380,6 +382,89 @@ class EmployeeController {
       // Respond with success (204 No Content) as the employee has been successfully moved
       res.status(204).json(); // No content in response for successful deletion
     } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  //employee login
+  static async loginEmployee(req, res) {
+    const { email, empId, password } = req.body;
+
+    try {
+      let user;
+
+      if (email) {
+        user = await EmployeeModel.findOne({ email });
+      } else if (empId) {
+        user = await EmployeeModel.findOne({ empId });
+      } else {
+        return res
+          .status(400)
+          .json({ message: "Email or Employee ID is required" });
+      }
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      const token = jwt.sign(
+        { userId: user._id, email: user.email, empId: user.empId },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      res.json({
+        userId: user._id,
+        email: user.email,
+        empId: user.empId,
+        token,
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  // Get today employees details
+  static async getTodayEmployeesWithAttendance(req, res) {
+    try {
+      // Find employees who are either Technician or Supervisor
+      const employees = await EmployeeModel.find({
+        $or: [{ position: "Technician" }, { position: "Supervisor" }],
+      });
+
+      // Find attendance entries for today with value = true
+      const today = new Date().toISOString().split("T")[0];
+      const isoDate = new Date(today);
+      const attendance = await AttendanceModel.find({
+        date: {
+          $gte: isoDate,
+          $lt: new Date(isoDate.getTime() + 24 * 60 * 60 * 1000),
+        },
+      });
+      console.log("Attendance:", attendance);
+      // Filter employees with true attendance for today
+      const todayEmployees = employees.filter((employee) =>
+        attendance.some((attendanceEntry) =>
+          attendanceEntry.employeeAttendance.some(
+            (entry) =>
+              entry.empDBId === employee._id.toString() && entry.value === true
+          )
+        )
+      );
+
+      // Return the filtered employees as a response
+      res.status(200).json({ employees: todayEmployees });
+    } catch (error) {
+      console.error(
+        "Error while fetching today's employees with attendance:",
+        error
+      );
       res.status(500).json({ error: error.message });
     }
   }

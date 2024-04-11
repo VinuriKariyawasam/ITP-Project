@@ -87,6 +87,12 @@ router.patch(
 
 router.delete("/archive-employee/:id", EmployeeController.deleteEmployeeById);
 
+// Login route
+router.post("/emp-login", EmployeeController.loginEmployee);
+
+// Today Technicians and supervisors
+router.get("/today-emp", EmployeeController.getTodayEmployeesWithAttendance);
+
 //---------Leaves Routes-------------------
 
 // Validation middleware function for validating the leave request data
@@ -198,6 +204,9 @@ router.get("/salaries/:id", SalaryController.getSalaryById);
 
 // Get Salary by empDBId
 router.get("/salary/:empDBId", SalaryController.getSalaryByEmpDBId);
+
+//Pas salry to monthly salary
+router.post("/pass-salary", SalaryController.passSalariesToMonthlySalary);
 
 //---------Attendance Routes-------------------
 
