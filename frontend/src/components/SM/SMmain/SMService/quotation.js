@@ -13,6 +13,7 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
+import { toPng } from "html-to-image"; // Import toPng function from html-to-image
 
 function AddQuotation() {
   const navigate = useNavigate();
@@ -97,7 +98,7 @@ function AddQuotation() {
       if (response.ok) {
         const result = await response.json();
         alert("Form submitted successfully!");
-        navigate("/staff/sm");
+        navigate("/staff/sm/quotation/");
       } else {
         throw new Error("Failed to submit form");
       }
@@ -107,11 +108,28 @@ function AddQuotation() {
     }
   };
 
+  const handleDownloadQuotation = () => {
+    const container = document.getElementById("quotation-container");
+
+    if (container) {
+      toPng(container)
+        .then(function (dataUrl) {
+          const downloadLink = document.createElement("a");
+          downloadLink.href = dataUrl;
+          downloadLink.download = "service_quotation.png";
+          downloadLink.click();
+        })
+        .catch(function (error) {
+          console.error("Error generating image:", error);
+        });
+    }
+  };
+
   return (
+    <Container className="my-4" id="quotation-container">
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <Container className="my-4">
         <h2>Service Quotation</h2>
-        
+
         <FormGroup as={Row} controlId="formVehiNumber">
           <FormLabel column sm={2}>
             Vehicle Number
@@ -241,16 +259,25 @@ function AddQuotation() {
 
         <FormGroup as={Row} controlId="formTotalPrice">
           <FormLabel column sm={2}>
-            Total Price
+            Total Price (Rs.)
           </FormLabel>
           <Col sm={2}>
             <FormControl type="text" value={totalPrice} readOnly />
           </Col>
         </FormGroup>
-
-        <Button type="submit">Submit</Button>
-      </Container>
+      
+      <Row>
+        <Col>
+      <Button type="button" onClick={handleDownloadQuotation}>
+        Download Quotation as Image
+      </Button>
+      </Col>
+      <Col>
+      <Button type="submit">Submit</Button>
+      </Col>
+      </Row>
     </Form>
+    </Container>
   );
 }
 
