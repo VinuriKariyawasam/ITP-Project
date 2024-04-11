@@ -10,6 +10,7 @@ function VehicleDash() {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [deletedVehicle, setDeletedVehicle] = useState(null);
   const [formData, setFormData] = useState({});
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -33,6 +34,14 @@ function VehicleDash() {
       console.error("Error fetching data:", error);
       setLoading(false);
     }
+  };
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const clearFilters = () => {
+    setSearch('');
   };
 
   const handleDelete = async (id) => {
@@ -159,6 +168,7 @@ function VehicleDash() {
 
     setFormData({ ...formData, [name]: value });
   };
+  
   const handleSubmit = async () => {
     try {
       const response = await fetch(
@@ -193,15 +203,12 @@ function VehicleDash() {
       <Row>
         <Stack direction="horizontal" gap={3}>
           <div className="p-2">
-            <Form className="d-flex">
-              <Form.Control
-                type="search"
-                placeholder="Search"
-                className="me-2 custom-input"
-                aria-label="Search"
-              />
-              <Button variant="outline-dark">Search</Button>
-            </Form>
+            <Form.Group controlId="search">
+              <Form.Control type="text" placeholder="Search by vehicle No..." value={search} onChange={handleSearch} />
+            </Form.Group>
+          </div>
+          <div>
+            <Button variant="secondary" onClick={clearFilters}>Clear Search</Button>
           </div>
           <div className="p-2 ms-auto">
             <Button variant="success">
@@ -233,45 +240,49 @@ function VehicleDash() {
               </tr>
             </thead>
             <tbody>
-              {vehicles.map((vehicle, index) => (
-                <tr key={index}>
-                  <td>{vehicle.vehicleNo}</td>
-                  <td>{vehicle.brand}</td>
-                  <td>{vehicle.model}</td>
-                  <td>{vehicle.year}</td>
-                  <td>{vehicle.name}</td>
-                  <td>{vehicle.contact}</td>
-                  <td>
-                    <Link
-                      to={`/vehicle/${vehicle._id}/records`}
-                      className="btn"
-                      style={{
-                        backgroundColor: "#d3d3d3", // Ash color
-                        borderColor: "#d3d3d3", // Border color
-                        color: "#000", // Text color
-                        textDecoration: "none", // Remove underline
-                        fontWeight: "bold", // Make text bold
-                      }}
-                    >
-                      More
-                    </Link>
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => handleShowUpdateModal(vehicle)}
-                      className="btn btn-warning me-2 text-dark font-weight-bold"
-                    >
-                      Update
-                    </button>
-                    <button
-                      onClick={() => handleDelete(vehicle._id)}
-                      className="btn btn-danger text-dark font-weight-bold"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {vehicles
+                .filter((vehicle) =>
+                  vehicle.vehicleNo.toLowerCase().includes(search.toLowerCase())
+                )
+                .map((vehicle, index) => (
+                  <tr key={index}>
+                    <td>{vehicle.vehicleNo}</td>
+                    <td>{vehicle.brand}</td>
+                    <td>{vehicle.model}</td>
+                    <td>{vehicle.year}</td>
+                    <td>{vehicle.name}</td>
+                    <td>{vehicle.contact}</td>
+                    <td>
+                      <Link
+                        to={`/vehicle/${vehicle._id}/records`}
+                        className="btn"
+                        style={{
+                          backgroundColor: "#d3d3d3", // Ash color
+                          borderColor: "#d3d3d3", // Border color
+                          color: "#000", // Text color
+                          textDecoration: "none", // Remove underline
+                          fontWeight: "bold", // Make text bold
+                        }}
+                      >
+                        More
+                      </Link>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => handleShowUpdateModal(vehicle)}
+                        className="btn btn-warning me-2 text-dark font-weight-bold"
+                      >
+                        Update
+                      </button>
+                      <button
+                        onClick={() => handleDelete(vehicle._id)}
+                        className="btn btn-danger text-dark font-weight-bold"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         )}

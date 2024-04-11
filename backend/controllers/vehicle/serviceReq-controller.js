@@ -26,33 +26,10 @@ const upload = multer({
 exports.createServiceReq = async (req, res) => {
   try {
     const serviceReqData = req.body;
+    // Parse the quotation to remove currency symbol and convert it to a number
+    serviceReqData.quotation = parseFloat(serviceReqData.quotation.replace("Rs. ", ""));
     const newServiceReq = new ServiceRequestModel(serviceReqData);
     await newServiceReq.save();
-
-    /*// Handle file uploads
-    upload(req, res, async function (err) {
-      if (err instanceof multer.MulterError) {
-        console.error("File upload error:", err.message);
-        return res.status(400).json({ error: err.message });
-      } else if (err) {
-        console.error("File upload error:", err.message);
-        return res.status(500).json({ error: err.message });
-      }
-
-      // Handle file paths
-      const documentPaths = req.files["documents"]
-        ? req.files["documents"].map(
-            (file) => `/uploads/serviceReq/${path.basename(file.path)}`
-          )
-        : [];
-
-      // Update service request with document paths
-      await ServiceRequestModel.findByIdAndUpdate(
-        newServiceReq._id,
-        { $push: { report: documentPaths } },
-        { new: true }
-      );
-    });*/
 
     res.status(201).json(newServiceReq);
   } catch (error) {
@@ -60,6 +37,7 @@ exports.createServiceReq = async (req, res) => {
     res.status(500).json({ error: "Failed to save service request" });
   }
 };
+
 
 exports.getServiceReqs = async (req, res) => {
   try {

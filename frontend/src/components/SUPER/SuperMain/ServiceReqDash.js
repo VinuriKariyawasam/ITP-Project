@@ -11,6 +11,7 @@ function ServiceReqDash() {
   const [selectedServiceReq, setSelectedServiceReq] = useState(null);
   const [deletedServiceReq, setDeletedServiceReq] = useState(null);
   const [formData, setFormData] = useState({});
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -67,6 +68,14 @@ function ServiceReqDash() {
     }
   };
 
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const clearFilters = () => {
+    setSearch('');
+  };
+
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedServiceReq(null);
@@ -121,15 +130,21 @@ function ServiceReqDash() {
   };
 
   const handleChange = (name, value) => {
-    const error = validate(name, value);
-
+    let processedValue = value;
+    if (name === "quotation") {
+      processedValue = `Rs. ${value}`;
+    }
+    
+    const error = validate(name, processedValue);
+  
     if (error) {
       alert(error);
       return;
     }
-
-    setFormData({ ...formData, [name]: value });
+  
+    setFormData({ ...formData, [name]: processedValue });
   };
+  
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -172,34 +187,8 @@ function ServiceReqDash() {
     }
   };
 
-  const viewReport = (report) => {
-    try {
-      const blob = b64toBlob(report, 'application/pdf');
-      const url = URL.createObjectURL(blob);
-      window.open(url, "_blank");
-    } catch (error) {
-      console.error('Error viewing report:', error);
-    }
-  };
-
-  const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
-    const byteCharacters = atob(b64Data);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-
-    const blob = new Blob(byteArrays, { type: contentType });
-    return blob;
+  const viewReport = (reportUrl) => {
+    window.open(reportUrl, "_blank");
   };
 
   return (
@@ -207,15 +196,12 @@ function ServiceReqDash() {
       <Row>
         <Stack direction="horizontal" gap={3}>
           <div className="p-2">
-            <Form className="d-flex">
-              <Form.Control
-                type="search"
-                placeholder="Search"
-                className="me-2 custom-input"
-                aria-label="Search"
-              />
-              <Button variant="outline-dark">Search</Button>
-            </Form>
+            <Form.Group controlId="search">
+              <Form.Control type="text" placeholder="Search by vehicle No..." value={search} onChange={handleSearch} />
+            </Form.Group>
+          </div>
+          <div>
+            <Button variant="secondary" onClick={clearFilters}>Clear Search and Filters</Button>
           </div>
           <div className="p-2 ms-auto">
             <Button variant="success" style={{ backgroundColor: '#9D9BE1', border: '1px solid #9D9BE1' }}>
@@ -249,43 +235,47 @@ function ServiceReqDash() {
               </tr>
             </thead>
             <tbody>
-              {serviceReqs.map((serviceReq, index) => (
-                <tr key={index}>
-                  <td>{serviceReq.vehicleNo}</td>
-                  <td>{serviceReq.date}</td>
-                  <td>{serviceReq.name}</td>
-                  <td>{serviceReq.issue}</td>
-                  <td>{serviceReq.quotation}</td>
-                  <td>{serviceReq.request}</td>
-                  <td>
-                    {serviceReq.reportFileName && (
+              {serviceReqs
+                .filter((serviceReq) =>
+                  serviceReq.vehicleNo?.toLowerCase().includes(search.toLowerCase())
+                )
+                .map((serviceReq, index) => (
+                  <tr key={index}>
+                    <td>{serviceReq.vehicleNo}</td>
+                    <td>{serviceReq.date}</td>
+                    <td>{serviceReq.name}</td>
+                    <td>{serviceReq.issue}</td>
+                    <td>{serviceReq.quotation}</td>
+                    <td>{serviceReq.request}</td>
+                    <td>
+                      {serviceReq.reportFileName && (
+                        <button
+                          onClick={() => viewReport(serviceReq.report)}
+                          className="btn btn-link"
+                        >
+                          {serviceReq.reportFileName}
+                        </button>
+                      )}
+                    </td>
+                    <td>{serviceReq.status}</td>
+                    <td>
                       <button
-                        onClick={() => viewReport(serviceReq.report)}
-                        className="btn btn-link"
+                        onClick={() => handleShowUpdateModal(serviceReq)}
+                        className="btn btn-warning me-2 text-dark font-weight-bold"
+                        style={{ backgroundColor: '#F5EF7C', fontWeight: 'bold' }}
                       >
-                        {serviceReq.reportFileName}
+                        Update
+                      </button>{" "}
+                      <button
+                        onClick={() => handleDelete(serviceReq._id)}
+                        className="btn btn-danger text-dark"
+                        style={{ fontWeight: 'bold', color: '#F78E79',marginTop: '10px'  }}
+                      >
+                        Delete
                       </button>
-                    )}
-                  </td>
-                  <td>{serviceReq.status}</td>
-                  <td>
-                    <button
-                      onClick={() => handleShowUpdateModal(serviceReq)}
-                      className="btn btn-warning me-2 text-dark font-weight-bold"
-                      style={{ backgroundColor: '#F5EF7C', fontWeight: 'bold' }}
-                    >
-                      Update
-                    </button>
-                    <button
-                      onClick={() => handleDelete(serviceReq._id)}
-                      className="btn btn-danger text-dark"
-                      style={{ fontWeight: 'bold', color: '#F78E79' }}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         )}
