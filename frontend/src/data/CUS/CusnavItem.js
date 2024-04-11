@@ -14,7 +14,7 @@ function CusnavItem() {
               <NavDropdown.Item href="http://localhost:3000/customer/products">
                 Product
               </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
+              <NavDropdown.Item href="http://localhost:3000/customer/appointment/appointnmentMain">
                 Our Services
               </NavDropdown.Item>
             </NavDropdown>
@@ -24,11 +24,13 @@ function CusnavItem() {
               <NavDropdown.Item href="http://localhost:3000/customer/cusaffairs/consultation">
                 Consultation
               </NavDropdown.Item>
+
               <NavDropdown.Item href="http://localhost:3000/customer/cusaffairs/allfeedback">Feedback</NavDropdown.Item>
+
+          
               <NavDropdown.Item href="http://localhost:3000/customer/payments/payonline">
                 My Payments
               </NavDropdown.Item>
-
             </NavDropdown>
           </Nav>
         </Container>

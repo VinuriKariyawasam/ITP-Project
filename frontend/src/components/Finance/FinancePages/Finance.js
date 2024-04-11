@@ -10,6 +10,9 @@ import UpdateIncome from "../FinanceMain/UpdateIncome";
 import BillingForm from "../FinanceMain/BillingForm";
 import BillsList from "../FinanceMain/BillsList";
 import NewInvoice from "../FinanceMain/NewInvoice"
+import PaymentInvoiveList from "../FinanceMain/PaymentInvoiceList";
+
+
 
 // Import front end routes
 import {
@@ -38,7 +41,10 @@ function Finance() {
 
         <Route path="billing/new" element={<BillingForm/>}/>
         <Route path="billing/all" element={<BillsList/>}/>
+        <Route path="invoices/all-invoices" element={<PaymentInvoiveList/>}/>
         <Route path="billing/new-invoice" element={<NewInvoice/>}/>
+       
+
        
        
 

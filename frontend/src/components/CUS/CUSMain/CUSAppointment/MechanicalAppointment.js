@@ -72,48 +72,44 @@ function MechanicalAppointment() { // Corrected function name
     return formattedDate;
   };
 
+
   useEffect(() => {
     if (appointmentdate) {
       fetchAvailableTimes(appointmentdate);
     }
   }, [appointmentdate]);
 
-  const fetchAvailableTimes = async (date) => {
-    let allTimes = ["9.00am", "10.30am", "12.00pm", "1.30pm", "3.00pm", "4.30pm"]; // All available times
   
-  try {
-    const formattedDate = changedatetoformet(date);
-    const response = await axios.get(`http://localhost:5000/appointment/get-acceptedappointmentbyDate/${formattedDate}`);
-    const [mechanicalResponse, acceptedResponse] = await Promise.all([
-      axios.get(`http://localhost:5000/appointment/get-mechanicalAppointmentbyDate/${formattedDate}`),
-      axios.get(`http://localhost:5000/appointment/get-acceptedappointmentbyDate/${formattedDate}`)
-    ]);
-
-    const mechanicalAppointments = mechanicalResponse.data.data;
-    const acceptedAppointments = acceptedResponse.data.data;
-
-    const allBookedTimes = [
-      ...mechanicalAppointments.map(appointment => appointment.appointmenttime),
-      ...acceptedAppointments.map(appointment => appointment.appointmenttime)
-    ];
-
-    let availableTimes = allTimes;
-    if (allBookedTimes.length > 0) {
-      availableTimes = allTimes.filter(time => !allBookedTimes.includes(time));
+  const fetchAvailableTimes = async (date) => {
+    try {
+      const formattedDate = changedatetoformet(date);
+      const response = await axios.get(`http://localhost:5000/appointment/get-acceptedmechanicalappointmentbyDate/${formattedDate}`);
+      const appointments = response.data.data;
+      console.log(appointments);
+      const allTimes = ["9.00am", "10.30am", "12.00pm", "1.30pm", "3.00pm", "4.30pm"]; // Define allTimes here
+      if (appointments.length === 0) { // If no appointments found for the selected date
+        setAvailableTimes(allTimes); // Set available times to all available times
+      } else {
+        const bookedTimes = appointments.map(appointment => appointment.appointmenttime);
+        const availableTimes = allTimes.filter(time => !bookedTimes.includes(time));
+        setAvailableTimes(availableTimes);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        // Handle 404 error (no appointments found for the date)
+        const allTimes = ["9.00am", "10.30am", "12.00pm", "1.30pm", "3.00pm", "4.30pm"]; // Define allTimes here
+        setAvailableTimes(allTimes); // Set available times to all available times
+      } else {
+        // Handle other errors
+        console.error("Error fetching available times:", error);
+      }
     }
-    setAvailableTimes(availableTimes);
-  } catch (error) {
-    if (error.response && error.response.status === 404) {
-      // If the response status is 404 (Not Found), set all available times
-      setAvailableTimes(allTimes);
-    } else {
-      console.error("Error fetching available times:", error);
-    }
-  }
-};
+  };
+ 
+  
   return (
 
-    <div style={{ marginTop: "10%", marginLeft: "3%" }}>
+    <div style={{ marginTop: "2%", marginLeft: "3%" }}>
 
       <div style={{ flex: "1", marginRight: "6%" }}>
         <h2 className='Appheading'>Make an Appointment for Mechanical Repairs</h2>
