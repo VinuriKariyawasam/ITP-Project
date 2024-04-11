@@ -40,21 +40,6 @@ function Attendance() {
       <Card>
         <Card.Body style={{ backgroundColor: "white", padding: "15px" }}>
           <Row>
-            <Stack direction="horizontal">
-              <div className="p-2">
-                <Button
-                  variant="dark"
-                  size="md"
-                  onClick={() => navigate("add")}
-                  style={{ margin: "10px" }}
-                >
-                  All Records
-                </Button>
-              </div>
-            </Stack>
-          </Row>
-
-          <Row>
             <Col md={6}>
               {attendanceData.length > 0 ? (
                 <Card>

@@ -28,6 +28,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import CusFooter from "../src/components/CUS/CusFooter/CusFooter";
 
 function CustomerApp() {
   return (
@@ -53,6 +54,7 @@ function CustomerApp() {
        
 
       </Routes>
+      <CusFooter />
     </div>
   );
 }

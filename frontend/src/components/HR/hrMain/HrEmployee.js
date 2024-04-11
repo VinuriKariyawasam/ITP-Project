@@ -3,6 +3,7 @@ import "./hrMain.css";
 import HrPageTitle from "./HRPageTitle";
 import AddEmp from "./AddEmp";
 import EmpDash from "./EmpDash";
+import EmployeeDetails from "./EmployeeDetails";
 
 // Import front end routes
 import {
@@ -20,6 +21,7 @@ function HrEmployee() {
       <Routes>
         <Route path="/" element={<EmpDash />} />
         <Route path="add" element={<AddEmp />} />
+        <Route path="empDetails/:employeeId" element={<EmployeeDetails />} />
       </Routes>
     </main>
   );
