@@ -10,6 +10,7 @@ function Salary() {
   const [salaryRecords, setSalaryRecords] = useState([]);
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [selectedRecordId, setSelectedRecordId] = useState(null);
+  const [salaryReload, setSalaryReload] = useState(false);
 
   useEffect(() => {
     // Fetch salary records from the backend when the component mounts
@@ -25,16 +26,23 @@ function Salary() {
         console.log(data);
 
         setSalaryRecords(data);
+        setSalaryReload(false);
       } catch (error) {
         console.error("Error fetching salary records:", error);
       }
     };
     fetchSalaryRecords();
-  }, []);
+  }, [salaryReload]);
 
   const handleMoreButtonClick = (id) => {
     setSelectedRecordId(id);
     setShowSalaryModal(true);
+  };
+
+  // Function to handle modal close
+  const handleCloseModal = () => {
+    setShowSalaryModal(false);
+    setSalaryReload(true);
   };
 
   //CSV Data generation
@@ -221,7 +229,7 @@ function Salary() {
                 <td>Rs.{record.totalSal}</td>
                 <td>
                   Rs.
-                  {record.totalSal - record.noPay - record.ETF - record.EPFE}
+                  {record.noPay + record.ETF + record.EPFE}
                 </td>
                 <td>Rs.{record.netSal}</td>
                 <td>
@@ -242,7 +250,7 @@ function Salary() {
       {/* Render the SalaryDetailsModal with appropriate props */}
       <SalaryDetailsModal
         show={showSalaryModal}
-        handleClose={() => setShowSalaryModal(false)}
+        handleClose={handleCloseModal}
         id={selectedRecordId}
       />
     </section>

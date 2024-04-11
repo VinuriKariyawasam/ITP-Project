@@ -22,6 +22,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import CusFooter from "../src/components/CUS/CusFooter/CusFooter";
 
 function CustomerApp() {
   return (
@@ -43,6 +44,7 @@ function CustomerApp() {
         //Mobile service-Isiri
         <Route path="/Mechanical" element={<Mechanicalreq />} />
       </Routes>
+      <CusFooter />
     </div>
   );
 }
