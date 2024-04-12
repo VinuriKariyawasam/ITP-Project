@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Row, Col } from "react-bootstrap";
+import { Table, Button, Row, Col, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 function QuotaDash() {
   const [quotations, setQuotations] = useState([]);
+  const [filteredQuotations, setFilteredQuotations] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   const fetchQuotations = async () => {
@@ -12,6 +14,7 @@ function QuotaDash() {
       if (response.ok) {
         const data = await response.json();
         setQuotations(data);
+        setFilteredQuotations(data); // Initialize filtered quotations with all quotations
       } else {
         throw new Error("Failed to fetch quotations");
       }
@@ -46,6 +49,28 @@ function QuotaDash() {
     }
   };
 
+  const handleSearch = () => {
+    const filteredResults = quotations.filter((quotation) => {
+      const vehicleNumber = quotation.vnumber.toLowerCase();
+      const startDate = new Date(quotation.startDate).toLocaleDateString().toLowerCase();
+      const query = searchQuery.toLowerCase();
+
+      return vehicleNumber.includes(query) || startDate.includes(query);
+    });
+
+    setFilteredQuotations(filteredResults);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Generate auto-incremented quotation IDs like SMQ01, SMQ02, ...
+  const generateQuotationId = (index) => {
+    const idNumber = (index + 1).toString().padStart(2, "0"); // Start index from 1
+    return `SMQ${idNumber}`;
+  };
+
   return (
     <div className="my-4">
       <Row className="mb-3">
@@ -58,9 +83,29 @@ function QuotaDash() {
           </Button>
         </Col>
       </Row>
+
+      <Form className="mb-3">
+        <Form.Group as={Row} controlId="searchQuotation">
+          <Col sm={4}>
+            <Form.Control
+              type="text"
+              placeholder="Search by Vehicle Number or Date"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </Col>
+          <Col>
+            <Button variant="info" onClick={handleSearch}>
+              Search
+            </Button>
+          </Col>
+        </Form.Group>
+      </Form>
+
       <Table striped bordered hover>
         <thead>
           <tr>
+            <th>Quotation ID</th>
             <th>Vehicle Number</th>
             <th>Date</th>
             <th>Total Price</th>
@@ -70,8 +115,9 @@ function QuotaDash() {
           </tr>
         </thead>
         <tbody>
-          {quotations.map((quotation) => (
+          {filteredQuotations.map((quotation, index) => (
             <tr key={quotation._id}>
+              <td>{generateQuotationId(index)}</td>
               <td>{quotation.vnumber}</td>
               <td>{new Date(quotation.startDate).toLocaleDateString()}</td>
               <td>{quotation.totalPrice}</td>
@@ -86,7 +132,10 @@ function QuotaDash() {
               </td>
               <td>{quotation.borrowingItems}</td>
               <td>
-                <Button variant="danger" onClick={() => handleDeleteQuotation(quotation._id)}>
+                <Button
+                  variant="danger"
+                  onClick={() => handleDeleteQuotation(quotation._id)}
+                >
                   Delete
                 </Button>
               </td>
@@ -99,5 +148,3 @@ function QuotaDash() {
 }
 
 export default QuotaDash;
-
-

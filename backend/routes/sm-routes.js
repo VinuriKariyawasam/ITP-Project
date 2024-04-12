@@ -21,5 +21,7 @@ router.get("/quotations", quotationController.getAllQuotations);
 
 // DELETE /api/sm/quotations/:id
 router.delete("/:id", quotationController.deleteQuotation);
+
+
   
 module.exports = router;
