@@ -5,12 +5,14 @@ import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 
+
 const AccidentalHistory = props => {
 
      //create an empty array to store details
     const [accidentalAppointment, setaccidentalAppointment] = useState([]);
     const [selectedAppointment, setSelectedAppointment] = useState(null);
-    
+    const [searchDate, setSearchDate] = useState(''); 
+
   useEffect(() => {
 
     function getaccidentalAppointment() {
@@ -35,11 +37,26 @@ const AccidentalHistory = props => {
   const handleCardClose = () => {
     setSelectedAppointment(null);
   };
+  const handleSearchChange = (event) => {
+    setSearchDate(event.target.value);
+};
+
+const filteredAppointments = searchDate ? accidentalAppointment.filter(appointment => {
+  const appointmentDate = new Date(appointment.appointmentdate);
+  const searchDateObj = new Date(searchDate);
+  return searchDateObj.toDateString() === appointmentDate.toDateString();
+}) : accidentalAppointment;
 
   return (
     <main id="main" className="main">
       <div>
         <h2 className="SMAppheading">History of Accidental Repairs</h2>
+        <input
+                    type="date"
+                    value={searchDate}
+                    onChange={handleSearchChange}
+                    style={{ marginBottom: '20px' }}
+                />
         {selectedAppointment && (
           <div >
             <Card style={{ width: "50%" }}>
@@ -94,7 +111,7 @@ const AccidentalHistory = props => {
           </thead>
 
           <tbody>
-            {accidentalAppointment.map((appointment) => (
+          {filteredAppointments.map((appointment) => (
               <tr key={appointment._id} >
 
                 <td>{appointment.vNo}</td>

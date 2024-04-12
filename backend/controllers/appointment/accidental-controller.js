@@ -8,7 +8,7 @@ const fs = require("fs");
 
 exports.addaccidentalAppointment = async (req, res) => {
   try {
-    const { name, vType, vNo, dateAccidentaOccured, damagedOccured, contactNo, appointmentdate, appointmenttime } = req.body;
+    const {userId, name, vType, vNo, dateAccidentaOccured, damagedOccured, contactNo, appointmentdate, appointmenttime } = req.body;
     const image = req.file ? req.file.path : null;
 
     if (!name || !vType || !vNo || !dateAccidentaOccured || !damagedOccured || !contactNo || !appointmentdate || !appointmenttime || !image) {
@@ -22,6 +22,7 @@ exports.addaccidentalAppointment = async (req, res) => {
     }*/
 
     const newaccidentalAppointment = new accidentalSchema({
+      userId,
       name,
       vType,
       vNo,
@@ -59,13 +60,7 @@ exports.deleteaccidentalAppointment = async (req, res) => {
     if (!accidentalAppointment) {
       return res.status(404).send({ status: "accidentalAppointment not found" });
     }
-    const imagePath = accidentalAppointment.image;
-
-    fs.unlink(imagePath, (err) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send({ status: "Error deleting file" });
-      }
+   
 
       accidentalSchema.findByIdAndDelete(id)
         .then(() => {
@@ -75,7 +70,7 @@ exports.deleteaccidentalAppointment = async (req, res) => {
           console.log(err);
           res.status(500).send({ status: "Error with deleting Appointment" });
         });
-    });
+
   } catch (err) {
     console.log(err);
     res.status(500).send({ status: "Internal server error" });

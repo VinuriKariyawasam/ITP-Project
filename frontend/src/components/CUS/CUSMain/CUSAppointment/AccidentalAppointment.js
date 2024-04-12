@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
+import { Form, Col, Row, Button, InputGroup } from 'react-bootstrap';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
@@ -10,11 +7,24 @@ import { useForm } from "../../../../data/CUS/Appointment/apform-hook";
 import accidentalrepairs from '../../../../images/CUS/Appointment/accidental repairs.jpg'
 import './AccidentalAppointment.css'
 
+
 const AccidentalAppointment = () => {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState("");
   const [fileError, setFileError] = useState("");
   const [availableTimes, setAvailableTimes] = useState([]);
+
+  const [name, setName] = useState('');
+  const [nameError, setNameError] = useState('');
+
+  const handleNameChange = (event) => {
+    const value = event.target.value;
+
+    // Filter out numeric characters from the input value
+    const filteredValue = value.replace(/[0-9]/g, '');
+
+    setName(filteredValue);
+  };
 
 
   const [formState, inputHandler] = useForm(
@@ -82,12 +92,14 @@ const AccidentalAppointment = () => {
         formData
       );
 
-      // navigate("");
-      console.log(response);
+      alert('Appointment Submitted Succesfully');
+
 
     } catch (err) {
       console.log(err);
+      alert(err)
     }
+
   };
   useEffect(() => {
     if (formState.inputs.image.value instanceof Blob) {
@@ -154,6 +166,7 @@ const AccidentalAppointment = () => {
       }
     }
   };
+
   return (
     <div style={{ marginTop: "2%", marginLeft: "3%" }}>
 
@@ -169,10 +182,13 @@ const AccidentalAppointment = () => {
                   <Form.Control
                     id="name"
                     type="text"
+                    value={name}
                     placeholder="Enter Customer  name"
+                    onChange={handleNameChange}
                     onInput={(event) =>
                       inputHandler("name", event.target.value, true)
                     }
+                    maxLength={30}
                     required
                   />
                 </Form.Group>
@@ -185,6 +201,7 @@ const AccidentalAppointment = () => {
                     onInput={(event) =>
                       inputHandler("vType", event.target.value, true)
                     }
+                    maxLength={10}
                     required
                   />
                 </Form.Group>
@@ -199,8 +216,10 @@ const AccidentalAppointment = () => {
                     onInput={(event) =>
                       inputHandler("vNo", event.target.value, true)
                     }
+                    maxLength={10}
                     required
                   />
+
                 </Form.Group>
 
 
@@ -230,21 +249,30 @@ const AccidentalAppointment = () => {
                     onInput={(event) =>
                       inputHandler("damagedOccured", event.target.value, true)
                     }
+                    maxLength={30}
                     required
                   />
+
                 </Form.Group>
                 <Form.Group as={Col} md="5" controlId="validationCustom01">
                   <Form.Label>Contact Number</Form.Label>
-                  <Form.Control
-                    id="contactNo"
-                    type="phone"
-                    placeholder="Enter contact Number"
-                    maxLength={10}
-                    onInput={(event) =>
-                      inputHandler("contactNo", event.target.value, true)
-                    }
-                    required
-                  />
+                  <InputGroup>
+                    <InputGroup.Text>+94</InputGroup.Text>
+                    <Form.Control
+                      id="contactNo"
+                      type="phone"
+                      pattern="[0-9]*" // Set the pattern to allow only numeric input
+                      placeholder="Enter contact Number"
+                      maxLength={9}
+                      onChange={(event) => {
+                        const value = event.target.value.replace(/\D/g, ''); // Remove non-numeric characters
+                        inputHandler("contactNo", value, true); // Update form state
+                      }}
+                      value={formState.inputs.contactNo.value} // Use form state value to ensure controlled input
+                      required
+                    />
+
+                  </InputGroup>
                 </Form.Group>
               </Row>
               <Row className="mb-3">

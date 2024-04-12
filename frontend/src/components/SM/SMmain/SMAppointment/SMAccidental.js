@@ -6,6 +6,7 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
 
+
 const SMAccidentalRepairs = props => {
   const [accidentalAppointment, setaccidentalAppointment] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -114,9 +115,7 @@ const SMAccidentalRepairs = props => {
     setSelectedAppointment(null);
   };
   const Delete = (id) => {
-    const shouldDelete = window.confirm("please confirm deletion!");
-
-    if (shouldDelete) {
+    
       axios.delete(`http://localhost:5000/appointment/delete-accidentalAppointment/${id}`)
         .then(response => {
           console.log(response);
@@ -126,7 +125,7 @@ const SMAccidentalRepairs = props => {
           // Handle errors here
           console.error(error);
         });
-    }
+    
   };
 
   return (

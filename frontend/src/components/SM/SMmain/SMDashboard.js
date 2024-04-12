@@ -7,7 +7,9 @@ function SMDashboard() {
       <div className="col">
         <div className="row">
           <DbCard
+
             title="Service Quotations"
+
             value="02"
           />
           <DbCard

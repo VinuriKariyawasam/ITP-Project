@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import mechanicalrepairs from '../../../../images/CUS/Appointment/mechanical repairs.jpg'
 import axios from "axios";
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
+import { Form, Col, Row, Button, InputGroup } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -79,7 +76,7 @@ function MechanicalAppointment() { // Corrected function name
     }
   }, [appointmentdate]);
 
-  
+
   const fetchAvailableTimes = async (date) => {
     try {
       const formattedDate = changedatetoformet(date);
@@ -105,8 +102,8 @@ function MechanicalAppointment() { // Corrected function name
       }
     }
   };
- 
-  
+
+
   return (
 
     <div style={{ marginTop: "2%", marginLeft: "3%" }}>
@@ -120,7 +117,14 @@ function MechanicalAppointment() { // Corrected function name
 
                 <Form.Group as={Col} controlId="formGridEmail" md='5'>
                   <Form.Label>Customer Name</Form.Label>
-                  <Form.Control type="text" placeholder="Enter Your Name" value={name} onChange={(e) => setname(e.target.value)} required />
+                  <Form.Control type="text" placeholder="Enter Your Name" value={name}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const filteredValue = value.replace(/[0-9]/g, ''); // Filter out numeric characters
+                      setname(filteredValue); // Update state with the filtered value
+                    }}
+                    maxLength={30}
+                    required />
                   <div class="invalid-feedback">
                     Please choose a username.
                   </div>
@@ -128,24 +132,38 @@ function MechanicalAppointment() { // Corrected function name
 
                 <Form.Group as={Col} controlId="formGridPassword" md='5'>
                   <Form.Label>Vehicle Type</Form.Label>
-                  <Form.Control type="text" placeholder="Enter vehicle type" value={vType} onChange={(e) => setvType(e.target.value)} required />
+                  <Form.Control type="text" placeholder="Enter vehicle type" value={vType} onChange={(e) => setvType(e.target.value)} maxLength={10} required />
                 </Form.Group>
               </Row>
               <Row className="mb-3">
                 <Form.Group as={Col} md='5'>
                   <Form.Label>Vehicle Number</Form.Label>
-                  <Form.Control type='text' placeholder="Enter Vehicle Number" value={vNo} onChange={(e) => setvNo(e.target.value)} required />
+                  <Form.Control type='text' placeholder="Enter Vehicle Number" value={vNo} onChange={(e) => setvNo(e.target.value)} maxLength={10} required />
                 </Form.Group>
 
                 <Form.Group as={Col} md='5'>
                   <Form.Label>What is the issue with your vehicle?</Form.Label>
-                  <Form.Control type="text" placeholder="Enter issue" value={issue} onChange={(e) => setissue(e.target.value)} required />
+                  <Form.Control type="text" placeholder="Enter issue" value={issue} onChange={(e) => setissue(e.target.value)} maxLength={30} required />
                 </Form.Group>
               </Row>
               <Row className="mb-3">
                 <Form.Group as={Col} md='5'>
                   <Form.Label>Contact Number</Form.Label>
-                  <Form.Control type="phone" maxLength={10} placeholder="Enter Contact Number" value={contactNo} onChange={(e) => setcontactNo(e.target.value)} required />
+                  <InputGroup>
+                    <InputGroup.Text>+94</InputGroup.Text>
+                    <Form.Control
+                      type="text"
+                      maxLength={9} // Allow for the length of "+94" and 10 digits
+                      placeholder="Enter Contact Number"
+                      value={contactNo}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const filteredValue = value.replace(/[^\d]/g, ''); // Filter out non-numeric characters
+                        setcontactNo(filteredValue); // Update state with the filtered value
+                      }}
+                      required
+                    />
+                  </InputGroup>
                 </Form.Group>
 
 
