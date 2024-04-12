@@ -3,7 +3,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import successpay from '../../../../images/Payment/successpay.png';
 
-const PaymentSuccess = () => {
+const PaymentSuccess = (props) => {
     const [countdown, setCountdown] = useState(15); // Initial countdown time
     const navigate = useNavigate();
 
@@ -14,8 +14,8 @@ const PaymentSuccess = () => {
 
         // Redirect to homepage after countdown ends
         const redirectTimer = setTimeout(() => {
-            navigate('/customer/payments/payonline');
-        }, 15000); // 15 seconds
+            navigate('/customer/payments/onlinepayment/invoice', { state: { paymentId: props.paymentId } });
+        }, 10000); // 15 seconds
 
         // Cleanup
         return () => {
@@ -33,7 +33,7 @@ const PaymentSuccess = () => {
                         <h1 className="mb-4">Payment Successful</h1>
                         <p>Thank you for your payment!</p>
                         <p>Your Payment Successfully Verified.</p>
-                        <p>You will be redirected to the My Payments Page in {countdown} seconds</p>
+                        <p>You will be redirected to the Payment Invoice in {countdown} seconds</p>
                         <div className="mt-4">
                             <Link to="/customer/payments/payonline">
                                 <Button variant="primary">Go to My Payments</Button>

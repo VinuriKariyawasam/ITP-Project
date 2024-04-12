@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import LeaveUpdateModal from "./LeaveUpdateModal";
 import LeaveRecordsTable from "./LeaveRecordTable";
 import TodayLeaves from "./TodayLeaves";
+import LeaveCancelling from "./LeaveCancelling";
 
 function Leaves() {
   const navigate = useNavigate();
@@ -603,6 +604,9 @@ function Leaves() {
                   </Tab>
                 </Tabs>
               </div>
+            </Tab>
+            <Tab eventKey="cancelling" title="Cancel Leave">
+              <LeaveCancelling />
             </Tab>
           </Tabs>
         </Card.Body>

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Row, Stack, Card } from "react-bootstrap";
 import "./empdash.css";
-import EmployeeDetailsModal from "./EmployeeDetailsModal";
-import Table from "./Table";
 
 import { useNavigate } from "react-router-dom";
 
@@ -87,12 +85,14 @@ function EmpDash() {
 
   //reagarding modal
   const handleMoreButtonClick = async (employeeId) => {
-    console.log("More button clicked:", employeeId);
+    /*console.log("More button clicked:", employeeId);
     setSelectedEmployeeId(employeeId);
     const employee = await fetchEmployeeById(employeeId);
     console.log("Fetched employee data on click:", employee);
     setSelectedEmployee(employee);
-    setShowModal(true);
+    setShowModal(true);*/
+    // Navigate to another URL when the "More" button is clicked
+    navigate(`empDetails/${employeeId}`);
   };
 
   const handleCloseModal = () => {
@@ -171,14 +171,6 @@ function EmpDash() {
               </tbody>
             </table>
           </div>
-
-          <EmployeeDetailsModal
-            show={showModal}
-            onHide={handleCloseModal}
-            employee={selectedEmployee}
-            isDataUpdated={isDataUpdated}
-            onUpdate={handleUpdateEmployee}
-          />
         </Card.Body>
       </Card>
     </section>
