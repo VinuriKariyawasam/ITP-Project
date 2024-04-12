@@ -9,6 +9,7 @@ const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const AttendanceModel = require("../../models/hr/attendanceModel");
+const empBenefitsSchema=require('../../models/finance/empbenefitsModel')
 
 // Specify the new upload directory
 // Specify the relative upload directory
@@ -155,6 +156,16 @@ class EmployeeController {
         //save employee to database
         const savedEmployee = await newEmployee.save();
 
+        //create an Employee Benefits profile for the new employee (For Finance Module)
+            const BenefitProfile = new empBenefitsSchema();
+            BenefitProfile.employeeid = employeeId;
+            BenefitProfile.employeeName = `${savedEmployee.firstName} ${savedEmployee.lastName}`;
+            BenefitProfile.updatedDate = new Date().toISOString().split("T")[0];
+
+            await BenefitProfile.save();
+            
+
+
         // Create a new salary record
         const position = newEmployee.position;
         console.log(position);
@@ -198,6 +209,10 @@ class EmployeeController {
         newSalary.account = account;
         // Save the new salary record
         await newSalary.save();
+
+
+
+        
 
         res.status(201).json(savedEmployee);
       });

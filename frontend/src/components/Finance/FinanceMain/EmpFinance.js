@@ -6,18 +6,12 @@ import Table from 'react-bootstrap/Table';
 import PageTitle from './PageTitle';
 
 const EmpFinance = () => {
-  const [key, setKey] = useState('pending');
+  const [key, setKey] = useState('Salary-Lists');
   const [pendingSalaryListData, setPendingSalaryListData] = useState([]);
   const [allSalaryListData, setAllSalaryListData] = useState([]);
   const [employeeBenefitsData, setEmployeeBenefitsData] = useState([]);
   const [year, setYear] = useState('');
   const [month, setMonth] = useState('');
-  const [totalPendingSalaryPayments, setTotalPendingSalaryPayments] = useState(0);
-  const [totalAllSalaryPayments, setTotalAllSalaryPayments] = useState(0);
-  const [totalPendingEPFCompany, setTotalPendingEPFCompany] = useState(0);
-  const [totalAllEPFCompany, setTotalAllEPFCompany] = useState(0);
-  const [totalPendingETFCompany, setTotalPendingETFCompany] = useState(0);
-  const [totalAllETFCompany, setTotalAllETFCompany] = useState(0);
 
   useEffect(() => {
     // Fetch pending salary list data
@@ -29,7 +23,6 @@ const EmpFinance = () => {
           const firstEntry = data[0];
           setYear(new Date(firstEntry.date).getFullYear());
           setMonth(firstEntry.month);
-          calculatePendingTotals(data);
         }
       })
       .catch(error => console.error('Error fetching pending data:', error));
@@ -39,57 +32,31 @@ const EmpFinance = () => {
       .then(response => response.json())
       .then(data => {
         setAllSalaryListData(data);
-        calculateAllTotals(data);
       })
       .catch(error => console.error('Error fetching all data:', error));
 
     // Fetch employee benefits data
-    fetch('http://localhost:5000/api/finance/employeebenefits')
+    fetch('http://localhost:5000/api/finance/empbenefits/all')
       .then(response => response.json())
-      .then(data => setEmployeeBenefitsData(data))
+      .then(data => {
+        setEmployeeBenefitsData(data);
+      })
       .catch(error => console.error('Error fetching employee benefits data:', error));
   }, []);
 
-  const calculatePendingTotals = (data) => {
-    let totalPayments = 0;
-    let totalEPF = 0;
-    let totalETF = 0;
-
-    data.forEach(entry => {
-      entry.salaries.forEach(salary => {
-        totalPayments += salary.netSal;
-        totalEPF += salary.EPFC;
-        totalETF += salary.EPFE;
-      });
-    });
-
-    setTotalPendingSalaryPayments(totalPayments);
-    setTotalPendingEPFCompany(totalEPF);
-    setTotalPendingETFCompany(totalETF);
+  const handleApprove = (entry) => {
+    // Implement logic to approve the pending salary list entry
+    console.log("Approving entry:", entry);
   };
 
-  const calculateAllTotals = (data) => {
-    let totalPayments = 0;
-    let totalEPF = 0;
-    let totalETF = 0;
-
-    data.forEach(entry => {
-      entry.salaries.forEach(salary => {
-        totalPayments += salary.netSal;
-        totalEPF += salary.EPFC;
-        totalETF += salary.EPFE;
-      });
-    });
-
-    setTotalAllSalaryPayments(totalPayments);
-    setTotalAllEPFCompany(totalEPF);
-    setTotalAllETFCompany(totalETF);
+  const handleReject = (entry) => {
+    // Implement logic to reject the pending salary list entry
+    console.log("Rejecting entry:", entry);
   };
 
   return (
     <main id="main" className="main">
       <PageTitle path="Finance / Employee-Finance-Management" title="Employee Finance Management" />
-      <div></div>
       <br />
       <Container>
         <Tabs
@@ -97,34 +64,95 @@ const EmpFinance = () => {
           activeKey={key}
           onSelect={(k) => setKey(k)}
         >
-          <Tab eventKey="pending" title="Pending Salary Lists">
-            {/* Content for Pending Salary Lists tab */}
-            <h2>Pending Salary Lists for {month} {year}</h2>
-            <Table striped bordered hover>
-              {/* Table for pending salary lists */}
-            </Table>
-          </Tab>
-          <Tab eventKey="all" title="All Salary Lists">
-            {/* Content for All Salary Lists tab */}
-            <h2>All Salary Lists</h2>
-            <Table striped bordered hover>
-              {/* Table for all salary lists */}
-            </Table>
+          <Tab eventKey="Salary-Lists" title="Salary Lists">
+            
+            <br></br><br></br>
+            <div>
+              <h2>Pending Salary List</h2>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>Year</th>
+                    <th>Month</th>
+                    <th>Total Salaries</th>
+                    <th>EPF Company Contribution</th>
+                    <th>ETF Company Contribution</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendingSalaryListData.map((entry, index) => (
+                    <tr key={index}>
+                      <td>{new Date(entry.date).getFullYear()}</td>
+                      <td>{entry.month}</td>
+                      <td>{entry.salaries.reduce((acc, curr) => acc + curr.netSal, 0)}</td>
+                      <td>{entry.salaries.reduce((acc, curr) => acc + curr.EPFC, 0)}</td>
+                      <td>{entry.salaries.reduce((acc, curr) => acc + curr.EPFE, 0)}</td>
+                      <td>Pending</td>
+                      <td>
+                        <button onClick={() => handleApprove(entry)}>Approve</button>
+                        <button onClick={() => handleReject(entry)}>Reject</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+            <br></br><br></br>
+            <div>
+              <h2>All Salary Lists</h2>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>Year</th>
+                    <th>Month</th>
+                    <th>Total Salaries</th>
+                    <th>EPF Company Contribution</th>
+                    <th>ETF Company Contribution</th>
+                    <th>Status</th>
+                  
+                  </tr>
+                </thead>
+                <tbody>
+                  {allSalaryListData.map((entry, index) => (
+                    <tr key={index}>
+                      <td>{new Date(entry.date).getFullYear()}</td>
+                      <td>{entry.month}</td>
+                      <td>{entry.salaries.reduce((acc, curr) => acc + curr.netSal, 0)}</td>
+                      <td>{entry.salaries.reduce((acc, curr) => acc + curr.EPFC, 0)}</td>
+                      <td>{entry.salaries.reduce((acc, curr) => acc + curr.EPFE, 0)}</td>
+                      <td>{entry.status}</td>
+      
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
           </Tab>
           <Tab eventKey="employeeBenefits" title="Employee Benefits">
-            {/* Content for Employee Benefits tab */}
+            
             <h2>Employee Benefits</h2>
             <Table striped bordered hover>
               <thead>
                 <tr>
                   <th>Employee ID</th>
+                  <th>Employee Name</th>
                   <th>Total EPF</th>
                   <th>Total ETF</th>
-                  <th>View</th>
+                  <th>Updated Date</th>
                 </tr>
               </thead>
               <tbody>
-          
+                {employeeBenefitsData.map((employee, index) => (
+                  <tr key={index}>
+                    <td>{employee.employeeid}</td>
+                    <td>{employee.employeeName}</td>
+                    <td>{employee.epftotal}</td>
+                    <td>{employee.etftotal}</td>
+                    <td>{employee.updatedDate}</td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </Tab>

@@ -4,11 +4,11 @@ const mongoose = require('mongoose');
 const empBenefitsSchema = new mongoose.Schema({
     employeeid: {
         type: String,
-        required: true
+       
     },
     employeeName: {
         type: String,
-        required: true
+       
     },
     updatedDate: {
         type: String,

@@ -16,7 +16,7 @@ const {
   getIncomeById,
 } = require("../controllers/finance/income");
 
-const {getMonthlySalaryList,addEmpBenefits}=require("../controllers/finance/epf-etf")
+const {getMonthlySalaryList,addEmpBenefits,getAllEmpBenefits,getPendingSalaryLists}=require("../controllers/finance/epf-etf")
 
 const {paymentinitiate,handlePaymentNotification,getPaymentbyOrderID} = require ("../controllers/finance/payment")
 const {createBilling,getAllBillings,getPendingPayments,deleteBill,getPaymentByInvoiceId,updatePaymentStatus,getPendingPaymentByInvoiceId}=require("../controllers/finance/bill")
@@ -76,9 +76,13 @@ router.post("/email",sendMail)
 //get all salary lists
 
 router.get("/salarylist/all",getMonthlySalaryList)
+router.get("/salarylist/pending",getPendingSalaryLists)
 
 // emp-benefits routes
 router.post("/empbenefits/add",addEmpBenefits)
+router.get("/empbenefits/all",getAllEmpBenefits)
+
+
 
 
 module.exports = router;
