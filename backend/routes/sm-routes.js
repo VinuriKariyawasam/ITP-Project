@@ -1,6 +1,6 @@
 const RecordController = require("../controllers/sm/record-controller");
 const quotationController = require("../controllers/sm/quotationController");
-
+const reportController = require("../controllers/sm/reportController");
 const router = require("express").Router();
 
 router.get("/records", RecordController.getRecords);
@@ -22,6 +22,13 @@ router.get("/quotations", quotationController.getAllQuotations);
 // DELETE /api/sm/quotations/:id
 router.delete("/:id", quotationController.deleteQuotation);
 
+// POST /api/submit-report
+router.post("/reports", reportController.submitReport);
+
+// GET: /api/sm/reports
+router.get("/reports", reportController.getAllReports);
+
+router.get("/reports/:id", reportController.getReportById);
 
   
 module.exports = router;
