@@ -387,20 +387,29 @@ class EmployeeController {
 
   //employee login
   static async loginEmployee(req, res) {
-    const { email, empId, password } = req.body;
+    console.log("Request Body:", req.body);
+    const { username, password } = req.body;
 
     try {
       let user;
 
-      if (email) {
+      // Check if the username matches the email format
+      if (/^\S+@\S+\.\S+$/.test(username)) {
+        user = await EmployeeModel.findOne({ email: username });
+      } else {
+        // Assuming it's an employee ID
+        user = await EmployeeModel.findOne({ empId: username });
+      }
+
+      /* if (email) {
         user = await EmployeeModel.findOne({ email });
       } else if (empId) {
-        user = await EmployeeModel.findOne({ empId });
+        user = await EmployeeModel.findOne({ empId: empId });
       } else {
         return res
           .status(400)
           .json({ message: "Email or Employee ID is required" });
-      }
+      }*/
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -413,7 +422,7 @@ class EmployeeController {
 
       const token = jwt.sign(
         { userId: user._id, email: user.email, empId: user.empId },
-        process.env.JWT_SECRET,
+        "super_secret_staff_key",
         { expiresIn: "1h" }
       );
 
@@ -421,6 +430,7 @@ class EmployeeController {
         userId: user._id,
         email: user.email,
         empId: user.empId,
+        position: user.position,
         token,
       });
     } catch (error) {

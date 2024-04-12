@@ -22,12 +22,14 @@ import SUPER from "./components/SUPER/SuperPages/SUPER";
 import IM from "./components/IM/IMPages/IM";
 import CAM from "./components/CAM/CAM_pages/CAM";
 import StaffFooter from "./components/Staff/StaffFooter";
+import StaffLogin from "./components/Staff/staff-login";
 
 function StaffApp() {
   return (
     <>
       <Header />
       <Routes>
+        <Route path="/" element={<StaffLogin />} />
         <Route path="/gm/*" element={<Common />} />
         <Route path="/hr/*" element={<HR />} />
         <Route path="/sm/*" element={<SM />} />
@@ -35,8 +37,7 @@ function StaffApp() {
         <Route path="/supervisor/*" element={<SUPER />} />
         <Route path="/im/*" element={<IM />} />
         <Route path="/cam/*" element={<CAM />} />
-
-     </Routes>
+      </Routes>
       <StaffFooter />
     </>
   );
