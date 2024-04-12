@@ -9,6 +9,7 @@ const navList = [
     _id: 2,
     name: "Service Request",
     icon: "bi bi-building-add",
+    href: "/staff/supervisor/serviceReq",
   },
   {
     _id: 3,
@@ -20,6 +21,7 @@ const navList = [
     _id: 4,
     name: "Service Reports",
     icon: "bi bi-file-earmark-fill",
+    href: "/staff/sm/report/add",
   },
   {
     _id: 5,
@@ -38,6 +40,12 @@ const navList = [
     name: "Mobile Services",
     icon: "bi bi-bus-front",
     href: "/staff/sm/mobilemain",
+  },
+  {
+    _id: 8,
+    name: "Service Quotations",
+    icon: "bi bi-journal-text",
+    href: "/staff/sm/quotation/",
   },
 ];
 

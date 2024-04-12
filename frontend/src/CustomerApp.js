@@ -19,6 +19,9 @@ import AllFeedbacks from "./components/CUS/CUSMain/CUS_CAM/AllFeedbacks";
 
 import Products from "../src/components/CUS/Pages/Product";
 import Cushome from "../src/components/CUS/CUSMain/Cushome";
+import CusRegistration from "./components/CUS/CUSMain/CusRegistration";
+import CusLogin from "./components/CUS/CUSMain/CusLogin";
+import CusProfile from "./components/CUS/CUSMain/CusProfile";
 
 
 import {
@@ -27,6 +30,10 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import CusFooter from "../src/components/CUS/CusFooter/CusFooter";
+
+
+
 
 function CustomerApp() {
   return (
@@ -42,14 +49,18 @@ function CustomerApp() {
         <Route path="/payments/*" element={<Payment />} />
         //customer affair-Githadi
         <Route path="/cusaffairs/*" element={<CUSAffairs />} />
+
+        //customer
+        <Route path="/cusprofile/*" element={<CusProfile/>}/>
+        <Route path="/cusreg/*" element={<CusRegistration/>}/>
+        <Route path="/cuslogin/*" element={<CusLogin/>}/>
+
         //Mobile service-Isiri
         <Route path="/mobservices/*" element={<MobileService />} />
 
 
-
-       
-
       </Routes>
+      <CusFooter />
     </div>
   );
 }

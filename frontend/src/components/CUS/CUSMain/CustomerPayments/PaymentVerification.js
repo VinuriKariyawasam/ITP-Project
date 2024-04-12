@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import PaymentSuccess from './PaymentSuccess';
 import PaymentFailure from './PaymentFailure';
 
+
 const PaymentVerification = () => {
+   
     const [paymentData, setPaymentData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -38,10 +40,15 @@ const PaymentVerification = () => {
                     },
                     body: JSON.stringify({ status: "completed" }),
                 }
+
+
+              
             );
             if (!response.ok) {
                 throw new Error("Failed to mark payment as completed");
             }
+
+            
         } catch (error) {
             console.error("Error marking payment as completed:", error.message);
         }
@@ -53,7 +60,7 @@ const PaymentVerification = () => {
 
     if (paymentData && paymentData.status_code === 2 && paymentData.sv) {
         markPaymentCompleted(orderId); // Using orderId from state
-        return <PaymentSuccess paymentData={paymentData} />;
+        return <PaymentSuccess paymentId={orderId}   />;
     } else {
         return <PaymentFailure paymentData={paymentData} />;
     }

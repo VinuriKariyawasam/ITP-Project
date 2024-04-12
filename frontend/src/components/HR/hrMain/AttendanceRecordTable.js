@@ -9,56 +9,36 @@ const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
   const [absentCount, setAbsentCount] = useState(0);
   const [selectedAttendance, setSelectedAttendance] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState(null);
-  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+  //const [selectedRecord, setSelectedRecord] = useState(null);
+  //const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 
-  useEffect(() => {
-    // Calculate present and absent counts
-    let present = 0;
-    let absent = 0;
-    attendRecords.forEach((record) => {
-      record.employeeAttendance.forEach((emp) => {
-        if (emp.value) {
-          present++;
-        } else {
-          absent++;
-        }
-      });
-    });
-    setPresentCount(present);
-    setAbsentCount(absent);
-  }, [attendRecords]);
-
+  //render table rows with data
   const renderTableRows = () => {
     return attendRecords.map((record) => {
-      if (record && dateFilter(record.date)) {
-        return (
-          <tr key={record._id}>
-            <td>
-              <div>Date: {new Date(record.date).toLocaleDateString()}</div>
-              <div>Time: {new Date(record.date).toLocaleTimeString()}</div>
-            </td>
-            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-              {presentCount}
-            </td>
-            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-              {absentCount}
-            </td>
-            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-              <Button
-                onClick={() => handleShowAttendance(record.employeeAttendance)}
-              >
-                View
-              </Button>
-            </td>
-            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-              {calculateAttendancePercentage(record.employeeAttendance)}
-            </td>
-          </tr>
-        );
-      } else {
-        return null;
-      }
+      return (
+        <tr key={record._id}>
+          <td>
+            <div>Date: {new Date(record.date).toLocaleDateString()}</div>
+            <div>Time: {new Date(record.date).toLocaleTimeString()}</div>
+          </td>
+          <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+            {record.employeeAttendance.filter((emp) => emp.value).length}
+          </td>
+          <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+            {record.employeeAttendance.filter((emp) => !emp.value).length}
+          </td>
+          <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+            <Button
+              onClick={() => handleShowAttendance(record.employeeAttendance)}
+            >
+              View
+            </Button>
+          </td>
+          <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+            {calculateAttendancePercentage(record.employeeAttendance)}
+          </td>
+        </tr>
+      );
     });
   };
   const calculateAttendancePercentage = (employeeAttendance) => {

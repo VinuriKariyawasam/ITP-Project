@@ -73,8 +73,6 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
         throw new Error("Failed to update data");
       }
 
-      // Redirect to the specified URL after successful submission
-      navigate("/staff/hr/employee");
       // Optionally update the UI or perform any other actions after successful submission
       onUpdate(response.data); // Assuming onUpdate is a function to update the UI with the updated data
 

@@ -15,6 +15,7 @@ import PeriodicalHistory from "../SMmain/SMAppointment/PeriodicalHistory";
 import Mechanicalhistory from "../SMmain/SMAppointment/mechanicalhistory";
 import SMAccidentalRepairs from "../SMmain/SMAppointment/SMAccidental";
 import AccidentalHistory from "../SMmain/SMAppointment/accidentalHistory"
+import Smquotation from "../SMmain/SMService/Smquotation";
 
 // Import front end routes
 import {
@@ -23,6 +24,8 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+
+
 
 function SM() {
   return (
@@ -46,8 +49,8 @@ function SM() {
         <Route path="/mobilemechanical" exact element={<SMmMechanicalServices/>} />
         <Route path="/breakdownrequests" exact element={<SMmEmBreakdown/>} />
         <Route path="/vehiclecarriers" exact element={<SMmVehicleCarriers/>} />
-
-
+        <Route path="quotation/*" element={<Smquotation/>} />
+       
       </Routes>
     </>
   );

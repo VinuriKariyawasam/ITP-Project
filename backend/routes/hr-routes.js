@@ -3,6 +3,7 @@ const LeavesController = require("../controllers/hr/leaves-controller");
 const DesignationsController = require("../controllers/hr/desigantion-controller");
 const SalaryController = require("../controllers/hr/salary-controller");
 const attendanceController = require("../controllers/hr/attendance-controller");
+const EmpReviewController = require("../controllers/hr/empReview-controller");
 const bodyParser = require("body-parser");
 const { body } = require("express-validator");
 const router = require("express").Router();
@@ -85,6 +86,12 @@ router.patch(
 );
 
 router.delete("/archive-employee/:id", EmployeeController.deleteEmployeeById);
+
+// Login route
+router.post("/emp-login", EmployeeController.loginEmployee);
+
+// Today Technicians and supervisors
+router.get("/today-emp", EmployeeController.getTodayEmployeesWithAttendance);
 
 //---------Leaves Routes-------------------
 
@@ -195,7 +202,13 @@ router.get("/salaries", SalaryController.getAllSalaries);
 // Get Salary by ID
 router.get("/salaries/:id", SalaryController.getSalaryById);
 
-//---------Salary Routes-------------------
+// Get Salary by empDBId
+router.get("/salary/:empDBId", SalaryController.getSalaryByEmpDBId);
+
+//Pas salry to monthly salary
+router.post("/pass-salary", SalaryController.passSalariesToMonthlySalary);
+
+//---------Attendance Routes-------------------
 
 // Route to create new attendance
 router.post("/add-attendance", attendanceController.createAttendance);
@@ -214,5 +227,22 @@ router.delete(
 
 // Route to get attendance by date (using POST request and date in request body)
 router.get("/attendance/date/:date", attendanceController.getAttendanceByDate);
+
+//---------EmpReview Routes-------------------
+
+// Route to create a new employee review
+router.post("/reviews/create", EmpReviewController.createEmpReview);
+
+// Route to get employee reviews by empDBId
+router.get("/reviews/:empDBId", EmpReviewController.getEmpReviewByEmpDBId);
+
+// Route to update an employee review by ID
+router.patch("/reviews/update/:id", EmpReviewController.updateEmpReviewById);
+
+// Route to delete an employee review by ID
+router.delete("/reviews/delete/:id", EmpReviewController.deleteEmpReviewById);
+
+// Route to delete an employee review by ID
+router.get("/emp-reviews", EmpReviewController.getEmpReviews);
 
 module.exports = router;

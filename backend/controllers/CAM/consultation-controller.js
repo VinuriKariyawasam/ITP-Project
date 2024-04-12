@@ -6,7 +6,7 @@ exports.addIssue = async (req,res)=>{
     const component = req.body.component;
     const issue = req.body.issue;
     const files = req.body.files;
-    const solution = req.body.solution;
+    //const solution = req.body.solution;
 
     //Generate an unique ConsultationId
 
@@ -20,7 +20,7 @@ exports.addIssue = async (req,res)=>{
         component,
         issue,
         files,
-        solution,
+        //solution,
     });
    
     newConsultation
