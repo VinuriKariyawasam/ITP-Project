@@ -93,6 +93,9 @@ router.post("/emp-login", EmployeeController.loginEmployee);
 // Today Technicians and supervisors
 router.get("/today-emp", EmployeeController.getTodayEmployeesWithAttendance);
 
+//reset-password
+router.post("/reset-password", EmployeeController.resetPassword);
+
 //---------Leaves Routes-------------------
 
 // Validation middleware function for validating the leave request data

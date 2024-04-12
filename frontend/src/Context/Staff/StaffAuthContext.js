@@ -1,31 +1,51 @@
-import React, { createContext, useState } from "react";
+// AuthContext.js
+import React, { createContext, useState, useEffect } from "react";
 
-// Create the context object
-const StaffAuthContext = createContext();
+export const StaffAuthContext = createContext({
+  isLoggedIn: false,
+  userId: null,
+  userPossition: null,
+  token: null,
+  login: () => {},
+  logout: () => {},
+});
 
-// Create the provider component
-const StaffAuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userData, setUserData] = useState({});
+export const StaffAuthProvider = ({ children }) => {
+  const [authState, setAuthState] = useState(() => {
+    const storedAuth = sessionStorage.getItem("auth");
+    return storedAuth
+      ? JSON.parse(storedAuth)
+      : { isLoggedIn: false, userId: null, userPosition: null, token: null };
+  });
 
-  const login = (userData) => {
-    // Perform login logic here, set isLoggedIn to true, and store user data
-    setIsLoggedIn(true);
-    setUserData(userData);
+  const login = (userId, token, userPosition) => {
+    setAuthState({ isLoggedIn: true, userId, userPosition, token });
+    sessionStorage.setItem(
+      "auth",
+      JSON.stringify({ isLoggedIn: true, userId, userPosition, token })
+    );
   };
 
   const logout = () => {
-    // Perform logout logic here, set isLoggedIn to false, and clear user data
-    setIsLoggedIn(false);
-    setUserData({});
+    setAuthState({
+      isLoggedIn: false,
+      userId: null,
+      userPosition: null,
+      token: null,
+    });
+    sessionStorage.removeItem("auth");
   };
 
-  // Use StaffAuthContext.Provider instead of AuthContext.Provider
+  useEffect(() => {
+    const storedAuth = sessionStorage.getItem("auth");
+    if (storedAuth) {
+      setAuthState(JSON.parse(storedAuth));
+    }
+  }, []);
+
   return (
-    <StaffAuthContext.Provider value={{ isLoggedIn, userData, login, logout }}>
+    <StaffAuthContext.Provider value={{ ...authState, login, logout }}>
       {children}
     </StaffAuthContext.Provider>
   );
 };
-
-export { StaffAuthContext, StaffAuthProvider };

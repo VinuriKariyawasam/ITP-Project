@@ -477,6 +477,41 @@ class EmployeeController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  // Controller function to reset user password as an admin
+  static async resetPassword(req, res, next) {
+    const { userId, password } = req.body;
+
+    try {
+      const user = await EmployeeModel.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+
+      //password convert to hashcode
+      let hashedPassword;
+      if (password != null && password != "" && password != "undefined") {
+        try {
+          hashedPassword = await bcrypt.hash(password, 12);
+        } catch (err) {
+          const error = new HttpError(
+            "Could not create user, please try again.",
+            500
+          );
+          return next(error);
+        }
+      }
+
+      user.password = hashedPassword;
+      await user.save();
+
+      return res.status(200).json({ message: "Password reset successfully." });
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      return res.status(500).json({ message: "Internal server error." });
+    }
+  }
 }
 
 module.exports = EmployeeController;

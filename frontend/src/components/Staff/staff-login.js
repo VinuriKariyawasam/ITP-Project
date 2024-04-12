@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Form,
   Button,
@@ -17,7 +17,8 @@ const StaffLogin = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate(); // Initialize useNavigate
-  const { login } = useContext(StaffAuthContext); // Access login function from StaffAuthContext
+  //const { login } = useContext(StaffAuthContext); // Access login function from StaffAuthContext
+  const auth = useContext(StaffAuthContext);
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -45,6 +46,12 @@ const StaffLogin = () => {
 
       const data = await response.json();
       console.log("Login successful:", data);
+
+      // Call login function with user data received from backend
+      //login(data.userId, data.email, data.empId, data.position, data.token);
+      auth.login(data.userId, data.token, data.position); // This should update the context value
+      console.log("Auth Result:", auth);
+
       // Handle successful login, such as redirecting to another page
       // Redirect based on employee position
       if (data.position === "General Manager") {
@@ -64,6 +71,8 @@ const StaffLogin = () => {
       } else {
         setError("Invalid position. Please contact administrator.");
       }
+
+      console.log("Auth Result:", auth);
     } catch (error) {
       console.error("Login error:", error.message);
       // Handle login error, display error message, etc.

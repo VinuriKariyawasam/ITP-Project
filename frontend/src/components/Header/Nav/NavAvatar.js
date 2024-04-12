@@ -1,6 +1,41 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import profileImg from "../../../images/user.jpg";
+import { StaffAuthContext } from "../../../Context/Staff/StaffAuthContext";
+
 function NavAvatar() {
+  const { logout } = useContext(StaffAuthContext);
+  const { userId } = useContext(StaffAuthContext);
+  const [employeeData, setEmployeeData] = useState(null);
+
+  const handleLogout = () => {
+    // Call logout function from authentication context
+    logout();
+    // Optionally, redirect the user to the login page or another page after logout
+    window.location.href = "/staff"; // Example redirect to login page
+  };
+
+  const fetchEmployeeData = async (userId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/hr/employee/${userId}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch employee data");
+      }
+      const data = await response.json();
+      setEmployeeData(data);
+    } catch (error) {
+      console.error("Error fetching employee data:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      // Fetch employee data using userId
+      fetchEmployeeData(userId);
+    }
+  }, [userId]);
+
   return (
     <li className="nav-item dropdown pe-3">
       <a
@@ -8,14 +43,30 @@ function NavAvatar() {
         href="#"
         data-bs-toggle="dropdown"
       >
-        <img src={profileImg} alt="Profile" className="rounded-circle" />
-        <span className="d-none d-md-block dropdown-toggle ps-2">F. David</span>
+        {employeeData ? (
+          <>
+            {employeeData.photoUrl ? (
+              <img
+                src={employeeData.photoUrl}
+                alt="Profile"
+                className="rounded-circle"
+              />
+            ) : (
+              <img src={profileImg} alt="Profile" className="rounded-circle" />
+            )}
+            <span className="d-none d-md-block dropdown-toggle ps-2">
+              {employeeData.firstName}
+            </span>
+          </>
+        ) : (
+          "Loading..."
+        )}
       </a>
 
       <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
         <li className="dropdown-header">
-          <h6>Steven</h6>
-          <span>Supervisor</span>
+          <h6>{employeeData ? employeeData.firstName : "Loading..."}</h6>
+          <span>{employeeData ? employeeData.position : "Loading..."}</span>
         </li>
         <li>
           <hr className="dropdown-divider" />
@@ -61,7 +112,11 @@ function NavAvatar() {
         </li>
 
         <li>
-          <a className="dropdown-item d-flex align-items-center" href="#">
+          <a
+            className="dropdown-item d-flex align-items-center"
+            href="#"
+            onClick={handleLogout}
+          >
             <i className="bi bi-box-arrow-right"></i>
             <span>Sign Out</span>
           </a>
