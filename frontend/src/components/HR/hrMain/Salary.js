@@ -10,6 +10,7 @@ function Salary() {
   const [salaryRecords, setSalaryRecords] = useState([]);
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [selectedRecordId, setSelectedRecordId] = useState(null);
+  const [salaryReload, setSalaryReload] = useState(false);
 
   useEffect(() => {
     // Fetch salary records from the backend when the component mounts
@@ -25,16 +26,23 @@ function Salary() {
         console.log(data);
 
         setSalaryRecords(data);
+        setSalaryReload(false);
       } catch (error) {
         console.error("Error fetching salary records:", error);
       }
     };
     fetchSalaryRecords();
-  }, []);
+  }, [salaryReload]);
 
   const handleMoreButtonClick = (id) => {
     setSelectedRecordId(id);
     setShowSalaryModal(true);
+  };
+
+  // Function to handle modal close
+  const handleCloseModal = () => {
+    setShowSalaryModal(false);
+    setSalaryReload(true);
   };
 
   //CSV Data generation
@@ -130,6 +138,53 @@ function Salary() {
       .save(`Salary_Records_generated_${currentDate}.pdf`);
   };
 
+  //pass salary to finance
+  const handleSetMonth = async () => {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+    const currentMonthIndex = currentDate.getMonth();
+
+    let previousMonthIndex;
+    let previousYear;
+
+    if (currentMonthIndex === 0) {
+      previousMonthIndex = 11; // December (0-based index)
+      previousYear = currentDate.getFullYear() - 1;
+    } else {
+      previousMonthIndex = currentMonthIndex - 1;
+      previousYear = currentDate.getFullYear();
+    }
+
+    const previousMonth = new Date(
+      previousYear,
+      previousMonthIndex
+    ).toLocaleString("default", { month: "long" });
+    const monthToSet =
+      currentDay > 10
+        ? currentDate.toLocaleString("default", { month: "long" })
+        : previousMonth;
+    console.log("Selected Month:", monthToSet);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/hr/pass-salary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ month: monthToSet }), // Send the selected month in the request body
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to set month");
+      }
+
+      const data = await response.json();
+      console.log("Response:", data); // Log the response from the server
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <section>
       <Row>
@@ -158,6 +213,14 @@ function Salary() {
                 className="bi bi-file-pdf"
                 style={{ marginRight: "5px" }}
               ></span>
+            </Button>
+            <Button
+              variant="dark"
+              size="md"
+              onClick={handleSetMonth}
+              style={{ margin: "10px" }}
+            >
+              Send to Finance
             </Button>
           </div>
           <OverlayTrigger
@@ -221,7 +284,7 @@ function Salary() {
                 <td>Rs.{record.totalSal}</td>
                 <td>
                   Rs.
-                  {record.totalSal - record.noPay - record.ETF - record.EPFE}
+                  {record.noPay + record.ETF + record.EPFE}
                 </td>
                 <td>Rs.{record.netSal}</td>
                 <td>
@@ -242,7 +305,7 @@ function Salary() {
       {/* Render the SalaryDetailsModal with appropriate props */}
       <SalaryDetailsModal
         show={showSalaryModal}
-        handleClose={() => setShowSalaryModal(false)}
+        handleClose={handleCloseModal}
         id={selectedRecordId}
       />
     </section>

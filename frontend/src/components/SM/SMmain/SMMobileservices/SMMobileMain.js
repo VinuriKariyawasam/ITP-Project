@@ -39,13 +39,16 @@ const SMMobileMain = () => {
             </ul>
             <ul class="list-group">
             <li class="list-group-item">Emergency Breakdown Service Requests
-            <button className="btn" style={{ float: 'right' }}>View</button>
+              <Link className='a' to='/staff/sm/breakdownrequests'>
+              <button className="btn" style={{ float: 'right' }}>View</button>
+              </Link>
             </li>
             </ul>
             <ul class="list-group">
             <li class="list-group-item">Vehicle Carrier Service Requests
-            <Link className='a' to='/staff/sm/vehiclecarriers'>
-            <button className="btn" style={{ float: 'right' }}>View</button></Link>
+              <Link className='a' to='/staff/sm/vehiclecarriers'>
+              <button className="btn" style={{ float: 'right' }}>View</button>
+              </Link>
             </li>
             </ul>
           </div>

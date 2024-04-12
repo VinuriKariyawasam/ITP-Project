@@ -9,17 +9,19 @@ import Header from "../src/components/CUS/CusHeader/Header";
 import CUSAffairs from "./components/CUS/Pages/CUSAffairs";
 import CUSAppointment from "./components/CUS/Pages/CUSAppointment";
 import Payment from "./components/CUS/Pages/Payment";
+import MobileService from "./components/CUS/Pages/Mobile";
 
 import Feedback from "./components/CUS/CUSMain/CUS_CAM/Feedback";
 import OnlineConsultation from "./components/CUS/CUSMain/CUS_CAM/OnlineConsultation";
 import MyFeedback from "./components/CUS/CUSMain/CUS_CAM/MyFeedback";
 import AllFeedbacks from "./components/CUS/CUSMain/CUS_CAM/AllFeedbacks";
 //import FeedbackMain from './components/CUS/CUSMain/CUS_CAM/FeedbackMain';
-import Mechanicalreq from '../src/components/CUS/CUSMain/CUSMobileReq/Mechanicalreq';
-import VehicleCarrReq from '../src/components/CUS/CUSMain/CUSMobileReq/VehicleCarrierReq'
 
 import Products from "../src/components/CUS/Pages/Product";
 import Cushome from "../src/components/CUS/CUSMain/Cushome";
+import CusRegistration from "./components/CUS/CUSMain/CusRegistration";
+import CusLogin from "./components/CUS/CUSMain/CusLogin";
+import CusProfile from "./components/CUS/CUSMain/CusProfile";
 
 
 import {
@@ -28,6 +30,10 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import CusFooter from "../src/components/CUS/CusFooter/CusFooter";
+
+
+
 
 function CustomerApp() {
   return (
@@ -43,16 +49,18 @@ function CustomerApp() {
         <Route path="/payments/*" element={<Payment />} />
         //customer affair-Githadi
         <Route path="/cusaffairs/*" element={<CUSAffairs />} />
+
+        //customer
+        <Route path="/cusprofile/*" element={<CusProfile/>}/>
+        <Route path="/cusreg/*" element={<CusRegistration/>}/>
+        <Route path="/cuslogin/*" element={<CusLogin/>}/>
+
         //Mobile service-Isiri
+        <Route path="/mobservices/*" element={<MobileService />} />
 
-        <Route path="/mobilemechanical" element={<Mechanicalreq />} />
-        <Route path="/vehiclecarriers" element={<VehicleCarrReq/>} />
-
-
-
-       
 
       </Routes>
+      <CusFooter />
     </div>
   );
 }
