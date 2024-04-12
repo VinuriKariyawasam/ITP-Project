@@ -90,7 +90,7 @@ function ServiceReqDash() {
       date: serviceReq.date,
       name: serviceReq.name,
       issue: serviceReq.issue,
-      quotation: serviceReq.quotation,
+      //quotation: serviceReq.quotation,
       request: serviceReq.request,
       report: serviceReq.report,
       status: serviceReq.status,
@@ -119,11 +119,11 @@ function ServiceReqDash() {
     if (name === "issue" && !value.trim()) {
       return "Issue is required";
     }
-    if (name === "quotation") {
+    /*if (name === "quotation") {
       if (!/^\d{20}$/.test(value)) {
         return "Quotation must be 20 digits";
       }
-    }
+    }*/
     if (name === "request" && !value.trim()) {
       return "Request is required";
     }
@@ -246,7 +246,22 @@ function ServiceReqDash() {
                     <td>{serviceReq.date}</td>
                     <td>{serviceReq.name}</td>
                     <td>{serviceReq.issue}</td>
-                    <td>{serviceReq.quotation}</td>
+                    <td>
+                    <Link
+  to={`/serviceReq/${serviceReq._id}/records`}
+  className="btn"
+  style={{
+    backgroundColor: "#d3d3d3", // Ash color
+    borderColor: "#d3d3d3", // Border color
+    color: "#000", // Text color
+    textDecoration: "none", // Remove underline
+    fontWeight: "bold", // Make text bold
+  }}
+>
+  More
+</Link>
+
+                    </td>
                     <td>{serviceReq.request}</td>
                     <td>
                       {serviceReq.reportFileName && (
@@ -292,7 +307,6 @@ function ServiceReqDash() {
               <p>Date: {deletedServiceReq.date}</p>
               <p>Name: {deletedServiceReq.name}</p>
               <p>Issue: {deletedServiceReq.issue}</p>
-              <p>Quotation: {deletedServiceReq.quotation}</p>
               <p>Diagnosis Request: {deletedServiceReq.request}</p>
               <p>Diagnosis Report: {deletedServiceReq.report}</p>
               <p>Status: {deletedServiceReq.status}</p>
@@ -350,20 +364,6 @@ function ServiceReqDash() {
                       handleChange(e.target.name, e.target.value)
                     }
                   />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="formQuotation">
-                  <Form.Label>Quotation</Form.Label>
-                  <InputGroup>
-                    <InputGroup.Text>Rs.</InputGroup.Text>
-                    <Form.Control
-                      type="text"
-                      name="quotation"
-                      value={formData.quotation}
-                      onChange={(e) =>
-                        handleChange(e.target.name, e.target.value)
-                      }
-                    />
-                  </InputGroup>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formRequest">
                   <Form.Label>Diagnosis Request</Form.Label>
