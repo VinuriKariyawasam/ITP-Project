@@ -3,12 +3,12 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import '../CUSMobileReq/Mechanicalreq.css'
 import axios from "axios"
-import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import VehicleCarrierIMG from '../../../../images/MobileServices/MobVehicleCarrierIMG.jpg';
+import Button from 'react-bootstrap/Button';
+import BreakdownImg from '../../../../images/MobileServices/EmergencyBreakdownIMG.jpg';
 
-function VehicleCarrReq() {
+function EmBreakdownReq() {
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
@@ -16,17 +16,15 @@ function VehicleCarrReq() {
     //console.log(data);
     // Perform form submission logic here
 
-    axios.post("http://localhost:5000/api/mobile/add-vehiclecarrier",{
+    axios.post("http://localhost:5000/api/mobile/add-breakdown",{
         cusName: data.cusName,
         cusEmail: data.cusEmail,
         vehicleNo: data.vehicleNo,
-        reqDate: data.reqDate,
-        reqTime: data.reqTime,
         reqLocation: data.reqLocation,
-        additionalInfo: data.additionalInfo,
+        issue: data.issue,
         contactNo: data.contactNo
     }).then(()=>{
-          alert("Your Vehicle Carrier Request Successfully completed");
+          alert("Your Emergency Breakdown Request Successfully completed");
           reset();
 
         }).catch((err)=>{
@@ -38,11 +36,11 @@ function VehicleCarrReq() {
 
 
   return (
-
+  
     <main >
       <div className="mobbody" >
       <div style={{flex:"1" ,marginTop:"3%"}}>
-        <h2 className='mobheading'>Vehicle carrier Service Requests</h2><br />
+        <h2 className='mobheading'>Emergency Breakdown Service Requests</h2><br />
         <Row><Col><container className=''>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Row><Col>
@@ -69,25 +67,6 @@ function VehicleCarrReq() {
                                                 } })} 
               className="mobinput-styles" type="text" id="vehicleNo" placeholder="Enter Your Vehicle Number" />
               {errors.vehicleNo && <span className="error">Vehicle Number is required</span>}
-            </div></Col><Col>
-
-            <div className="mobform-element">
-              <label htmlFor="reqDate" className='mobL1'>Date</label> <br />
-              <input {...register("reqDate", { required: true, pattern: {
-                                                value: /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{2}$/, //date format validation
-                                                message: "Invalid date format (DD/MM/YY)"
-                                                } })} 
-              className="mobinput-styles" type="text" id="reqDate" placeholder="DD/MM/YY" />
-            </div></Col> </Row>
-            <Row><Col>
-            <div className="mobform-element">
-              <label htmlFor="reqTime" className='mobL1'>Time</label> <br />
-              <input {...register("reqTime", { required: true, pattern: {
-                                                    value: /^(?:[01]\d|2[0-3]):(?:[0-5]\d)$/, //time format validation
-                                                    message: "Invalid time format (HH:MM)"
-                                                    } })} 
-              className="mobinput-styles" type="text" id="reqTime" placeholder="Enter time" />
-              {errors.reqTime && <span className="error">{errors.reqTime.message}</span>}
             </div></Col>
             <Col>
             <div className="mobform-element">
@@ -97,8 +76,8 @@ function VehicleCarrReq() {
             </div> </Col> </Row>
             <Row><Col>
             <div className="mobform-element">
-              <label htmlFor="additionalInfo" className='mobL1'>Additional Information</label><br />
-              <input {...register("additionalInfo")} className="mobinput-styles" type="text" id="additionalInfo" placeholder="Enter additional information of the vehicle" />
+              <label htmlFor="issue" className='mobL1'>Issue</label><br />
+              <input {...register("issue")} className="mobinput-styles" type="text" id="issue" placeholder="Enter Vehicle Issue" />
             </div></Col>
             <Col>
             <div className="mobform-element">
@@ -121,11 +100,11 @@ function VehicleCarrReq() {
           </form></container> 
         </Col>
         <Col>
-          <img className='' src={VehicleCarrierIMG} alt="Vehicle Carrier Img" style={{marginTop:"4%",borderRadius:"2%",marginBottom:"2%", marginRight:"1%"}}/>
+          <img className='' src={BreakdownImg} alt="Breakdown Requests Img" style={{marginTop:"4%",borderRadius:"2%",marginBottom:"2%", marginRight:"1%"}}/>
         </Col> </Row>
       </div></div>
       </main>
     );
   }
   
-  export default VehicleCarrReq;
+  export default EmBreakdownReq;

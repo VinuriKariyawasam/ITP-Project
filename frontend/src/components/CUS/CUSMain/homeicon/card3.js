@@ -4,6 +4,7 @@ import Card from "react-bootstrap/Card";
 import Img1 from '../../../../images/Cushome/Mobile-Service.png'
 import Img2 from '../../../../images/Cushome/Emergency.png'
 import Img3 from '../../../../images/Cushome/carrier.png'
+import { Link } from 'react-router-dom';
 
 function card3() {
   return (
@@ -17,7 +18,8 @@ function card3() {
             <Card.Text>
             With lots of unique blocks, you can easily build a page without coding. Build your next landing page.
             </Card.Text>
-            <Button  variant="outline-dark" className="exbtn">Learn more</Button>
+            <Link to='/customer/mobservices/mobilemain'>
+            <Button  variant="outline-dark" className="exbtn">Learn more</Button></Link>
           </Card.Body>
         </Card>
         <Card style={{ width: "28%"}}>
@@ -27,7 +29,8 @@ function card3() {
             <Card.Text>
             With lots of unique blocks, you can easily build a page without coding. Build your next landing page.
             </Card.Text>
-            <Button  variant="outline-dark" className="exbtn">Learn more</Button>
+            <Link to='/customer/mobservices/mobilemain'>
+            <Button  variant="outline-dark" className="exbtn">Learn more</Button></Link>
           </Card.Body>
         </Card>
         <Card style={{ width: "28%" }}>
@@ -37,7 +40,8 @@ function card3() {
             <Card.Text>
             With lots of unique blocks, you can easily build a page without coding. Build your next landing page.
             </Card.Text>
-            <Button variant="outline-dark" className="exbtn"> Learn more</Button>
+            <Link to='/customer/mobservices/mobilemain'>
+            <Button variant="outline-dark" className="exbtn"> Learn more</Button></Link>
           </Card.Body>
         </Card>
         </div>

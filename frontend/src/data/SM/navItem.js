@@ -36,7 +36,7 @@ const navList = [
   {
     _id: 7,
     name: "Mobile Services",
-    icon: "bi bi-car-front",
+    icon: "bi bi-bus-front",
     href: "/staff/sm/mobilemain",
   },
 ];
