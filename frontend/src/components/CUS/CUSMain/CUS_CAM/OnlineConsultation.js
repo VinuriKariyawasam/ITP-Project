@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams} from "react-router-dom";
 
 import Form from 'react-bootstrap/Form'
 import Container from 'react-bootstrap/Container';
@@ -14,6 +14,7 @@ import axios from 'axios';
 function OnlineConsultation(){
 
   const navigate = useNavigate();
+  const { id } = useParams();
   const [formData, setFormData] = useState({
       vehicleType: "",
       component: "",
@@ -37,7 +38,6 @@ function OnlineConsultation(){
       component,
       issue,
       files,
-      solution
     };
 
     axios
@@ -66,7 +66,6 @@ function OnlineConsultation(){
     }
     getIssues();
   }, []);
-
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
