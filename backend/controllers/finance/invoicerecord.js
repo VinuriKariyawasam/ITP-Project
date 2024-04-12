@@ -22,12 +22,12 @@ const saveInPersonRecord = async (req, res) => {
   }
 };
 
-// Controller function to save data in OnlineRecordModel
+
 const saveOnlineRecord = async (req, res) => {
   const { paymentInvoiceId, name, date, amount, downloadURL } = req.body;
 
   try {
-    // Create a new instance of OnlineRecordModel with provided data
+
     const newRecord = new onlineRecordSchema({
       paymentInvoiceId,
       name,
@@ -45,5 +45,32 @@ const saveOnlineRecord = async (req, res) => {
   }
 };
 
-// Ensure that both functions are properly exported
-module.exports = { saveInPersonRecord, saveOnlineRecord };
+
+const getAllInPersonRecords = async (req, res) => {
+  try {
+    const records = await inPersonRecordSchema.find();
+    res.status(200).json(records);
+  } catch (error) {
+    console.error("Error retrieving data:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+const getAllOnlineRecords = async (req, res) => {
+  try {
+    const records = await onlineRecordSchema.find();
+    res.status(200).json(records);
+  } catch (error) {
+    console.error("Error retrieving data:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+module.exports = {
+  saveInPersonRecord,
+  saveOnlineRecord,
+  getAllInPersonRecords,
+  getAllOnlineRecords,
+};

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Spinner } from "react-bootstrap";
 import { useReactToPrint } from "react-to-print";
 import html2pdf from "html2pdf.js";
-import logo from "../../../images/Payment/neotechlogo.jpg";
+import logo from "../../../../images/Payment/neotechlogo.jpg";
 import { useLocation } from "react-router-dom";
 
 import axios from "axios";
 
-const InvoiceComponent = () => {
+const ProductInvoice = () => {
   const location = useLocation();
   const {
     state: { paymentId },
@@ -123,7 +123,7 @@ const InvoiceComponent = () => {
 
       // Send a POST request to the database
       const dbResponse = await axios.post(
-        "http://localhost:5000/api/finance/invoices/addinperson",
+        "http://localhost:5000/api/finance/invoices/addonline",
         postData,
         {
           headers: {
@@ -134,35 +134,11 @@ const InvoiceComponent = () => {
 
       console.log("Data saved to database:", dbResponse.data);
 
-      //add income data to the database
-      const incomeData = {
-        title: `Invoice ${paymentId}`,
-        serviceInvoiceId: postData.paymentInvoiceId,
-        amount: postData.amount,
-        type: "InPerson Payment",
-        date: postData.date,
-        time: currentTime,
-        status: "Received",
-      };
-      console.log(incomeData)
-      
-      const incomeResponse = await axios.post(
-        "http://localhost:5000/api/finance/incomes/add-income",
-        incomeData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-  
-     console.log("Income data saved to database:", incomeResponse.data);
-
-      // Send email with the PDF attachment and HTML content
+      // Send email with the PDF attachment
       const emailOptions = {
         to: `${email}`, // Replace with recipient email address
-        subject: `Payment Confirmation for Invoice ${paymentId}`,
-
+        subject: `Online Payment Confirmation for Invoice ${paymentId}`,
+        
         html: `<p><b>Dear Valued Customer</b></p>
               <p>We're delighted to inform you that your invoice is now ready for download. Please click the link below to download your invoice:</p>
               <p><a href="${downloadURL}" download>Download Invoice</a></p>
@@ -185,7 +161,7 @@ const InvoiceComponent = () => {
           html: emailOptions.html,
         }),
       });
-      console.log("Email sent to backend controller successfully");
+      console.log("Email sent successfully");
     } catch (error) {
       console.error("Error uploading file:", error.message);
     }
@@ -235,7 +211,7 @@ const InvoiceComponent = () => {
   const taxAmount = (total - totalDiscount) * (taxRate / 100);
 
   return (
-    <main id="main" className="main">
+    <main id="cusmain" className="cusmain">
       <Container>
         <div ref={componentRef}>
           <Row>
@@ -448,4 +424,4 @@ const InvoiceComponent = () => {
   );
 };
 
-export default InvoiceComponent;
+export default ProductInvoice;
