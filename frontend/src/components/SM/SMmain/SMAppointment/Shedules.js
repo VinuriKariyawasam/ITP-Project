@@ -22,7 +22,7 @@ const Shedules = () => {
   const [appointmentdate, setappointmentdate] = useState("");
   const pdfRef = useRef(null);
 
-  /*function sendata(e) {
+ /* function sendata(e) {
     e.preventDefault();
 
     const newservicerequest = {
@@ -30,9 +30,9 @@ const Shedules = () => {
       appointmentdate,
       name, 
       issue,
-       
-    }
 
+    
+    }
     axios.post("http://localhost:5000/api/vehicle/add-serviceReq", newservicerequest).then(() => {
       alert("Service request added ") 
       
@@ -40,15 +40,19 @@ const Shedules = () => {
       alert(err)
     })
 
+
   }*/
+
   const handleTableRowClick = (appointment) => {
     console.log("Selected Appointment:", appointment);
     setvNo(appointment.vNo);
     setappointmentdate(appointment.appointmentdate);
     setname(appointment.name);
     setissue(appointment.issue);
-    
+    setSelectedAppointment(appointment);
   };
+  
+
   
 
   // Function to format the date correctly
@@ -81,48 +85,12 @@ const Shedules = () => {
     setSelectedAppointment(null);
   };
   
-  // Function to render the board component based on selected date
-  const renderBoard = () => {
-    console.log("Selected Date:", selectedDate);
-    console.log("Appointments:", appointments);
-    if (selectedDate && appointments.length > 0) {
-      return (
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-
-              <th>Customer Name</th>
-              <th>Service Type</th>
-              <th>Issue</th>
-              <th>Appointment Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {appointments.map(appointment => (
-              <tr key={appointment._id} onClick={() => handleTableRowClick(appointment)}>
-                <td>{appointment.name}</td>
-                <td>{appointment.serviceType}</td>
-                <td>{appointment.issue}</td>
-                <td>{appointment.appointmenttime}</td>
-                <td> <Button variant="secondary" style={{ marginLeft: "35%" }} onClick={() => handleMoreClick(appointment)}>
-                  More
-                </Button></td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      );
-    } else {
-      return (
-        <div><h1>No appointments for the selected date.</h1></div>
-      );
-    }
-  };
   
   // Function to generate PDF
  
-const generatePDF = () => {
-  console.log("Generating PDF...");
+// Function to generate PDF
+const generatePDF = (selectedAppointment) => {
+  console.log("Selected Appointment for PDF generation:", selectedAppointment);
   if (!selectedAppointment) {
     // Handle the case where selectedAppointment is null
     console.error("No appointment selected.");
@@ -134,7 +102,7 @@ const generatePDF = () => {
   doc.setFontSize(16); // Increase font size for the topic
   doc.setTextColor(0, 0, 255); // Set text color to blue
 
-  doc.text("Shedule report", 10, 10);
+  doc.text("Schedule Report", 10, 10); // Corrected the title
 
   // Reset font size and color for the rest of the content
   doc.setFontSize(12);
@@ -146,7 +114,7 @@ const generatePDF = () => {
   let yOffset = startY;
 
   // Assuming 'selectedAppointment' contains the appointment details
-  doc.text(`VehicleNo: ${selectedAppointment.vNo}`, xOffset + 5, yOffset);
+  doc.text(`Vehicle No: ${selectedAppointment.vNo}`, xOffset + 5, yOffset); // Corrected the label
   doc.text(`Customer Name: ${selectedAppointment.name}`, xOffset + 45, yOffset);
   doc.text(`Vehicle Type: ${selectedAppointment.vType}`, xOffset + 85, yOffset);
   doc.text(`Service Type: ${selectedAppointment.serviceType}`, xOffset + 120, yOffset);
@@ -154,12 +122,62 @@ const generatePDF = () => {
   doc.text(`Date and Time: ${selectedAppointment.appointmentdate ? `${selectedAppointment.appointmentdate.split('T')[0]} ${selectedAppointment.appointmenttime}` : ''}`, xOffset + 10, yOffset + lineHeight);
   doc.text(`Contact No: ${selectedAppointment.contactNo}`, xOffset + 10, yOffset + 2 * lineHeight);
 
+  console.log("Before converting PDF to blob...");
   // Convert the PDF to a blob
-  doc.output("blob", function (blob) {
+  // Convert the PDF to a blob
+doc.output("blob", function(blob) {
+  if (blob) {
+    console.log("PDF converted to blob successfully.");
     // Save the blob as a file using FileSaver.js
-    saveAs(blob, `appointment_${new Date().toISOString()}.pdf`);
-  });
+    console.log("Before saving blob as a file...");
+    saveAs(blob, `appointment_${new Date().toISOString()}.pdf`, { autoBom: true });
+    console.log("Blob saved as a file successfully.");
+  } else {
+    console.error("Error converting PDF to blob.");
+  }
+});
+
+  
 };
+
+// Function to render the board component based on selected date
+const renderBoard = () => {
+  console.log("Selected Date:", selectedDate);
+  console.log("Appointments:", appointments);
+  if (selectedDate && appointments.length > 0) {
+    return (
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+
+            <th>Customer Name</th>
+            <th>Service Type</th>
+            <th>Issue</th>
+            <th>Appointment Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {appointments.map(appointment => (
+            <tr key={appointment._id} onClick={() => handleTableRowClick(appointment)}>
+              <td>{appointment.name}</td>
+              <td>{appointment.serviceType}</td>
+              <td>{appointment.issue}</td>
+              <td>{appointment.appointmenttime}</td>
+              <td> <Button variant="secondary" style={{ marginLeft: "35%" }} onClick={() => handleMoreClick(appointment)}>
+                More
+              </Button></td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    );
+  } else {
+    return (
+      <div><h2>No appointments for the selected date.</h2></div>
+    );
+  }
+};
+
 
   return (
 
@@ -188,9 +206,11 @@ const generatePDF = () => {
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh', marginLeft: '50px', marginRight: '170px' }}>
         <Calendar onChange={handleDateClick} value={value} minDate={new Date()} />
       </div>
-      {selectedDate && (
-        <Button variant="success" onClick={generatePDF}>Download PDF</Button>
-      )}
+      {selectedAppointment && (
+  <Button variant="success" onClick={() => generatePDF(selectedAppointment)}>Download PDF</Button>
+
+)}
+
     </main>
   );
 }

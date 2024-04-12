@@ -4,7 +4,7 @@ const acceptedmechanicalSchema = require("../../models/appointment/acceptedMecha
 
 exports.addacceptedmechanicalAppointment= async (req, res) => {
     // get data from fronend in request body to backend
-
+    const userId = req.body.userId;
     const name = req.body.name;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
@@ -15,6 +15,7 @@ exports.addacceptedmechanicalAppointment= async (req, res) => {
     
 
     const newacceptedmechanicalAppointment= acceptedmechanicalSchema({
+        userId,
         name,
         vType,
         vNo,

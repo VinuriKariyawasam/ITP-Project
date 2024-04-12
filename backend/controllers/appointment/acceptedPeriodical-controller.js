@@ -4,7 +4,7 @@ const acceptedperiodicalSchema = require("../../models/appointment/acceptedPerio
 
 exports.addaceptedperiodicalAppointment = async (req, res) => {
     // get data from frontend via request body to backend
-
+    const userId = req.body.userId; 
     const name = req.body.name;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
@@ -19,6 +19,7 @@ exports.addaceptedperiodicalAppointment = async (req, res) => {
 
     
     const newacceptedPeriodicalAppointment = acceptedperiodicalSchema({
+        userId,
         name,
         vType,
         vNo,
