@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@react-pdf/renderer": "^3.4.2",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
     "@testing-library/user-event": "^14.5.2",
@@ -14,7 +13,6 @@
     "echarts": "^5.5.0",
     "formik": "^2.4.5",
     "html2pdf.js": "^0.10.1",
-    "jspdf": "^2.5.1",
     "md5": "^2.3.0",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",

@@ -3,6 +3,8 @@ const cartSchema = require("../../models/inventory/cart");
 const express = require("express");
 const router = express.Router(); 
 const path = require("path");
+const PDFDocument = require('pdfkit');
+
 exports.addcart = async (req, res) => {
   try {
     const { product_name, unit_price , quantity,image } = req.body;
@@ -112,5 +114,49 @@ exports.emptycart = async (req, res) => {
   } catch (error) {
     console.error('Error deleting items:', error);
     res.status(500).json({ error: 'An error occurred while deleting items' });
+  }
+};
+
+exports.generatePDF = async (req, res) => {
+  try {
+    const doc = new PDFDocument();
+    const carts = await cartSchema.find().sort({ createdAt: -1 });
+    doc.text('Your Order Summary', { align: 'center', size: 20 });
+    doc.moveDown(); 
+    const headers = ['Product', 'Quantity', 'Unit Price', 'Total'];
+const columnWidths = [200, 100, 100, 100];
+const startXPositions = columnWidths.reduce((acc, width, index) => {
+  acc.push(index === 0 ? 50 : acc[index - 1] + columnWidths[index - 1]);
+  return acc;
+}, []);
+const startYPosition = doc.y;
+headers.forEach((header, index) => {
+  doc.text(header, startXPositions[index], startYPosition, { width: columnWidths[index], align: 'center', bold: true });
+});
+   doc.moveDown(); 
+    let total = 0;
+    carts.forEach((cart, index) => {
+      const itemTotal = cart.Quantity * cart.Unit_price;
+      total += itemTotal;
+      const rowData = [cart.Product_name, cart.Quantity.toString(), `Rs.${cart.Unit_price.toFixed(2)}`, `Rs.${itemTotal.toFixed(2)}`];
+      const currentYPosition = doc.y + 10;
+      rowData.forEach((cell, cellIndex) => {
+        const currentXPosition = startXPositions[cellIndex];
+        doc.text(cell, currentXPosition, currentYPosition, { width: columnWidths[cellIndex], align: 'center' });
+      });
+    doc.moveDown();
+    });
+    doc.moveTo(startXPositions[3], doc.y + 10).lineTo(startXPositions[3] + columnWidths[3], doc.y + 10).stroke(); 
+    doc.text(`    Rs.${total.toFixed(2)}`, startXPositions[3], doc.y + 15, { width: columnWidths[3]});
+    doc.moveTo(startXPositions[3], doc.y + 5).lineTo(startXPositions[3] + columnWidths[3], doc.y + 5).stroke();
+    doc.moveTo(startXPositions[3], doc.y + 1).lineTo(startXPositions[3] + columnWidths[3], doc.y + 1).stroke();  
+   
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename="ordersummary.pdf"');
+    doc.pipe(res);
+    doc.end();
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    res.status(500).send('Error generating PDF');
   }
 };
