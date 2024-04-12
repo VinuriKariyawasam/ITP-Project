@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 import Card from "react-bootstrap/Card";
@@ -13,44 +14,44 @@ import cusimage2 from '../../../../src/images/CUS/CustomerImg/cusimage2.jpg';
 import cusimage3 from '../../../../src/images/CUS/CustomerImg/cusimage3.jpg';
 
 function CusLogin(){
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    Name: "",
-    contact: "",
     email: "",
     password: "",
-    address: ""
   });
 
-  const [Name, setName] = useState("");
-  const [contact, setcontact] = useState("");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
-  const [address, setaddress] = useState("");
-
-  function sendCusDetails(e){
+ 
+  function CustomerLogin(e){
     e.preventDefault();
 
-    const newCustomer = {
-      Name,
-      contact,
+    const loginCustomer = {
       email,
       password,
-      address
     };
 
-    axios
-      .post("http://localhost:5000/api/customer/signup/add-customer", newCustomer)
-      .then(() => {
-        alert("Registration Successfull");
-        console.log(newCustomer);
-        //navigate
-      })
-      .catch((err) => {
-        alert(err);
-      });
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(loginCustomer)
+    };
+    fetch('http://localhost:5000/api/customer/cus-login', requestOptions)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      alert("Login Successfull");
+      console.log(data);
+      navigate("/customer");
+    })
+    .catch(error => {
+      alert('Error:', error.message);
+    });
   }
-
     return(
         <div>
         <main id="main" style={{marginLeft:"20px",marginTop:"1px"}}>
@@ -59,29 +60,29 @@ function CusLogin(){
            <Container>
             <Row>
              <Col>
-              <Form onSubmit={sendCusDetails}>
+              <Form onSubmit={CustomerLogin}>
                 <Card style={{marginTop:"40px"}}>
                 <Card.Body>
                 <h1>Sign In</h1>
               
               <Form.Group as={Col} controlId="formGridExtra">  
-                     <Form.Label>Username / Email</Form.Label>   
+                     <Form.Label>Email*</Form.Label>   
                      <Form.Control
                         as="textarea"
                         required
                         type="textarea"
-                        placeholder="Username / Email"
+                        placeholder="Email"
                         rows={1}
-                        //value={Name}
-                        //onChange={(e) => setName(e.target.value)}                   
+                        value={email}
+                        onChange={(e) => setemail(e.target.value)}                   
                     />
                 </Form.Group>
-                 <Form.Label>Password *</Form.Label>
+                 <Form.Label>Password*</Form.Label>
                  <Form.Control 
                   type="password" 
                   placeholder="Password" 
-                  //value={password}
-                  //onChange={(e) => setpassword(e.target.value)}
+                  value={password}
+                  onChange={(e) => setpassword(e.target.value)}
                   /><br></br>
                  <a href="#" class="link-info">Forgot password?</a>
             <Button variant="success" type="submit" 

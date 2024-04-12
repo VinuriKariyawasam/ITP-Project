@@ -42,18 +42,28 @@ function CusRegistration(){
       address
     };
 
-    axios
-      .post("http://localhost:5000/api/customer/signup/add-customer", newCustomer)
-      .then(() => {
-        alert("Registration Successfull");
-        console.log(newCustomer);
-        navigate("/customer/cuslogin")
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newCustomer)
+    };
+    
+    fetch('http://localhost:5000/api/customer/signup/add-customer', requestOptions)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
       })
-      .catch((err) => {
-        alert(err);
+      .then(data => {
+        alert("Registration Successfull");
+        console.log(data);
+        navigate("/customer");
+      })
+      .catch(error => {
+        alert('Error:', error.message);
       });
   }
-
     return(
         <div>
         <main id="main" style={{marginLeft:"20px",marginTop:"1px"}}>
