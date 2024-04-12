@@ -10,6 +10,7 @@ import Smrecords from "../SMmain/SMService/Smrecords";
 import SMMobileMain from "../SMmain/SMMobileservices/SMMobileMain"
 import SMmMechanicalServices from "../SMmain/SMMobileservices/SMmMechanicalServices";
 import SMmVehicleCarriers from "../SMmain/SMMobileservices/SMmVehicleCarriers";
+import SMmEmBreakdown from "../SMmain/SMMobileservices/SMmEmBreakdown"; 
 import PeriodicalHistory from "../SMmain/SMAppointment/PeriodicalHistory";
 import Mechanicalhistory from "../SMmain/SMAppointment/mechanicalhistory";
 import SMAccidentalRepairs from "../SMmain/SMAppointment/SMAccidental";
@@ -46,6 +47,7 @@ function SM() {
         <Route path="record/*" element={<Smrecords />} />
         <Route path="/mobilemain" element={<SMMobileMain/>} />
         <Route path="/mobilemechanical" exact element={<SMmMechanicalServices/>} />
+        <Route path="/breakdownrequests" exact element={<SMmEmBreakdown/>} />
         <Route path="/vehiclecarriers" exact element={<SMmVehicleCarriers/>} />
         <Route path="quotation/*" element={<Smquotation/>} />
        
