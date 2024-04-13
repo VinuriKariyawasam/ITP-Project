@@ -9,8 +9,14 @@ import Shedules from "../SMmain/SMAppointment/Shedules"
 import Smrecords from "../SMmain/SMService/Smrecords";
 import SMMobileMain from "../SMmain/SMMobileservices/SMMobileMain"
 import SMmMechanicalServices from "../SMmain/SMMobileservices/SMmMechanicalServices";
+import SMmVehicleCarriers from "../SMmain/SMMobileservices/SMmVehicleCarriers";
+import SMmEmBreakdown from "../SMmain/SMMobileservices/SMmEmBreakdown"; 
 import PeriodicalHistory from "../SMmain/SMAppointment/PeriodicalHistory";
 import Mechanicalhistory from "../SMmain/SMAppointment/mechanicalhistory";
+import SMAccidentalRepairs from "../SMmain/SMAppointment/SMAccidental";
+import AccidentalHistory from "../SMmain/SMAppointment/accidentalHistory"
+import Smquotation from "../SMmain/SMService/Smquotation";
+
 // Import front end routes
 import {
   BrowserRouter as Router,
@@ -18,6 +24,8 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+
+
 
 function SM() {
   return (
@@ -34,11 +42,15 @@ function SM() {
         <Route path="shedules" exact element={<Shedules />} />
         <Route path="/periodicalhistory" exact element={<PeriodicalHistory/>} />
         <Route path="/mechanicalhistory" exact element={<Mechanicalhistory/>} />
+        <Route path="/accidentalappointment" exact element={<SMAccidentalRepairs />} />
+        <Route path="/accidentalhistory" exact element={<AccidentalHistory />} />
         <Route path="record/*" element={<Smrecords />} />
-        <Route path="/MobileMain" element={<SMMobileMain/>} />
-        <Route path="/MobileMechanical" exact element={<SMmMechanicalServices/>} />
-
-        
+        <Route path="/mobilemain" element={<SMMobileMain/>} />
+        <Route path="/mobilemechanical" exact element={<SMmMechanicalServices/>} />
+        <Route path="/breakdownrequests" exact element={<SMmEmBreakdown/>} />
+        <Route path="/vehiclecarriers" exact element={<SMmVehicleCarriers/>} />
+        <Route path="quotation/*" element={<Smquotation/>} />
+       
       </Routes>
     </>
   );

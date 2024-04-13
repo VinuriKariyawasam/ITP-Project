@@ -4,7 +4,7 @@ const acceptedappointmentSchema= require("../../models/appointment/acceptedappoi
 
 exports.addacceptedappointment = async (req, res) => {
     // get data from fronend in request body to backend
-
+    const userId = req.body.userId;
     const name = req.body.name;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
@@ -16,6 +16,7 @@ exports.addacceptedappointment = async (req, res) => {
     
 
     const newacceptedappointment = acceptedappointmentSchema({
+        userId,
         name,
         vType,
         vNo,
@@ -58,10 +59,12 @@ exports.getacceptedappointment = async (req, res) => {
 exports.updateacceptedappointment= async (req, res) => {
     let acceptedappointmentId = req.params.id;
     //to get existing values
-    const { name, vType, vNo,serviceType,issue, contactNo, appointmentdate, appointmenttime } = req.body
+    const {userId, name, vType, vNo,serviceType,issue, contactNo, appointmentdate, appointmenttime } = req.body
 
+    
     //object to store new values
     const updateacceptedappointment = {
+        userId,
         name,
         vType,
         vNo,
@@ -71,7 +74,7 @@ exports.updateacceptedappointment= async (req, res) => {
         appointmentdate,
         appointmenttime,
     }
-
+    
     //to find relavant apoointment to update
     const update = await  acceptedappointmentSchema.findByIdAndUpdate(acceptedappointmentId, updateacceptedappointment).then(() => {
         res.status(200).send({ status: "Updated"})
@@ -138,3 +141,5 @@ exports.getacceptedappointmentbyDate = async (req, res) => {
             res.status(500).send({ status: "Error with getting user", error: err.message });
         }
     }
+     
+    

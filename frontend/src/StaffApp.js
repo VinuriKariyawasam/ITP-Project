@@ -21,25 +21,25 @@ import Common from "./components/Pages/Common";
 import SUPER from "./components/SUPER/SuperPages/SUPER";
 import IM from "./components/IM/IMPages/IM";
 import CAM from "./components/CAM/CAM_pages/CAM";
-
+import StaffFooter from "./components/Staff/StaffFooter";
 
 function StaffApp() {
   return (
     <>
       <Header />
       <Routes>
-        <Route path="/" element={<Common />} />
+        <Route path="/gm/*" element={<Common />} />
         <Route path="/hr/*" element={<HR />} />
         <Route path="/sm/*" element={<SM />} />
         <Route path="/finance/*" element={<Finance />} />
         <Route path="/supervisor/*" element={<SUPER />} />
         <Route path="/im/*" element={<IM />} />
-        <Route path="/CAM/*" element={<CAM />} />
+        <Route path="/cam/*" element={<CAM />} />
 
-      </Routes>
+     </Routes>
+      <StaffFooter />
     </>
   );
 }
 
 export default StaffApp;
-

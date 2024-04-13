@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const accidentalSchema = new Schema({
+    userId:{
+        type :String,
+    }, 
 
     name: {
         type: String,
@@ -17,7 +20,7 @@ const accidentalSchema = new Schema({
         required: true,
     },
     dateAccidentaOccured: {
-        type: String,
+        type: Date,
         required: true,
     },
     damagedOccured: {
@@ -37,10 +40,12 @@ const accidentalSchema = new Schema({
         type: String,
         required: true,
     },
-    image: {
+    image:{
         type: String,
-        required: true,
-    }
+    
+    },
+
+
 })
 const accidentalRepairs = mongoose.model("accidentalRepairs", accidentalSchema);
 

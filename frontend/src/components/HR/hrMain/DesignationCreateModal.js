@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form, FormControl, InputGroup } from "react-bootstrap";
+import { BsCheckCircle, BsXCircle } from "react-icons/bs";
 
 function CreateDesignationModal({
   showModal,
@@ -13,17 +14,38 @@ function CreateDesignationModal({
   const [position, setPosition] = useState("");
   const [basicSalary, setBasicSalary] = useState("");
   const [validated, setValidated] = useState(false);
+  const [positionValid, setPositionValid] = useState(false);
+  const [basicSalaryValid, setBasicSalaryValid] = useState(false);
+  const [positionTouched, setPositionTouched] = useState(false);
+  const [basicSalaryTouched, setBasicSalaryTouched] = useState(false);
 
   // Reset state when showModal prop changes
   useEffect(() => {
     setPosition("");
     setBasicSalary("");
     setValidated(false);
+    setPositionValid(false);
+    setBasicSalaryValid(false);
+    setPositionTouched(false);
+    setBasicSalaryTouched(false);
   }, [showModal]);
+
+  // Validate position field onBlur
+  const handlePositionBlur = () => {
+    setPositionTouched(true);
+    setPositionValid(position.trim() !== "");
+  };
+
+  // Validate basicSalary field onBlur
+  const handleBasicSalaryBlur = () => {
+    setBasicSalaryTouched(true);
+    const isValid = basicSalary.trim() !== "" && parseFloat(basicSalary) !== 0; // Check if the value is not empty and not zero
+    setBasicSalaryValid(basicSalary.trim() !== "");
+  };
 
   const handleSubmit = async (event) => {
     const form = event.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() === false || !positionValid || !basicSalaryValid) {
       event.preventDefault();
       event.stopPropagation();
     } else {
@@ -84,30 +106,53 @@ function CreateDesignationModal({
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
           <Form.Group controlId="position">
             <Form.Label>Position</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter position"
-              value={position}
-              onChange={(e) => setPosition(e.target.value)}
-              required
-            />
-            <Form.Control.Feedback type="invalid">
-              Please provide a position.
-            </Form.Control.Feedback>
+            <InputGroup hasValidation>
+              <Form.Control
+                type="text"
+                placeholder="Enter position"
+                value={position}
+                onChange={(e) => setPosition(e.target.value)}
+                onBlur={handlePositionBlur}
+                isInvalid={!positionValid && positionTouched}
+                required
+              />
+              <InputGroup.Text>
+                {positionValid ? (
+                  <BsCheckCircle style={{ color: "green" }} />
+                ) : (
+                  <BsXCircle style={{ color: "red" }} />
+                )}
+              </InputGroup.Text>
+              <Form.Control.Feedback type="invalid">
+                Please provide a position.
+              </Form.Control.Feedback>
+            </InputGroup>
           </Form.Group>
           <Form.Group controlId="basicSalary" style={{ marginTop: "10px" }}>
             <Form.Label>Basic Salary</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Enter basic salary"
-              value={basicSalary}
-              onChange={(e) => setBasicSalary(e.target.value)}
-              required
-              step="0.01"
-            />
-            <Form.Control.Feedback type="invalid">
-              Please provide a basic salary.
-            </Form.Control.Feedback>
+            <InputGroup hasValidation>
+              <Form.Control
+                type="number"
+                placeholder="Enter basic salary"
+                value={basicSalary}
+                onChange={(e) => setBasicSalary(e.target.value)}
+                onBlur={handleBasicSalaryBlur}
+                isInvalid={!basicSalaryValid && basicSalaryTouched}
+                required
+                min="16000.00"
+                step="0.01"
+              />
+              <InputGroup.Text>
+                {basicSalaryValid ? (
+                  <BsCheckCircle style={{ color: "green" }} />
+                ) : (
+                  <BsXCircle style={{ color: "red" }} />
+                )}
+              </InputGroup.Text>
+              <Form.Control.Feedback type="invalid">
+                Please provide a valid basic salary.*Minimum wage Rs.16,000.00
+              </Form.Control.Feedback>
+            </InputGroup>
           </Form.Group>
           <Button variant="primary" type="submit" style={{ margin: "10px" }}>
             Create

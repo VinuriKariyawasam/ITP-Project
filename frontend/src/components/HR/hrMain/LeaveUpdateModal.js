@@ -5,7 +5,7 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { useNavigate } from "react-router-dom";
 
-const UpdateLeaveModal = ({ show, handleClose, leaveId, handleSubmit }) => {
+const UpdateLeaveModal = ({ show, handleClose, leaveId, showToast }) => {
   const navigate = useNavigate();
 
   const [leaveData, setLeaveData] = useState({
@@ -103,6 +103,7 @@ const UpdateLeaveModal = ({ show, handleClose, leaveId, handleSubmit }) => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         console.log("Leave updated successfully");
+        showToast("success", "Update Successful", "Leave updated successfully");
         navigate("/staff/hr/leaves");
         handleClose();
       } catch (error) {

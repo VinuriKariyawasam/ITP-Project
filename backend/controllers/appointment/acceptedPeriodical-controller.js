@@ -4,7 +4,7 @@ const acceptedperiodicalSchema = require("../../models/appointment/acceptedPerio
 
 exports.addaceptedperiodicalAppointment = async (req, res) => {
     // get data from frontend via request body to backend
-
+    const userId = req.body.userId; 
     const name = req.body.name;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
@@ -19,6 +19,7 @@ exports.addaceptedperiodicalAppointment = async (req, res) => {
 
     
     const newacceptedPeriodicalAppointment = acceptedperiodicalSchema({
+        userId,
         name,
         vType,
         vNo,
@@ -59,4 +60,25 @@ exports.getacceptedperiodicalAppointment = async (req, res) => {
         console.log(err)
     })
 
+}
+exports.getacceptedperiodicalappointmentbyDate = async (req, res) => {
+    
+    const { appointmentdate } = req.params;
+    const startDate = new Date(appointmentdate);
+    const endDate = new Date(appointmentdate);
+    endDate.setDate(endDate.getDate() + 1); // Increment the date by 1 to get the next day
+
+    try {
+        const acceptedperiodicalappointment = await acceptedperiodicalSchema.find({
+            appointmentdate: { $gte: startDate, $lt: endDate }
+        });
+
+        if (acceptedperiodicalappointment.length > 0) {
+            res.status(200).send({ status: "User fetched", data: acceptedperiodicalappointment });
+        } else {
+            res.status(404).send({ status: "No appointments found for the given date" });
+        }
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting user", error: err.message });
+    }
 }

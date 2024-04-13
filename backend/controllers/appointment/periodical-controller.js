@@ -4,7 +4,7 @@ const periodicalSchema = require("../../models/appointment/periodicalAppointment
 
 exports.addperiodicalAppointment = async (req, res) => {
     // get data from frontend via request body to backend
-
+    const userId = req.body.userId;
     const name = req.body.name;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
@@ -19,6 +19,7 @@ exports.addperiodicalAppointment = async (req, res) => {
 
     
     const newPeriodicalAppointment = periodicalSchema({
+        userId,
         name,
         vType,
         vNo,
@@ -35,7 +36,7 @@ exports.addperiodicalAppointment = async (req, res) => {
     try {
         if (!name || !vType || !vNo || !sType || !lastServiceYear || !lastServiceMonth || !mileage || !phone || !appointmentdate || !appointmenttime || !msg) {
             return res.status(400).json({ message: 'All Fields Required' })
-        }
+       }
         await newPeriodicalAppointment.save()
         res.status(200).json({ message: 'NewAppointment added to DB' })
     } catch (error) {
@@ -65,10 +66,11 @@ exports.updateperiodicalAppointment = async (req, res) => {
     const { id } = req.params;
     //to get existing values
     //destructure method - get all values send throught frontend in once
-    const { name, vType, vNo, sType, lastServiceYear, lastServiceMonth, mileage, phone, appointmentdate, appointmenttime, msg } = req.body
+    const {userId, name, vType, vNo, sType, lastServiceYear, lastServiceMonth, mileage, phone, appointmentdate, appointmenttime, msg } = req.body
 
     //object to store new values
     const updatePeriodicalAppointment= {
+        userId,
         name,
         vType,
         vNo,

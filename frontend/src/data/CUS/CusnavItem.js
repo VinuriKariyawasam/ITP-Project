@@ -14,20 +14,23 @@ function CusnavItem() {
               <NavDropdown.Item href="http://localhost:3000/customer/products">
                 Product
               </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
+              <NavDropdown.Item href="http://localhost:3000/customer/mobservices/mobilemain">
+                Mobile Services
+              </NavDropdown.Item>
+              <NavDropdown.Item href="http://localhost:3000/customer/appointment/appointnmentMain">
                 Our Services
               </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link href="#pricing">Contact Us</Nav.Link>
             <Nav.Link href="#pricing">About Us</Nav.Link>
             <NavDropdown title="Customer Care" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">
+              <NavDropdown.Item href="http://localhost:3000/customer/cusaffairs/consultation">
                 Consultation
               </NavDropdown.Item>
 
-              <NavDropdown.Item href="http://localhost:3000/customer/feedback">
-                Feedback
-              </NavDropdown.Item>
+              <NavDropdown.Item href="http://localhost:3000/customer/cusaffairs/allfeedback">Feedback</NavDropdown.Item>
+
+          
               <NavDropdown.Item href="http://localhost:3000/customer/payments/payonline">
                 My Payments
               </NavDropdown.Item>

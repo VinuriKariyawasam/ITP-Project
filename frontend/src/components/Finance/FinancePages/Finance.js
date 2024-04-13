@@ -7,7 +7,12 @@ import UpdateExpense from "../FinanceMain/UpdateExpense";
 
 import AddIncome from "../FinanceMain/AddIncome";
 import UpdateIncome from "../FinanceMain/UpdateIncome";
-//import FinanceIncome from "../hrMain/HrEmployee";
+import BillingForm from "../FinanceMain/BillingForm";
+import BillsList from "../FinanceMain/BillsList";
+import NewInvoice from "../FinanceMain/NewInvoice"
+import PaymentInvoiveList from "../FinanceMain/PaymentInvoiceList";
+
+
 
 // Import front end routes
 import {
@@ -33,6 +38,13 @@ function Finance() {
         <Route path="expenses/" element={<Expenses/>} />
         <Route path="expenses/add-expense" element={<AddExpense/>}/>
         <Route path="expenses/edit-expense/:id" element={<UpdateExpense/>}/>
+
+        <Route path="billing/new" element={<BillingForm/>}/>
+        <Route path="billing/all" element={<BillsList/>}/>
+        <Route path="invoices/all-invoices" element={<PaymentInvoiveList/>}/>
+        <Route path="billing/new-invoice" element={<NewInvoice/>}/>
+       
+
        
        
 

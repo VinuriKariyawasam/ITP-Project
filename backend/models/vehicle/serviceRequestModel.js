@@ -19,8 +19,7 @@ const serviceRequestSchema = new mongoose.Schema({
     required: true,
   },
   quotation: {
-    type: Number,
-    required: true,
+    type: String,
   },
   request: {
     type: String,

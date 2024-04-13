@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const acceptedmechanicalSchema = new Schema({
+    userId:{
+        type :String,
+    }, 
 
     name: {
         type :String,

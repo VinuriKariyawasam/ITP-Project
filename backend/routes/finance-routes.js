@@ -17,6 +17,13 @@ const {
 } = require("../controllers/finance/income");
 
 const {paymentinitiate,handlePaymentNotification,getPaymentbyOrderID} = require ("../controllers/finance/payment")
+const {createBilling,getAllBillings,getPendingPayments,deleteBill,getPaymentByInvoiceId,updatePaymentStatus,getPendingPaymentByInvoiceId}=require("../controllers/finance/bill")
+const {uploadInvoice}= require("../controllers/finance/uploadinvoice")
+const {saveInPersonRecord,saveOnlineRecord,getAllInPersonRecords,getAllOnlineRecords}=require("../controllers/finance/invoicerecord");
+const { sendMail } = require("../config/nodemailer");
+
+
+
 
 
 // Income routes
@@ -39,7 +46,29 @@ router.post("/payments/handlenotification",handlePaymentNotification);
 router.get("/payments/verifypayment/:order_id", getPaymentbyOrderID);
 
 
+//billing routes
 
+router.post("/billing/createbill",createBilling)
+router.get("/billing/all",getAllBillings)
+router.get("/billing/pendingpayments",getPendingPayments)
+router.get("/billing/:paymentInvoiceId",getPaymentByInvoiceId)
+router.get("/billing/pendingpayment/:paymentInvoiceId",getPendingPaymentByInvoiceId)
+router.delete("/billing/delete/:paymentInvoiceId",deleteBill)
+router.patch("/billing/inpersonpayment/:paymentInvoiceId",updatePaymentStatus)
+
+
+//upload Invoice
+router.post("/billing/uploadinvoice", uploadInvoice);
+
+//invoice record routes
+router.post("/invoices/addonline",saveOnlineRecord)
+router.post("/invoices/addinperson",saveInPersonRecord)
+router.get("/invoices/online/all",getAllOnlineRecords)
+router.get("/invoices/inperson/all",getAllInPersonRecords)
+
+//email route
+
+router.post("/email",sendMail)
 
 
 module.exports = router;

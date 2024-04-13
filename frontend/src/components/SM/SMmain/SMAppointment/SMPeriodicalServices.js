@@ -5,6 +5,7 @@ import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
 
 const SMPeriodicalServices = props => {
 
@@ -131,9 +132,7 @@ const SMPeriodicalServices = props => {
 
 
   const Delete = (id) => {
-    const shouldDelete = window.confirm("please confirm deletion!");
-
-    if (shouldDelete) {
+   
       axios.delete(`http://localhost:5000/appointment/delete-periodicalAppointment/${id}`)
         .then(response => {
           console.log(response);
@@ -143,7 +142,7 @@ const SMPeriodicalServices = props => {
           // Handle errors here
           console.error(error);
         });
-    }
+    
   };
   
   return (
@@ -155,50 +154,60 @@ const SMPeriodicalServices = props => {
         <h2 className="SMAAppheading">Periodical Services</h2>
 
         {selectedAppointment && (
-          <div className="SmCard">
-          <Card style={{width:"50%"}}>
-            <Card.Body>
-            <button type="button" class="btn-close" aria-label="Close"  onClick={handleCardClose}></button>
-              <Card.Title>Selected Appointment Details</Card.Title>
-              <Row>
-              <Card.Text style={{display:"flex"}} >
-                <strong style={{float:"left"}}>Vehicle No: </strong>{selectedAppointment.vNo}<br />
-                <strong style={{marginLeft:"40%",float:"right"}}>Customer Name: </strong>{selectedAppointment.name}<br />
-                </Card.Text>
-                </Row>
-                <Row>
-                <Card.Text>
-                <strong>Vehicle Type: </strong>{selectedAppointment.vType}<br />
-                <strong>Requesting service: </strong>{selectedAppointment.sType}<br />
-                </Card.Text>
-                </Row>
-                <Row>
-                <Card.Text>
-                <strong>Last Srvice Year: </strong>{selectedAppointment.lastServiceYear}<br />
-                <strong>Last Srvice Month: </strong>{selectedAppointment.lastServiceMonth}<br />
-                </Card.Text>
-                </Row>
-                <Row>
-                <Card.Text>
-                <strong>mileage: </strong>{selectedAppointment.mileage}<br />
-                <strong>Description: </strong>{selectedAppointment.msg}<br />
-                </Card.Text>
-                </Row>
-                <Row>
-                <Card.Text>
-                <strong>Date and Time: </strong>{`${selectedAppointment.appointmentdate.split('T')[0]} ${selectedAppointment.appointmenttime}`}<br />
-                <strong>Contact No: </strong>{selectedAppointment.phone}<br />
-                </Card.Text>
-                </Row >
-                <Row style={{marginTop:"4%", display:"flex"}}>
-                <Button variant="danger" onClick={() => Delete(selectedAppointment._id)} style={{marginLeft:"20%",width:"100px"}}>Cancel</Button>
-                <Button variant="primary" onClick={sendata} style={{marginLeft:"20%",width:"100px"}}>Approve</Button>
-                </Row>
-            </Card.Body>
-          </Card>
-          </div>
-        )}
+          <div className="modal show" style={{ display: 'block', position: 'initial' }}>
+            <Modal.Dialog>
+    <Modal.Header>
+      <Modal.Title>Selected Appointment Details</Modal.Title>
+    </Modal.Header>
 
+    <Modal.Body>
+      <Card >
+        <Card.Body>
+          <button type="button" className="btn-close" aria-label="Close" onClick={handleCardClose}></button>
+          <Row>
+            <Card.Text >
+              <strong >Vehicle No: </strong>{selectedAppointment.vNo}<br />
+              <strong >Customer Name: </strong>{selectedAppointment.name}<br />
+            </Card.Text>
+          </Row>
+          <Row>
+            <Card.Text>
+              <strong>Vehicle Type: </strong>{selectedAppointment.vType}<br />
+              <strong>Requesting service: </strong>{selectedAppointment.sType}<br />
+            </Card.Text>
+          </Row>
+          <Row>
+            <Card.Text>
+              <strong>Last Service Year: </strong>{selectedAppointment.lastServiceYear}<br />
+              <strong>Last Service Month: </strong>{selectedAppointment.lastServiceMonth}<br />
+            </Card.Text>
+          </Row>
+          <Row>
+            <Card.Text>
+              <strong>Mileage: </strong>{selectedAppointment.mileage}<br />
+              <strong>Description: </strong>{selectedAppointment.msg}<br />
+            </Card.Text>
+          </Row>
+          <Row>
+            <Card.Text>
+              <strong>Date and Time: </strong>{`${selectedAppointment.appointmentdate.split('T')[0]} ${selectedAppointment.appointmenttime}`}<br />
+              <strong>Contact No: </strong>{selectedAppointment.phone}<br />
+            </Card.Text>
+          </Row>
+          <Row style={{ marginTop: '4%', display: 'flex' }}>
+            <Button variant="danger" onClick={() => Delete(selectedAppointment._id)} style={{ marginLeft: '20%', width: '100px' }}>Cancel</Button>
+            <Button variant="primary" onClick={sendata} style={{ marginLeft: '20%', width: '100px' }}>Approve</Button>
+          </Row>
+        </Card.Body>
+      </Card>
+    </Modal.Body>
+
+    
+
+  </Modal.Dialog>
+</div>
+
+)}
         <Table>
          
             <tr> 

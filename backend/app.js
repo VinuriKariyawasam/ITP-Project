@@ -17,6 +17,7 @@ app.use(cors());
 app.use("/uploads/hr", express.static(path.join(__dirname, "uploads", "hr")));
 app.use("/uploads/SM", express.static(path.join(__dirname, "uploads", "SM")));
 app.use("/uploads/im", express.static(path.join(__dirname, "uploads", "im")));
+app.use("/uploads/SM/Appointment", express.static(path.join(__dirname, "uploads", "SM", "Appointment")));
 
 // Load finance routes
 readdirSync("./routes").map((route) =>
@@ -39,7 +40,7 @@ readdirSync("./routes/").map((route) =>
 
 //CAS
 readdirSync("./routes").map((route) =>
-  app.use("/CAM", require("./routes/" + route))
+  app.use("/cam", require("./routes/" + route))
 );
 
 //Vehicle
@@ -55,6 +56,11 @@ readdirSync("./routes").map((route) =>
 //services
 readdirSync("./routes").map((route) =>
   app.use("/api/sm", require("./routes/" + route))
+);
+
+//Load customer routes
+readdirSync("./routes").map((route) =>
+  app.use("/api/customer", require("./routes/" +route))
 );
 
 //handle 404 errors

@@ -31,15 +31,17 @@ const navList = [
     },
     {
       _id: 5,
-      name: "Summary",
+      name: "Billing",
       icon: "bi bi-card-heading",
+      href:"http://localhost:3000/staff/finance/billing/all"
     },
     {
       _id: 6,
       name: "Payment Invoices",
       icon: "bi bi-file-earmark-fill",
+      href:"http://localhost:3000/staff/finance/invoices/all-invoices"
     },
   ];
   
   export default navList;
-  
+ 

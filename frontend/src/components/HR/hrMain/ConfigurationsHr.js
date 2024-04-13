@@ -48,6 +48,7 @@ function Designations() {
 
         const data = await response.json();
         setDesignations(data);
+        setReloadDesignations(false); // Reset reloadDesignations state
       } catch (error) {
         console.error("Error fetching designation records:", error);
       }
