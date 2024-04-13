@@ -11,7 +11,8 @@ const PeriodicalHistory= props => {
   //create an empty array to store details
   const [acceptedperiodicalAppointment, setacceptedperiodicalAppointment] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
-  
+  const [searchDate, setSearchDate] = useState('');
+  const [filteredAppointments, setFilteredAppointments] = useState([]);
 
   useEffect(() => {
     const getAcceptedPeriodicalAppointment = async () => {
@@ -19,6 +20,7 @@ const PeriodicalHistory= props => {
         const res = await axios.get("http://localhost:5000/appointment/get-acceptedperiodicalAppointment");
         const sortedAppointments = res.data.sort((a, b) => new Date(b.appointmentdate) - new Date(a.appointmentdate));
         setacceptedperiodicalAppointment(sortedAppointments);
+        setFilteredAppointments(sortedAppointments);
       } catch (error) {
         alert(error.message);
       }
@@ -26,6 +28,11 @@ const PeriodicalHistory= props => {
     getAcceptedPeriodicalAppointment();
 
   }, [])
+  
+  useEffect(() => {
+    handleSearch();
+  }, [searchDate]);
+
 
   const handleMoreButtonClick = (appointment) => {
     setSelectedAppointment(appointment);
@@ -34,15 +41,23 @@ const PeriodicalHistory= props => {
   const handleCardClose = () => {
     setSelectedAppointment(null);
   };
+  
+  const handleSearch = () => {
+    const filteredAppointments = acceptedperiodicalAppointment.filter(appointment => {
+      return appointment.appointmentdate.includes(searchDate);
+    });
+    setFilteredAppointments(filteredAppointments);
+  };
 
   return (
     <main id="main" className="main">
-
-      
       <div>
-
         <h2 className="SMAAppheading">History of Accepted Periodical Services</h2>
-
+        <input
+          type="date"
+          value={searchDate}
+          onChange={(e) => setSearchDate(e.target.value)}
+        />
         {selectedAppointment && (
           <div className="SmCard">
           <Card style={{width:"50%"}}>
@@ -96,7 +111,7 @@ const PeriodicalHistory= props => {
               <th>Description</th>
             </tr>
           <tbody>
-            {acceptedperiodicalAppointment.map((appointment) => (
+            {filteredAppointments.map((appointment) => (
               <tr key={appointment._id} >
                 <td>{appointment.vNo}</td>
                 <td>{appointment.name}</td>

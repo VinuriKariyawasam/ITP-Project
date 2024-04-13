@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 //Inside a schema we declare attributes
 const schema = mongoose.Schema;
 const acceptedperiodicalSchema = new schema({
+  userId:{
+    type :String,
+}, 
   name: {
     type: String,
     required: true,

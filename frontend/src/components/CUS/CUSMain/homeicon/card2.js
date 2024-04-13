@@ -2,10 +2,16 @@ import React from 'react'
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import img from "../../../../images/Cushome/home1.jpg";
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
 function card2() {
   return (
+   
     <div className="cushomecard2holder">
-        <Card className="cushomecard2">
+       <Row>
+      <Col md={7}>
+        <Card as={Col} className="cushomecard2">
           <Card.Title style={{marginTop:"4%", fontSize: "35px" }}>
             Expert Technicians for All Your Automotive Needs
           </Card.Title>
@@ -31,8 +37,13 @@ function card2() {
             Explore More
           </Button>
         </Card>
-        <img src={img} alt="Home" style={{width: "40%",float:"Right",marginRight: "5%",height:"20%",borderRadius:"2%" }}/>
+        </Col>
+        <Col md={4}>
+        <img src={img} alt="Home" style={{width: "80%",float:"Right",marginRight: "5%",height:"80%",borderRadius:"2%" }}/>
+        </Col>
+        </Row>
       </div>
+      
   )
 }
 
