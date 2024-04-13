@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import {
   Row,
@@ -17,11 +17,15 @@ import EmployeeUpdateModal from "./EmployeeUpdateModal";
 import EmpEvaluateModal from "./EmpEvaluateModal";
 import SalaryDetailsModal from "./SalaryDetailsModal";
 import MoreReviewsModal from "./MoreReviewModal";
+import SystemCredentialsUpdateModal from "./SystemCredentialsUpdateModal";
+import { StaffAuthContext } from "../../../Context/Staff/StaffAuthContext";
 
 function EmployeeDetails() {
   const { employeeId } = useParams();
   //to redirect after success
   const navigate = useNavigate();
+  //get token from context
+  const { token } = useContext(StaffAuthContext);
   //states
   const [employee, setEmployee] = useState(null);
   const [salaryDetails, setSalaryDetails] = useState(null);
@@ -35,6 +39,7 @@ function EmployeeDetails() {
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [selectedRecordId, setSelectedRecordId] = useState(null);
   const [showReviewsModal, setShowReviewsModal] = useState(false);
+  const [showCredentialsModal, setShowCredentialsModal] = useState(false);
 
   //Function to fetch employee personal data by database
   const fetchEmployeeById = async (employeeId) => {
@@ -253,6 +258,18 @@ function EmployeeDetails() {
     fetchEmployeeById(employeeId); // Fetch employee data again to update the points
   };
 
+  /*----Parts regarding update credentials modal-------*/
+  // Function to show the modal
+  const showCredentialsModalHandler = () => {
+    setShowCredentialsModal(true);
+  };
+
+  // Function to hide the modal
+  const hideCredentialsModalHandler = () => {
+    setShowCredentialsModal(false);
+    fetchEmployeeById(employeeId);
+  };
+
   return (
     <Card style={{ padding: "20px" }}>
       <h2>
@@ -389,8 +406,17 @@ function EmployeeDetails() {
               onClick={handleUpdateClick}
               style={{ margin: "10px" }}
             >
-              Update
+              Update Details
             </Button>
+            {employee.position != "Technician" && (
+              <Button
+                variant="dark"
+                onClick={showCredentialsModalHandler}
+                style={{ margin: "10px" }}
+              >
+                Update Credentials
+              </Button>
+            )}
             <Button
               variant="danger"
               onClick={handleDeleteClick}
@@ -650,6 +676,14 @@ function EmployeeDetails() {
         handleClose={handleCloseReviewModal}
         reviews={reviews}
         employeeId={employeeId}
+      />
+
+      {/* Render the SystemCredentialsUpdateModal */}
+      <SystemCredentialsUpdateModal
+        show={showCredentialsModal}
+        onHide={hideCredentialsModalHandler}
+        employee={employee}
+        token={token}
       />
     </Card>
   );

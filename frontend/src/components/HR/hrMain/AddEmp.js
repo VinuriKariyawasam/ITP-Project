@@ -14,6 +14,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import ImageUpload from "../HrUtil/ImageUpload";
 import FileUpload from "../HrUtil/FileUpload";
+import { BsArrowLeft } from "react-icons/bs";
 
 function AddEmp() {
   const [errorMessage, setErrorMessage] = useState("");
@@ -132,7 +133,16 @@ function AddEmp() {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <h3>Create Employee</h3>
+      <h3>
+        <Button
+          variant="dark"
+          onClick={() => navigate("/staff/hr/employee")}
+          style={{ margin: "10px" }}
+        >
+          <BsArrowLeft /> Employee
+        </Button>
+        Create Employee
+      </h3>
 
       {/* First Name */}
       <Row className="mb-3">

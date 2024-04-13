@@ -9,6 +9,8 @@ const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const AttendanceModel = require("../../models/hr/attendanceModel");
+const defaultMaleAvatar = "/uploads/hr/DefaultMaleAvatar.jpg";
+const defaultFemaleAvatar = "/uploads/hr/DefaultFemaleAvatar.png";
 
 // Specify the new upload directory
 // Specify the relative upload directory
@@ -127,7 +129,9 @@ class EmployeeController {
         // Use the correct URLs when constructing file paths
         const photoPath = req.files["photo"]
           ? `/uploads/hr/${path.basename(req.files["photo"][0].path)}`
-          : null;
+          : req.body.gender === "Male"
+          ? defaultMaleAvatar
+          : defaultFemaleAvatar;
         const documentPaths = req.files["documents"]
           ? req.files["documents"].map(
               (file) => `/uploads/hr/${path.basename(file.path)}`
@@ -151,7 +155,7 @@ class EmployeeController {
         newEmployee.otherDetails = req.body.otherDetails;
         newEmployee.email = req.body.email;
         newEmployee.password = hashedPassword;
-        newEmployee.points = 1;
+        newEmployee.points = 5;
         //save employee to database
         const savedEmployee = await newEmployee.save();
 
@@ -479,9 +483,9 @@ class EmployeeController {
   }
 
   // Controller function to reset user password as an admin
-  static async resetPassword(req, res, next) {
-    const { userId, password } = req.body;
-
+  static async updateCredentials(req, res, next) {
+    const { email, password } = req.body;
+    const userId = req.params.id;
     try {
       const user = await EmployeeModel.findById(userId);
 
@@ -502,8 +506,13 @@ class EmployeeController {
           return next(error);
         }
       }
+      user.email = email;
+      if (hashedPassword) {
+        user.password = hashedPassword;
+      } else {
+        return res.status(400).json({ message: "Password is required." });
+      }
 
-      user.password = hashedPassword;
       await user.save();
 
       return res.status(200).json({ message: "Password reset successfully." });

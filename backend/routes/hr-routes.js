@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const { body } = require("express-validator");
 const router = require("express").Router();
 router.use(bodyParser.json());
+const StaffCheckAuth = require("../config/auth/staff-check-auth");
 
 //--------Employee Routes-----------------
 // Validation rules for creating an employee
@@ -92,9 +93,6 @@ router.post("/emp-login", EmployeeController.loginEmployee);
 
 // Today Technicians and supervisors
 router.get("/today-emp", EmployeeController.getTodayEmployeesWithAttendance);
-
-//reset-password
-router.post("/reset-password", EmployeeController.resetPassword);
 
 //---------Leaves Routes-------------------
 
@@ -247,5 +245,10 @@ router.delete("/reviews/delete/:id", EmpReviewController.deleteEmpReviewById);
 
 // Route to delete an employee review by ID
 router.get("/emp-reviews", EmpReviewController.getEmpReviews);
+
+router.use(StaffCheckAuth);
+
+//reset-password
+router.patch("/update-credentials/:id", EmployeeController.updateCredentials);
 
 module.exports = router;
