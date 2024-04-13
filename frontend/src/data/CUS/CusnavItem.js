@@ -18,6 +18,9 @@ function CusnavItem() {
                 Mobile Services
               </NavDropdown.Item>
               <NavDropdown.Item href="http://localhost:3000/customer/appointment/appointnmentMain">
+                Appointment
+              </NavDropdown.Item>
+              <NavDropdown.Item >
                 Our Services
               </NavDropdown.Item>
             </NavDropdown>
