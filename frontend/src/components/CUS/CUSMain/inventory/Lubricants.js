@@ -42,8 +42,8 @@ function Lubricants() {
   const increment = (productId, initialQuantity) => {
     if (
       quantities[productId] < initialQuantity ||
-      initialQuantity > 0 || // Check if the current quantity is less than the initial quantity and initial quantity is greater than 0
-      (quantities[productId] === 0 && initialQuantity > 0) // Check if the initial quantity is greater than 0 when current quantity is 0
+      initialQuantity > 0 || 
+      (quantities[productId] === 0 && initialQuantity > 0) 
     ) {
       setQuantities((prevQuantities) => ({
         ...prevQuantities,
@@ -235,50 +235,133 @@ function Lubricants() {
     }
     getcart();
   }, []);
-  const Delete = (id) => {
+  const Delete = (id, pname, quantity) => {
     axios
-      .delete(`http://localhost:5000/Product/deletecart/${id}`)
-      .then((response) => {
-        console.log(response);
-        window.location.reload();
+      .get("http://localhost:5000/Product/lubricantstock")
+      .then((stockRes) => {
+        const stockItems = stockRes.data;
+  
+        const matchingStockItem = stockItems.find(
+          (stockItem) => stockItem.Product_name === pname
+        );
+  
+        if (matchingStockItem) {
+          const newQuantity =
+            quantity + matchingStockItem.Quantity;
+  
+          const updateLub = {
+            Product_name: matchingStockItem.Product_name,
+            Product_brand: matchingStockItem.Product_brand,
+            Quantity: newQuantity,
+            Unit_price: matchingStockItem.Unit_price,
+            image: matchingStockItem.image,
+          };
+  
+          axios
+            .put(
+              `http://localhost:5000/Product/updatelubricant/${matchingStockItem._id}`,
+              updateLub
+            )
+            .then((response) => {
+              console.log(response);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } else {
+          console.log(
+            "No matching stock item found for cart item:",
+            pname
+          );
+        }
       })
-      .catch((error) => {
-        console.error(error);
+      .then(() => {
+        axios
+          .delete(`http://localhost:5000/Product/deletecart/${id}`)
+          .then((response) => {
+            console.log(response);
+            window.location.reload();
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       });
   };
+  
 
   const checkout = () => {
+    const allProducts = [];
+    let total = 0;
     axios
-    .get("http://localhost:5000/Product/getcart")
-    .then((res) => {
-      const cart = res.data;
-      const total = cart.reduce(
-        (acc, item) => acc + item.Unit_price * item.Quantity, 0);
-      const cartWithTotal = {
-        items: cart,
-        total: total
-      };
-      console.log(cartWithTotal);
-      const emailData = {
-        to: "iamtharindunawarathne@gmail.com",
-        subject: "Your Cart Details",
-        text: `Here are your cart details: `,
-        html: null,
-      };
+      .get("http://localhost:5000/Product/getcart")
+      .then((res) => {
+        const cart = res.data;
+        total = cart.reduce(
+          (acc, item) => acc + item.Unit_price * item.Quantity,
+          0
+        );
 
-      axios
-        .post("http://localhost:5000/Product/sendinventoryemail", emailData)
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error("Error sending email:", error);
+        cart.forEach((item) => {
+          allProducts.push({
+            product_name: item.Product_name,
+            unit_price: item.Unit_price,
+            quantity: item.Quantity,
+          });
         });
-    })
-    .catch((err) => {
-      alert("error");
-    });
-};
+
+        console.log(allProducts);
+
+        const order = {
+          date: new Date(),
+          products: allProducts,
+          total: total,
+          status: "pending",
+        };
+
+        console.log(order);
+        axios
+          .post("http://localhost:5000/Product/addorder", order)
+          .then((response) => {
+            const orderId = response.data.orderId;
+            console.log(orderId);
+
+            const emailData = {
+              to: "iamtharindunawarathne@gmail.com",
+              subject: `Your Cart Details orderID :${orderId}`,
+              text: `Here are your cart details: `,
+              html: null,
+              orderId: orderId
+            };
+
+            axios
+              .post(
+                "http://localhost:5000/Product/sendinventoryemail",
+                emailData
+              )
+              .then((response) => {
+                console.log(response.data);
+
+                axios.delete("http://localhost:5000/Product/clear-cart")
+              .then((response) => {
+                console.log("Cart cleared successfully");
+              })
+              .catch((error) => {
+                console.error("Error clearing cart:", error);
+              });
+            })
+              .catch((error) => {
+                console.error("Error sending email:", error);
+              });
+          })
+          .catch((error) => {
+            console.error("Error adding order:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error fetching cart:", error);
+        alert("error");
+      });
+  };
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -438,7 +521,7 @@ function Lubricants() {
                     <td>
                       <Button
                         variant="danger"
-                        onClick={() => Delete(cartItem._id)}
+                        onClick={() => Delete(cartItem._id,cartItem.Product_name,cartItem.Quantity)}
                       >
                         remove
                       </Button>

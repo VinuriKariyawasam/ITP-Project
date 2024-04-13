@@ -119,8 +119,16 @@ exports.emptycart = async (req, res) => {
 
 exports.generatePDF = async (req, res) => {
   try {
+    const { orderId } = req.query;
     const doc = new PDFDocument();
+    const currentDate = new Date().toLocaleDateString('en-US');
     const carts = await cartSchema.find().sort({ createdAt: -1 });
+    doc.text('NEO TECH MOTORS', { align: 'center', size: 50,bold: true  });
+    doc.moveDown(); 
+    doc.moveDown(); 
+    doc.text(`Order id : ${orderId}`, { align: 'left'});
+    doc.text(`Date: ${currentDate}`, { align: 'left'});
+    doc.moveDown(); 
     doc.text('Your Order Summary', { align: 'center', size: 20 });
     doc.moveDown(); 
     const headers = ['Product', 'Quantity', 'Unit Price', 'Total'];
@@ -158,5 +166,15 @@ headers.forEach((header, index) => {
   } catch (error) {
     console.error('Error generating PDF:', error);
     res.status(500).send('Error generating PDF');
+  }
+};
+
+exports.clearCart = async function(req, res) {
+  try {
+    await cartSchema.clearAllData();
+    res.status(200).json({ message: "Cart data cleared successfully" });
+  } catch (error) {
+    console.error("Error clearing cart data:", error);
+    res.status(500).json({ error: "An error occurred while clearing cart data" });
   }
 };

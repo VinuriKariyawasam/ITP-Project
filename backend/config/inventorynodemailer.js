@@ -16,11 +16,13 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.sendMail = async (req, res) => {
-  const { to, subject, text, html} = req.body;
+  const { to, subject, text, html, orderId} = req.body;
 
   try {
-    // Load the PDF file
-    const pdfResponse = await axios.get('http://localhost:5000/Product/generate-pdf', { responseType: 'arraybuffer' });
+    const pdfResponse = await axios.get('http://localhost:5000/Product/generate-pdf', {
+      responseType: 'arraybuffer',
+      params: { orderId } 
+    });
     const pdfData = Buffer.from(pdfResponse.data, 'binary');
 
     // Create mail options

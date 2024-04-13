@@ -3,8 +3,9 @@ const { addLubricant, LubricantStock, deleteLubricants,updateLubricant} =require
 const fileUpload = require('../controllers/Inventory/ImageUpload');
 const { addTires, TireStock, deleteTires, updateTire} = require('../controllers/Inventory/Tires');
 const { addSP, SPpendingorders, deletependingsp } = require('../controllers/Inventory/SpareParts');
-const{addcart, cartStock, updatecart, deletecarts, emptycart, generatePDF} = require('../controllers/Inventory/carts')
+const{addcart, cartStock, updatecart, deletecarts, emptycart, generatePDF, clearCart} = require('../controllers/Inventory/carts')
 const { sendMail } = require("../config/inventorynodemailer");
+const { addorder } = require('../controllers/Inventory/Orders');
 const router = require("express").Router();
 
 router.post("/addlubricant",fileUpload.single('image'),addLubricant)
@@ -27,6 +28,9 @@ router.put("/updatecart/:id",updatecart)
 router.delete("/deletecart/:id",deletecarts)
 router.delete('/emptycart',emptycart)
 router.get('/generate-pdf',generatePDF);
+router.delete("/clear-cart", clearCart);
+
+router.post("/addorder",addorder)
 
 router.post("/sendinventoryemail",sendMail)
 
