@@ -21,7 +21,7 @@ const navList = [
     _id: 4,
     name: "Service Reports",
     icon: "bi bi-file-earmark-fill",
-    href: "/staff/sm/report/add",
+    href: "/staff/sm/report",
   },
   {
     _id: 5,
