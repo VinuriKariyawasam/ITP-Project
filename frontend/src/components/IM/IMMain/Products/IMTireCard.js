@@ -77,6 +77,7 @@ function IMTireCard() {
           <div key={product._id} className="product-card-container">
             <div className="product-card">
               <img
+              style={{marginLeft:"10%",width:"80%",height:"60%"}}
                 src={`http://localhost:5000/${product.image}`}
                 className="product-image"
                 alt={product.Product_name}

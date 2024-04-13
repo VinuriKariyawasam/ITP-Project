@@ -23,58 +23,45 @@ function Cushome() {
       <Card2 />
       <Card3 />
       <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-        <img className="cushomeimg" src={img2} style={{ zIndex: 0 }} />
-        <div style={{ position: "absolute", marginLeft: "2%", zIndex: 1 }}>
-          <p
-            style={{
-              fontSize: "50px",
-              fontWeight: "bold",
-              color: "white",
-              lineHeight: "120%",
-            }}
-          >
-            Get genuine products for
-            <br /> your vehicle
-          </p>
-          <p style={{ fontWeight: "bold", color: "white", lineHeight: "120%" }}>
-            Explore our inventory to buy genuine products.
-            <br /> shop woth us online today.
-          </p>
-          <br />
-          <Button variant="light">
-            <b>Book now</b>
-          </Button>
-        </div>
-      </div>
+
+  <img className="cushomeimg" src={img2} style={{ zIndex: 0 }} />
+  <div style={{ position: "absolute", marginLeft: "2%", zIndex: 1 }}>
+    <p className="cushomep">
+      Get genuine products for
+      <br /> your vehicle
+    </p>
+    <p className="cushomep">
+      Explore our inventory to buy genuine products.
+      <br /> shop woth us online today.
+    </p>
+    <br />
+    <Button variant="light" className="exbtn">
+      <b>Book now</b>
+    </Button>
+  </div>
+</div>
 
       <Card4 />
       <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-        <img className="cushomeimg" src={img1} style={{ zIndex: 0 }} />
-        <div style={{ position: "absolute", marginLeft: "2%", zIndex: 1 }}>
-          <p
-            style={{
-              fontSize: "50px",
-              fontWeight: "bold",
-              color: "white",
-              lineHeight: "120%",
-            }}
-          >
-            Book Your Next Service
-            <br /> Appointment
-          </p>
-          <p style={{ fontWeight: "bold", color: "white", lineHeight: "120%" }}>
-            Experience top-quality automotive services at our center.
-            <br /> Schedule your appointment online today.
-          </p>
-          <br />
-          <Link to='http://localhost:3000/customer/appointment/appointnmentMain'>
+  <img className="cushomeimg" src={img1} style={{ zIndex: 0 }} />
+  <div style={{ position: "absolute", marginLeft: "2%", zIndex: 1 }}>
+    <p
+    className="cushomep">
+      Book Your Next Service
+      <br /> Appointment
+    </p>
+    <p className="cushomep">
+      Experience top-quality automotive services at our center.
+      <br /> Schedule your appointment online today.
+    </p>
+    <br />
+    <Link to='http://localhost:3000/customer/appointment/appointnmentMain'>
             <Button variant="light">
               <b>Book now</b>
             </Button>
           </Link>
-
-        </div>
-      </div>
+  </div>
+</div>
 
     </main>
   );
