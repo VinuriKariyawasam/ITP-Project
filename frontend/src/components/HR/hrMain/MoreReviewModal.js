@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Table } from "react-bootstrap";
+import { Modal, Button, Table, OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const MoreReviewsModal = ({ show, handleClose, reviews, employeeId }) => {
   const [updatedReviews, setUpdatedReviews] = useState([]);
@@ -40,7 +40,26 @@ const MoreReviewsModal = ({ show, handleClose, reviews, employeeId }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Employee Reviews</Modal.Title>
+        <Modal.Title>
+          Employee Reviews{" "}
+          <OverlayTrigger
+            placement="right"
+            overlay={
+              <Tooltip id="tooltip-top">
+                Cannot update reviews that use for evalutions. You can delete
+                reviews if want and it will reset grading points. Then again you
+                can add new reviews.
+              </Tooltip>
+            }
+          >
+            <div>
+              <i
+                className="bi bi-info-circle"
+                style={{ fontSize: "1.5rem", cursor: "pointer" }}
+              ></i>
+            </div>
+          </OverlayTrigger>
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {filteredReviews.length > 0 ? (

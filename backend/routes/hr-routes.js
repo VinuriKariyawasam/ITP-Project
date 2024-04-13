@@ -94,6 +94,9 @@ router.post("/emp-login", EmployeeController.loginEmployee);
 // Today Technicians and supervisors
 router.get("/today-emp", EmployeeController.getTodayEmployeesWithAttendance);
 
+//reset-password
+router.patch("/update-credentials/:id", EmployeeController.updateCredentials);
+
 //---------Leaves Routes-------------------
 
 // Validation middleware function for validating the leave request data
@@ -245,10 +248,5 @@ router.delete("/reviews/delete/:id", EmpReviewController.deleteEmpReviewById);
 
 // Route to delete an employee review by ID
 router.get("/emp-reviews", EmpReviewController.getEmpReviews);
-
-router.use(StaffCheckAuth);
-
-//reset-password
-router.patch("/update-credentials/:id", EmployeeController.updateCredentials);
 
 module.exports = router;

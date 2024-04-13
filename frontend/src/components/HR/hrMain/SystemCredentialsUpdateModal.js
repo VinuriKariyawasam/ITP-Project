@@ -97,7 +97,6 @@ function SystemCredentialsUpdateModal({ show, onHide, employee, token }) {
         body: JSON.stringify(formData),
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + { token },
         },
       });
       if (!response.ok) {

@@ -18,14 +18,14 @@ import EmpEvaluateModal from "./EmpEvaluateModal";
 import SalaryDetailsModal from "./SalaryDetailsModal";
 import MoreReviewsModal from "./MoreReviewModal";
 import SystemCredentialsUpdateModal from "./SystemCredentialsUpdateModal";
-import { StaffAuthContext } from "../../../Context/Staff/StaffAuthContext";
+//import { StaffAuthContext } from "../../../Context/Staff/StaffAuthContext";
 
 function EmployeeDetails() {
   const { employeeId } = useParams();
   //to redirect after success
   const navigate = useNavigate();
   //get token from context
-  const { token } = useContext(StaffAuthContext);
+  //const { token } = useContext(StaffAuthContext);
   //states
   const [employee, setEmployee] = useState(null);
   const [salaryDetails, setSalaryDetails] = useState(null);
@@ -683,7 +683,6 @@ function EmployeeDetails() {
         show={showCredentialsModal}
         onHide={hideCredentialsModalHandler}
         employee={employee}
-        token={token}
       />
     </Card>
   );

@@ -71,7 +71,33 @@ class EmpReviewController {
   async deleteEmpReviewById(req, res) {
     try {
       const { id } = req.params;
-      await EmpReview.findByIdAndDelete(id);
+      const deletedReview = await EmpReview.findByIdAndDelete(id);
+
+      //employee part
+      const employee = await EmployeeModel.findById(deletedReview.empDBId);
+
+      console.log(employee);
+      var newPoints = employee.points;
+
+      if (deletedReview.type === "Positive") {
+        newPoints -= 5;
+        if (newPoints < 0) {
+          newPoints = 0;
+        }
+      } else if (deletedReview.type === "Negative") {
+        // Changed from newReview.type to deletedReview.type
+        newPoints += 5;
+        if (newPoints > 100) {
+          newPoints = 100;
+        }
+      }
+      employee.points = newPoints;
+      console.log(employee);
+
+      const newEmployee = await employee.save();
+
+      console.log(newEmployee);
+
       res.status(200).json({ message: "Review deleted successfully" });
     } catch (error) {
       res.status(404).json({ message: "Review not found" });
