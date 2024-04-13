@@ -104,7 +104,7 @@ exports.deleteTires = async (req, res) => {
     const tire = await TiresSchema.findById(id);
 
     if (!tire) {
-      return res.status(404).send({ status: "Lubricant not found" });
+      return res.status(404).send({ status: "Tire not found" });
     }
 
     const imagePath = tire.image;

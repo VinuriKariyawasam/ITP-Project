@@ -7,6 +7,7 @@ function IMDashboard() {
 
   const [lubricantCount, setLubricantCount] = useState(0);
   const [TireCount, setTireCount] = useState(0);
+  const [OrderCount,setOrderCount] = useState(0);
   useEffect(() => {
     function getLubricants() {
       axios
@@ -36,6 +37,21 @@ function IMDashboard() {
     getTires();
   }, []);
 
+  
+  useEffect(() => {
+    function getOrderCount() {
+      axios
+        .get("http://localhost:5000/Product/pendingsp")
+        .then((res) => {
+          setOrderCount(res.data.length); 
+        })
+        .catch((err) => {
+          alert("error");
+        });
+    }
+    getOrderCount();
+  }, []);
+
 
 
 
@@ -52,7 +68,7 @@ function IMDashboard() {
           />
           <DbCard
             title="Pending Orders"
-            value1="7 Orders"
+            value1={`${OrderCount} Orders`} 
             value2=""
             iconClass="bi bi-cart-dash"
             duration="This month"
