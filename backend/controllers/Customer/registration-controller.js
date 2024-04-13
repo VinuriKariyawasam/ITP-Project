@@ -109,7 +109,7 @@ const month = (currentDate.getMonth() + 1).toString().padStart(2, "0"); // Get m
     }
     res
     .status(201)
-    .json({ userId: newCustomer.id, email: newCustomer.email, token: token });
+    .json({ userId: newCustomer.cusId, email:newCustomer.email,name: newCustomer.name, token: token });
         }catch (error) {
             // Log the error for debugging purposes
             console.error("Error while fetching(sending) customer to db:", error);
@@ -228,9 +228,9 @@ static async loginCustomer(req, res){
     );
 
     res.json({
-      userId: user._id,
+      userId: user.cusId,
       email: user.email,
-      Name: user.Name,
+      name: user.Name,
       token,
     });
   } catch (error) {

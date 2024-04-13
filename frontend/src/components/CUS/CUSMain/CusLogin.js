@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-
+import { CusAuthContext } from "../../../context/cus-authcontext";
 import Card from "react-bootstrap/Card";
 import Form from 'react-bootstrap/Form'
 import Container from 'react-bootstrap/Container';
@@ -15,6 +15,7 @@ import cusimage3 from '../../../../src/images/CUS/CustomerImg/cusimage3.jpg';
 
 function CusLogin(){
   const navigate = useNavigate();
+  const cusauth = useContext(CusAuthContext);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -46,6 +47,7 @@ function CusLogin(){
     .then(data => {
       alert("Login Successfull");
       console.log(data);
+      cusauth.login(data.userId,data.email,data.name,data.token);
       navigate("/customer");
     })
     .catch(error => {
