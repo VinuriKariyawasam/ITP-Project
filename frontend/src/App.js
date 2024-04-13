@@ -16,18 +16,27 @@ import "./App.css";
 import StaffApp from "./StaffApp";
 import CustomerApp from "./CustomerApp";
 import Common from "./components/Pages/Common";
-
+import { StaffAuthProvider } from "./Context/Staff/StaffAuthContext";
+import NotFoundPage from "./components/util/NotFoundPage";
+import HomePage from "./components/util/HomePage";
 
 function App() {
   return (
     <>
-       <Router>
+      <Router>
         <Routes>
-          <Route path="/" element={<Common />} />
-          <Route path="/staff/*" element={<StaffApp />} />
-          <Route path="/customer/*" element={<CustomerApp />} />
+          <Route path="/" element={<HomePage />} />
 
-          
+          <Route
+            path="/staff/*"
+            element={
+              <StaffAuthProvider>
+                <StaffApp />
+              </StaffAuthProvider>
+            }
+          />
+
+          <Route path="/customer/*" element={<CustomerApp />} />
         </Routes>
       </Router>
     </>

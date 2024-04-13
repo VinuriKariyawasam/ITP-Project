@@ -19,7 +19,7 @@ function StaffAuthNav() {
         </li>
 
         <Dropdown as={Nav.Item} className="ml-3" style={{ margin: "0 5px" }}>
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
+          <Dropdown.Toggle variant="dark" id="dropdown-basic">
             Contact Admin
           </Dropdown.Toggle>
           <Dropdown.Menu>

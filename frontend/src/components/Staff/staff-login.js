@@ -55,19 +55,19 @@ const StaffLogin = () => {
       // Handle successful login, such as redirecting to another page
       // Redirect based on employee position
       if (data.position === "General Manager") {
-        navigate("gm");
+        navigate("/staff/gm");
       } else if (data.position === "HR Manager") {
-        navigate("hr");
+        navigate("/staff/hr");
       } else if (data.position === "Service Manager") {
-        navigate("sm");
+        navigate("/staff/sm");
       } else if (data.position === "Finance Manager") {
-        navigate("finance");
+        navigate("/staff/finance");
       } else if (data.position === "Supervisor") {
-        navigate("supervisor");
+        navigate("/staff/supervisor");
       } else if (data.position === "Inventory Manager") {
-        navigate("im");
+        navigate("/staff/im");
       } else if (data.position === "Customer Service Agent") {
-        navigate("cam");
+        navigate("/staff/cam");
       } else {
         setError("Invalid position. Please contact administrator.");
       }

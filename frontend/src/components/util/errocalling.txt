@@ -1,0 +1,39 @@
+import React, { useState } from 'react';
+import ErrorModal from './ErrorModal'; // Import the ErrorModal component
+
+const MainComponent = () => {
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(false);
+  const [errorTitle, setErrorTitle] = useState(false);
+  const [errorImg, setErrorImg] = useState(false);
+  const [errorPath, setErrorPath] = useState(false);
+
+
+  const handleCloseModal = () => {
+    setShowErrorModal(false);
+  };
+
+  some function{
+    setErrorImg(imported object or icon);
+    setErrorMsg("");
+    setErrorTitle("");
+    setErrorPath("")
+    setShowErrorModal;
+  }
+
+  return (
+    <div>
+      
+      <ErrorModal
+        show={showErrorModal}
+        handleClose={handleCloseModal}
+        title={errorTitle}
+        errorMessage={errorMessage}
+        errorIcon={errorIcon}
+        navigateTo={errorPath} // Specify the route to navigate to
+      />
+    </div>
+  );
+};
+
+export default MainComponent;

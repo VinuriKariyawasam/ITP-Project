@@ -1,18 +1,21 @@
-// AuthContext.js
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const StaffAuthContext = createContext({
   isLoggedIn: false,
   userId: null,
-  userPossition: null,
+  userPosition: null,
   token: null,
   login: () => {},
   logout: () => {},
 });
 
 export const StaffAuthProvider = ({ children }) => {
+  const navigate = useNavigate();
+  const logoutTimerRef = useRef(null);
+
   const [authState, setAuthState] = useState(() => {
-    const storedAuth = sessionStorage.getItem("auth");
+    const storedAuth = localStorage.getItem("auth");
     return storedAuth
       ? JSON.parse(storedAuth)
       : { isLoggedIn: false, userId: null, userPosition: null, token: null };
@@ -20,10 +23,11 @@ export const StaffAuthProvider = ({ children }) => {
 
   const login = (userId, token, userPosition) => {
     setAuthState({ isLoggedIn: true, userId, userPosition, token });
-    sessionStorage.setItem(
+    localStorage.setItem(
       "auth",
       JSON.stringify({ isLoggedIn: true, userId, userPosition, token })
     );
+    startLogoutTimer();
   };
 
   const logout = () => {
@@ -33,14 +37,44 @@ export const StaffAuthProvider = ({ children }) => {
       userPosition: null,
       token: null,
     });
-    sessionStorage.removeItem("auth");
+    localStorage.removeItem("auth");
+    clearLogoutTimer();
+    navigate("/staff/login"); // Redirect to login page
   };
 
+  const startLogoutTimer = () => {
+    logoutTimerRef.current = setTimeout(logout, 5 * 60 * 1000); // 30 minutes
+  };
+
+  const clearLogoutTimer = () => {
+    clearTimeout(logoutTimerRef.current);
+  };
+
+  const resetLogoutTimer = () => {
+    clearLogoutTimer();
+    startLogoutTimer();
+  };
+
+  // Initialize authState from local storage
   useEffect(() => {
-    const storedAuth = sessionStorage.getItem("auth");
+    const storedAuth = localStorage.getItem("auth");
     if (storedAuth) {
       setAuthState(JSON.parse(storedAuth));
     }
+  }, []);
+
+  // Reset logout timer on user activity
+  useEffect(() => {
+    window.addEventListener("mousemove", resetLogoutTimer);
+    window.addEventListener("mousedown", resetLogoutTimer);
+    window.addEventListener("keypress", resetLogoutTimer);
+
+    return () => {
+      clearLogoutTimer();
+      window.removeEventListener("mousemove", resetLogoutTimer);
+      window.removeEventListener("mousedown", resetLogoutTimer);
+      window.removeEventListener("keypress", resetLogoutTimer);
+    };
   }, []);
 
   return (

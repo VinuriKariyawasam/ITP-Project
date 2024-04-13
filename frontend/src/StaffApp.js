@@ -23,34 +23,42 @@ import IM from "./components/IM/IMPages/IM";
 import CAM from "./components/CAM/CAM_pages/CAM";
 import StaffFooter from "./components/Staff/StaffFooter";
 import StaffLogin from "./components/Staff/staff-login";
-import { StaffAuthProvider } from "./Context/Staff/StaffAuthContext";
+
 import { StaffAuthContext } from "./Context/Staff/StaffAuthContext";
 
 function StaffApp() {
-  const { userPosition } = useContext(StaffAuthContext);
-
+  const { userPosition, isLoggedIn } = useContext(StaffAuthContext);
   return (
     <>
-      <StaffAuthProvider>
-        <Header />
-        <Routes>
-          <Route path="/" element={<StaffLogin />} />
-          {userPosition === "HR Manager" && (
-            <Route path="/hr/*" element={<HR />} />
-          )}
-          {userPosition === "Sales Manager" && (
-            <Route path="/sm/*" element={<SM />} />
-          )}
-          {userPosition === "Finance Manager" && (
-            <Route path="/finance/*" element={<Finance />} />
-          )}
+      <Header />
+      <Routes>
+        {isLoggedIn === false && (
+          <Route path="/login" element={<StaffLogin />} />
+        )}
+
+        {userPosition === "HR Manager" && (
+          <Route path="/hr/*" element={<HR />} />
+        )}
+        {userPosition === "Service Manager" && (
+          <Route path="/sm/*" element={<SM />} />
+        )}
+        {userPosition === "Finance Manager" && (
+          <Route path="/finance/*" element={<Finance />} />
+        )}
+        {userPosition === "General Manager" && (
           <Route path="/gm/*" element={<Common />} />
+        )}
+        {userPosition === "Supervisor" && (
           <Route path="/supervisor/*" element={<SUPER />} />
+        )}
+        {userPosition === "Inventory Manager" && (
           <Route path="/im/*" element={<IM />} />
+        )}
+        {userPosition === "Customer Service Agent" && (
           <Route path="/cam/*" element={<CAM />} />
-        </Routes>
-        <StaffFooter />
-      </StaffAuthProvider>
+        )}
+      </Routes>
+      <StaffFooter />
     </>
   );
 }
