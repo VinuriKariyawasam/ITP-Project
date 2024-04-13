@@ -138,6 +138,7 @@ function EmployeeDetails() {
     documents,
     photoUrl,
     documentUrls,
+    points,
   } = employee;
 
   // Helper function to format date
@@ -178,6 +179,7 @@ function EmployeeDetails() {
   const handleEvaluateModalClose = () => {
     setShowEvaluateModal(false);
     fetchReviews(employeeId);
+    fetchEmployeeById(employeeId);
   };
 
   const handleEvaluateModalShow = () => {
@@ -248,6 +250,7 @@ function EmployeeDetails() {
   const handleCloseReviewModal = () => {
     setShowReviewsModal(false); // Close the modal
     fetchReviews(employeeId); // Fetch reviews again to update the count
+    fetchEmployeeById(employeeId); // Fetch employee data again to update the points
   };
 
   return (
@@ -327,40 +330,49 @@ function EmployeeDetails() {
               </Row>
 
               <Row style={{ marginBottom: "10px" }}>
-                <Col xs={12} md={6}>
-                  <strong>Email:</strong> {email}
-                </Col>
-                <Col xs={12} md={6}>
-                  <strong>Password:</strong> {password}
-                </Col>
+                {points && (
+                  <Col xs={12} md={6}>
+                    <strong>Grading Points:</strong> {points}
+                  </Col>
+                )}
+                {email != "undefined" && (
+                  <Col xs={12} md={6}>
+                    <strong>Email:</strong> {email}
+                  </Col>
+                )}
               </Row>
 
               <Row style={{ marginBottom: "10px" }}>
                 <Col>
-                  <strong>Other Details:</strong> {otherDetails}
+                  <strong>Other Details:</strong>{" "}
+                  {otherDetails !== "undefined"
+                    ? otherDetails
+                    : "No other details"}
                 </Col>
               </Row>
 
               <Row style={{ marginBottom: "10px" }}>
-                <Col>
-                  <strong>Documents:</strong>
-                  <ul>
-                    {documentUrls.map((docUrl) => {
-                      // Extract the file name from the URL
-                      const fileName = docUrl.substring(
-                        docUrl.lastIndexOf("/") + 1
-                      );
+                {documentUrls.length >= 1 && (
+                  <Col>
+                    <strong>Documents:</strong>
+                    <ul>
+                      {documentUrls.map((docUrl) => {
+                        // Extract the file name from the URL
+                        const fileName = docUrl.substring(
+                          docUrl.lastIndexOf("/") + 1
+                        );
 
-                      return (
-                        <li key={docUrl}>
-                          <a href={docUrl} target="_blank">
-                            {fileName}
-                          </a>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </Col>
+                        return (
+                          <li key={docUrl}>
+                            <a href={docUrl} target="_blank">
+                              {fileName}
+                            </a>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </Col>
+                )}
               </Row>
             </Container>
             <hr />

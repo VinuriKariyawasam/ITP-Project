@@ -15,9 +15,7 @@ import {
 import "./App.css";
 import StaffApp from "./StaffApp";
 import CustomerApp from "./CustomerApp";
-import Common from "./components/Pages/Common";
 import { StaffAuthProvider } from "./Context/Staff/StaffAuthContext";
-import NotFoundPage from "./components/util/NotFoundPage";
 import HomePage from "./components/util/HomePage";
 
 function App() {

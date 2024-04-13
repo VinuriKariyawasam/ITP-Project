@@ -43,7 +43,7 @@ export const StaffAuthProvider = ({ children }) => {
   };
 
   const startLogoutTimer = () => {
-    logoutTimerRef.current = setTimeout(logout, 5 * 60 * 1000); // 30 minutes
+    logoutTimerRef.current = setTimeout(logout, 30 * 60 * 1000); // 30 minutes
   };
 
   const clearLogoutTimer = () => {

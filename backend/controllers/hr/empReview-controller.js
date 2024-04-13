@@ -1,4 +1,5 @@
 const EmpReview = require("../../models/hr/empReviewModel");
+const EmployeeModel = require("../../models/hr/employeeModel");
 
 class EmpReviewController {
   // Controller to create a new employee review
@@ -6,6 +7,36 @@ class EmpReviewController {
     try {
       console.log(req.body);
       const newReview = await EmpReview.create(req.body);
+
+      if (!newReview) {
+        return res.status(400).json({ message: "Review not created" });
+      }
+
+      console.log(newReview);
+
+      const employee = await EmployeeModel.findById(newReview.empDBId);
+
+      console.log(employee);
+      var newPoints = employee.points;
+
+      if (newReview.type === "Positive") {
+        newPoints += 5;
+        if (newPoints > 100) {
+          newPoints = 100;
+        }
+      } else if (newReview.type === "Negative") {
+        newPoints -= 5;
+        if (newPoints < 0) {
+          newPoints = 0;
+        }
+      }
+      employee.points = newPoints;
+      console.log(employee);
+
+      const newEmployee = await employee.save();
+
+      console.log(newEmployee);
+
       res.status(201).json(newReview);
     } catch (error) {
       res.status(400).json({ message: error.message });
