@@ -3,14 +3,14 @@ import "./SMMain.css";
 import SMDashboard from "./SMDashboard"
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import SMPageTitle from "./SMPageTitle";
 import { Link } from 'react-router-dom';
 
 
 function SMMain() {
   return (
     <main id="main" className="main">
-      <h1>Service Manager </h1>
-      <h3 className="SMmainsubHead"> Here's a quick summary of what's happening in your team.</h3>
+      <SMPageTitle />
       <SMDashboard />
       <Card>
         <Card.Body>

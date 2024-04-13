@@ -8,6 +8,7 @@ import Card3 from "./homeicon/card3";
 import Card4 from "./homeicon/card4";
 import img2 from "../../../images/Cushome/Products.jpg";
 import img1 from "../../../images/Cushome/appointment.jpg";
+import { Link } from 'react-router-dom';
 
 function Cushome() {
   return (
@@ -22,6 +23,7 @@ function Cushome() {
       <Card2 />
       <Card3 />
       <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+
   <img className="cushomeimg" src={img2} style={{ zIndex: 0 }} />
   <div style={{ position: "absolute", marginLeft: "2%", zIndex: 1 }}>
     <p className="cushomep">
@@ -53,9 +55,11 @@ function Cushome() {
       <br /> Schedule your appointment online today.
     </p>
     <br />
-    <Button variant="light" className="exbtn">
-      <b>Book now</b>
-    </Button>
+    <Link to='http://localhost:3000/customer/appointment/appointnmentMain'>
+            <Button variant="light">
+              <b>Book now</b>
+            </Button>
+          </Link>
   </div>
 </div>
 
