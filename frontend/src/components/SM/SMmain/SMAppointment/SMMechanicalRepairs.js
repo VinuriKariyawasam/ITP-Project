@@ -5,6 +5,7 @@ import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
 
 const SMMechanicalRepairs = props => {
 
@@ -49,7 +50,7 @@ const SMMechanicalRepairs = props => {
 
   }
   function senddatamechanicalAppointmentHistory() {
-   
+
     //create javascript object
     const newacceptedmechanicalAppointment = {
       name,
@@ -59,11 +60,11 @@ const SMMechanicalRepairs = props => {
       contactNo,
       appointmentdate,
       appointmenttime
-    
+
     }
-    axios.post("http://localhost:5000/appointment/addacceptedmechanicalAppointment",newacceptedmechanicalAppointment).then(() => {
-      alert("Appointment added to history")  
-      
+    axios.post("http://localhost:5000/appointment/addacceptedmechanicalAppointment", newacceptedmechanicalAppointment).then(() => {
+      alert("Appointment added to history")
+
 
     }).catch((err) => {
       alert(err)
@@ -109,9 +110,7 @@ const SMMechanicalRepairs = props => {
   };
 
   const Delete = (id) => {
-    const shouldDelete = window.confirm("please confirm deletion!");
-
-    if (shouldDelete) {
+    
       axios.delete(`http://localhost:5000/appointment/delete-mechanicalAppointment/${id}`)
         .then(response => {
           console.log(response);
@@ -121,22 +120,24 @@ const SMMechanicalRepairs = props => {
           // Handle errors here
           console.error(error);
         });
-    }
+    
   };
   return (
     <main id="main" className="main">
       <div>
         <h2 className="SMAppheading">Mechanical Services</h2>
         {selectedAppointment && (
-          <div >
-            <Card style={{ width: "50%" }}>
-              <Card.Body>
-                <button type="button" class="btn-close" aria-label="Close" onClick={handleCardClose}></button>
-                <Card.Title>Selected Appointment Details</Card.Title>
+          <div className="modal show" style={{ display: 'block', position: 'initial' }}>
+            <Modal.Dialog>
+              <Modal.Header >
+                <Modal.Title>Selected Appointment Details</Modal.Title>
+              </Modal.Header>
+
+              <Modal.Body>
                 <Row>
-                  <Card.Text  >
-                    <strong >Vehicle No: </strong>{selectedAppointment.vNo}<br />
-                    <strong >Customer Name: </strong>{selectedAppointment.name}<br />
+                  <Card.Text>
+                    <strong>Vehicle No: </strong>{selectedAppointment.vNo}<br />
+                    <strong>Customer Name: </strong>{selectedAppointment.name}<br />
                   </Card.Text>
                 </Row>
                 <Row>
@@ -150,15 +151,18 @@ const SMMechanicalRepairs = props => {
                     <strong>Date and Time: </strong>{selectedAppointment.appointmentdate ? `${selectedAppointment.appointmentdate.split('T')[0]} ${selectedAppointment.appointmenttime}` : ''}<br />
                     <strong>Contact No: </strong>{selectedAppointment.contactNo}<br />
                   </Card.Text>
-                </Row >
-                <Row style={{ marginTop: "4%", display: "flex" }}>
-                  <Button variant="danger" onClick={() => Delete(selectedAppointment._id)} style={{ marginLeft: "20%", width: "100px" }}>Cancel</Button>
-                  <Button variant="primary" onClick={sendata} style={{ marginLeft: "20%", width: "100px" }}>Approve</Button>
                 </Row>
-              </Card.Body>
-            </Card>
+              </Modal.Body>
+
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleCardClose}>Close</Button>
+                <Button variant="danger" onClick={() => Delete(selectedAppointment._id)}>Cancel</Button>
+                <Button variant="primary" onClick={sendata}>Approve</Button>
+              </Modal.Footer>
+            </Modal.Dialog>
           </div>
         )}
+
 
         <Table striped bordered hover>
           <thead>

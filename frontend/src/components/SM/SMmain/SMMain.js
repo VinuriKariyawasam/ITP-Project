@@ -15,7 +15,9 @@ function SMMain() {
       <Card>
         <Card.Body>
           <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>Make a new service Quotation</Card.Text>
+
           <Link to="/staff/sm/quotation/add">
+
           <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}} variance="primary">explore</Button>
           </Link>
         </Card.Body>
