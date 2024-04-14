@@ -3,7 +3,7 @@ import './CAM_main.css';
 import CAM_pageTitle from './CAM_pageTitle';
 import ConsultancyPage from './ConsultancyPage';
 import AddReply from './AddReply';
-import UpdateSolution from './UpdateSolution';
+import ConsultancySolution from './ConsultancySolution';
 
 
 // Import front end routes
@@ -22,7 +22,7 @@ import {
        <Routes>
          <Route path="/*" element={<ConsultancyPage/>} />
          <Route path="addreply" element={<AddReply/>}/>
-         <Route path="edit-solution/:id" element={<UpdateSolution/>} />
+         <Route path="consultDetails/:consultId" element={<ConsultancySolution/>}></Route>
        </Routes>
     </main>
     

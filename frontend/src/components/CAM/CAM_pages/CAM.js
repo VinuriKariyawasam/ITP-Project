@@ -3,6 +3,7 @@ import CAM_main from "../CAM_main/CAM_main";
 import CAM_sideBar from "../CAM_sidebar/CAM_sideBar";
 import CAM_consultancy from "../CAM_main/CAM_consultancy";
 
+
 // Import front end routes
 import {
   BrowserRouter as Router,
@@ -19,6 +20,7 @@ function CAM() {
       <Routes>
         <Route path="/" element={<CAM_main />} />
         <Route path="con_support/*" element={<CAM_consultancy/>} />
+        
       </Routes>
     </>
   );
