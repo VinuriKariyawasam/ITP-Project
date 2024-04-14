@@ -150,7 +150,7 @@ const AddLeave = () => {
       // Add any additional logic after leave is successfully added
       setToastType("success");
       setToastHeader("Success");
-      setToastBody("Designation created successfully");
+      setToastBody("Leave request created successfully");
       setShowToast(true);
 
       // Navigate after a delay
@@ -161,7 +161,7 @@ const AddLeave = () => {
       console.error("Error adding leave:", error);
       setToastType("warning");
       setToastHeader("Warning");
-      setToastBody("Error adding designation. Please try again later.");
+      setToastBody("Error creating leave request. Please try again later.");
       setShowToast(true);
     }
   };

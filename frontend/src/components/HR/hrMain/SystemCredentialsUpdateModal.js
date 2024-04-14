@@ -6,18 +6,21 @@ function SystemCredentialsUpdateModal({ show, onHide, employee, token }) {
   const [formData, setFormData] = useState({
     email: employee.email,
     password: "",
+    confirmPassword: "",
   });
 
   // State to manage validation errors
   const [errors, setErrors] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   // State to manage input validity
   const [valid, setValid] = useState({
     email: false,
     password: false,
+    confirmPassword: false,
   });
 
   // Reset form data when the modal is shown
@@ -25,14 +28,17 @@ function SystemCredentialsUpdateModal({ show, onHide, employee, token }) {
     setFormData({
       email: employee.email,
       password: "",
+      confirmPassword: "",
     });
     setErrors({
       email: "",
       password: "",
+      confirmPassword: "",
     });
     setValid({
       email: false,
       password: false,
+      confirmPassword: false,
     });
   }, [show, employee]);
 
@@ -68,6 +74,14 @@ function SystemCredentialsUpdateModal({ show, onHide, employee, token }) {
         password: passwordPattern.test(value),
       }));
     }
+
+    // Compare password and confirmPassword
+    if (name === "confirmPassword") {
+      setValid((prevValid) => ({
+        ...prevValid,
+        confirmPassword: value === formData.password,
+      }));
+    }
   };
 
   // Function to handle form submission
@@ -85,6 +99,20 @@ function SystemCredentialsUpdateModal({ show, onHide, employee, token }) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         password: "Password is required",
+      }));
+      return;
+    }
+    if (!formData.confirmPassword) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        confirmPassword: "Confirm Password is required",
+      }));
+      return;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        confirmPassword: "Passwords do not match",
       }));
       return;
     }
@@ -159,6 +187,28 @@ function SystemCredentialsUpdateModal({ show, onHide, employee, token }) {
                 <i className="bi bi-check-circle-fill"></i>
               </Form.Text>
             )}
+          </Form.Group>
+
+          {/* Confirm Password */}
+          <Form.Group as={Col} controlId="formGridConfirmPassword">
+            <Form.Label>Confirm Password</Form.Label>
+            <div className="d-flex align-items-center">
+              <Form.Control
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                placeholder="Confirm Password"
+                onChange={handleChange}
+                isInvalid={!!errors.confirmPassword}
+                isValid={valid.confirmPassword}
+              />
+              {valid.confirmPassword && (
+                <i className="bi bi-check-circle-fill text-success ml-2"></i>
+              )}
+            </div>
+            <Form.Text className="text-danger">
+              {errors.confirmPassword}
+            </Form.Text>
           </Form.Group>
 
           <Button variant="dark" type="submit" style={{ margin: "10px" }}>

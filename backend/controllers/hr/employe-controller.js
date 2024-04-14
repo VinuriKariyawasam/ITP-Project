@@ -64,7 +64,7 @@ class EmployeeController {
         console.log("Request Body:", req.body);
 
         const nic = req.body["nic"];
-        const email = req.body["email"];
+        const email = req.body.email.toLowerCase();
         const contact = req.body["contact"];
         const bank = req.body["bank"];
         const branch = req.body["branch"];
@@ -399,7 +399,8 @@ class EmployeeController {
 
       // Check if the username matches the email format
       if (/^\S+@\S+\.\S+$/.test(username)) {
-        user = await EmployeeModel.findOne({ email: username });
+        const lowercaseUsername = username.toLowerCase();
+        user = await EmployeeModel.findOne({ email: lowercaseUsername });
       } else {
         // Assuming it's an employee ID
         user = await EmployeeModel.findOne({ empId: username });
@@ -484,7 +485,8 @@ class EmployeeController {
 
   // Controller function to reset user password as an admin
   static async updateCredentials(req, res, next) {
-    const { email, password } = req.body;
+    const { password } = req.body;
+    const email = req.body.email.toLowerCase();
     const userId = req.params.id;
     try {
       const user = await EmployeeModel.findById(userId);

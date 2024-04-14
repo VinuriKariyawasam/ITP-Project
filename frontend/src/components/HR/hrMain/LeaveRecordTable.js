@@ -74,6 +74,16 @@ const LeaveRecordsTable = ({
         (statusFilter === "all" || record.status === statusFilter) &&
         dateFilter(record.fromDate, record.toDate)
       ) {
+        let badgeVariant;
+        if (record.status === "Approved") {
+          badgeVariant = "success";
+        } else if (record.status === "Pending") {
+          badgeVariant = "warning";
+        } else if (record.status === "Rejected") {
+          badgeVariant = "danger";
+        } else {
+          badgeVariant = "primary"; // Default to primary for other statuses
+        }
         return (
           <tr key={record._id}>
             <td>{record.empId}</td>
@@ -86,9 +96,7 @@ const LeaveRecordsTable = ({
             ).toLocaleDateString()}`}</td>
             <td>{record.reason}</td>
             <td>
-              <Badge bg={record.status === "Approved" ? "success" : "danger"}>
-                {record.status}
-              </Badge>
+              <Badge bg={badgeVariant}>{record.status}</Badge>
             </td>
           </tr>
         );
