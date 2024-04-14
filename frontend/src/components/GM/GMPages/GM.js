@@ -1,9 +1,8 @@
 import React from "react";
-import HrMain from "../hrMain/HrMain";
-import HrSideBar from "../hrSidebar/HrSideBar";
-import HrEmployee from "../hrMain/HrEmployee";
-import HrAttendance from "../hrMain/HrAttendance";
-import HrLeaves from "../hrMain/HrLeaves";
+import Header from "../../Header/Header";
+import GMMain from "../GMMain/GMMain";
+import GMSideBar from "../GMSidebar/GMSideBar";
+
 // Import front end routes
 import {
   BrowserRouter as Router,
@@ -12,19 +11,18 @@ import {
   Navigate,
 } from "react-router-dom";
 
-function HR() {
+function GM() {
   return (
     <>
-      <HrSideBar />
+     <Header />
+      <GMSideBar />
 
       <Routes>
-        <Route path="/" element={<HrMain />} />
-        <Route path="hr/*" element={<HrEmployee />} />
-        <Route path="finance/*" element={<HrAttendance />} />
-        <Route path="sm/*" element={<HrLeaves />} />
+        <Route path="/" element={<GMMain />} />
+       
       </Routes>
     </>
   );
 }
 
-export default HR;
+export default GM;

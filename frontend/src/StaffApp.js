@@ -22,13 +22,14 @@ import SUPER from "./components/SUPER/SuperPages/SUPER";
 import IM from "./components/IM/IMPages/IM";
 import CAM from "./components/CAM/CAM_pages/CAM";
 import StaffFooter from "./components/Staff/StaffFooter";
+import GM from "./components/GM/GMPages/GM";
 
 function StaffApp() {
   return (
     <>
       <Header />
       <Routes>
-        <Route path="/gm/*" element={<Common />} />
+        <Route path="/gm/*" element={<GM />} />
         <Route path="/hr/*" element={<HR />} />
         <Route path="/sm/*" element={<SM />} />
         <Route path="/finance/*" element={<Finance />} />
