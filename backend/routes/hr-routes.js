@@ -135,6 +135,9 @@ router.patch(
   LeavesController.updateLeaveStatusById
 );
 
+// Define the route to get leaves by empDBId
+router.get("/emp-leaves/:empDBId", LeavesController.getLeavesByEmpDBId);
+
 //---------Designation Routes-------------------
 
 // Validation middleware function for validating the designation request data

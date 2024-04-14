@@ -12,7 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
 import html2pdf from "html2pdf.js";
-
+import LeaveRecordsTable from "./LeaveRecordTable";
 import EmployeeUpdateModal from "./EmployeeUpdateModal";
 import EmpEvaluateModal from "./EmpEvaluateModal";
 import SalaryDetailsModal from "./SalaryDetailsModal";
@@ -40,6 +40,11 @@ function EmployeeDetails() {
   const [selectedRecordId, setSelectedRecordId] = useState(null);
   const [showReviewsModal, setShowReviewsModal] = useState(false);
   const [showCredentialsModal, setShowCredentialsModal] = useState(false);
+  const [leaves, setLeaves] = useState([]);
+  const [totalLeaves, setTotalLeaves] = useState([]);
+  const [approvedLeaves, setApprovedLeaves] = useState([]);
+  const [rejectedLeaves, setRejectedLeaves] = useState([]);
+  const [showLeaveTable, setShowLeaveTable] = useState(false);
 
   //Function to fetch employee personal data by database
   const fetchEmployeeById = async (employeeId) => {
@@ -113,10 +118,41 @@ function EmployeeDetails() {
     }
   };
 
+  // Function to fetch leaves from the database
+  const fetchLeaves = async (employeeId) => {
+    try {
+      const leavesResponse = await fetch(
+        `http://localhost:5000/api/hr/emp-leaves/${employeeId}`
+      );
+      if (!leavesResponse.ok) {
+        throw new Error(`HTTP error! Status: ${leavesResponse.status}`);
+      }
+      const leavesData = await leavesResponse.json();
+      setLeaves(leavesData);
+
+      // Calculate total, positive, and negative reviews counts
+      const totalLeaves = leavesData.length;
+      const approvedLeaves = leavesData.filter(
+        (leave) => leave.status === "Approved"
+      ).length;
+      const rejectedLeaves = leavesData.filter(
+        (leave) => leave.status === "Rejected"
+      ).length;
+
+      // Set the state with the calculated counts
+      setTotalLeaves(totalLeaves);
+      setApprovedLeaves(approvedLeaves);
+      setRejectedLeaves(rejectedLeaves);
+    } catch (error) {
+      console.error("Error fetching leaves:", error);
+    }
+  };
+
   useEffect(() => {
     fetchEmployeeById(employeeId);
     fetchSalaryDetails(employeeId);
     fetchReviews(employeeId);
+    fetchLeaves(employeeId);
   }, [employeeId]);
 
   /*----Parts regarding rendering employee personal details-------*/
@@ -603,6 +639,7 @@ function EmployeeDetails() {
                   Negative Reviews:{negativeReviews}
                 </h5>
               </Col>
+
               <Col>
                 <Button
                   variant="primary"
@@ -620,6 +657,54 @@ function EmployeeDetails() {
                 </Button>
               </Col>
             </Row>
+          </Container>
+        </Row>
+        <hr />
+        <Row>
+          {/* Display Salary Details*/}
+          <Container>
+            <h4>Leaves</h4>
+            <Row>
+              <Col>
+                <h5 style={{ margin: "10px" }}>Total Leaves:{totalLeaves}</h5>
+              </Col>
+              <Col>
+                <h5 style={{ margin: "10px" }}>
+                  Approved Leaves:{approvedLeaves}
+                </h5>
+              </Col>
+              <Col>
+                <h5 style={{ margin: "10px" }}>
+                  Rejected Leaves:{rejectedLeaves}
+                </h5>
+              </Col>
+              <Col>
+                <h5 style={{ margin: "10px" }}>
+                  Pending Leaves:
+                  {totalLeaves - (rejectedLeaves + approvedLeaves)}
+                </h5>
+              </Col>
+              <Col>
+                <Button
+                  variant="primary"
+                  style={{ margin: "10px" }}
+                  onClick={() => setShowLeaveTable(!showLeaveTable)} // Toggle the visibility of the table
+                >
+                  {showLeaveTable ? "Hide" : "Show"} Leaves
+                </Button>
+              </Col>
+            </Row>
+            {showLeaveTable && ( // Render the table only if showTable is true
+              <Row>
+                {/* Table to display all rejected records */}
+                <LeaveRecordsTable
+                  leaveRecords={leaves}
+                  statusFilter="all"
+                  dateFilter={() => true}
+                  tableName={`All Leave Records`}
+                />
+              </Row>
+            )}
           </Container>
         </Row>
       </Card.Body>

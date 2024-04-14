@@ -148,6 +148,29 @@ const leavesController = {
       res.status(500).json({ error: error.message });
     }
   },
+
+  // Controller function to get leaves by empDBId
+  getLeavesByEmpDBId: async (req, res) => {
+    try {
+      const { empDBId } = req.params; // Get empDBId from request parameters
+
+      // Find leaves by empDBId
+      const leaves = await Leaves.find({ empDBId });
+
+      // Check if leaves exist
+      if (!leaves || leaves.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No leaves found for this employee." });
+      }
+
+      // Return leaves
+      res.status(200).json(leaves);
+    } catch (error) {
+      console.error("Error fetching leaves by empDBId:", error.message);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
 };
 
 module.exports = leavesController;
