@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 import '../CUSMobileReq/Mechanicalreq.css'
 import axios from "axios"
 import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import VehicleCarrierIMG from '../../../../images/MobileServices/MobVehicleCarrierIMG.jpg';
 
 function VehicleCarrReq() {
 
@@ -34,18 +38,19 @@ function VehicleCarrReq() {
 
 
   return (
-  
-    <main id="main" className="main">
-      <div className="mobbody">
-      <div className="mobform-container">
-        <h2 className='mobheading'>Vehicle Carrier Service Requests</h2>
-        <container className=''>
-          <form className="mobform" onSubmit={handleSubmit(onSubmit)}>
+
+    <main >
+      <div className="mobbody" >
+      <div style={{flex:"1" ,marginTop:"3%"}}>
+        <h2 className='mobheading'>Vehicle carrier Service Requests</h2><br />
+        <Row><Col><container className=''>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Row><Col>
             <div className="mobform-element">
               <label htmlFor="cusName" className='mobL1'>Customer Name</label><br />
               <input {...register("cusName", { required: true })} className="mobinput-styles" type="text" id="cusName"  placeholder="Enter Your Name"  />
               {errors.cusName && <span className="error">Customer Name is required</span>}
-            </div>
+            </div> </Col> <Col>
             <div className="mobform-element">
               <label htmlFor="cusEmail" className='mobL1'>Email Address</label><br />
               <input {...register("cusEmail", { required: true,pattern: {
@@ -54,8 +59,8 @@ function VehicleCarrReq() {
                                                 }})} 
               className="mobinput-styles" type="text" id="cusEmail" placeholder="Enter Your Email" />
               {errors.cusEmail && <span className="error">Email Address is required</span>}
-            </div>
-
+            </div> </Col> </Row>
+            <Row><Col>
             <div className="mobform-element">
               <label htmlFor="vehicleNo" className='mobL1'>Vehicle Number</label><br />
               <input {...register("vehicleNo", { required: true,pattern: {
@@ -64,42 +69,38 @@ function VehicleCarrReq() {
                                                 } })} 
               className="mobinput-styles" type="text" id="vehicleNo" placeholder="Enter Your Vehicle Number" />
               {errors.vehicleNo && <span className="error">Vehicle Number is required</span>}
-            </div>
+            </div></Col><Col>
 
             <div className="mobform-element">
-              <div className="mobyear-month-container">
-                <div className="mobyear-input">
-                  <label htmlFor="reqDate" className='mobL1'>Date</label>
-                  <input {...register("reqDate", { required: true, pattern: {
+              <label htmlFor="reqDate" className='mobL1'>Date</label> <br />
+              <input {...register("reqDate", { required: true, pattern: {
                                                 value: /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{2}$/, //date format validation
                                                 message: "Invalid date format (DD/MM/YY)"
                                                 } })} 
-                  className="mobinput-styles" type="text" id="reqDate" placeholder="DD/MM/YY" />
-                </div>
-                <div className="mobmonth-input">
-                  <label htmlFor="reqTime" className='mobL1'>Time</label>
-                  <input {...register("reqTime", { required: true, pattern: {
+              className="mobinput-styles" type="text" id="reqDate" placeholder="DD/MM/YY" />
+            </div></Col> </Row>
+            <Row><Col>
+            <div className="mobform-element">
+              <label htmlFor="reqTime" className='mobL1'>Time</label> <br />
+              <input {...register("reqTime", { required: true, pattern: {
                                                     value: /^(?:[01]\d|2[0-3]):(?:[0-5]\d)$/, //time format validation
                                                     message: "Invalid time format (HH:MM)"
                                                     } })} 
-                  className="mobinput-styles" type="text" id="reqTime" placeholder="Enter time" />
-                  {errors.reqTime && <span className="error">{errors.reqTime.message}</span>}
-                </div>
-                
-              </div>
-            </div> 
-
+              className="mobinput-styles" type="text" id="reqTime" placeholder="Enter time" />
+              {errors.reqTime && <span className="error">{errors.reqTime.message}</span>}
+            </div></Col>
+            <Col>
             <div className="mobform-element">
                   <label htmlFor="reqLocation" className='mobL1'>Location</label><br />
                   <input {...register("reqLocation", { required: true })} className="mobinput-styles" type="text" id="reqLocation" placeholder="Location" />
                   {errors.reqLocation && <span className="error">Location is required</span>}
-                </div>
-
+            </div> </Col> </Row>
+            <Row><Col>
             <div className="mobform-element">
               <label htmlFor="additionalInfo" className='mobL1'>Additional Information</label><br />
               <input {...register("additionalInfo")} className="mobinput-styles" type="text" id="additionalInfo" placeholder="Enter additional information of the vehicle" />
-            </div>
-
+            </div></Col>
+            <Col>
             <div className="mobform-element">
               <label htmlFor="contactNo" className='L1'>Contact Number</label><br />
               <input  {...register("contactNo", { required: true,pattern: {
@@ -108,7 +109,7 @@ function VehicleCarrReq() {
                                                 } })} 
               className="mobinput-styles" type="text" id="contactNo" placeholder="Enter Your Contact Number" />
             {errors.contactNo && <span className="error">{errors.contactNo.message}</span>}
-         </div>
+         </div> </Col> </Row>
 
            
          <div className="mobcheckbox-container">
@@ -117,9 +118,13 @@ function VehicleCarrReq() {
             </div>
             <Button variant="primary" type="submit">Submit</Button>
 
-          </form>
-        </container></div>
-      </div> </main>
+          </form></container> 
+        </Col>
+        <Col>
+          <img className='' src={VehicleCarrierIMG} alt="Vehicle Carrier Img" style={{marginTop:"4%",borderRadius:"2%",marginBottom:"2%", marginRight:"1%"}}/>
+        </Col> </Row>
+      </div></div>
+      </main>
     );
   }
   

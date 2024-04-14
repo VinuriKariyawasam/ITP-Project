@@ -24,8 +24,9 @@ import CAM from "./components/CAM/CAM_pages/CAM";
 import StaffFooter from "./components/Staff/StaffFooter";
 import StaffLogin from "./components/Staff/staff-login";
 import RestrictedPage from "./components/util/RestrictedPage";
-
 import { StaffAuthContext } from "./Context/Staff/StaffAuthContext";
+import GM from "./components/GM/GMPages/GM";
+
 
 function StaffApp() {
   const { userPosition, isLoggedIn } = useContext(StaffAuthContext);
@@ -33,11 +34,12 @@ function StaffApp() {
     <>
       <Header />
       <Routes>
+
         {isLoggedIn === false && (
           <Route path="/login" element={<StaffLogin />} />
         )}
 
-        <Route path="/gm/*" element={<Common />} />
+        <Route path="/gm/*" element={<GM />} />
 
         {userPosition === "HR Manager" ? (
           <Route path="/hr/*" element={<HR />} />
@@ -74,6 +76,7 @@ function StaffApp() {
           <Route path="/cam/*" element={<RestrictedPage />} />
         )}
       </Routes>
+
       <StaffFooter />
     </>
   );

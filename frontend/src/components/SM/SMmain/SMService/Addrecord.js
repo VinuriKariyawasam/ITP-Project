@@ -177,23 +177,23 @@ function Addrecord() {
           </Form.Text>
         </Form.Group>
 
-        {/* Invoice number*/}
-        <Form.Group className="mb-3" controlId="formGridINo">
-          <Row>
-          <Form.Label>Invoice Number</Form.Label>
-          </Row>
-          <Row>
+       {/* Payment Invoice Number */}
+      <Form.Group className="mb-3" controlId="formGridINo">
+        <Row>
+          <Form.Label>Payment Invoice Number</Form.Label>
+        </Row>
+        <Row>
           <Controller
             name="inumber"
             control={control}
-            rules={{ required: "Invoice number is required" }}
+            defaultValue="" // Set default value to empty string
             render={({ field }) => (
-              <Form.Control placeholder="1123" {...field} />
+              <Form.Control placeholder="Enter Invoice Number" {...field} />
             )}
           />
-          </Row>
-          <Form.Text className="text-danger">{errors.inumber?.message}</Form.Text>
-        </Form.Group>
+        </Row>
+        <Form.Text className="text-danger">{errors.inumber?.message}</Form.Text>
+      </Form.Group>
       
 
       

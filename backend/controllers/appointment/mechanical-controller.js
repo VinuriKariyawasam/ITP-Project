@@ -4,7 +4,7 @@ const mechanicalSchema = require("../../models/appointment/mechanicalRepairs")
 
 exports.addmechanicalAppointment = async (req, res) => {
     // get data from fronend in request body to backend
-
+    const userId = req.body.userId;
     const name = req.body.name;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
@@ -15,6 +15,7 @@ exports.addmechanicalAppointment = async (req, res) => {
     
 
     const newmechanicalAppointment = mechanicalSchema({
+        userId,
         name,
         vType,
         vNo,
@@ -56,10 +57,11 @@ exports.getmechanicalAppointment = async (req, res) => {
 exports.updatemechanicalAppointment= async (req, res) => {
     let mechanicalAppointmentId = req.params.id;
     //to get existing values
-    const { name, vType, vNo,issue, contactNo, appointmentdate, appointmenttime } = req.body
+    const {userId, name, vType, vNo,issue, contactNo, appointmentdate, appointmenttime } = req.body
 
     //object to store new values
     const updatemechanicalAppointment = {
+        userId,
         name,
         vType,
         vNo,

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState ,useContext} from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-
+import { CusAuthContext } from "../../../context/cus-authcontext";
 import Card from "react-bootstrap/Card";
 import Form from 'react-bootstrap/Form'
 import Container from 'react-bootstrap/Container';
@@ -16,6 +16,7 @@ import cusimage3 from '../../../../src/images/CUS/CustomerImg/cusimage3.jpg';
 
 function CusRegistration(){
   const navigate = useNavigate();
+  const cusauth = useContext(CusAuthContext);
 
   const [formData, setFormData] = useState({
     Name: "",
@@ -33,6 +34,7 @@ function CusRegistration(){
 
   function sendCusDetails(e){
     e.preventDefault();
+   
 
     const newCustomer = {
       Name,
@@ -42,18 +44,29 @@ function CusRegistration(){
       address
     };
 
-    axios
-      .post("http://localhost:5000/api/customer/signup/add-customer", newCustomer)
-      .then(() => {
-        alert("Registration Successfull");
-        console.log(newCustomer);
-        navigate("/customer/cuslogin")
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newCustomer)
+    };
+    
+    fetch('http://localhost:5000/api/customer/signup/add-customer', requestOptions)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
       })
-      .catch((err) => {
-        alert(err);
+      .then(data => {
+        alert("Registration Successfull");
+        cusauth.login(data.userId,data.email,data.name,data.token);
+        console.log(data);
+        navigate("/customer");
+      })
+      .catch(error => {
+        alert('Error:', error.message);
       });
   }
-
     return(
         <div>
         <main id="main" style={{marginLeft:"20px",marginTop:"1px"}}>

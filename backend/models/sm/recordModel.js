@@ -12,7 +12,7 @@ const recordSchema = new mongoose.Schema({
   },
   inumber: {
     type: String,
-    required: true,
+    required: false,
   },
   
   EndDate: {

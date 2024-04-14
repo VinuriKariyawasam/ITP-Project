@@ -9,6 +9,7 @@ const navList = [
     _id: 2,
     name: "Spare Parts",
     icon: "bi bi-gear",
+    href: "/staff/im/sp"
   },
   {
     _id: 3,
