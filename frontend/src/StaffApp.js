@@ -37,38 +37,48 @@ function StaffApp() {
           <Route path="/login" element={<StaffLogin />} />
         )}
 
+        {userPosition === "General Manager" ? (
+          <Route path="/gm/*" element={<GM />} />
+        ) : (
+          <Route path="/gm/*" element={<RestrictedPage />} />
+        )}
+
         <Route path="/gm/*" element={<GM />} />
 
-        {userPosition === "HR Manager" ? (
+        {userPosition === "HR Manager" || userPosition === "General Manager" ? (
           <Route path="/hr/*" element={<HR />} />
         ) : (
           <Route path="/hr/*" element={<RestrictedPage />} />
         )}
-        {userPosition === "Service Manager" ? (
+        {userPosition === "Service Manager" ||
+        userPosition === "General Manager" ? (
           <Route path="/sm/*" element={<SM />} />
         ) : (
           <Route path="/sm/*" element={<RestrictedPage />} />
         )}
 
-        {userPosition === "Finance Manager" ? (
+        {userPosition === "Finance Manager" ||
+        userPosition === "General Manager" ? (
           <Route path="/finance/*" element={<Finance />} />
         ) : (
           <Route path="/finance/*" element={<RestrictedPage />} />
         )}
 
-        {userPosition === "Supervisor" ? (
+        {userPosition === "Supervisor" || userPosition === "General Manager" ? (
           <Route path="/supervisor/*" element={<SUPER />} />
         ) : (
           <Route path="/supervisor/*" element={<RestrictedPage />} />
         )}
 
-        {userPosition === "Inventory Manager" ? (
+        {userPosition === "Inventory Manager" ||
+        userPosition === "General Manager" ? (
           <Route path="/im/*" element={<IM />} />
         ) : (
           <Route path="/im/*" element={<RestrictedPage />} />
         )}
 
-        {userPosition === "Customer Service Agent" ? (
+        {userPosition === "Customer Service Agent" ||
+        userPosition === "General Manager" ? (
           <Route path="/cam/*" element={<CAM />} />
         ) : (
           <Route path="/cam/*" element={<RestrictedPage />} />

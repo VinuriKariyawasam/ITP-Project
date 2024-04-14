@@ -21,18 +21,7 @@ const createEmployeeValidationRules = [
   body("gender").notEmpty().withMessage("Gender is required"),
   body("contact").notEmpty().withMessage("Contact number is required"),
   body("startDate").isDate().withMessage("Invalid start date"),
-  body("position")
-    .notEmpty()
-    .withMessage("Position is required")
-    .isIn([
-      "HR Manager",
-      "Inventory Manager",
-      "Service Manager",
-      "Finance Manager",
-      "Supervisor",
-      "Technician",
-    ])
-    .withMessage("Invalid position"),
+  body("position").notEmpty().withMessage("Position is required"),
   body("photo").optional().isString().withMessage("Invalid photo"),
   body("documents")
     .optional()

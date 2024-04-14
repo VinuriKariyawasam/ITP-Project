@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Button,
@@ -18,6 +18,27 @@ import { BsArrowLeft } from "react-icons/bs";
 
 function AddEmp() {
   const [errorMessage, setErrorMessage] = useState("");
+  const [designations, setDesignations] = useState([]);
+
+  //get designations
+  useEffect(() => {
+    const fetchDesignations = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/hr/designations"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch designations");
+        }
+        const data = await response.json();
+        setDesignations(data); // Assuming the response data is an array of designations
+      } catch (error) {
+        console.error("Error fetching designations:", error);
+      }
+    };
+
+    fetchDesignations();
+  }, []);
 
   //to redirect after success
   const navigate = useNavigate();
@@ -234,7 +255,8 @@ function AddEmp() {
                 placeholder="0715897598"
                 {...field}
                 pattern="[0-9]{10}"
-                length="10"
+                maxlength="10"
+                minLength="10"
               />
             )}
           />
@@ -339,21 +361,13 @@ function AddEmp() {
             control={control}
             rules={{ required: "Position is required" }}
             render={({ field }) => (
-              <Form.Select
-                defaultValue="Choose..."
-                {...field}
-                onChange={(e) => {
-                  field.onChange(e);
-                  handlePositionChange(e); // Call function to update selected position
-                }}
-              >
-                <option>Choose...</option>
-                <option value="HR Manager">HR Manager</option>
-                <option value="Inventory Manager">Inventory Manager</option>
-                <option value="Service Manager">Service Manager</option>
-                <option value="Finance Manager">Finance Manager</option>
-                <option value="Supervisor">Supervisor</option>
-                <option value="Technician">Technician</option>
+              <Form.Select {...field}>
+                <option value="">Choose...</option>
+                {designations.map((designation) => (
+                  <option key={designation._id} value={designation.position}>
+                    {designation.position}
+                  </option>
+                ))}
               </Form.Select>
             )}
           />
