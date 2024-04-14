@@ -11,6 +11,7 @@ import BillingForm from "../FinanceMain/BillingForm";
 import BillsList from "../FinanceMain/BillsList";
 import NewInvoice from "../FinanceMain/NewInvoice"
 import PaymentInvoiveList from "../FinanceMain/PaymentInvoiceList";
+import EmpFinance from "../FinanceMain/EmpFinance";
 
 
 
@@ -43,6 +44,8 @@ function Finance() {
         <Route path="billing/all" element={<BillsList/>}/>
         <Route path="invoices/all-invoices" element={<PaymentInvoiveList/>}/>
         <Route path="billing/new-invoice" element={<NewInvoice/>}/>
+
+        <Route path="emp-finance" element={<EmpFinance/>}/>
        
 
        
