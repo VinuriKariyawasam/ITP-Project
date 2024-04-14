@@ -2,20 +2,22 @@ const jwt = require('jsonwebtoken');
 
 const HttpError = require('../models/http-error');
 
-module.exports = (req, res) => {
+module.exports = (req, res,next) => {
   if (req.method === 'OPTIONS') {
     return next();
   }
   try {
+    console.log(req.headers.authorization);
     const token = req.headers.authorization.split(' ')[1]; // Authorization: 'Bearer TOKEN'
     if (!token) {
-      throw new error('Authentication failed!');
+      res.status(401).json('Aurthorization failed');
     }
     const decodedToken = jwt.verify(token, 'super_secret_customer_key');
-    req.userData = { userId: decodedToken.userId,email:decodedToken.email,Name:decodedToken.Name };
+    req.userData = { userId: decodedToken.userId,email:decodedToken.email};
     next();
-  } catch (errorr) {
-    
-    res.status(401).json({ success: false, error: 'authentication failed' });
+  } catch (error) {
+    console.log(error)
+   
+    res.status(401).json('Aurthorization failed');
   }
 };

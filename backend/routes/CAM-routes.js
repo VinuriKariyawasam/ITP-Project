@@ -15,12 +15,15 @@ router.patch('/consultation/update-solution/:id',ConsultationController.updateCo
 router.get('/consultation/get-issue/:id',ConsultationController.getConsultationById)
 
 
+
+
 //Feedback Routes    
 router.post('/feedback/add-feedback',FeedbackController.createFeedback)
 router.get('/feedback/get-feedbacks',FeedbackController.getFeedback)
 router.patch('/feedback/update-feedback/:id',FeedbackController.updateFeedbackById)
 router.delete('/feedback/delete-feedback/:id',FeedbackController.deleteFeedbackById)
 router.get('/feedback/get-feedback/:id',FeedbackController.getFeedbackById)
+
     
 
 
