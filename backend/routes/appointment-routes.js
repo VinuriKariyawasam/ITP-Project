@@ -1,6 +1,6 @@
-const { addperiodicalAppointment,getperiodicalAppointment,updateperiodicalAppointment, deleteperiodicalAppointment,getOneperiodicalAppointment,getOneperiodicalAppointmentbyVno} = require('../controllers/appointment/periodical-controller');
-const { addmechanicalAppointment,getmechanicalAppointment,updatemechanicalAppointment, deletemechanicalAppointment,getOneMechanicalAppointment,getOneMechanicalAppointmentbyVno,getmechanicalappointmentbyDate } = require('../controllers/appointment/mechanical-controller');
-const {addaccidentalAppointment,getaccidentalAppointment,deleteaccidentalAppointment } = require('../controllers/appointment/accidental-controller');
+const { addperiodicalAppointment,getperiodicalAppointment,updateperiodicalAppointment, deleteperiodicalAppointment,getOneperiodicalAppointment,getOneperiodicalAppointmentbyVno,getperiodicalAppointmentbyuserId} = require('../controllers/appointment/periodical-controller');
+const { addmechanicalAppointment,getmechanicalAppointment,updatemechanicalAppointment, deletemechanicalAppointment,getOneMechanicalAppointment,getOneMechanicalAppointmentbyVno,getmechanicalappointmentbyDate,getmechanicalappointmentbyuserId} = require('../controllers/appointment/mechanical-controller');
+const {addaccidentalAppointment,getaccidentalAppointment,deleteaccidentalAppointment,getaccidentalappointmentbyuserId } = require('../controllers/appointment/accidental-controller');
 const { addacceptedappointment,getacceptedappointment,updateacceptedappointment, deleteacceptedappointment,getOneacceptedappointment,getOneacceptedappointmentbyVno,getacceptedappointmentbyDate } = require('../controllers/appointment/acceptedappointment-controller');
 const { addaceptedperiodicalAppointment,getacceptedperiodicalAppointment,getacceptedperiodicalappointmentbyDate} = require('../controllers/appointment/acceptedPeriodical-controller');
 const { addacceptedmechanicalAppointment,getacceptedmechanicalAppointment,getacceptedmechanicalappointmentbyDate} = require('../controllers/appointment/acceptedmechanical-controller');
@@ -17,6 +17,7 @@ router.put('/update-periodicalAppointment/:id', updateperiodicalAppointment);
 router.delete('/delete-periodicalAppointment/:id',deleteperiodicalAppointment);
 router.get('/get-oneperiodicalAppointment/:id',getOneperiodicalAppointment);
 router.get('/get-oneperiodicalAppointmentbyVno/:vNo',getOneperiodicalAppointmentbyVno)
+router.get('/get-periodicalAppointmentbyuserId/:userId',getperiodicalAppointmentbyuserId)
 
 //Mechanical Appointment Routes
 router.post('/addmechanicalAppointment',addmechanicalAppointment )
@@ -26,12 +27,14 @@ router.delete('/delete-mechanicalAppointment/:id',deletemechanicalAppointment)
 router.get('/get-onemechanicalAppointment/:id',getOneMechanicalAppointment)
 router.get('/get-onemechanicalAppointmentbyVno/:vNo',getOneMechanicalAppointmentbyVno)
 router.get('/get-mechanicalAppointmentbyDate/:appointmentdate',getmechanicalappointmentbyDate)
-//router.get('/get-mechanicalAppointmentTimebyDate/:appointmentdate',getMechanicalAppointmenTimetbyDate)
+router.get('/get-mechanicalappointmentbyuserId/:userId',getmechanicalappointmentbyuserId)
 
 //Accidental Appointment Routes
 router.post('/addaccidentalAppointment',ImageUpload.single('image'),addaccidentalAppointment )
 router.get('/get-accidentalAppointment',getaccidentalAppointment )
 router.delete('/delete-accidentalAppointment/:id',deleteaccidentalAppointment)
+router.get('/get-accidentalappointmentbyuserId/:userId',getaccidentalappointmentbyuserId)
+
 
 //Accepteed Appointment Routes
 router.post('/addacceptedappointment',addacceptedappointment )
@@ -42,12 +45,10 @@ router.get('/get-oneacceptedappointment/:id',getOneacceptedappointment)
 router.get('/get-oneacceptedappointmentbyVno/:vNo',getOneacceptedappointmentbyVno)
 router.get('/get-acceptedappointmentbyDate/:appointmentdate',getacceptedappointmentbyDate)
 
-
 //Accepteed Periodical Appointment Routes
 router.post('/addaceptedperiodicalAppointment',addaceptedperiodicalAppointment )
 router.get('/get-acceptedperiodicalAppointment',getacceptedperiodicalAppointment)
 router.get('/get-acceptedperiodicalappointmentbyDate/:appointmentdate',getacceptedperiodicalappointmentbyDate)
-
 
 //Accepteed mechanical Appointment Routes
 router.post('/addacceptedmechanicalAppointment',addacceptedmechanicalAppointment )
