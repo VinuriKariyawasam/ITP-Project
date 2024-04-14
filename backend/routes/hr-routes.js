@@ -9,6 +9,7 @@ const { body } = require("express-validator");
 const router = require("express").Router();
 router.use(bodyParser.json());
 //const StaffCheckAuth = require("../config/auth/staff-check-auth");
+//const NoPayHandler = require("../controllers/hr/noPayHandler");
 
 //--------Employee Routes-----------------
 // Validation rules for creating an employee
@@ -237,5 +238,7 @@ router.delete("/reviews/delete/:id", EmpReviewController.deleteEmpReviewById);
 
 // Route to delete an employee review by ID
 router.get("/emp-reviews", EmpReviewController.getEmpReviews);
+
+//router.get("/nopay", NoPayHandler.getAbsentEmployeesWithoutLeave);
 
 module.exports = router;

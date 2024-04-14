@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Button,
-  Col,
-  Form,
-  Row,
-  FormGroup,
-  ControlLabel,
-  HelpBlock,
-} from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
@@ -129,7 +121,6 @@ function AddEmp() {
   };
 
   //file uplood funxtions
-  // State to store the uploaded files
   // State to store the uploaded files
   const [uploadedFile, setUploadedFile] = useState(null);
 
