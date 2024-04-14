@@ -11,10 +11,6 @@ export default function Logo() {
       <a href="/" className="logo d-flex align-items-center">
         <img src={logo} alt="Logo" />
       </a>
-      <i
-        className="bi bi-list toggle-sidebar-btn"
-        onClick={handleToggleSideBar}
-      ></i>
     </div>
   );
 }

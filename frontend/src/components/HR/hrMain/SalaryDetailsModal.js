@@ -159,20 +159,6 @@ function SalaryDetailsModal({ show, handleClose, id }) {
               <Col xs={12} md={8}>
                 <strong>EPF-8%:</strong>
               </Col>
-              <Col xs={6} md={4} className="text-end">
-                <strong>
-                  Rs.
-                  {salaryDetails.EPFE
-                    ? Number(salaryDetails.EPFE).toFixed(2)
-                    : "0.00"}
-                </strong>
-              </Col>
-            </Row>
-
-            <Row style={{ marginBottom: "10px" }}>
-              <Col xs={12} md={8}>
-                <strong>ETF-3%:</strong>
-              </Col>
               <Col
                 xs={6}
                 md={4}
@@ -181,8 +167,8 @@ function SalaryDetailsModal({ show, handleClose, id }) {
               >
                 <strong>
                   Rs.
-                  {salaryDetails.ETF
-                    ? Number(salaryDetails.ETF).toFixed(2)
+                  {salaryDetails.EPFE
+                    ? Number(salaryDetails.EPFE).toFixed(2)
                     : "0.00"}
                 </strong>
               </Col>
@@ -216,6 +202,19 @@ function SalaryDetailsModal({ show, handleClose, id }) {
                   Rs.
                   {salaryDetails.EPFC
                     ? Number(salaryDetails.EPFC).toFixed(2)
+                    : "0.00"}
+                </strong>
+              </Col>
+            </Row>
+            <Row style={{ marginBottom: "10px" }}>
+              <Col xs={12} md={8}>
+                <strong>ETF-3%:</strong>
+              </Col>
+              <Col xs={6} md={4} className="text-end">
+                <strong>
+                  Rs.
+                  {salaryDetails.ETF
+                    ? Number(salaryDetails.ETF).toFixed(2)
                     : "0.00"}
                 </strong>
               </Col>
