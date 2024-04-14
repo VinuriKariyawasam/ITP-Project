@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams} from "react-router-dom";
 
 import Form from 'react-bootstrap/Form'
@@ -10,129 +11,225 @@ import Card from "react-bootstrap/Card";
 import Accordion from 'react-bootstrap/Accordion';
 
 import axios from 'axios';
+import PageTitle_cam from './PageTitle_cam';
+import FileUpload from "../CUS_CAM/CUS_CAM_util/FileUpload";
 
 function OnlineConsultation(){
 
   const navigate = useNavigate();
-  const { id } = useParams();
-  const [formData, setFormData] = useState({
-      vehicleType: "",
-      component: "",
-      issue: "",
-      solution: "",
-  });
-
-  const [vehicleType, setvehicleType] = useState("");
-  const [component, setcomponent] = useState("");
-  const [issue, setIssue] = useState("");
-  const [files, setFiles] = useState("");
-  const [solution, setUpdatedSolution] = useState("");
-
+ // const { id } = useParams();
   const [Issues, setIssues] = useState([]);
+  const [consultation, setFetchedConsultation] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  function sendIssue(e){
-    e.preventDefault();
+  //validation and submit
+  const {
+    handleSubmit,
+    control,
+    register,
+    setValue,
+    formState: { errors },
+  } = useForm();
 
-    const newConsultation = {
-      vehicleType,
-      component,
-      issue,
-      files,
-    };
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
 
-    axios
-      .post("http://localhost:5000/cam/consultation/add-issue", newConsultation)
-      .then(() => {
-        alert("Issue Added");
-        console.log(newConsultation);
-        window.location.reload()
-        //setIssue("");
-        //setFiles("");
-      })
-      .catch((err) => {
-        alert(err);
+       // Append regular form data
+       Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
       });
-  }
 
-  useEffect(() => {
-    function getIssues() {
-      axios.get("http://localhost:5000/cam/consultation/get-issues")
-      .then((res) => {
-        setIssues(res.data);
-      })
-      .catch((err) => {
-        alert("error");
-      });
+      if (uploadedFile) {
+        formData.append("files", uploadedFile);
+      }
+      // Log FormData object
+      console.log("FormData:", formData);
+
+      console.log("FormData Entries:");
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      const response = await fetch(
+        "http://localhost:5000/cam/consultation/add-issue",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      alert("Consultation created Successfully!");
+      window.location.reload()
+      if (response.status === 201) {
+        // Feedback created successfully
+        const result = await response.json();
+        console.log("Data submitted successfully:", result);
+        alert("Consultation created Successfully!");
+        // Redirect to the specified URL after successful submission
+        navigate("/customer");
+      }else {
+        // Handle other error cases
+        throw new Error("Failed to submit data");
+      }
+      //const result = await response.json();
+      //console.log("Data submitted successfully:", result);
+      //alert("Feedback created Successfully!");
+      // Redirect to the specified URL after successful submission
+      navigate("/customer");
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        // Display error message using alert box
+        setErrorMessage(error.response.data.error);
+        alert(error.response.data.error); // Display error message in an alert box
+      } else {
+        console.error("Error:", error.message);
+      }
     }
-    getIssues();
-  }, []);
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
   };
+
+  //file uplood functions
+  // State to store the uploaded files
+  // State to store the uploaded files
+  const [uploadedFile, setUploadedFile] = useState(null);
+
+  // File input handler for SingleFileUpload component
+  const fileInputHandler = (id, file, isValid) => {
+    if (isValid) {
+      // Set the uploaded file in state
+      setUploadedFile(file);
+    } else {
+      // Handle invalid files if needed
+      console.log("Invalid file:", file);
+    }
+  };
+
+  //get all consultations
+  useEffect(() => {
+    const fetchConsultations = async() => {
+      try{
+        const response = await fetch("http://localhost:5000/cam/consultation/get-issues");
+
+        if(!response.ok){
+          throw new Error(`HTTP error! Status:${response.status}`);
+        }
+        const data = await response.json();
+        setIssues(data.consultations);
+      }catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchConsultations();
+},  []);
+
+//get consultation by Id
+const id = "661b58073ea6d30a9cf8d6e4";
+    const fetchConsultationById = async (id) => {
+      try{
+        const response = await fetch(
+          `http://localhost:5000/cam/consultation/get-issue/${id}`
+        );
+
+        if(!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Fetched consultation from fetch:", data);
+        setFetchedConsultation(data);
+      }catch (error) {
+        console.error("Error fetching consultation:", error);
+        return null;
+      }
+    };
+    useEffect(() => {
+      fetchConsultationById(id);   
+    }, [id]);
+
+     /*----Parts regarding rendering employee personal details-------*/
+  console.log("Rendering modal with consultation data:", consultation);
+  if (!consultation) return null;
+  //destructure Feedback object
+  const {
+    _id,
+    vehicleType,
+    component,
+    issue,
+    solution,
+    files,
+    filesUrls,
+    _v,
+  } = consultation
 
     return(
     <div>
-     <main id="main" style={{marginLeft:"20px"}}>
+     <main style={{marginLeft:"20px"}}>
+     <PageTitle_cam path="consultation" title="OnlineConsultation" />
       <Card style={{height:"100%"}}>
-        <Card.Body style={{alignContent:"center"}}>
-        <h2 style={{marginTop:"5px"}}>Have a Question? Ask Us!</h2>
+        <Card.Body>
+        <h2>Have a Question? Ask Us!</h2>
         <Container>
          <Row>
           <Col>
-           <Form onSubmit={sendIssue}>
+           <Form onSubmit={handleSubmit(onSubmit)}>
            <Row className="mb-3">
                <Form.Group as={Col} controlId="formGridExtra">  
-                  <Form.Label>Type of the Vehicle</Form.Label>   
-                  <Form.Control
-                     as="textarea"
-                     required
-                     type="textarea"
-                     placeholder="Model/Type"
-                     rows={1}
-                     value={vehicleType}
-                     onChange={(e) => setvehicleType(e.target.value)} //one person can have more than 1 car                    
-                 />
+                  <Form.Label>Type of the Vehicle</Form.Label> 
+                  <Controller
+                  name="vehicleType"
+                  control={control}
+                  rules={{required: "Vehicle type is required"}}
+                  render={({field}) => (
+                    <Form.Control
+                    placeholder="Model/Type" {...field}/>
+                  )}  
+                  />
+                  <Form.Text className="text-danger">
+                    {errors.vehicleType?.message}
+                  </Form.Text>    
                </Form.Group>
              </Row>
              <Row className="mb-3">
                <Form.Group as={Col} controlId="formGridExtra">
                   <Form.Label>Component where the issue is occuring</Form.Label>
-                  <Form.Control
-                     as="textarea"
-                     required
-                     type="textarea"
-                     placeholder="ex:Engine/ Tires/ BreakSystem/ GearBox"
-                     rows={1}
-                     value={component}
-                     onChange={(e) => setcomponent(e.target.value)}
-                 />
+                  <Controller
+                  name="component"
+                  control={control}
+                  rules={{required: "Component type is required"}}
+                  render={({field}) => (
+                    <Form.Control
+                    placeholder="Engine / Breaks / GearBox" {...field}/>
+                  )}  
+                  />
+                  <Form.Text className="text-danger">
+                    {errors.component?.message}
+                  </Form.Text>    
                </Form.Group>
              </Row>
              <Row className="mb-3">
                <Form.Group as={Col} controlId="formGridExtra">
                   <Form.Label>Description of the issue</Form.Label>
-                  <Form.Control
-                     as="textarea"
-                     required
-                     type="textarea"
-                     placeholder="your issue"
-                     rows={3}
-                     value={issue}
-                     onChange={(e) => setIssue(e.target.value)}
-                 />
+                  <Controller
+                  name="issue"
+                  control={control}
+                  rules={{required: "Issue is required"}}
+                  render={({field}) => (
+                    <Form.Control
+                    placeholder="Issue" {...field}/>
+                  )}  
+                  />
+                  <Form.Text className="text-danger">
+                    {errors.issue?.message}
+                  </Form.Text>   
                </Form.Group>
              </Row>
              <Row className="mb-3">
                <Form.Group style={{marginTop: "3px"}} controlId="formFileDocuments">
                  <Form.Label>Attach Files</Form.Label>
-                 <Form.Control
-                    type="file"
-                    multiple
-                    value={files}
-                    onChange={(e) => setFiles(e.target.value)}
-                 />
+                 <Form.Label>Attach Files</Form.Label>
+          <FileUpload
+            id="files"
+            onInput={fileInputHandler}
+            errorText={errors.files?.message}
+          />
                </Form.Group>
              </Row>
              <Row className="mb-3">
@@ -146,12 +243,11 @@ function OnlineConsultation(){
          <Col> 
          <Form>
           <Accordion defaultActiveKey="0">
-                  {Issues.map((issue, id) => (
-                      <Accordion.Item key={issue.id} eventKey={id.toString()} style={{marginTop:"5px"}}>
+                      <Accordion.Item key={_id} eventKey={id.toString()} style={{marginTop:"5px"}}>
                         <Accordion.Header style={{fontWeight:"bold"}}>
-                          Vehicle Type : {issue.vehicleType}<br></br>
-                          Component :   {issue.component}<br></br>
-                          Issue :       {issue.issue}<br></br>
+                          Vehicle Type : {vehicleType}<br></br>
+                          Component :   {component}<br></br>
+                          Issue :       {issue}<br></br>
                         </Accordion.Header>
                         <Accordion.Body>
                         <Row className="mb-3">
@@ -167,7 +263,7 @@ function OnlineConsultation(){
                </Form.Group>
           </Row>
           </Accordion.Body>
-          </Accordion.Item>))}
+          </Accordion.Item>
             </Accordion>
           </Form> 
         </Col>
