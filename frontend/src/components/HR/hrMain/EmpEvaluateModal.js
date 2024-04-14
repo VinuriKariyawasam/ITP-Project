@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
 const CreateReviewModal = ({ show, handleClose, empId, empDBId, name }) => {
@@ -17,11 +17,6 @@ const CreateReviewModal = ({ show, handleClose, empId, empDBId, name }) => {
       ...prevData,
       [name]: value,
     }));
-  };
-
-  const handleModalClose = () => {
-    setFormData(initialFormData); // Reset form data when modal is closed
-    handleClose();
   };
 
   const handleFormSubmit = async (e) => {
@@ -48,10 +43,15 @@ const CreateReviewModal = ({ show, handleClose, empId, empDBId, name }) => {
     }
   };
 
+  useEffect(() => {
+    // Reset form data when modal is opened or empId/empDBId/name props change
+    setFormData(initialFormData);
+  }, [show, empId, empDBId, name]);
+
   return (
     <Modal
       show={show}
-      onHide={handleModalClose}
+      onHide={handleClose}
       style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
     >
       <Modal.Header closeButton>

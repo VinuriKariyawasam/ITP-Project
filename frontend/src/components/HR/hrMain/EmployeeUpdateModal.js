@@ -14,9 +14,6 @@ import {
 import "bootstrap-icons/font/bootstrap-icons.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import ImageUpload from "../HrUtil/ImageUpload";
-import FileUpload from "../HrUtil/FileUpload";
-import pdfImage from "../HrImages/pdf-file.png"; // Path to your custom PDF image
 import axios from "axios"; // Import axios for HTTP requests
 import { useNavigate } from "react-router-dom";
 
@@ -318,13 +315,13 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
           {/* System Credentials */}
           {/* Email */}
           {/* Conditional rendering of credentials based on selected position */}
-          {selectedPosition !== "Technician" && (
+          {/*{selectedPosition !== "Technician" && (
             <Row className="mb-3 credentials">
               <h5 className="text-dark">System Credentials</h5>
               <h6 className="text-primary">
                 *Only needed for manager or supervisor
               </h6>
-              {/* Email */}
+              
               <Form.Group as={Col} controlId="formGridEmail">
                 <Form.Label>
                   Email <i className="bi bi-pencil-square"></i>
@@ -352,7 +349,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
                 </Form.Text>
               </Form.Group>
 
-              {/* Password */}
+             
               <Form.Group as={Col} controlId="formGridPassword">
                 <Form.Label>
                   Password <i className="bi bi-pencil-square"></i>
@@ -383,7 +380,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
                 </Form.Text>
               </Form.Group>
             </Row>
-          )}
+          )}*/}
 
           <Button variant="dark" type="submit">
             Update

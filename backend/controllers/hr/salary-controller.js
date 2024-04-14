@@ -56,7 +56,7 @@ class SalaryController {
       const EPFT = EPFC + EPFE;
       const ETF = basicSalary * 0.03;
       const totalSal = basicSalary + allowance;
-      const netSal = totalSal - noPay - EPFE - ETF;
+      const netSal = totalSal - noPay - EPFE;
 
       // Update the salary record with the new values
       const updatedSalary = await Salary.findByIdAndUpdate(

@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 
 const consultationSchema = new mongoose.Schema({
 
-    consultationId :{
-        type : String,
-        required : true,
-    },
     vehicleType :{
         type : String,
         required : true,

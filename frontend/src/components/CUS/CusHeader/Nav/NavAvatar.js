@@ -1,6 +1,21 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import cusavatar from '../../../../images/customerlogo.png'
+import { CusAuthContext } from "../../../../context/cus-authcontext"
+import { useNavigate } from "react-router-dom";
+import { Modal, Button } from 'react-bootstrap';
+
 function NavAvatar() {
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const cusauth = useContext(CusAuthContext);
+  const navigate = useNavigate();
+
+  // Function to handle logout
+  const handleLogout = () => {
+    cusauth.logout(); // Call the logout function from the context
+    setShowLogoutModal(false); // Close the modal
+    navigate("/customer/cuslogin"); // Redirect to the login page after logout
+  };
+
   return (
     <li className="nav-item dropdown pe-3">
       <a
@@ -9,13 +24,13 @@ function NavAvatar() {
         data-bs-toggle="dropdown"
       >
         <img src={cusavatar} alt="Profile" className="rounded-circle" />
-        <span className="d-none d-md-block dropdown-toggle ps-2">T.Eranga</span>
+        <span className="d-none d-md-block dropdown-toggle ps-2">{cusauth.name}</span>
       </a>
 
       <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow cus-profile">
         <li className="cus-dropdown-header">
         <img src={cusavatar} alt="Profile" className="rounded-circle" />
-          <h6 style={{float:"center"}}>Tharii Eranga</h6>
+          <h6 style={{float:"center"}}>{cusauth.name}</h6>
         </li>
         <li>
           <hr className="dropdown-divider" />
@@ -50,7 +65,7 @@ function NavAvatar() {
         <li>
           <a
             className="cus-dropdown-item d-flex align-items-center"
-            href="pages-faq.html"
+            href="http://localhost:3000/customer/appointment/myappointment"
           >
            
             <span>My Appointments</span>
@@ -61,12 +76,41 @@ function NavAvatar() {
         </li>
 
         <li>
-          <a className="cus-dropdown-item d-flex align-items-center" href="/customer/MyAppointment">
+          <a className="cus-dropdown-item d-flex align-items-center" href="/">
             
             <span>Mobile Services</span>
           </a>
         </li>
+
+        <li>
+          <a
+            className="cus-dropdown-item d-flex align-items-center"
+            href="#"
+            onClick={() => setShowLogoutModal(true)} // Show logout modal on click
+          >
+            
+            <span>Log Out</span>
+          </a>
+        </li>
       </ul>
+
+      {/* Logout confirmation modal */}
+      <Modal show={showLogoutModal} onHide={() => setShowLogoutModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Logout Confirmation</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Are you sure you want to logout?</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowLogoutModal(false)}>
+            No
+          </Button>
+          <Button variant="primary" onClick={handleLogout}>
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </li>
   );
 }

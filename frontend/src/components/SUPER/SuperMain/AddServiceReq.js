@@ -233,11 +233,11 @@ function AddServiceReq() {
 
           <div className="d-flex justify-content-center mt-3">
             <Button variant="primary" className="me-5">
-              <Link to="/staff/supervisor/vehicle" className="text-light text-decoration-none">
+              <Link to="/staff/supervisor/serviceReq" className="text-light text-decoration-none">
                 Back
               </Link>
             </Button>
-            <Button type="submit" onClick={handleClick} variant="success">Register</Button>
+            <Button type="submit" onClick={handleClick} variant="success">Add service request</Button>
           </div>
 
           <Modal show={showModal} onHide={handleCloseModal}>
@@ -245,7 +245,7 @@ function AddServiceReq() {
               <Modal.Title>Success</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              Service Request added successfully.
+              Vehicle registered successfully.
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleCloseModal}>Close</Button>

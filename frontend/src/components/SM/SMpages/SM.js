@@ -10,11 +10,13 @@ import Smrecords from "../SMmain/SMService/Smrecords";
 import SMMobileMain from "../SMmain/SMMobileservices/SMMobileMain"
 import SMmMechanicalServices from "../SMmain/SMMobileservices/SMmMechanicalServices";
 import SMmVehicleCarriers from "../SMmain/SMMobileservices/SMmVehicleCarriers";
+import SMmEmBreakdown from "../SMmain/SMMobileservices/SMmEmBreakdown"; 
 import PeriodicalHistory from "../SMmain/SMAppointment/PeriodicalHistory";
 import Mechanicalhistory from "../SMmain/SMAppointment/mechanicalhistory";
 import SMAccidentalRepairs from "../SMmain/SMAppointment/SMAccidental";
 import AccidentalHistory from "../SMmain/SMAppointment/accidentalHistory"
-
+import Smquotation from "../SMmain/SMService/Smquotation";
+import Smreports from "../SMmain/SMService/Smreports";
 // Import front end routes
 import {
   BrowserRouter as Router,
@@ -22,6 +24,8 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+
+
 
 function SM() {
   return (
@@ -43,9 +47,10 @@ function SM() {
         <Route path="record/*" element={<Smrecords />} />
         <Route path="/mobilemain" element={<SMMobileMain/>} />
         <Route path="/mobilemechanical" exact element={<SMmMechanicalServices/>} />
+        <Route path="/breakdownrequests" exact element={<SMmEmBreakdown/>} />
         <Route path="/vehiclecarriers" exact element={<SMmVehicleCarriers/>} />
-
-
+        <Route path="quotation/*" element={<Smquotation/>} />
+        <Route path="report/*" element={<Smreports/>} />
       </Routes>
     </>
   );

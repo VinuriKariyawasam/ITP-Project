@@ -4,7 +4,8 @@ const acceptedaccidentalSchema = require("../../models/appointment/acceptedaccid
 
 exports.addacceptedaccidentalAppointment= async (req, res) => {
     // get data from fronend in request body to backend
-
+    
+    const userId = req.body.userId;
     const name = req.body.name;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
@@ -17,6 +18,7 @@ exports.addacceptedaccidentalAppointment= async (req, res) => {
     
 
     const newacceptedaccidentalAppointment= acceptedaccidentalSchema({
+        userId,
         name,
         vType,
         vNo,

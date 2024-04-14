@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import {
   Row,
@@ -15,13 +15,17 @@ import html2pdf from "html2pdf.js";
 
 import EmployeeUpdateModal from "./EmployeeUpdateModal";
 import EmpEvaluateModal from "./EmpEvaluateModal";
-import UpdateSalaryModal from "./SalaryUpdateModal";
 import SalaryDetailsModal from "./SalaryDetailsModal";
+import MoreReviewsModal from "./MoreReviewModal";
+import SystemCredentialsUpdateModal from "./SystemCredentialsUpdateModal";
+//import { StaffAuthContext } from "../../../Context/Staff/StaffAuthContext";
 
 function EmployeeDetails() {
   const { employeeId } = useParams();
   //to redirect after success
   const navigate = useNavigate();
+  //get token from context
+  //const { token } = useContext(StaffAuthContext);
   //states
   const [employee, setEmployee] = useState(null);
   const [salaryDetails, setSalaryDetails] = useState(null);
@@ -34,6 +38,8 @@ function EmployeeDetails() {
   const [negativeReviews, setNegativeReviews] = useState([]); // State to store negative reviews count
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [selectedRecordId, setSelectedRecordId] = useState(null);
+  const [showReviewsModal, setShowReviewsModal] = useState(false);
+  const [showCredentialsModal, setShowCredentialsModal] = useState(false);
 
   //Function to fetch employee personal data by database
   const fetchEmployeeById = async (employeeId) => {
@@ -137,6 +143,7 @@ function EmployeeDetails() {
     documents,
     photoUrl,
     documentUrls,
+    points,
   } = employee;
 
   // Helper function to format date
@@ -177,6 +184,7 @@ function EmployeeDetails() {
   const handleEvaluateModalClose = () => {
     setShowEvaluateModal(false);
     fetchReviews(employeeId);
+    fetchEmployeeById(employeeId);
   };
 
   const handleEvaluateModalShow = () => {
@@ -235,6 +243,31 @@ function EmployeeDetails() {
   const handleCloseModal = () => {
     setShowSalaryModal(false);
     fetchSalaryDetails(employeeId);
+  };
+
+  /*----Parts regarding more reviews modal-------*/
+  // Function to handle opening the modal
+  const handleOpenReviewsModal = () => {
+    setShowReviewsModal(true);
+  };
+
+  // Function to handle closing the modal
+  const handleCloseReviewModal = () => {
+    setShowReviewsModal(false); // Close the modal
+    fetchReviews(employeeId); // Fetch reviews again to update the count
+    fetchEmployeeById(employeeId); // Fetch employee data again to update the points
+  };
+
+  /*----Parts regarding update credentials modal-------*/
+  // Function to show the modal
+  const showCredentialsModalHandler = () => {
+    setShowCredentialsModal(true);
+  };
+
+  // Function to hide the modal
+  const hideCredentialsModalHandler = () => {
+    setShowCredentialsModal(false);
+    fetchEmployeeById(employeeId);
   };
 
   return (
@@ -314,40 +347,49 @@ function EmployeeDetails() {
               </Row>
 
               <Row style={{ marginBottom: "10px" }}>
-                <Col xs={12} md={6}>
-                  <strong>Email:</strong> {email}
-                </Col>
-                <Col xs={12} md={6}>
-                  <strong>Password:</strong> {password}
-                </Col>
+                {points && (
+                  <Col xs={12} md={6}>
+                    <strong>Grading Points:</strong> {points}
+                  </Col>
+                )}
+                {email != "undefined" && (
+                  <Col xs={12} md={6}>
+                    <strong>Email:</strong> {email}
+                  </Col>
+                )}
               </Row>
 
               <Row style={{ marginBottom: "10px" }}>
                 <Col>
-                  <strong>Other Details:</strong> {otherDetails}
+                  <strong>Other Details:</strong>{" "}
+                  {otherDetails !== "undefined"
+                    ? otherDetails
+                    : "No other details"}
                 </Col>
               </Row>
 
               <Row style={{ marginBottom: "10px" }}>
-                <Col>
-                  <strong>Documents:</strong>
-                  <ul>
-                    {documentUrls.map((docUrl) => {
-                      // Extract the file name from the URL
-                      const fileName = docUrl.substring(
-                        docUrl.lastIndexOf("/") + 1
-                      );
+                {documentUrls.length >= 1 && (
+                  <Col>
+                    <strong>Documents:</strong>
+                    <ul>
+                      {documentUrls.map((docUrl) => {
+                        // Extract the file name from the URL
+                        const fileName = docUrl.substring(
+                          docUrl.lastIndexOf("/") + 1
+                        );
 
-                      return (
-                        <li key={docUrl}>
-                          <a href={docUrl} target="_blank">
-                            {fileName}
-                          </a>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </Col>
+                        return (
+                          <li key={docUrl}>
+                            <a href={docUrl} target="_blank">
+                              {fileName}
+                            </a>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </Col>
+                )}
               </Row>
             </Container>
             <hr />
@@ -364,8 +406,17 @@ function EmployeeDetails() {
               onClick={handleUpdateClick}
               style={{ margin: "10px" }}
             >
-              Update
+              Update Details
             </Button>
+            {employee.position != "Technician" && (
+              <Button
+                variant="dark"
+                onClick={showCredentialsModalHandler}
+                style={{ margin: "10px" }}
+              >
+                Update Credentials
+              </Button>
+            )}
             <Button
               variant="danger"
               onClick={handleDeleteClick}
@@ -458,20 +509,6 @@ function EmployeeDetails() {
                     <Col xs={12} md={8}>
                       <strong>EPF-8%:</strong>
                     </Col>
-                    <Col xs={6} md={4} className="text-end">
-                      <strong>
-                        Rs.
-                        {salaryDetails.EPFE
-                          ? Number(salaryDetails.EPFE).toFixed(2)
-                          : "0.00"}
-                      </strong>
-                    </Col>
-                  </Row>
-
-                  <Row style={{ marginBottom: "10px" }}>
-                    <Col xs={12} md={8}>
-                      <strong>ETF-3%:</strong>
-                    </Col>
                     <Col
                       xs={6}
                       md={4}
@@ -480,8 +517,8 @@ function EmployeeDetails() {
                     >
                       <strong>
                         Rs.
-                        {salaryDetails.ETF
-                          ? Number(salaryDetails.ETF).toFixed(2)
+                        {salaryDetails.EPFE
+                          ? Number(salaryDetails.EPFE).toFixed(2)
                           : "0.00"}
                       </strong>
                     </Col>
@@ -515,6 +552,19 @@ function EmployeeDetails() {
                         Rs.
                         {salaryDetails.EPFC
                           ? Number(salaryDetails.EPFC).toFixed(2)
+                          : "0.00"}
+                      </strong>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginBottom: "10px" }}>
+                    <Col xs={12} md={8}>
+                      <strong>ETF-3%:</strong>
+                    </Col>
+                    <Col xs={6} md={4} className="text-end">
+                      <strong>
+                        Rs.
+                        {salaryDetails.ETF
+                          ? Number(salaryDetails.ETF).toFixed(2)
                           : "0.00"}
                       </strong>
                     </Col>
@@ -554,11 +604,13 @@ function EmployeeDetails() {
                 </h5>
               </Col>
               <Col>
-                <Button variant="primary" style={{ margin: "10px" }}>
+                <Button
+                  variant="primary"
+                  onClick={handleOpenReviewsModal}
+                  style={{ margin: "10px" }}
+                >
                   More
                 </Button>
-              </Col>
-              <Col>
                 <Button
                   variant="success"
                   onClick={handleEvaluateModalShow}
@@ -616,6 +668,21 @@ function EmployeeDetails() {
         show={showSalaryModal}
         handleClose={handleCloseModal}
         id={selectedRecordId}
+      />
+
+      {/* Render the MoreReviewsModal with appropriate props */}
+      <MoreReviewsModal
+        show={showReviewsModal}
+        handleClose={handleCloseReviewModal}
+        reviews={reviews}
+        employeeId={employeeId}
+      />
+
+      {/* Render the SystemCredentialsUpdateModal */}
+      <SystemCredentialsUpdateModal
+        show={showCredentialsModal}
+        onHide={hideCredentialsModalHandler}
+        employee={employee}
       />
     </Card>
   );
