@@ -7,87 +7,120 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from "react-bootstrap/Modal";
+import UpdateSolutionModal from './UpdateSolutionModal';
 
 const ConsultancyPage = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const [Issues, setIssues] = useState([]);
+  //const { id } = useParams();
+  const [Consultation, setConsultation] = useState([]);
+  const [consultation, setFetchedConsultation] = useState([]);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [consultToDelete, setconsultToDelete] = useState(null);
-  const [solution, setUpdatedSolution] = useState("");
-  const [formData, setFormData] = useState({
-    //vehicleType: "",
-    //component: "",
-    //issue: "",
-    solution: "",
-  });
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
-  function sendSolution(e){
-    e.preventdefault();
-
-  }
-
+  //Get all the consultations from the db
   useEffect(() => {
-      fetch("http://localhost:5000/cam/consultation/get-issues")
-      .then((response) => response.json())
-      .then((data) => setIssues(data))  
-      .catch((error) => console.error("Error fetching issues:", error));   
-  }, []);
+    const fetchConsultations = async() => {
+      try{
+        const response = await fetch("http://localhost:5000/cam/consultation/get-issues");
 
-  const handleEditIssue = (id) => {
-    navigate(`edit-solution/${id}`);
-  };
+        if(!response.ok){
+          throw new Error(`HTTP error! Status:${response.status}`);
+        }
+        const data = await response.json();
+        setConsultation(data.consultations);
+      }catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchConsultations();
+},  []);
 
-  const handleDeleteIssue = (id) => {
-    setconsultToDelete(id);
-    setShowDeleteModal(true);
-  };
+//Get consultations by Id
+const id = "661b58073ea6d30a9cf8d6e4";
+const fetchConsultationById = async (id) => {
+  try{
+    const response = await fetch(
+      `http://localhost:5000/cam/consultation/get-issue/${id}`
+    );
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    fetch(`http://localhost:5000/cam/consultation/update-solution/${id}`,{
-      method: "PATCH",
+    if(!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log("Fetched consultation from fetch:", data);
+    setFetchedConsultation(data);
+  }catch (error) {
+    console.error("Error fetching consultation:", error);
+    return null;
+  }
+};
+useEffect(() => {
+  fetchConsultationById(id);   
+}, [id]);
+
+
+/*----Parts regarding rendering employee personal details-------*/
+  console.log("Rendering modal with feedback data:", Consultation);
+  if (!Consultation) return null;
+  //destructure Feedback object
+  const {
+    _id,
+    serviceType,
+    employee,
+    feedback,
+    files,
+    filesUrls,
+    _v,
+  } = Consultation
+
+//when post button clicks
+const handleMoreButtonClick = async (consultId) => {
+  navigate(`consultDetails/${consultId}`);
+};
+//when update button clicks
+const handleUpdateClick = () => {
+  setShowUpdateModal(true);
+};
+// Handle update consultation
+const handleUpdateConsultation = async (updatedData) => {
+  // Logic to update employee data
+  console.log("Updated consultation data:", updatedData);
+  fetchConsultationById(id); //this used because of error
+  setShowUpdateModal(false); // Close the update modal
+};
+//when delete button clicks
+const handleDeleteClick = () => {
+  // Show confirmation dialog box
+  setShowConfirmDelete(true);
+};
+
+const handleConfirmDelete = async () => {
+  try{
+    await fetch(`http://localhost:5000/cam/feedback/delete-feedback/${_id}`,{
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        // Add any additional headers if required
       },
-      body: JSON.stringify(formData),
-    })
-    .then(() => {
-      console.log("Solution updated successfully");
-      navigate(-1);
-    })
-    .catch((error) => console.error("Error updating solution:",error));
-  };
-
-  const confirmDeleteIssue = () => {
-    fetch(
-      `http://localhost:5000/cam/consultation/delete-solution/${consultToDelete}`,
-      {
-        method: "DELETE",
-      }
-    )
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Consultation deleted successfully");
-      //update the state by removing the deleted consultation
-      setIssues(Issues.filter((inc) => inc._id !== consultToDelete));
-      //close the modal after deletion
-      setShowDeleteModal(false);
-    })
-    .catch((error) => console.error("Error deleting income:", error));
-  };
-
-  const handleCloseModal = () => {
-    setShowDeleteModal(false);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
+      // Optionally, include credentials if necessary
+      // credentials: 'include',
     });
-  };
+
+    // Close the modal
+    setShowConfirmDelete(false);
+    //relaod the feedback page after deletion
+    navigate("customer/cusaffairs/allfeedback");
+  }catch (error) {
+    console.error("Error deleting feedback:", error);
+    // Handle error (e.g., display error message)
+  }
+};
+
+const handleCancelDelete = () => {
+  // Close the confirmation dialog box
+  setShowConfirmDelete(false);
+};
 
   return(
     <main>
@@ -95,57 +128,74 @@ const ConsultancyPage = () => {
         <h2><b>Issues</b></h2>
           <Form>
             <Accordion defaultActiveKey="0">
-              {Issues.map((issue, index) => (
-                <Accordion.Item key={issue._id} eventKey={issue._id.toString()} style={{marginTop:"5px"}}>
+              {Consultation.map((consultation, index) => (
+                <Accordion.Item key={index} eventKey={consultation._id.toString()} style={{marginTop:"5px"}}>
                   <Accordion.Header style={{fontWeight:"bold"}}>
-                    Vehicle Type : {issue.vehicleType}<br></br>
-                    Component : {issue.component}<br></br>
-                    Issue : {issue.issue}<br></br>
+                    Vehicle Type : {consultation.vehicleType}<br></br>
+                    Component : {consultation.component}<br></br>
+                    Issue : {consultation.issue}<br></br>
                   </Accordion.Header>
               <Accordion.Body>
                 <Row className="mb-3">
                 <Button variant="success" size='md'
-               onClick={() => handleDeleteIssue(issue._id)}>
-                  Post Solution</Button>
+               onClick={() => handleMoreButtonClick(consultation._id)}
+               >Post Solution</Button>
                 <Form.Group as={Col} controlId="solutionToupdate" style={{marginTop:"5px"}}>
                  <Form.Label>Solution from the Experts</Form.Label>
                  <Form.Control
                    as="textarea"
                    type="textarea"
                    placeholder="Answer Pending..."
-                   rows={4}/>
+                   rows={4}
+                   value={consultation.solution}/>
                </Form.Group>
+               <Button
+              variant="dark"
+              onClick={handleUpdateClick}
+              style={{margin: "10px"}}
+            >
+              Update
+            </Button>
+            <Button
+              variant="danger"
+              onClick={handleDeleteClick}
+              style={{margin: "10px"}}
+            >
+              Delete
+            </Button>
                 </Row>
              </Accordion.Body>
           </Accordion.Item>))}
         </Accordion>
-       </Form>      
+       </Form> 
+       {/* Render the FeedbackUpdateModal when showUpdateModal is true */}
+   {showUpdateModal && (
+    <UpdateSolutionModal
+    show={showUpdateModal}
+    onHide={() => setShowUpdateModal(false)}
+    Consultation={Consultation}
+    onUpdate={handleUpdateConsultation}
+    />
+   )}
+   {/* confirmation dialog box */}
+       <Modal
+        show={showConfirmDelete}
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this Solution?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCancelDelete}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleConfirmDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>     
     </div>
-    {/*update modal*/}
-    <Modal show={showDeleteModal} onHide={handleCloseModal}>
-      <Modal.Header closeButton>
-        <Modal.Title>Solution</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>update solution
-      <Form onSubmit={handleFormSubmit}>
-   <Form.Group as={Col} controlId="solution" style={{marginTop:"5px"}}>
-      <Form.Label>Solution from the Experts</Form.Label>
-        <Form.Control
-          type="textarea"
-          placeholder="Answer Pending..."
-          rows={4}
-          value={formData.solution}
-          //onChange={handleChange}
-          />
-    </Form.Group>
-    </Form>
-      </Modal.Body>
-      <Modal.Footer>
-      <Button className='cam-editbtn' variant="dark" size="md" type="submit">Update</Button>
-     <Button className='cam-deletebtn' variant="dark" size="md" onClick={confirmDeleteIssue}>Delete</Button>
-     <Button className='cam-gotobtn' variant="dark" size="md" onClick={handleCloseModal}>Cancel</Button>
-      </Modal.Footer>
-    </Modal>
   </main>
   );
 };
