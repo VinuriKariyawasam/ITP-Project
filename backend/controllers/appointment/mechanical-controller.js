@@ -164,4 +164,16 @@ exports.getmechanicalappointmentbyDate = async (req, res) => {
         res.status(500).send({ status: "Error with getting user", error: err.message });
     }
 }
- 
+exports.getmechanicalappointmentbyuserId = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const mechanicalappointment = await mechanicalSchema.find({ userId: userId });
+        if (mechanicalappointment) {
+            res.status(200).send({ status: "User fetched", data: mechanicalappointment });
+        } else {
+            res.status(404).send({ status: "User not found" });
+        }
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting user", error: err.message });
+    }
+}
