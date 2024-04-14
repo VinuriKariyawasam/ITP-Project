@@ -14,17 +14,9 @@ const Incomes = () => {
   const [incomeToDelete, setIncomeToDelete] = useState(null);
 
   useEffect(() => {
-    if (!cusauth.token) {
-      // Token not available, handle accordingly
-      console.log("Token not available");
-      return;
-    }
-
+    
     fetch("http://localhost:5000/api/finance/incomes", {
-      method: "GET",
-      // headers: {
-      //   Authorization: `Bearer ${cusauth.token}`,
-      // },
+      
     })
       .then((response) => {
         if (!response.ok) {
@@ -38,7 +30,8 @@ const Incomes = () => {
       .catch((error) => {
         console.error("Error fetching incomes:", error);
       });
-  }, [cusauth.token]);
+  }, []);
+
 
   const handleAddIncomeClick = () => {
     navigate("add-income");

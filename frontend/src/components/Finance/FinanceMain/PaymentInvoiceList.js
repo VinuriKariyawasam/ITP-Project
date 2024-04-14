@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Tab, Tabs } from 'react-bootstrap';
-import PageTitle from './PageTitle';
 
 const PaymentRecordPage = () => {
   const [key, setKey] = useState('onlinePayments'); // State to manage active tab
@@ -39,7 +38,7 @@ const PaymentRecordPage = () => {
   return (
     <main id="main" className="main">
       <div>
-      <PageTitle path="Finance / Payment-Invoices" title="Payment Invoices" />
+        <h1>Payment Records</h1>
         <br />
         <Tabs id="payment-tabs" activeKey={key} onSelect={(k) => setKey(k)}>
           <Tab eventKey="onlinePayments" title="Online Payments">

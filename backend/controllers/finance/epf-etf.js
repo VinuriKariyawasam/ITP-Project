@@ -60,9 +60,40 @@ const getAllEmpBenefits = async (req, res) => {
   }
 };
 
+
+const updateSalaryListStatus = async (req, res) => {
+  const { id } = req.params; // Assuming you're passing the ID in the request parameters
+  const { status } = req.body;
+
+  try {
+    // Find the monthly salary entry by ID
+    const monthlySalary = await monthlySalarySchema.findById(id);
+
+    if (!monthlySalary) {
+      return res.status(404).json({ error: 'Monthly salary entry not found' });
+    }
+
+    // Update the status
+    monthlySalary.status = status;
+    
+    // Save the updated entry
+    await monthlySalary.save();
+
+    // Respond with the updated entry
+    res.json(monthlySalary);
+  } catch (error) {
+    console.error('Error updating monthly salary status:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+
 module.exports = {
   addEmpBenefits,
   getMonthlySalaryList,
   getAllEmpBenefits,
   getPendingSalaryLists,
+  updateSalaryListStatus,
+
 };
