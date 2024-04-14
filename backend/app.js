@@ -15,19 +15,23 @@ app.use(express.urlencoded({ extended: false }));
 //app.use(cors());
 
 
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE,PATCH');
   res.setHeader('Access-Control-Allow-Headers', 'authorization, Content-Type');
+
   next();
 });
 
 app.use("/uploads/hr", express.static(path.join(__dirname, "uploads", "hr")));
 app.use("/uploads/SM", express.static(path.join(__dirname, "uploads", "SM")));
 app.use("/uploads/im", express.static(path.join(__dirname, "uploads", "im")));
-app.use("/uploads/SM/Appointment", express.static(path.join(__dirname, "uploads", "SM", "Appointment")));
-readdirSync("./routes").map((route) =>
-  app.use("/api/customer", require("./routes/" +route))
+
+
+app.use(
+  "/uploads/SM/Appointment",
+  express.static(path.join(__dirname, "uploads", "SM", "Appointment"))
 );
 
 
@@ -71,6 +75,10 @@ readdirSync("./routes").map((route) =>
 );
 
 //Load customer routes
+
+readdirSync("./routes").map((route) =>
+  app.use("/api/customer", require("./routes/" + route))
+);
 
 
 //handle 404 errors

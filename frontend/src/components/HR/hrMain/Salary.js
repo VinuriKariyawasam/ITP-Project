@@ -284,7 +284,7 @@ function Salary() {
                 <td>Rs.{record.totalSal}</td>
                 <td>
                   Rs.
-                  {record.noPay + record.ETF + record.EPFE}
+                  {record.noPay + record.EPFE}
                 </td>
                 <td>Rs.{record.netSal}</td>
                 <td>
