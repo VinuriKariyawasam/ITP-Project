@@ -83,6 +83,16 @@ function TodayLeaves() {
     setShowDeleteConfirmationModal(false);
   };
 
+  // Check if there are any leaves for today
+  const leavesForToday =
+    Array.isArray(leaveRecords) &&
+    leaveRecords.some(
+      (record) =>
+        record.status === "Approved" &&
+        isDateInRange(today, new Date(record.fromDate), new Date(record.toDate))
+    );
+  console.log(leavesForToday);
+
   return (
     <>
       <Toast
@@ -110,55 +120,64 @@ function TodayLeaves() {
         <Card.Body
           style={{ backgroundColor: "white", border: "1px solid black" }}
         >
-          <table className="table table-rounded">
-            <thead style={{ backgroundColor: "lightgray" }}>
-              <tr style={{ backgroundColor: "lightgray" }}>
-                <th>EmpId</th>
-                <th>Name</th>
-                <th>Date Range</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array.isArray(leaveRecords) &&
-                leaveRecords.map((record) => {
-                  if (
-                    record &&
-                    record.status === "Approved" &&
-                    isDateInRange(
-                      today,
-                      new Date(record.fromDate),
-                      new Date(record.toDate)
-                    )
-                  ) {
-                    return (
-                      <tr key={record._id}>
-                        <td>{record.empId}</td>
-                        <td>{record.name}</td>
-
-                        <td>{`${new Date(
-                          record.fromDate
-                        ).toLocaleDateString()} - ${new Date(
-                          record.toDate
-                        ).toLocaleDateString()}`}</td>
-                        <td>
-                          <Button
-                            variant="dark"
-                            size="sm"
-                            style={{ margin: "5px" }}
-                            onClick={() => handleDeleteConfirmation(record._id)}
-                          >
-                            <i className="bi bi-trash"></i> {/* Delete icon */}
-                          </Button>{" "}
-                        </td>
-                      </tr>
-                    );
-                  } else {
-                    return null;
-                  }
-                })}
-            </tbody>
-          </table>
+          {leavesForToday ? (
+            <table className="table table-rounded">
+              <thead style={{ backgroundColor: "lightgray" }}>
+                <tr style={{ backgroundColor: "lightgray" }}>
+                  <th>EmpId</th>
+                  <th>Name</th>
+                  <th>Date Range</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.isArray(leaveRecords) ? (
+                  leaveRecords.map((record) => {
+                    if (
+                      record &&
+                      record.status === "Approved" &&
+                      isDateInRange(
+                        today,
+                        new Date(record.fromDate),
+                        new Date(record.toDate)
+                      )
+                    ) {
+                      return (
+                        <tr key={record._id}>
+                          <td>{record.empId}</td>
+                          <td>{record.name}</td>
+                          <td>{`${new Date(
+                            record.fromDate
+                          ).toLocaleDateString()} - ${new Date(
+                            record.toDate
+                          ).toLocaleDateString()}`}</td>
+                          <td>
+                            <Button
+                              variant="dark"
+                              size="sm"
+                              style={{ margin: "5px" }}
+                              onClick={() =>
+                                handleDeleteConfirmation(record._id)
+                              }
+                            >
+                              <i className="bi bi-trash"></i>{" "}
+                              {/* Delete icon */}
+                            </Button>{" "}
+                          </td>
+                        </tr>
+                      );
+                    } else {
+                      return null;
+                    }
+                  })
+                ) : (
+                  <h4>No leave records found</h4>
+                )}
+              </tbody>
+            </table>
+          ) : (
+            <h4>No leave records found</h4>
+          )}
         </Card.Body>
       </Card>
       {/* Delete confirmation modal */}

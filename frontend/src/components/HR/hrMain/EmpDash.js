@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Row, Stack, Card } from "react-bootstrap";
+import { Button, Form, Row, Stack, Card, Col } from "react-bootstrap";
 import "./empdash.css";
 import { CSVLink } from "react-csv";
 import html2pdf from "html2pdf.js";
-
 import { useNavigate } from "react-router-dom";
 
 function EmpDash() {
@@ -13,48 +12,11 @@ function EmpDash() {
   //to all emplyees
   const [tableData, setTableData] = useState([]);
 
-  //to modal parts
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [isDataUpdated, setIsDataUpdated] = useState(false);
-
-  //refresh details modal after update
-  // useEffect to listen for changes in isDataUpdated
-  useEffect(() => {
-    if (isDataUpdated) {
-      setShowModal(true); // Show the modal when data is updated
-      setIsDataUpdated(false); // Reset isDataUpdated after refreshing modal
-    }
-  }, [isDataUpdated]);
-
-  // handleUpdateEmployee function to pass to EmployeeDetailsModal
-  const handleUpdateEmployee = (updatedData) => {
-    // Logic to update employee data
-    console.log("Updated employee data:", updatedData);
-    setIsDataUpdated(true); // Set isDataUpdated to trigger modal refresh
-  };
-
-  //To modal data fetch
-  // Assume you have a function to fetch employee data by ID
-  const fetchEmployeeById = async (employeeId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/hr/employee/${employeeId}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log("Fetched employee data from fetch:", data);
-      return data;
-    } catch (error) {
-      console.error("Error fetching employee data:", error);
-      return null;
-    }
-  };
+  //for search part
+  const [filteredTableData, setFilteredTableData] = useState([]);
+  const [searchName, setSearchName] = useState("");
+  const [searchEmployeeID, setSearchEmployeeID] = useState("");
+  const [searchPosition, setSearchPosition] = useState("");
 
   //to all employee details fetch
   useEffect(() => {
@@ -82,21 +44,31 @@ function EmpDash() {
 
   //reagarding modal
   const handleMoreButtonClick = async (employeeId) => {
-    /*console.log("More button clicked:", employeeId);
-    setSelectedEmployeeId(employeeId);
-    const employee = await fetchEmployeeById(employeeId);
-    console.log("Fetched employee data on click:", employee);
-    setSelectedEmployee(employee);
-    setShowModal(true);*/
     // Navigate to another URL when the "More" button is clicked
     navigate(`empDetails/${employeeId}`);
   };
 
-  const handleCloseModal = () => {
-    console.log("Closing modal");
-    setShowModal(false);
-    setSelectedEmployeeId(null);
-    setSelectedEmployee(null);
+  // Filter table data based on search queries
+  useEffect(() => {
+    const filteredData = tableData.filter((employee) => {
+      const nameMatches =
+        employee.firstName.toLowerCase().includes(searchName.toLowerCase()) ||
+        employee.lastName.toLowerCase().includes(searchName.toLowerCase());
+      const employeeIDMatches = employee.empId
+        .toLowerCase()
+        .includes(searchEmployeeID.toLowerCase());
+      const positionMatches = employee.position
+        .toLowerCase()
+        .includes(searchPosition.toLowerCase());
+      return nameMatches && employeeIDMatches && positionMatches;
+    });
+    setFilteredTableData(filteredData);
+  }, [tableData, searchName, searchEmployeeID, searchPosition]);
+
+  const clearFilters = () => {
+    setSearchName("");
+    setSearchEmployeeID("");
+    setSearchPosition("");
   };
 
   //CSV Data generation
@@ -105,7 +77,7 @@ function EmpDash() {
 
     // Add table name and generated date as the first two rows
     const csvData = [
-      ...tableData.map((record) => ({
+      ...filteredTableData.map((record) => ({
         EmployeeId: record.empId,
         Name: record.firstName + " " + record.lastName,
         Position: record.position,
@@ -141,17 +113,6 @@ function EmpDash() {
         <Card.Body style={{ backgroundColor: "white", padding: "25px" }}>
           <Row>
             <Stack direction="horizontal" gap={3}>
-              <div className="p-2">
-                <Form className="d-flex">
-                  <Form.Control
-                    type="search"
-                    placeholder="Search"
-                    className="me-2 hr-custom-input"
-                    aria-label="Search"
-                  />
-                  <Button variant="outline-dark">Search</Button>
-                </Form>
-              </div>
               <div className="p-2 ms-auto">
                 <Button
                   variant="dark"
@@ -187,6 +148,46 @@ function EmpDash() {
               </div>
             </Stack>
           </Row>
+          <hr />
+          <Form>
+            <Row>
+              <Col md={3}>
+                <Form.Group controlId="searchName">
+                  <Form.Control
+                    type="text"
+                    placeholder="Search by name..."
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={3}>
+                <Form.Group controlId="searchEmployeeID">
+                  <Form.Control
+                    type="text"
+                    placeholder="Search by payment ID..."
+                    value={searchEmployeeID}
+                    onChange={(e) => setSearchEmployeeID(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={3}>
+                <Form.Group controlId="searchPosition">
+                  <Form.Control
+                    type="text"
+                    placeholder="Search by position..."
+                    value={searchPosition}
+                    onChange={(e) => setSearchPosition(e.target.value)}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={2}>
+                <Button variant="secondary" onClick={clearFilters}>
+                  Clear Search
+                </Button>
+              </Col>
+            </Row>
+          </Form>
 
           <div className="table hr-t empList">
             <table
@@ -208,8 +209,9 @@ function EmpDash() {
                 </tr>
               </thead>
               <tbody>
-                {tableData.map((employee, index) => (
+                {filteredTableData.map((employee, index) => (
                   <tr key={index}>
+                    <td>{employee.empId}</td>
                     <td>{employee.firstName}</td>
                     <td>{employee.lastName}</td>
                     <td>{employee.position}</td>
