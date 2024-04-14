@@ -30,7 +30,7 @@ const { sendMail } = require("../config/nodemailer");
 // router.patch("/expenses/update-expense/:id", updateExpense);
 // router.get("/expenses/get-expense/:id", getExpenseById);
 
-router.use(checkAuth)
+// router.use(checkAuth)
 router.get("/expenses", getExpenses);
 router.get("/incomes", getIncomes);
 
