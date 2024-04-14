@@ -3,18 +3,50 @@ import React, { useEffect, useState } from "react";
 import { Badge, Button, Modal } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 import html2pdf from "html2pdf.js";
+import DatePicker from "react-datepicker"; // Import the date picker component
+import "react-datepicker/dist/react-datepicker.css"; // Date picker styles
 
 const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
   const [presentCount, setPresentCount] = useState(0);
   const [absentCount, setAbsentCount] = useState(0);
   const [selectedAttendance, setSelectedAttendance] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  //const [selectedRecord, setSelectedRecord] = useState(null);
-  //const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+  const [selectedDate, setSelectedDate] = useState(null); // State for selected date
+  const [filteredTableData, setFilteredTableData] = useState([]);
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const clearDateSelection = () => {
+    setSelectedDate(null);
+  };
+
+  useEffect(() => {
+    const filteredData = attendRecords.filter((record) => {
+      if (!selectedDate) return true; // Render all records if no date is selected
+      const recordDate = new Date(record.date);
+      return recordDate.toDateString() === selectedDate.toDateString();
+    });
+
+    // Calculate present and absent counts for the selected date
+    let present = 0;
+    let absent = 0;
+    filteredData.forEach((record) => {
+      record.employeeAttendance.forEach((emp) => {
+        if (emp.value) present++;
+        else absent++;
+      });
+    });
+    setPresentCount(present);
+    setAbsentCount(absent);
+
+    setFilteredTableData(filteredData);
+  }, [attendRecords, selectedDate]);
 
   //render table rows with data
   const renderTableRows = () => {
-    return attendRecords.map((record) => {
+    return filteredTableData.map((record) => {
       return (
         <tr key={record._id}>
           <td>
@@ -56,7 +88,7 @@ const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
     setShowModal(false);
   };
   //generate CSV data
-  const csvData = attendRecords.map((record) => {
+  const csvData = filteredTableData.map((record) => {
     const presentCount = record.employeeAttendance.filter(
       (emp) => emp.value
     ).length;
@@ -112,7 +144,7 @@ const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
     };
 
     // Generate table rows dynamically based on the current state of table data
-    const tableRows = attendRecords
+    const tableRows = filteredTableData
       .filter((record) => dateFilter(record.date))
       .map((record) => {
         const attendanceRows = record.employeeAttendance
@@ -207,6 +239,16 @@ const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
         Create Report(.PDF)
         <span className="bi bi-file-pdf" style={{ marginRight: "5px" }}></span>
       </Button>
+      <div>
+        <DatePicker
+          selected={selectedDate}
+          onChange={handleDateChange}
+          dateFormat="dd/MM/yyyy"
+          placeholderText="Select Date"
+        />
+        <Button onClick={clearDateSelection}>Clear Selection</Button>
+        {/* Rest of the component JSX */}
+      </div>
 
       <div id="attendRecordsTable" className="table">
         <h3>{tableName}</h3>

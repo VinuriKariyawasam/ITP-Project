@@ -165,7 +165,7 @@ function EmpDash() {
                 <Form.Group controlId="searchEmployeeID">
                   <Form.Control
                     type="text"
-                    placeholder="Search by payment ID..."
+                    placeholder="Search by employee ID..."
                     value={searchEmployeeID}
                     onChange={(e) => setSearchEmployeeID(e.target.value)}
                   />

@@ -1,8 +1,10 @@
-// LeaveRecordsTable.js
-import React, { useEffect } from "react";
-import { Badge, Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Badge, Button, Form, Col, Row } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 import html2pdf from "html2pdf.js";
+import { DateRange } from "react-date-range";
+import "react-date-range/dist/styles.css"; // Main style file
+import "react-date-range/dist/theme/default.css"; // Theme CSS file
 
 const LeaveRecordsTable = ({
   leaveRecords,
@@ -10,8 +12,63 @@ const LeaveRecordsTable = ({
   dateFilter,
   tableName,
 }) => {
+  const [filteredTableData, setFilteredTableData] = useState([]);
+  const [searchName, setSearchName] = useState("");
+  const [searchEmployeeID, setSearchEmployeeID] = useState("");
+  const [searchDateRange, setSearchDateRange] = useState([
+    {
+      startDate: null,
+      endDate: null,
+      key: "selection",
+    },
+  ]);
+  const [showCalendar, setShowCalendar] = useState(false); // State to toggle calendar visibility
+
+  useEffect(() => {
+    const filteredData = leaveRecords.filter((record) => {
+      const nameMatches = record.name
+        .toLowerCase()
+        .includes(searchName.toLowerCase());
+      const employeeIDMatches = record.empId
+        .toLowerCase()
+        .includes(searchEmployeeID.toLowerCase());
+
+      const leaveStartDate = new Date(record.fromDate);
+      const leaveEndDate = new Date(record.toDate);
+
+      // Check if the leave date range intersects with the searched date range
+      const startDateInRange =
+        !searchDateRange[0].startDate ||
+        leaveEndDate >= searchDateRange[0].startDate;
+      const endDateInRange =
+        !searchDateRange[0].endDate ||
+        leaveStartDate <= searchDateRange[0].endDate;
+      return (
+        nameMatches && employeeIDMatches && startDateInRange && endDateInRange
+      );
+    });
+
+    setFilteredTableData(filteredData);
+  }, [leaveRecords, searchName, searchEmployeeID, searchDateRange]);
+
+  const clearFilters = () => {
+    setSearchName("");
+    setSearchEmployeeID("");
+    setSearchDateRange([
+      {
+        startDate: null,
+        endDate: null,
+        key: "selection",
+      },
+    ]);
+  };
+
+  const toggleCalendar = () => {
+    setShowCalendar(!showCalendar);
+  };
+
   const renderTableRows = () => {
-    return leaveRecords.map((record) => {
+    return filteredTableData.map((record) => {
       if (
         record &&
         (statusFilter === "all" || record.status === statusFilter) &&
@@ -41,8 +98,7 @@ const LeaveRecordsTable = ({
     });
   };
 
-  // Convert table data to CSV format with filtering
-  const csvData = leaveRecords
+  const csvData = filteredTableData
     .filter((record) => {
       return (
         record &&
@@ -63,13 +119,10 @@ const LeaveRecordsTable = ({
       Status: record.status,
     }));
 
-  // Get the current date
   const currentDate = new Date().toLocaleDateString();
 
-  // Add table name and generated date as the first two rows in CSV data
   csvData.unshift({ Id: tableName }, { Id: `Generated Date: ${currentDate}` });
 
-  // Generate PDF from the table
   const generatePDF = () => {
     const currentDate = new Date().toLocaleDateString();
     const opt = {
@@ -80,8 +133,7 @@ const LeaveRecordsTable = ({
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
 
-    // Generate table rows dynamically based on the current state of table data
-    const tableRows = leaveRecords
+    const tableRows = filteredTableData
       .filter((record) => {
         return (
           record &&
@@ -107,7 +159,6 @@ const LeaveRecordsTable = ({
       })
       .join("");
 
-    // Generate PDF content with table rows and other details
     const content = `
     <div style="margin: 20px;">
     <h3 style="background-color: black; color: white; padding: 10px;">${tableName}</h3>
@@ -130,7 +181,6 @@ const LeaveRecordsTable = ({
   </div>
     `;
 
-    // Generate PDF from the content
     html2pdf()
       .from(content)
       .toPdf()
@@ -160,6 +210,48 @@ const LeaveRecordsTable = ({
         Create Report(.PDF)
         <span className="bi bi-file-pdf" style={{ marginRight: "5px" }}></span>
       </Button>
+
+      <br />
+      <Row>
+        <Col>
+          <Form.Control
+            type="text"
+            placeholder="Search by name..."
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+          />
+        </Col>
+        <Col>
+          <Form.Control
+            type="text"
+            placeholder="Search by employee ID..."
+            value={searchEmployeeID}
+            onChange={(e) => setSearchEmployeeID(e.target.value)}
+          />
+        </Col>
+        <Col>
+          <Button
+            variant="primary"
+            style={{ marginLeft: "10px" }}
+            onClick={toggleCalendar}
+          >
+            {showCalendar ? "Hide Calendar" : "Search by Date Range"}
+          </Button>
+          {showCalendar && (
+            <DateRange
+              editableDateInputs={true}
+              onChange={(item) => setSearchDateRange([item.selection])}
+              moveRangeOnFirstSelection={false}
+              ranges={searchDateRange}
+            />
+          )}
+        </Col>
+        <Col>
+          <Button variant="secondary" onClick={clearFilters}>
+            Clear Filters
+          </Button>
+        </Col>
+      </Row>
       <div id="leaveRecordsTable" className="table">
         <h3>{tableName}</h3>
         <table className="table table-rounded">

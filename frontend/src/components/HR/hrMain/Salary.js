@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, Row, Stack, OverlayTrigger, Tooltip } from "react-bootstrap";
+import {
+  Button,
+  Row,
+  Stack,
+  OverlayTrigger,
+  Tooltip,
+  Col,
+  Form,
+} from "react-bootstrap";
 //import { useNavigate } from "react-router-dom";
 import SalaryDetailsModal from "./SalaryDetailsModal";
 import html2pdf from "html2pdf.js";
@@ -11,6 +19,12 @@ function Salary() {
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [selectedRecordId, setSelectedRecordId] = useState(null);
   const [salaryReload, setSalaryReload] = useState(false);
+
+  //for search part
+  const [filteredTableData, setFilteredTableData] = useState([]);
+  const [searchName, setSearchName] = useState("");
+  const [searchEmployeeID, setSearchEmployeeID] = useState("");
+  const [searchPosition, setSearchPosition] = useState("");
 
   useEffect(() => {
     // Fetch salary records from the backend when the component mounts
@@ -45,13 +59,36 @@ function Salary() {
     setSalaryReload(true);
   };
 
+  // Filter table data based on search queries
+  useEffect(() => {
+    const filteredData = salaryRecords.filter((salary) => {
+      const nameMatches = salary.name
+        .toLowerCase()
+        .includes(searchName.toLowerCase());
+      const employeeIDMatches = salary.empId
+        .toLowerCase()
+        .includes(searchEmployeeID.toLowerCase());
+      const positionMatches = salary.position
+        .toLowerCase()
+        .includes(searchPosition.toLowerCase());
+      return nameMatches && employeeIDMatches && positionMatches;
+    });
+    setFilteredTableData(filteredData);
+  }, [salaryRecords, searchName, searchEmployeeID, searchPosition]);
+
+  const clearFilters = () => {
+    setSearchName("");
+    setSearchEmployeeID("");
+    setSearchPosition("");
+  };
+
   //CSV Data generation
   const generateCSVData = () => {
     const currentDate = new Date().toLocaleDateString();
 
     // Add table name and generated date as the first two rows
     const csvData = [
-      ...salaryRecords.map((record) => ({
+      ...filteredTableData.map((record) => ({
         Id: record.empId,
         Name: record.name,
         Position: record.position,
@@ -80,7 +117,7 @@ function Salary() {
     const currentDate = new Date().toLocaleDateString();
 
     // Generate table rows dynamically based on the current state of table data
-    const tableRows = salaryRecords
+    const tableRows = filteredTableData
       .map((record) => {
         return `
         <tr>
@@ -243,7 +280,48 @@ function Salary() {
           </OverlayTrigger>
         </Stack>
       </Row>
-
+      <hr />
+      <Form>
+        <Row>
+          <Col md={3}>
+            <Form.Group controlId="searchName">
+              <Form.Control
+                type="text"
+                placeholder="Search by name..."
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group controlId="searchEmployeeID">
+              <Form.Control
+                type="text"
+                placeholder="Search by employee ID..."
+                value={searchEmployeeID}
+                onChange={(e) => setSearchEmployeeID(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group controlId="searchPosition">
+              <Form.Control
+                type="text"
+                placeholder="Search by position..."
+                value={searchPosition}
+                onChange={(e) => setSearchPosition(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col md={2}>
+            <Button variant="secondary" onClick={clearFilters}>
+              Clear Search
+            </Button>
+          </Col>
+        </Row>
+      </Form>
+      <br />
+      {/* Render the table with salary records */}
       <div className="table">
         <table className="table table-rounded">
           <thead>
@@ -273,7 +351,7 @@ function Salary() {
           </thead>
 
           <tbody>
-            {salaryRecords.map((record) => (
+            {filteredTableData.map((record) => (
               <tr key={record.id}>
                 {/* Render data for each salary record */}
                 <td>{record.empId}</td>
