@@ -58,19 +58,32 @@ const CusProfile = () => {
         body: JSON.stringify(formData),
       }
     )
-      .then(() => {
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
         console.log("Details updated successfully");
         alert("Details updated successfully");
-        navigate(-1);
+        cusauth.logout();
+        navigate("/customer/cuslogin");
       })
-      .catch((error) => console.error("Error updating details:", error));
+      .catch((error) => {
+        console.error("Error updating details:", error);
+        alert("Error updating details. Please try again later.");
+      });
   };
+  
 
   const handleDeleteCustomer = () => {
     if (cusauth.userId) {
       const shouldDelete = window.confirm("Confirm Delete");
       if (shouldDelete) {
         deleteCustomerData();
+        cusauth.logout();
+        navigate("/customer/cuslogin")
       }
     }
   };
@@ -168,6 +181,7 @@ const CusProfile = () => {
                           name="password"
                           value={formData.password}
                           onChange={handleChange}
+                          readOnly
                         />
                       </Form.Group>
                     </Row>

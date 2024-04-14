@@ -194,11 +194,22 @@ static async updateCustomerById(req, res, next){
       return next(error); 
     }
 
+    let hashedPassword;
+    try {
+      hashedPassword = await bcrypt.hash(password, 12);
+    } catch (err) {
+      const error = new HttpError(
+        "Error Updating Password.",
+        500
+      );
+      return next(error);
+    }
+
     //update customer fields with values from req.body
     customer.Name = Name;
     customer.contact = contact;
     customer.email = email;
-    customer.password = password;
+    //customer.password = hashedPassword;
     customer.address = address;
 
     //save the updated details
