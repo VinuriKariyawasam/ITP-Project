@@ -10,7 +10,7 @@ import {
 } from "react-bootstrap";
 import logo from "../../images/logoblack_trans.png";
 import { useNavigate } from "react-router-dom";
-import { StaffAuthContext } from "../../Context/Staff/StaffAuthContext"; // Import AuthContext
+import { StaffAuthContext } from "../../context/StaffAuthContext"; // Import AuthContext
 
 const StaffLogin = () => {
   const [username, setUsername] = useState("");

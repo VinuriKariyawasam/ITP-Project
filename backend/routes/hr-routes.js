@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 const { body } = require("express-validator");
 const router = require("express").Router();
 router.use(bodyParser.json());
-const StaffCheckAuth = require("../config/auth/staff-check-auth");
+//const StaffCheckAuth = require("../config/auth/staff-check-auth");
 
 //--------Employee Routes-----------------
 // Validation rules for creating an employee

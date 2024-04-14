@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StaffAuthContext } from "../../Context/Staff/StaffAuthContext";
+import { StaffAuthContext } from "../../context/StaffAuthContext";
 import "./Header.css";
 import "./Logo";
 import Logo2 from "./Logo2";

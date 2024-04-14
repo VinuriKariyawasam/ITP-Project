@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import profileImg from "../../../images/user2.png";
-import { StaffAuthContext } from "../../../Context/Staff/StaffAuthContext";
+import { StaffAuthContext } from "../../../context/StaffAuthContext";
 
 function NavAvatar() {
   const { logout } = useContext(StaffAuthContext);
