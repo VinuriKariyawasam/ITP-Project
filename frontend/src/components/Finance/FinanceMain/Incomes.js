@@ -80,7 +80,6 @@ const Incomes = () => {
 
   return (
     <main id="main" className="main">
-      <h1>{cusauth.token}</h1>
       <PageTitle path="Finance / Incomes" title="Incomes" />
       <div>
         <Button variant="primary" onClick={handleAddIncomeClick}>

@@ -33,7 +33,7 @@ function CustomerApp() {
   const [tokenExpirationDate, setTokenExpirationDate] = useState();
 
   // Define login and logout functions
-  const login = useCallback((email,userId,name,token,expirationDate) => {
+  const login = useCallback((userId,email,name,token,expirationDate) => {
     setIsLoggedIn(true);
     setEmail(email)
     setUserId(userId);

@@ -84,6 +84,7 @@ class RegistartionController {
 
 
 // Function to generate a unique customer ID
+// Function to generate a unique customer ID
 const generateCustomerId = () => {
   // Get the current date
   const currentDate = new Date();
@@ -104,7 +105,7 @@ const generateCustomerId = () => {
 
 // Example usage
 const customerId = generateCustomerId();
-console.log(uniqueCustomerId); // Output: CUS2404XXX (where XXX is a random number between 001 and 999)
+console.log(customerId); // Example output: CUS2404001
 
 
 
@@ -137,7 +138,7 @@ console.log(uniqueCustomerId); // Output: CUS2404XXX (where XXX is a random numb
     }
     res
     .status(201)
-    .json({ userId: newCustomer.cusId, email:newCustomer.email,name: newCustomer.name, token: token });
+    .json({ userId: savedCustomer.cusId, email:savedCustomer.email,name: savedCustomer.name, token: token });
         }catch (error) {
             // Log the error for debugging purposes
             console.error("Error while fetching(sending) customer to db:", error);
