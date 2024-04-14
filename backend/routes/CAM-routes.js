@@ -15,7 +15,7 @@ router.delete('/consultation/delete-solution/:id',deleteSolution)
 router.get('/consultation/get-issue/:consultationId',getIssuebyId)
 
 
-//Feedback Routes    
+//Feedback Routes  
 router.post('/feedback/add-feedback',addFeedback)
 router.get('/feedback/get-feedbacks',getAllFeedback)
 router.put('/feedback/update-feedback/:id',updateFeedback)

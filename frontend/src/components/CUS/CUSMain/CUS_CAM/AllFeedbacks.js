@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { CusAuthContext } from "../../../../context/cus-authcontext";
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -10,6 +10,7 @@ import './Feedback.css';
 
 function AllFeedbacks(){
 
+    const cusauth = useContext(CusAuthContext);
     const navigate = useNavigate();
     const [Feedback, setfeedback] = useState([]);
 
@@ -26,6 +27,8 @@ function AllFeedbacks(){
         getFeedbacks();
     },  []);
 
+
+   
     return(
         <main className="cam-allFeedback">
             <div>

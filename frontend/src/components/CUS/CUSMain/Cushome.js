@@ -14,7 +14,7 @@ function Cushome() {
   const cusauth = useContext(CusAuthContext);
   return (
     <main id="cusmainhome" className="cusmainhome">
-      <h1>Hello {cusauth.name}</h1>
+      <h1>Hello {cusauth.token}</h1>
       <h1 className="homeh2">
         Experience Excellence in Car
         <br /> Service and Repair
