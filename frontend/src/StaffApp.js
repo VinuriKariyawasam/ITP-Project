@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 // Import React and React Router
-import React from "react";
+import React, { useContext } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -22,22 +22,69 @@ import SUPER from "./components/SUPER/SuperPages/SUPER";
 import IM from "./components/IM/IMPages/IM";
 import CAM from "./components/CAM/CAM_pages/CAM";
 import StaffFooter from "./components/Staff/StaffFooter";
+import StaffLogin from "./components/Staff/staff-login";
+import RestrictedPage from "./components/util/RestrictedPage";
+import { StaffAuthContext } from "./context/StaffAuthContext";
 import GM from "./components/GM/GMPages/GM";
 
 function StaffApp() {
+  const { userPosition, isLoggedIn } = useContext(StaffAuthContext);
   return (
     <>
       <Header />
       <Routes>
-        <Route path="/gm/*" element={<GM />} />
-        <Route path="/hr/*" element={<HR />} />
-        <Route path="/sm/*" element={<SM />} />
-        <Route path="/finance/*" element={<Finance />} />
-        <Route path="/supervisor/*" element={<SUPER />} />
-        <Route path="/im/*" element={<IM />} />
-        <Route path="/cam/*" element={<CAM />} />
+        {isLoggedIn === false && (
+          <Route path="/login" element={<StaffLogin />} />
+        )}
 
-     </Routes>
+        {userPosition === "General Manager" ? (
+          <Route path="/gm/*" element={<GM />} />
+        ) : (
+          <Route path="/gm/*" element={<RestrictedPage />} />
+        )}
+
+        <Route path="/gm/*" element={<GM />} />
+
+        {userPosition === "HR Manager" || userPosition === "General Manager" ? (
+          <Route path="/hr/*" element={<HR />} />
+        ) : (
+          <Route path="/hr/*" element={<RestrictedPage />} />
+        )}
+        {userPosition === "Service Manager" ||
+        userPosition === "General Manager" ? (
+          <Route path="/sm/*" element={<SM />} />
+        ) : (
+          <Route path="/sm/*" element={<RestrictedPage />} />
+        )}
+
+        {userPosition === "Finance Manager" ||
+        userPosition === "General Manager" ? (
+          <Route path="/finance/*" element={<Finance />} />
+        ) : (
+          <Route path="/finance/*" element={<RestrictedPage />} />
+        )}
+
+        {userPosition === "Supervisor" || userPosition === "General Manager" ? (
+          <Route path="/supervisor/*" element={<SUPER />} />
+        ) : (
+          <Route path="/supervisor/*" element={<RestrictedPage />} />
+        )}
+
+        {userPosition === "Inventory Manager" ||
+        userPosition === "General Manager" ? (
+          <Route path="/im/*" element={<IM />} />
+        ) : (
+          <Route path="/im/*" element={<RestrictedPage />} />
+        )}
+
+        {userPosition === "Customer Service Agent" ||
+        userPosition === "General Manager" ? (
+          <Route path="/cam/*" element={<CAM />} />
+        ) : (
+          <Route path="/cam/*" element={<RestrictedPage />} />
+        )}
+      </Routes>
+
       <StaffFooter />
     </>
   );

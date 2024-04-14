@@ -40,14 +40,6 @@ const employeeSchema = new mongoose.Schema({
   position: {
     type: String,
     required: true,
-    enum: [
-      "HR Manager",
-      "Inventory Manager",
-      "Service Manager",
-      "Finance Manager",
-      "Supervisor",
-      "Technician",
-    ],
   },
   photo: {
     type: String, // You may want to store the file path or a reference here

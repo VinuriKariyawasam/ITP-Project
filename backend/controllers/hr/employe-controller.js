@@ -9,6 +9,8 @@ const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const AttendanceModel = require("../../models/hr/attendanceModel");
+const defaultMaleAvatar = "/uploads/hr/DefaultMaleAvatar.jpg";
+const defaultFemaleAvatar = "/uploads/hr/DefaultFemaleAvatar.png";
 
 // Specify the new upload directory
 // Specify the relative upload directory
@@ -127,7 +129,9 @@ class EmployeeController {
         // Use the correct URLs when constructing file paths
         const photoPath = req.files["photo"]
           ? `/uploads/hr/${path.basename(req.files["photo"][0].path)}`
-          : null;
+          : req.body.gender === "Male"
+          ? defaultMaleAvatar
+          : defaultFemaleAvatar;
         const documentPaths = req.files["documents"]
           ? req.files["documents"].map(
               (file) => `/uploads/hr/${path.basename(file.path)}`
@@ -151,7 +155,7 @@ class EmployeeController {
         newEmployee.otherDetails = req.body.otherDetails;
         newEmployee.email = req.body.email;
         newEmployee.password = hashedPassword;
-        newEmployee.points = 1;
+        newEmployee.points = 5;
         //save employee to database
         const savedEmployee = await newEmployee.save();
 
@@ -191,8 +195,7 @@ class EmployeeController {
         newSalary.ETF = newSalary.basicSalary * 0.03;
         newSalary.totalSal = newSalary.basicSalary + newSalary.allowance;
         newSalary.netSal =
-          newSalary.totalSal -
-          (newSalary.noPay + newSalary.EPFC + newSalary.ETF);
+          newSalary.totalSal - (newSalary.noPay + newSalary.EPFC);
         newSalary.bank = bank;
         newSalary.branch = branch;
         newSalary.account = account;
@@ -388,20 +391,29 @@ class EmployeeController {
 
   //employee login
   static async loginEmployee(req, res) {
-    const { email, empId, password } = req.body;
+    console.log("Request Body:", req.body);
+    const { username, password } = req.body;
 
     try {
       let user;
 
-      if (email) {
+      // Check if the username matches the email format
+      if (/^\S+@\S+\.\S+$/.test(username)) {
+        user = await EmployeeModel.findOne({ email: username });
+      } else {
+        // Assuming it's an employee ID
+        user = await EmployeeModel.findOne({ empId: username });
+      }
+
+      /* if (email) {
         user = await EmployeeModel.findOne({ email });
       } else if (empId) {
-        user = await EmployeeModel.findOne({ empId });
+        user = await EmployeeModel.findOne({ empId: empId });
       } else {
         return res
           .status(400)
           .json({ message: "Email or Employee ID is required" });
-      }
+      }*/
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -414,7 +426,7 @@ class EmployeeController {
 
       const token = jwt.sign(
         { userId: user._id, email: user.email, empId: user.empId },
-        process.env.JWT_SECRET,
+        "super_secret_staff_key",
         { expiresIn: "1h" }
       );
 
@@ -422,6 +434,7 @@ class EmployeeController {
         userId: user._id,
         email: user.email,
         empId: user.empId,
+        position: user.position,
         token,
       });
     } catch (error) {
@@ -466,6 +479,46 @@ class EmployeeController {
         error
       );
       res.status(500).json({ error: error.message });
+    }
+  }
+
+  // Controller function to reset user password as an admin
+  static async updateCredentials(req, res, next) {
+    const { email, password } = req.body;
+    const userId = req.params.id;
+    try {
+      const user = await EmployeeModel.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+
+      //password convert to hashcode
+      let hashedPassword;
+      if (password != null && password != "" && password != "undefined") {
+        try {
+          hashedPassword = await bcrypt.hash(password, 12);
+        } catch (err) {
+          const error = new HttpError(
+            "Could not create user, please try again.",
+            500
+          );
+          return next(error);
+        }
+      }
+      user.email = email;
+      if (hashedPassword) {
+        user.password = hashedPassword;
+      } else {
+        return res.status(400).json({ message: "Password is required." });
+      }
+
+      await user.save();
+
+      return res.status(200).json({ message: "Password reset successfully." });
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      return res.status(500).json({ message: "Internal server error." });
     }
   }
 }

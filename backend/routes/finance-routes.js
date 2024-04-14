@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const checkAuth = require("../middleware/check-auth")
 
 const {
   addExpense,
@@ -24,47 +25,57 @@ const { sendMail } = require("../config/nodemailer");
 
 
 
+// router.post("/expenses/add-expense", addExpense);
+// router.delete("/expenses/delete-expense/:id", deleteExpense);
+// router.patch("/expenses/update-expense/:id", updateExpense);
+// router.get("/expenses/get-expense/:id", getExpenseById);
+
+// router.use(checkAuth)
+router.get("/expenses", getExpenses);
+router.get("/incomes", getIncomes);
+
+
 
 
 // Income routes
-router.post("/incomes/add-income", addIncome);
-router.delete("/incomes/delete-income/:id", deleteIncome);
-router.patch("/incomes/update-income/:id", updateIncome);
-router.get("/incomes/get-income/:id", getIncomeById);
-router.get("/incomes", getIncomes);
+// router.post("/incomes/add-income", addIncome);
+// router.delete("/incomes/delete-income/:id", deleteIncome);
+// router.patch("/incomes/update-income/:id", updateIncome);
+// router.get("/incomes/get-income/:id", getIncomeById);
 
 // Expense routes
 router.post("/expenses/add-expense", addExpense);
 router.delete("/expenses/delete-expense/:id", deleteExpense);
 router.patch("/expenses/update-expense/:id", updateExpense);
 router.get("/expenses/get-expense/:id", getExpenseById);
-router.get("/expenses", getExpenses);
+
+// router.get("/expenses", getExpenses);
 
 //payment routes
-router.post("/payments/initiatepayment", paymentinitiate);
-router.post("/payments/handlenotification",handlePaymentNotification);
-router.get("/payments/verifypayment/:order_id", getPaymentbyOrderID);
+// router.post("/payments/initiatepayment", paymentinitiate);
+// router.post("/payments/handlenotification",handlePaymentNotification);
+// router.get("/payments/verifypayment/:order_id", getPaymentbyOrderID);
 
 
-//billing routes
+// //billing routes
 
-router.post("/billing/createbill",createBilling)
-router.get("/billing/all",getAllBillings)
-router.get("/billing/pendingpayments",getPendingPayments)
-router.get("/billing/:paymentInvoiceId",getPaymentByInvoiceId)
-router.get("/billing/pendingpayment/:paymentInvoiceId",getPendingPaymentByInvoiceId)
-router.delete("/billing/delete/:paymentInvoiceId",deleteBill)
-router.patch("/billing/inpersonpayment/:paymentInvoiceId",updatePaymentStatus)
+// router.post("/billing/createbill",createBilling)
+// router.get("/billing/all",getAllBillings)
+// router.get("/billing/pendingpayments",getPendingPayments)
+// router.get("/billing/:paymentInvoiceId",getPaymentByInvoiceId)
+// router.get("/billing/pendingpayment/:paymentInvoiceId",getPendingPaymentByInvoiceId)
+// router.delete("/billing/delete/:paymentInvoiceId",deleteBill)
+// router.patch("/billing/inpersonpayment/:paymentInvoiceId",updatePaymentStatus)
 
 
-//upload Invoice
-router.post("/billing/uploadinvoice", uploadInvoice);
+// //upload Invoice
+// router.post("/billing/uploadinvoice", uploadInvoice);
 
-//invoice record routes
-router.post("/invoices/addonline",saveOnlineRecord)
-router.post("/invoices/addinperson",saveInPersonRecord)
-router.get("/invoices/online/all",getAllOnlineRecords)
-router.get("/invoices/inperson/all",getAllInPersonRecords)
+// //invoice record routes
+// router.post("/invoices/addonline",saveOnlineRecord)
+// router.post("/invoices/addinperson",saveInPersonRecord)
+// router.get("/invoices/online/all",getAllOnlineRecords)
+// router.get("/invoices/inperson/all",getAllInPersonRecords)
 
 //email route
 
