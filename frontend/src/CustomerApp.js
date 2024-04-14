@@ -101,7 +101,7 @@ function CustomerApp() {
    
       <CusAuthContext.Provider
         value={{
-          isLoggedIn: isLoggedIn,
+          isLoggedIn:!!token,
           token: token,
           userId: userId,
           name: name,
