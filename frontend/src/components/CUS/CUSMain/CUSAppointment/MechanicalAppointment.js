@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import mechanicalrepairs from '../../../../images/CUS/Appointment/mechanical repairs.jpg'
 import axios from "axios";
 import { Form, Col, Row, Button, InputGroup } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { CusAuthContext } from "../../../../context/cus-authcontext";
 
 function MechanicalAppointment() { // Corrected function name
 
-  const { register, handleSubmit } = useForm();
+  
   const [availableTimes, setAvailableTimes] = useState([]);
-
+  const cusauth = useContext(CusAuthContext)
 
 
   const { } = useForm();
@@ -28,6 +29,7 @@ function MechanicalAppointment() { // Corrected function name
 
     //create javascript object
     const newmechanicalAppointment = {
+      userId:cusauth.userId,
       name,
       vType,
       vNo,

@@ -13,6 +13,7 @@ const SMMechanicalRepairs = props => {
   const [mechanicalAppointment, setmechanicalAppointment] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
+  const [userId, setuserId] = useState("");
   const [name, setname] = useState("");
   const [vType, setvType] = useState("");
   const [vNo, setvNo] = useState("");
@@ -28,6 +29,7 @@ const SMMechanicalRepairs = props => {
     const serviceType = "Mechanical Repairs";
     //create javascript object
     const newacceptedappointment = {
+      userId,
       name,
       vType,
       vNo,
@@ -53,6 +55,7 @@ const SMMechanicalRepairs = props => {
 
     //create javascript object
     const newacceptedmechanicalAppointment = {
+      userId,
       name,
       vType,
       vNo,
@@ -74,6 +77,7 @@ const SMMechanicalRepairs = props => {
 
   //set values to columnns in accepted appointment
   const handleTableRowClick = (appointment) => {
+    setuserId(appointment.userId);
     setname(appointment.name);
     setvType(appointment.vType);
     setvNo(appointment.vNo);
@@ -200,9 +204,14 @@ const SMMechanicalRepairs = props => {
           </tbody>
         </Table>
         <Link to='/staff/sm/mechanicalhistory'>
-          <Button variant="secondary" >
+          <Button variant="success" >
             View History of accepted appointments
-          </Button>
+          </Button><br/><br/>
+        </Link>
+        <Link to='/staff/sm/appointmentMain'>
+        <Button variant="secondary" >
+                    Back
+        </Button>
         </Link>
       </div>
 

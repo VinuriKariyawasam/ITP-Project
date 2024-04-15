@@ -6,6 +6,7 @@ const schema = mongoose.Schema;
 const acceptedperiodicalSchema = new schema({
   userId:{
     type :String,
+   
 }, 
   name: {
     type: String,
@@ -24,9 +25,9 @@ const acceptedperiodicalSchema = new schema({
     required: true,
   },
   lastServiceYear: {
-    type: Number,
+    type: String,
     required: true,
-    maxLength: 5,
+    maxLength: 15,
   },
   lastServiceMonth: {
     type: String,

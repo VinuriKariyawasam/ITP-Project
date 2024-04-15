@@ -61,6 +61,16 @@ exports.getacceptedperiodicalAppointment = async (req, res) => {
     })
 
 }
+
+/*exports.deleteacceptedPeriodical = async (req, res) => {
+    const { id } = req.params;
+    acceptedperiodicalSchema.findByIdAndDelete(id).then((acceptedperiodicalAppointment) => {
+        res.status(200).json({ message: 'AcceptedPeriodical Appointment Deleted Sucessfully' })
+    }).catch((error) => {
+        res.status(500).json({ message: 'Server Error' })
+    })
+}*/
+
 exports.getacceptedperiodicalappointmentbyDate = async (req, res) => {
     
     const { appointmentdate } = req.params;

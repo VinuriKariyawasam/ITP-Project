@@ -141,5 +141,19 @@ exports.getacceptedappointmentbyDate = async (req, res) => {
             res.status(500).send({ status: "Error with getting user", error: err.message });
         }
     }
+
+    exports.getacceptedappointmentbyuserId = async (req, res) => {
+        const { userId } = req.params;
+        try {
+            const acceptedappointment = await acceptedappointmentSchema.find({ userId: userId });
+            if (acceptedappointment) {
+                res.status(200).send({ status: "User fetched", data: acceptedappointment });
+            } else {
+                res.status(404).send({ status: "User not found" });
+            }
+        } catch (err) {
+            res.status(500).send({ status: "Error with getting user", error: err.message });
+        }
+      }
      
     
