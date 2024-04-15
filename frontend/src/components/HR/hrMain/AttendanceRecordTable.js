@@ -213,19 +213,54 @@ const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
         <table className="table table-rounded">
           <thead>
             <tr>
-              <th style={{ backgroundColor: "black", color: "white" }}>
+              <th
+                style={{
+                  backgroundColor: "black",
+                  color: "white",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                }}
+              >
                 Date & Time
               </th>
-              <th style={{ backgroundColor: "black", color: "white" }}>
+              <th
+                style={{
+                  backgroundColor: "black",
+                  color: "white",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                }}
+              >
                 Presents
               </th>
-              <th style={{ backgroundColor: "black", color: "white" }}>
+              <th
+                style={{
+                  backgroundColor: "black",
+                  color: "white",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                }}
+              >
                 Absents
               </th>
-              <th style={{ backgroundColor: "black", color: "white" }}>
+              <th
+                style={{
+                  backgroundColor: "black",
+                  color: "white",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                }}
+              >
                 Employee Attendance
               </th>
-              <th style={{ backgroundColor: "black", color: "white" }}>
+              <th
+                style={{
+                  backgroundColor: "black",
+                  color: "white",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                }}
+              >
                 Percentage
               </th>
             </tr>

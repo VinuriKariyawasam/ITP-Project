@@ -156,3 +156,16 @@ exports.getOneperiodicalAppointmentbyVno = async (req, res) => {
         res.status(500).send({ status: "Error with getting user", error: err.message });
     }
 }
+exports.getperiodicalAppointmentbyuserId= async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const periodicalAppointment = await periodicalSchema.find({ userId: userId });
+        if (periodicalAppointment) {
+            res.status(200).send({ status: "User fetched", data: periodicalAppointment });
+        } else {
+            res.status(404).send({ status: "User not found" });
+        }
+    } catch (err) {
+        res.status(500).send({ status: "Error with getting user", error: err.message });
+    }
+}

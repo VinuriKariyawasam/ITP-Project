@@ -1,6 +1,6 @@
 import React from "react";
 import "./Logo.css";
-import logo from "../../images/logoblack.jpeg";
+import logo from "../../images/logoblack_trans.png";
 
 export default function Logo() {
   const handleToggleSideBar = () => {

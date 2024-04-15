@@ -1,6 +1,6 @@
-import React from "react";
+import React ,{useContext} from "react";
 import "./Cushome.css";
-
+import { CusAuthContext } from "../../../context/cus-authcontext";
 import Button from "react-bootstrap/Button";
 import Card1 from "./homeicon/card1";
 import Card2 from "./homeicon/card2";
@@ -11,6 +11,7 @@ import img1 from "../../../images/Cushome/appointment.jpg";
 import { Link } from 'react-router-dom';
 
 function Cushome() {
+  const cusauth = useContext(CusAuthContext);
   return (
     <main id="cusmainhome" className="cusmainhome">
       <h1 className="homeh2">

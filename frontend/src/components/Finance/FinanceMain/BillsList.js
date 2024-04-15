@@ -4,6 +4,7 @@ import html2pdf from 'html2pdf.js';
 import { useReactToPrint } from 'react-to-print';
 import { CSVLink } from 'react-csv';
 import { useNavigate } from 'react-router-dom';
+import PageTitle from './PageTitle';
 
 const BillsList = () => {
   const [bills, setBills] = useState([]);
@@ -162,6 +163,7 @@ const BillsList = () => {
 
   return (
     <main id="main" className="main">
+      <PageTitle path="Finance /All-Bills" title="All Bills" />
       <div>
         <h1 className="text-center my-4">All Bills
           <Button variant="primary" style={{ float: 'right' }} onClick={() => navigate('/staff/finance/billing/new')}>

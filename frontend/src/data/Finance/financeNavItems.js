@@ -26,8 +26,9 @@ const navList = [
     },
     {
       _id: 4,
-      name: "EPF and ETf Management",
+      name: "Employee Finance Management",
       icon: "bi bi-file-person-fill",
+      href:"http://localhost:3000/staff/finance/emp-finance"
     },
     {
       _id: 5,

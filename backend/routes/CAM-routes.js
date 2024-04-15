@@ -1,26 +1,29 @@
-const { addIssue, getAllIssues, updateSolution, deleteSolution, getIssuebyId} 
-= require('../controllers/CAM/consultation-controller')
+const ConsultationController = require("../controllers/CAM/consultation-controller");
 
-const { addFeedback, getAllFeedback, updateFeedback, deleteFeedback, getFeedbackbyId} 
-= require("../controllers/CAM/feedback-controller");
-
-const router = require ('express').Router()
+const FeedbackController = require("../controllers/CAM/feedback-controller");
+const bodyParser = require("body-parser");
+const { body } = require("express-validator");
+const router = require("express").Router();
+router.use(bodyParser.json());
 
 
 //OnlineConsultation Routes
-router.post('/consultation/add-issue',addIssue)
-router.get('/consultation/get-issues',getAllIssues)
-router.put('/consultation/update-solution/:consultationId',updateSolution)
-router.delete('/consultation/delete-solution/:id',deleteSolution)
-router.get('/consultation/get-issue/:consultationId',getIssuebyId)
+router.post('/consultation/add-issue',ConsultationController.createConsultation)
+router.get('/consultation/get-issues',ConsultationController.getConsultation)
+router.patch('/consultation/update-solution/:id',ConsultationController.updateConsultationById)
+//router.delete('/consultation/delete-solution/:id',deleteSolution)
+router.get('/consultation/get-issue/:id',ConsultationController.getConsultationById)
+
+
 
 
 //Feedback Routes    
-router.post('/feedback/add-feedback',addFeedback)
-router.get('/feedback/get-feedbacks',getAllFeedback)
-router.put('/feedback/update-feedback/:id',updateFeedback)
-router.delete('/feedback/delete-feedback/:id',deleteFeedback)
-router.get('/feedback/get-feedback/:id',getFeedbackbyId)
+router.post('/feedback/add-feedback',FeedbackController.createFeedback)
+router.get('/feedback/get-feedbacks',FeedbackController.getFeedback)
+router.patch('/feedback/update-feedback/:id',FeedbackController.updateFeedbackById)
+router.delete('/feedback/delete-feedback/:id',FeedbackController.deleteFeedbackById)
+router.get('/feedback/get-feedback/:id',FeedbackController.getFeedbackById)
+
     
 
 

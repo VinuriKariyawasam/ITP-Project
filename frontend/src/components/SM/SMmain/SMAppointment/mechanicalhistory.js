@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
-
+import jsPDF from 'jspdf';
 
 const Mechanicalhistory = props => {
 
@@ -13,7 +13,7 @@ const Mechanicalhistory = props => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [searchDate, setSearchDate] = useState('');
   const [filteredAppointments, setFilteredAppointments] = useState([]);
-  
+
   useEffect(() => {
 
     function getmechanicalAppointment() {
@@ -47,6 +47,55 @@ const Mechanicalhistory = props => {
     });
     setFilteredAppointments(filteredAppointments);
   };
+  function generatePDF() {
+    const pdf = new jsPDF();
+
+    // Starting y position for the first appointment
+    let yPos = 10;
+
+    // Function to add a new page if needed and return the updated y position
+    const checkPageBreak = (currentY, lineHeight, pageHeight) => {
+      if (currentY + lineHeight > pageHeight - 10) {
+        pdf.addPage();
+        return 10; // Starting position for new page
+      }
+      return currentY;
+    };
+
+    // Iterate through filteredAppointments and add details to the PDF
+    filteredAppointments.forEach(appointment => {
+      // Render appointment details as text
+      const appointmentDetails = `
+        Vehicle No: ${appointment.vNo}
+        Customer Name: ${appointment.name}
+        Vehicle Type: ${appointment.vType}
+        Requesting service: ${appointment.issue}
+        Description: ${appointment.msg}
+        Date and Time: ${appointment.appointmentdate.split('T')[0]} ${appointment.appointmenttime}
+        Contact No: ${appointment.phone}
+      `;
+
+      // Split appointment details into lines
+      const lines = pdf.splitTextToSize(appointmentDetails, 180);
+
+      // Calculate height for each line
+      const lineHeight = 6; // Adjust as needed
+      const totalHeight = lines.length * lineHeight;
+
+      // Check for page break and update yPos if needed
+      yPos = checkPageBreak(yPos, totalHeight, pdf.internal.pageSize.height);
+
+      // Add appointment details to the PDF
+      pdf.text(lines, 10, yPos);
+
+      // Update yPos for the next appointment
+      yPos += totalHeight;
+    });
+
+    // Save the PDF
+    pdf.save('mechanical_history.pdf');
+  }
+
   return (
     <main id="main" className="main">
       <div>
@@ -123,9 +172,9 @@ const Mechanicalhistory = props => {
             ))}
           </tbody>
         </Table>
-       
-      </div>
 
+      </div>
+      <Button variant="success" onClick={() => generatePDF()}>Download PDF</Button>
 
     </main>
   )

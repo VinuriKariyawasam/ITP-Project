@@ -11,6 +11,7 @@ import BillingForm from "../FinanceMain/BillingForm";
 import BillsList from "../FinanceMain/BillsList";
 import NewInvoice from "../FinanceMain/NewInvoice"
 import PaymentInvoiveList from "../FinanceMain/PaymentInvoiceList";
+import EmpFinance from "../FinanceMain/EmpFinance";
 
 
 
@@ -35,20 +36,18 @@ function Finance() {
         <Route path="incomes/add-income" element={<AddIncome/>}/>
         <Route path="incomes/edit-income/:id" element={<UpdateIncome />} />
 
-        <Route path="expenses/" element={<Expenses/>} />
         <Route path="expenses/add-expense" element={<AddExpense/>}/>
+        <Route path="expenses/" element={<Expenses/>} />
+      
         <Route path="expenses/edit-expense/:id" element={<UpdateExpense/>}/>
 
         <Route path="billing/new" element={<BillingForm/>}/>
         <Route path="billing/all" element={<BillsList/>}/>
         <Route path="invoices/all-invoices" element={<PaymentInvoiveList/>}/>
         <Route path="billing/new-invoice" element={<NewInvoice/>}/>
-       
 
-       
-       
-
-
+        <Route path="emp-finance" element={<EmpFinance/>}/>
+      
 
       </Routes>
     </>

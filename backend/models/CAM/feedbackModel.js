@@ -1,23 +1,6 @@
 const mongoose = require("mongoose");
 
 const feedbackSchema = new mongoose.Schema({
-
-    firstName: {
-        type: String,
-        required: true,
-    },
-    lastName: {
-        type: String,
-        required: true,
-    },
-    email: {
-        type: String,
-        required: true,
-    },
-    contact: {
-        type: String,
-        required: true,
-    },
     serviceType: {
         type: String,
         enum: [
@@ -25,6 +8,16 @@ const feedbackSchema = new mongoose.Schema({
             "Mechanical Repairs",
             "Mobile Services",
             "Emergency Breakdowns",
+            "Other",
+        ],
+    },
+    employee: {
+        type: String,
+        enum: [
+            "Emp1",
+            "Emp2",
+            "Emp3",
+            "Emp4",
             "Other",
         ],
     },
