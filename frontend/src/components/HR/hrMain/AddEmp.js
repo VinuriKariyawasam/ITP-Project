@@ -110,7 +110,15 @@ function AddEmp() {
 
       const result = await response.json();
       console.log("Data submitted successfully:", result);
+
+
       alert("Employee Registered Succesfully!");
+
+      // app emp to employee benefits
+
+      
+
+
       // Redirect to the specified URL after successful submission
       navigate("/hr/employee");
     } catch (error) {

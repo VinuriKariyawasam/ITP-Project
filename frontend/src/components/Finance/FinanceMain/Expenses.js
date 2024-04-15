@@ -19,7 +19,7 @@ const Expenses = () => {
   }, []);
 
   const handleAddExpenseClick = () => {
-    navigate("add-expense");
+    navigate("/staff/finance/expenses/add-expense");
   };
 
   const formatDate = (dateString) => {
