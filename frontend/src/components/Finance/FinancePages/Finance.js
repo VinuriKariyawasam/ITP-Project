@@ -36,8 +36,9 @@ function Finance() {
         <Route path="incomes/add-income" element={<AddIncome/>}/>
         <Route path="incomes/edit-income/:id" element={<UpdateIncome />} />
 
-        <Route path="expenses/" element={<Expenses/>} />
         <Route path="expenses/add-expense" element={<AddExpense/>}/>
+        <Route path="expenses/" element={<Expenses/>} />
+      
         <Route path="expenses/edit-expense/:id" element={<UpdateExpense/>}/>
 
         <Route path="billing/new" element={<BillingForm/>}/>
@@ -46,12 +47,7 @@ function Finance() {
         <Route path="billing/new-invoice" element={<NewInvoice/>}/>
 
         <Route path="emp-finance" element={<EmpFinance/>}/>
-       
-
-       
-       
-
-
+      
 
       </Routes>
     </>
