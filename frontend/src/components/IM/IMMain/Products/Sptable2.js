@@ -41,6 +41,7 @@ function Sptable2() {
         <th>Customer Name</th>
         <th>Vehicle Number</th>
         <th>Contact Number</th>
+        <th>Ordered date</th>
         <th>Total</th>
         <th>Status</th>
         <th>Explore</th>
@@ -52,6 +53,7 @@ function Sptable2() {
         <td>{SpareParts.name}</td>
         <td>{SpareParts.vehicleNumber}</td>
         <td>{SpareParts.contactNumber}</td>
+        <td>{SpareParts.orderdate.split('T')[0]}</td>
         <td>{SpareParts.total}</td>
         <td><Badge bg="primary">{SpareParts.status}</Badge></td>
         <td><Button variant="secondary" onClick={() => handleMoreButtonClick(SpareParts)}>more</Button>

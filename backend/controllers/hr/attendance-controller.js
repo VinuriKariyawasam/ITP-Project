@@ -67,6 +67,33 @@ class AttendanceController {
       res.status(500).json({ error: "Failed to fetch attendance" });
     }
   }
+
+  async updateAttendance(req, res) {
+    try {
+      const { date, time, employeeAttendance } = req.body;
+      const attendanceId = req.params.id;
+
+      // Find the attendance record by ID
+      const attendance = await Attendance.findById(attendanceId);
+
+      if (!attendance) {
+        return res.status(404).json({ error: "Attendance record not found" });
+      }
+
+      // Update the attendance record fields
+      attendance.date = date;
+      attendance.time = time;
+      attendance.employeeAttendance = employeeAttendance;
+
+      // Save the updated record
+      const updatedAttendance = await attendance.save();
+
+      res.json(updatedAttendance);
+    } catch (error) {
+      console.error("Error updating attendance:", error);
+      res.status(500).json({ error: "Failed to update attendance" });
+    }
+  }
 }
 
 module.exports = new AttendanceController();

@@ -1,5 +1,6 @@
 const Leaves = require("../../models/hr/leavesModel");
 const { validationResult } = require("express-validator");
+const ArchiveLeaves = require("../../models/hr/archivedLeavesModel");
 
 const leavesController = {
   // Create a new leave record
@@ -144,6 +145,85 @@ const leavesController = {
         return res.status(404).json({ error: "Leave not found" });
       }
       res.json(updatedLeave);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  // Controller function to get leaves by empDBId
+  getLeavesByEmpDBId: async (req, res) => {
+    try {
+      const { empDBId } = req.params; // Get empDBId from request parameters
+
+      // Find leaves by empDBId
+      const leaves = await Leaves.find({ empDBId });
+
+      // Check if leaves exist
+      if (!leaves || leaves.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No leaves found for this employee." });
+      }
+
+      // Return leaves
+      res.status(200).json(leaves);
+    } catch (error) {
+      console.error("Error fetching leaves by empDBId:", error.message);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
+
+  // Controller function to archive leaves
+  getAndArchiveLeaves: async (req, res) => {
+    try {
+      // Get all approved leaves older than 6 months
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+      const approvedLeaves = await Leaves.find({
+        status: "Approved",
+        reqDate: { $lt: sixMonthsAgo },
+      });
+
+      // Save filtered leaves to ArchiveLeaves model with current date as archDate
+      const archiveLeavesPromises = approvedLeaves.map(async (leave) => {
+        const archivedLeave = new ArchiveLeaves({
+          empId: leave.empId,
+          empDBId: leave.empDBId,
+          name: leave.name,
+          days: leave.days,
+          fromDate: leave.fromDate,
+          toDate: leave.toDate,
+          reason: leave.reason,
+          status: leave.status,
+          reqDate: leave.reqDate,
+          archDate: new Date(),
+        });
+        await archivedLeave.save();
+      });
+
+      await Promise.all(archiveLeavesPromises);
+
+      // Delete leaves older than 6 months from Leaves model
+      const deleteResult = await Leaves.deleteMany({
+        reqDate: { $lt: sixMonthsAgo },
+      });
+
+      console.log("Leaves archived and deleted successfully.");
+      res.status(200).json(deleteResult);
+    } catch (error) {
+      console.error("Error archiving and deleting leaves:", error);
+      res.status(500).json({
+        error: "An error occurred while archiving and deleting leaves.",
+      });
+    }
+  },
+
+  // Get all archivedleaves records
+  getArchivedLeaves: async (req, res) => {
+    try {
+      const allLeaves = await ArchiveLeaves.find();
+      res.json(allLeaves);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

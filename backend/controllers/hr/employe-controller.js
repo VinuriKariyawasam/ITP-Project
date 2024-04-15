@@ -65,7 +65,7 @@ class EmployeeController {
         console.log("Request Body:", req.body);
 
         const nic = req.body["nic"];
-        const email = req.body["email"];
+        const email = req.body.email.toLowerCase();
         const contact = req.body["contact"];
         const bank = req.body["bank"];
         const branch = req.body["branch"];
@@ -414,7 +414,8 @@ class EmployeeController {
 
       // Check if the username matches the email format
       if (/^\S+@\S+\.\S+$/.test(username)) {
-        user = await EmployeeModel.findOne({ email: username });
+        const lowercaseUsername = username.toLowerCase();
+        user = await EmployeeModel.findOne({ email: lowercaseUsername });
       } else {
         // Assuming it's an employee ID
         user = await EmployeeModel.findOne({ empId: username });
@@ -499,7 +500,8 @@ class EmployeeController {
 
   // Controller function to reset user password as an admin
   static async updateCredentials(req, res, next) {
-    const { email, password } = req.body;
+    const { password } = req.body;
+    const email = req.body.email.toLowerCase();
     const userId = req.params.id;
     try {
       const user = await EmployeeModel.findById(userId);
@@ -534,6 +536,18 @@ class EmployeeController {
     } catch (error) {
       console.error("Error resetting password:", error);
       return res.status(500).json({ message: "Internal server error." });
+    }
+  }
+
+  //get archives
+  // Controller function to get all archived employee records
+  static async getAllArchivedEmployees(req, res) {
+    try {
+      // Fetch all archived employee records from the database
+      const archivedEmployees = await ArchivedEmployee.find();
+      res.status(200).json(archivedEmployees);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch archived employees" });
     }
   }
 }

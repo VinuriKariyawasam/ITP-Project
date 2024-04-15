@@ -78,7 +78,8 @@ function Sptable1() {
           image: order.image,
           status: "approved",
           email: order.email,
-          total: total
+          total: total,
+          orderdate:order.orderdate
         };
       console.log(formData)
 
@@ -136,6 +137,7 @@ function Sptable1() {
         <th>Customer Name</th>
         <th>Vehicle Number</th>
         <th>Contact Number</th>
+        <th>Ordered date</th>
         <th>Status</th>
         <th>Explore</th>
       </tr>
@@ -146,6 +148,7 @@ function Sptable1() {
         <td>{SpareParts.name}</td>
         <td>{SpareParts.vehicleNumber}</td>
         <td>{SpareParts.contactNumber}</td>
+        <td>{SpareParts.orderdate.split('T')[0]}</td>
         <td><Badge bg="warning">{SpareParts.status}</Badge></td>
         <td><Button variant="secondary" onClick={() => handleMoreButtonClick(SpareParts)}>more</Button>
 </td>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import { useForm } from "../../../../data/IM/form-hook";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
@@ -6,16 +6,18 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import { useNavigate } from "react-router-dom";
+import { CusAuthContext } from "../../../../context/cus-authcontext"
 
 function SparePartsform() {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState("");
   const [fileError, setFileError] = useState("");
+  const cusauth = useContext(CusAuthContext);
   const [formState, inputHandler] = useForm(
     {
       name: {
         value: "",
-        isValid: false,
+        isValid: true,
       },
       vehicleNumber: {
         value: "",
@@ -65,7 +67,7 @@ function SparePartsform() {
     event.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("name", formState.inputs.name.value);
+      formData.append("name", cusauth.name);
       formData.append("vehicleNumber", formState.inputs.vehicleNumber.value);
       formData.append("brand", formState.inputs.brand.value);
       formData.append("model", formState.inputs.model.value);
@@ -75,8 +77,14 @@ function SparePartsform() {
       formData.append("description", formState.inputs.description.value);
       formData.append("image", formState.inputs.image.value);
       formData.append("status", "pending");
-      formData.append("email", "iamtharindunawarathne@gmail.com");
+      formData.append("email", cusauth.email);
 
+    const currentDateUTC = new Date();
+    currentDateUTC.setHours(currentDateUTC.getHours() + 5); 
+    currentDateUTC.setMinutes(currentDateUTC.getMinutes() + 30); 
+    const formattedDate = currentDateUTC.toISOString(); 
+
+    formData.append("orderdate", formattedDate);
       console.log(formState.inputs)
 
       const response = await axios.post("http://localhost:5000/Product//addsp", formData);
@@ -133,12 +141,12 @@ function SparePartsform() {
                   <Form.Label>Name</Form.Label>
                   <Form.Control
                     id="name"
+                    isValid="true"
                     type="text"
                     placeholder="Kamal"
-                    onInput={(event) =>
-                      inputHandler("name", event.target.value, true)
-                    }
-                    required
+                    value={cusauth.name} 
+                   disabled
+                    
                   />
                 </Form.Group>
 
