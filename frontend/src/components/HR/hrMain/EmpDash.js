@@ -146,6 +146,17 @@ function EmpDash() {
                   ></span>
                 </Button>
               </div>
+              <div className="text-end">
+                <Button
+                  variant="dark"
+                  size="md"
+                  onClick={() => navigate("archived-employees")}
+                  style={{ margin: "10px" }}
+                  id="archiveButton"
+                >
+                  <i className="bi bi-archive-fill archiveButton"></i>
+                </Button>
+              </div>
             </Stack>
           </Row>
           <hr />

@@ -87,6 +87,10 @@ router.get("/today-emp", EmployeeController.getTodayEmployeesWithAttendance);
 //reset-password
 router.patch("/update-credentials/:id", EmployeeController.updateCredentials);
 
+//get archived employees
+// Define the route to get all archived employee records
+router.get("/archivedEmployees", EmployeeController.getAllArchivedEmployees);
+
 //---------Leaves Routes-------------------
 
 // Validation middleware function for validating the leave request data

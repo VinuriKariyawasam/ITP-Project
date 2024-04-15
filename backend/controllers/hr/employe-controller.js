@@ -523,6 +523,18 @@ class EmployeeController {
       return res.status(500).json({ message: "Internal server error." });
     }
   }
+
+  //get archives
+  // Controller function to get all archived employee records
+  static async getAllArchivedEmployees(req, res) {
+    try {
+      // Fetch all archived employee records from the database
+      const archivedEmployees = await ArchivedEmployee.find();
+      res.status(200).json(archivedEmployees);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch archived employees" });
+    }
+  }
 }
 
 module.exports = EmployeeController;
