@@ -12,77 +12,80 @@ const EmpFinance = () => {
   const [employeeBenefitsData, setEmployeeBenefitsData] = useState([]);
   const [year, setYear] = useState('');
   const [month, setMonth] = useState('');
-  
 
   useEffect(() => {
-    // Fetch pending salary list data
-    fetch('http://localhost:5000/api/finance/salarylist/pending')
-      .then(response => response.json())
-      .then(data => {
-        setPendingSalaryListData(data);
-        if (data.length > 0) {
-          const firstEntry = data[0];
-          setYear(new Date(firstEntry.date).getFullYear());
-          setMonth(firstEntry.month);
-        }
-      })
-      .catch(error => console.error('Error fetching pending data:', error));
-
-    // Fetch all salary list data
-    fetch('http://localhost:5000/api/finance/salarylist/all')
-      .then(response => response.json())
-      .then(data => {
-        setAllSalaryListData(data);
-      })
-      .catch(error => console.error('Error fetching all data:', error));
-
-    // Fetch employee benefits data
-    fetch('http://localhost:5000/api/finance/empbenefits/all')
-      .then(response => response.json())
-      .then(data => {
-        setEmployeeBenefitsData(data);
-      })
-      .catch(error => console.error('Error fetching employee benefits data:', error));
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const pendingResponse = await fetch('http://localhost:5000/api/finance/salarylist/pending');
+      const allResponse = await fetch('http://localhost:5000/api/finance/salarylist/all');
+      const benefitsResponse = await fetch('http://localhost:5000/api/finance/empbenefits/all');
+
+      const pendingData = await pendingResponse.json();
+      const allData = await allResponse.json();
+      const benefitsData = await benefitsResponse.json();
+
+      setPendingSalaryListData(pendingData);
+      setAllSalaryListData(allData);
+      setEmployeeBenefitsData(benefitsData);
+
+      if (pendingData.length > 0) {
+        const firstEntry = pendingData[0];
+        setYear(new Date(firstEntry.date).getFullYear());
+        setMonth(firstEntry.month);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   const handleApprove = async (entry) => {
     const confirmApproval = window.confirm(`Are you sure you want to approve salaries for ${entry.month} ${year}?`);
     if (confirmApproval) {
       try {
-        // Send PATCH request to update the status to 'approved'
-        const response = await fetch(`http://localhost:5000/api/finance/salarylist/pending/${entry._id}`, {
+        await fetch(`http://localhost:5000/api/finance/salarylist/updatestatus/${entry._id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ status: 'approved' })
-        })}catch(error){
-          
-        }
-      
-      
-      // Send POST request to update employee benefits
-      
-      // Implement logic to approve the pending salary list entry
-      console.log('Approving entry:', entry);
-      sendSalaryPayments(entry);
-      // Send POST request for EPF payments
-      sendEPFPayment(entry);
-      // Send POST request for ETF payments
-      sendETFPayment(entry);
-     updateBenefitProfiles(entry.salaries);
-      //updateBenefitProfiles(entry.salaries);
+        });
+        
+        fetchData();
+        sendSalaryPayments(entry);
+        sendEPFPayment(entry);
+        sendETFPayment(entry);
+        updateBenefitProfiles(entry.salaries);
+      } catch (error) {
+        console.error('Error while approving:', error);
+      }
     }
-
-
-    
   };
 
+  const handleReject = async (entry) => {
+    const confirmReject = window.confirm(`Are you sure you want to reject salaries for ${entry.month} ${year}?`);
+    if (confirmReject) {
+      try {
+        await fetch(`http://localhost:5000/api/finance/salarylist/updatestatus/${entry._id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ status: 'rejected' })
+        });
+        alert('Salary List rejected. Please inform HR Manager for modifications.');
+        fetchData();
+      } catch (error) {
+        console.error('Error while rejecting:', error);
+      }
+    }
+  };
 
   const sendSalaryPayments = async (entry) => {
     try {
       const totalSalary = entry.salaries.reduce((acc, curr) => acc + curr.netSal, 0);
-  
       const response = await fetch("http://localhost:5000/api/finance/expenses/add-expense", {
         method: 'POST',
         headers: {
@@ -107,7 +110,6 @@ const EmpFinance = () => {
       console.error('Error while adding salary payment:', error);
     }
   };
-  
 
   const sendEPFPayment = async (entry) => {
     try {
@@ -126,14 +128,13 @@ const EmpFinance = () => {
       });
       if (response.ok) {
         console.log("EPF payment added successfully");
-        alert("EPF payment added successfully");
+        alert('EPF Payment added successfully');
       } else {
         console.error('Failed to add EPF payment');
       }
     } catch (error) {
       console.error('Error while adding EPF payment:', error);
     }
-    
   };
 
   const sendETFPayment = async (entry) => {
@@ -153,16 +154,14 @@ const EmpFinance = () => {
       });
       if (response.ok) {
         console.log("ETF payment added successfully");
-        alert("ETF payment added successfully");
+        alert('ETF Payment successfully');
       } else {
         console.error('Failed to add ETF payment');
       }
     } catch (error) {
       console.error('Error while adding ETF payment:', error);
     }
-    
   };
-
 
   const updateBenefitProfiles = async (salaries) => {
     try {
@@ -171,11 +170,11 @@ const EmpFinance = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({salarylist: salaries} )
+        body: JSON.stringify({ salarylist: salaries })
       });
       if (response.ok) {
         console.log('Employee benefits updated successfully');
-        alert('Employee benefit Profiles updated successfully');
+        alert('Employee benefits updated successfully')
       } else {
         console.error('Failed to update employee benefits');
       }
@@ -183,33 +182,7 @@ const EmpFinance = () => {
       console.error('Error updating employee benefits:', error);
     }
   };
-  
-  const handleReject = async (entry) => {
-    const confirmReject = window.confirm(`Are you sure you want to reject salaries for ${entry.month} ${year}?`);
-    if (confirmReject) {
-      try {
-        // Send PATCH request to update the status to 'rejected'
-        const response = await fetch(`http://localhost:5000/api/finance/salarylist/pending/${entry._id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ status: 'rejected' })
-        });
 
-        if (response.ok) {
-          console.log('Salary list rejected successfully');
-          alert('Salary list rejected successfully');
-          // Refresh pending salary list data
-        } else {
-          console.error('Failed to reject salary list');
-        }
-      } catch (error) {
-        console.error('Error rejecting salary list:', error);
-      }
-    }
-  };
-  
   return (
     <main id="main" className="main">
       <PageTitle path="Finance / Employee-Finance-Management" title="Employee Finance Management" />
