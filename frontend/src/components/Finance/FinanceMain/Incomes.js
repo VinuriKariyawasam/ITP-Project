@@ -73,18 +73,18 @@ const Incomes = () => {
 
   return (
     <main id="main" className="main">
-      <PageTitle path="Finance / Incomes" title="Incomes" />
+      <PageTitle path="Finance / Incomes & Funds" title="Incomes & Funds " />
       <div>
         <Button variant="primary" onClick={handleAddIncomeClick}>
-          Add Income
+          Add Funds
         </Button>
-        <br />
+        <br></br><br></br>
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>Income ID</th>
+              <th>Income/Fund ID</th>
               <th>Title</th>
-              <th>Service Invoice ID</th>
+              <th>Reference</th>
               <th>Amount</th>
               <th>Type</th>
               <th>Date</th>
