@@ -9,7 +9,7 @@ exports.addperiodicalAppointment = async (req, res) => {
     const vType = req.body.vType;
     const vNo = req.body.vNo;
     const sType = req.body.sType;
-    const lastServiceYear = Number(req.body.lastServiceYear);
+    const lastServiceYear =req.body.lastServiceYear;
     const lastServiceMonth = req.body.lastServiceMonth;
     const mileage = Number(req.body.mileage);
     const phone = Number(req.body.phone);
@@ -34,7 +34,7 @@ exports.addperiodicalAppointment = async (req, res) => {
     });
 
     try {
-        if (!name || !vType || !vNo || !sType || !lastServiceYear || !lastServiceMonth || !mileage || !phone || !appointmentdate || !appointmenttime || !msg) {
+        if (!userId||!name || !vType || !vNo || !sType || !lastServiceYear || !lastServiceMonth || !mileage || !phone || !appointmentdate || !appointmenttime || !msg) {
             return res.status(400).json({ message: 'All Fields Required' })
        }
         await newPeriodicalAppointment.save()
@@ -67,7 +67,7 @@ exports.updateperiodicalAppointment = async (req, res) => {
     //to get existing values
     //destructure method - get all values send throught frontend in once
     const {userId, name, vType, vNo, sType, lastServiceYear, lastServiceMonth, mileage, phone, appointmentdate, appointmenttime, msg } = req.body
-
+    
     //object to store new values
     const updatePeriodicalAppointment= {
         userId,

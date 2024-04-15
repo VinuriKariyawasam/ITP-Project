@@ -1,7 +1,7 @@
 const { addperiodicalAppointment,getperiodicalAppointment,updateperiodicalAppointment, deleteperiodicalAppointment,getOneperiodicalAppointment,getOneperiodicalAppointmentbyVno,getperiodicalAppointmentbyuserId} = require('../controllers/appointment/periodical-controller');
 const { addmechanicalAppointment,getmechanicalAppointment,updatemechanicalAppointment, deletemechanicalAppointment,getOneMechanicalAppointment,getOneMechanicalAppointmentbyVno,getmechanicalappointmentbyDate,getmechanicalappointmentbyuserId} = require('../controllers/appointment/mechanical-controller');
-const {addaccidentalAppointment,getaccidentalAppointment,deleteaccidentalAppointment,getaccidentalappointmentbyuserId } = require('../controllers/appointment/accidental-controller');
-const { addacceptedappointment,getacceptedappointment,updateacceptedappointment, deleteacceptedappointment,getOneacceptedappointment,getOneacceptedappointmentbyVno,getacceptedappointmentbyDate } = require('../controllers/appointment/acceptedappointment-controller');
+const {addaccidentalAppointment,getaccidentalAppointment,deleteaccidentalAppointment,getaccidentalappointmentbyuserId,updateAccidentalAppointment } = require('../controllers/appointment/accidental-controller');
+const { addacceptedappointment,getacceptedappointment,updateacceptedappointment, deleteacceptedappointment,getOneacceptedappointment,getOneacceptedappointmentbyVno,getacceptedappointmentbyDate,getacceptedappointmentbyuserId} = require('../controllers/appointment/acceptedappointment-controller');
 const { addaceptedperiodicalAppointment,getacceptedperiodicalAppointment,getacceptedperiodicalappointmentbyDate} = require('../controllers/appointment/acceptedPeriodical-controller');
 const { addacceptedmechanicalAppointment,getacceptedmechanicalAppointment,getacceptedmechanicalappointmentbyDate} = require('../controllers/appointment/acceptedmechanical-controller');
 const {addacceptedaccidentalAppointment,getacceptedaccidentalAppointment,getacceptedaccidentalappointmentbyDate} = require('../controllers/appointment/acceptedAcidental');
@@ -34,7 +34,7 @@ router.post('/addaccidentalAppointment',ImageUpload.single('image'),addaccidenta
 router.get('/get-accidentalAppointment',getaccidentalAppointment )
 router.delete('/delete-accidentalAppointment/:id',deleteaccidentalAppointment)
 router.get('/get-accidentalappointmentbyuserId/:userId',getaccidentalappointmentbyuserId)
-
+router.put('/update-accidentalAppointment/:id',updateAccidentalAppointment)
 
 //Accepteed Appointment Routes
 router.post('/addacceptedappointment',addacceptedappointment )
@@ -44,6 +44,7 @@ router.delete('/delete-acceptedappointment/:id',deleteacceptedappointment)
 router.get('/get-oneacceptedappointment/:id',getOneacceptedappointment)
 router.get('/get-oneacceptedappointmentbyVno/:vNo',getOneacceptedappointmentbyVno)
 router.get('/get-acceptedappointmentbyDate/:appointmentdate',getacceptedappointmentbyDate)
+router.get('/get-acceptedappointmentbyuserId/:userId',getacceptedappointmentbyuserId)
 
 //Accepteed Periodical Appointment Routes
 router.post('/addaceptedperiodicalAppointment',addaceptedperiodicalAppointment )

@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const accidentalSchema = new Schema({
     userId:{
         type :String,
+        required:true,
     }, 
 
     name: {

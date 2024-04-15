@@ -6,6 +6,7 @@ const schema = mongoose.Schema;
 const periodicalSchema = new schema({
   userId:{
     type :String,
+    required:true,
 }, 
   name: {
     type: String,
@@ -24,9 +25,9 @@ const periodicalSchema = new schema({
     required: true,
   },
   lastServiceYear: {
-    type: Number,
+    type:String,
     required: true,
-    maxLength: 5,
+    maxLength: 15,
   },
   lastServiceMonth: {
     type: String,

@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect ,useContext } from 'react'
 import { useForm } from 'react-hook-form';
 import periodicalAppointment from '../../../../images/CUS/Appointment/periodicalAppointment.jpg'
 import axios from "axios"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Form, Col, Row, Button, InputGroup } from 'react-bootstrap';
-
-
+import { CusAuthContext } from "../../../../context/cus-authcontext";
 
 function PeriodicalAppointment() {
 
   const [availableTimes, setAvailableTimes] = useState([]);
-
+  const cusauth = useContext(CusAuthContext)
   const { } = useForm();
-
+  
 
   const [name, setname] = useState("");
   const [vType, setvType] = useState("");
@@ -32,6 +31,7 @@ function PeriodicalAppointment() {
 
     //create javascript object
     const newPeriodicalAppointment = {
+      userId:cusauth.userId,
       name,
       vType,
       vNo,
@@ -153,7 +153,7 @@ function PeriodicalAppointment() {
 
                 <Form.Group as={Col} md='5'>
                   <Form.Label>What kind of service you want?</Form.Label>
-                  <Form.Control type="text" placeholder="Enter Service type" value={sType} onChange={(e) => setsType(e.target.value)} maxLength={10} required />
+                  <Form.Control type="text" placeholder="Enter Service type" value={sType} onChange={(e) => setsType(e.target.value)} maxLength={30} required />
                 </Form.Group>
               </Row>
               <Row className="mb-3">
@@ -169,6 +169,7 @@ function PeriodicalAppointment() {
                     <option value="2019">2019</option>
                     <option value="2018">2018</option>
                     <option value="before 2018">before 2018</option>
+                    <option value="first time">first time</option>
                   </select>
 
                 </Form.Group>
@@ -189,6 +190,7 @@ function PeriodicalAppointment() {
                     <option value="October">October</option>
                     <option value="November">November</option>
                     <option value="December">December</option>
+                    <option value="Fisrt time">Fisrt time</option>
                   </select>
 
 
