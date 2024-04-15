@@ -2,7 +2,6 @@ import React from 'react';
 import './CAM_main.css';
 import CAM_pageTitle from './CAM_pageTitle';
 import ConsultancyPage from './ConsultancyPage';
-import AddReply from './AddReply';
 import ConsultancySolution from './ConsultancySolution';
 
 
@@ -18,10 +17,9 @@ import {
   function CAM_consultancy(){
     return (
       <main id="main" className="main">
-      <CAM_pageTitle title="Consultancy Support" url="/cam/con_support" />
+      <CAM_pageTitle title="Consultancy Support" url="/staff/cam/con_support" />
        <Routes>
          <Route path="/*" element={<ConsultancyPage/>} />
-         <Route path="addreply" element={<AddReply/>}/>
          <Route path="consultDetails/:consultId" element={<ConsultancySolution/>}></Route>
        </Routes>
     </main>

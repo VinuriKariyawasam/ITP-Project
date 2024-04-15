@@ -36,7 +36,7 @@ function CusFooter() {
                 </a>
               </li>
               <li>
-                <a href="/" className="text-white">
+                <a href="http://localhost:3000/customer/cusaffairs/faq" className="text-white">
                   FAQ
                 </a>
               </li>

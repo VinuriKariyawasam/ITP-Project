@@ -1,5 +1,8 @@
 import React, {useEffect, useState} from "react";
 import { useNavigate, useParams} from "react-router-dom";
+import { CusAuthContext } from "../../../context/cus-authcontext";
+import { useContext } from "react";
+
 
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form'
@@ -11,12 +14,17 @@ import UpdateSolutionModal from './UpdateSolutionModal';
 
 const ConsultancyPage = () => {
   const navigate = useNavigate();
-  //const { id } = useParams();
+
+  const cusAuth = useContext(CusAuthContext);
+  const id = cusAuth.userId;
+
   const [Consultation, setConsultation] = useState([]);
   const [consultation, setFetchedConsultation] = useState([]);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [consultIdToDelete, setConsultIdToDelete] = useState('');
+  const [newsolution, setnewSolution] = useState("");
 
   //Get all the consultations from the db
   useEffect(() => {
@@ -29,6 +37,7 @@ const ConsultancyPage = () => {
         }
         const data = await response.json();
         setConsultation(data.consultations);
+        console.log(consultation);
       }catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -36,12 +45,13 @@ const ConsultancyPage = () => {
     fetchConsultations();
 },  []);
 
+
 //Get consultations by Id
-const id = "661b58073ea6d30a9cf8d6e4";
-const fetchConsultationById = async (id) => {
+
+const fetchConsultationById = async () => {
   try{
     const response = await fetch(
-      `http://localhost:5000/cam/consultation/get-issue/${id}`
+      `http://localhost:5000/cam/consultation/get-consultid/${id}`
     );
 
     if(!response.ok) {
@@ -55,31 +65,29 @@ const fetchConsultationById = async (id) => {
     return null;
   }
 };
-useEffect(() => {
-  fetchConsultationById(id);   
-}, [id]);
-
 
 /*----Parts regarding rendering employee personal details-------*/
   console.log("Rendering modal with feedback data:", Consultation);
   if (!Consultation) return null;
-  //destructure Feedback object
+
   const {
     _id,
-    serviceType,
-    employee,
-    feedback,
-    files,
+    userId,
+    consultId,
+    vehicleType,
+    component,
+    issue,
     filesUrls,
-    _v,
-  } = Consultation
-
+    solution
+  } = consultation;
+  
 //when post button clicks
 const handleMoreButtonClick = async (consultId) => {
   navigate(`consultDetails/${consultId}`);
 };
 //when update button clicks
-const handleUpdateClick = () => {
+const handleUpdateClick = (consultId) => {
+  //setConsultIdToDelete(consultId);
   setShowUpdateModal(true);
 };
 // Handle update consultation
@@ -95,22 +103,24 @@ const handleDeleteClick = () => {
   setShowConfirmDelete(true);
 };
 
-const handleConfirmDelete = async () => {
+const handleConfirmDelete = async (consultId) => {
   try{
-    await fetch(`http://localhost:5000/cam/feedback/delete-feedback/${_id}`,{
-      method: "DELETE",
+    const response = await fetch(`http://localhost:5000/cam/consultation/delete-solutionbyid/${consultId}`,{
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        // Add any additional headers if required
       },
-      // Optionally, include credentials if necessary
-      // credentials: 'include',
     });
-
+    alert("Solution Deleted successfully!")
+    console.log("Solution Deleted successfully!")
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
     // Close the modal
     setShowConfirmDelete(false);
-    //relaod the feedback page after deletion
-    navigate("customer/cusaffairs/allfeedback");
+    window.location.reload();
+    //navigate("customer/cusaffairs/allfeedback");
   }catch (error) {
     console.error("Error deleting feedback:", error);
     // Handle error (e.g., display error message)
@@ -131,6 +141,7 @@ const handleCancelDelete = () => {
               {Consultation.map((consultation, index) => (
                 <Accordion.Item key={index} eventKey={consultation._id.toString()} style={{marginTop:"5px"}}>
                   <Accordion.Header style={{fontWeight:"bold"}}>
+                    Consultation Id : {consultation.consultId}<br></br>
                     Vehicle Type : {consultation.vehicleType}<br></br>
                     Component : {consultation.component}<br></br>
                     Issue : {consultation.issue}<br></br>
@@ -138,30 +149,23 @@ const handleCancelDelete = () => {
               <Accordion.Body>
                 <Row className="mb-3">
                 <Button variant="success" size='md'
-               onClick={() => handleMoreButtonClick(consultation._id)}
+               onClick={() => handleMoreButtonClick(consultation.consultId)}
                >Post Solution</Button>
                 <Form.Group as={Col} controlId="solutionToupdate" style={{marginTop:"5px"}}>
                  <Form.Label>Solution from the Experts</Form.Label>
                  <Form.Control
-                   as="textarea"
-                   type="textarea"
+                   type="text"
                    placeholder="Answer Pending..."
                    rows={4}
                    value={consultation.solution}/>
                </Form.Group>
                <Button
-              variant="dark"
-              onClick={handleUpdateClick}
-              style={{margin: "10px"}}
-            >
-              Update
-            </Button>
-            <Button
               variant="danger"
-              onClick={handleDeleteClick}
-              style={{margin: "10px"}}
+              //onClick={() => handleDeleteClick(consultation.consultId)}
+              onClick={() => handleConfirmDelete(consultation.consultId)}
+              style={{marginTop: "10px"}}
             >
-              Delete
+              Delete Solution
             </Button>
                 </Row>
              </Accordion.Body>
@@ -180,6 +184,7 @@ const handleCancelDelete = () => {
    {/* confirmation dialog box */}
        <Modal
         show={showConfirmDelete}
+        onHide={handleCancelDelete}
         style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
       >
         <Modal.Header closeButton>
