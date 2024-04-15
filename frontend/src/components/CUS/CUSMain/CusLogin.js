@@ -70,9 +70,8 @@ function CusLogin(){
               <Form.Group as={Col} controlId="formGridExtra">  
                      <Form.Label>Email*</Form.Label>   
                      <Form.Control
-                        as="textarea"
                         required
-                        type="textarea"
+                        type="email"
                         placeholder="Email"
                         rows={1}
                         value={email}
