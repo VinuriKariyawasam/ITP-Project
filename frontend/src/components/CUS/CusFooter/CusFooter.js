@@ -4,7 +4,10 @@ import neo from "../../../images/neo-tech-high-resolution-logo-transparent.png";
 
 function CusFooter() {
   return (
-    <footer className="bg-dark text-white py-5">
+    <footer
+      className="bg-dark text-white py-5"
+      style={{ left: 0, bottom: 0, right: 0 }}
+    >
       <Container>
         <Row>
           <Col md={3} className="mb-4 mb-md-0">

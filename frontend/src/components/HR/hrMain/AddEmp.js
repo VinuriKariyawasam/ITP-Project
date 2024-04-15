@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
-import {
-  Button,
-  Col,
-  Form,
-  Row,
-  FormGroup,
-  ControlLabel,
-  HelpBlock,
-} from "react-bootstrap";
+import { useForm, Controller, getValues } from "react-hook-form";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import ImageUpload from "../HrUtil/ImageUpload";
 import FileUpload from "../HrUtil/FileUpload";
 import { BsArrowLeft } from "react-icons/bs";
+import { FaCheckCircle } from "react-icons/fa";
 
 function AddEmp() {
   const [errorMessage, setErrorMessage] = useState("");
   const [designations, setDesignations] = useState([]);
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false);
 
   //get designations
   useEffect(() => {
@@ -60,9 +54,16 @@ function AddEmp() {
     register,
     setValue,
     formState: { errors },
+    getValues,
   } = useForm();
 
   const onSubmit = async (data) => {
+    if (data.password !== data.confirmPassword) {
+      // The passwords do not match
+      // Display an error message and prevent form submission
+      setErrorMessage("The passwords do not match");
+      return;
+    }
     try {
       const formData = new FormData();
 
@@ -137,7 +138,6 @@ function AddEmp() {
   };
 
   //file uplood funxtions
-  // State to store the uploaded files
   // State to store the uploaded files
   const [uploadedFile, setUploadedFile] = useState(null);
 
@@ -541,6 +541,34 @@ function AddEmp() {
             />
             <Form.Text className="text-danger">
               {errors.password?.message}
+            </Form.Text>
+          </Form.Group>
+
+          {/* Confirm Password */}
+          <Form.Group as={Col} controlId="formGridConfirmPassword">
+            <Form.Label>Confirm Password</Form.Label>
+            <Controller
+              name="confirmPassword"
+              control={control}
+              rules={{
+                required: "Confirm Password is required",
+                validate: (value) => {
+                  const isValid = value === getValues("password");
+                  setIsConfirmPasswordValid(isValid);
+                  return isValid || "The passwords do not match";
+                },
+              }}
+              render={({ field }) => (
+                <Form.Control
+                  type="password"
+                  placeholder="Confirm Password"
+                  {...field}
+                />
+              )}
+            />
+            {isConfirmPasswordValid && <FaCheckCircle color="green" />}
+            <Form.Text className="text-danger">
+              {errors.confirmPassword?.message}
             </Form.Text>
           </Form.Group>
         </Row>

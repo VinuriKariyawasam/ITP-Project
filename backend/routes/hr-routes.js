@@ -9,6 +9,7 @@ const { body } = require("express-validator");
 const router = require("express").Router();
 router.use(bodyParser.json());
 //const StaffCheckAuth = require("../config/auth/staff-check-auth");
+//const NoPayHandler = require("../controllers/hr/noPayHandler");
 
 //--------Employee Routes-----------------
 // Validation rules for creating an employee
@@ -86,6 +87,10 @@ router.get("/today-emp", EmployeeController.getTodayEmployeesWithAttendance);
 //reset-password
 router.patch("/update-credentials/:id", EmployeeController.updateCredentials);
 
+//get archived employees
+// Define the route to get all archived employee records
+router.get("/archivedEmployees", EmployeeController.getAllArchivedEmployees);
+
 //---------Leaves Routes-------------------
 
 // Validation middleware function for validating the leave request data
@@ -133,6 +138,15 @@ router.patch(
   "/update-leave-status/:id",
   LeavesController.updateLeaveStatusById
 );
+
+// Define the route to get leaves by empDBId
+router.get("/emp-leaves/:empDBId", LeavesController.getLeavesByEmpDBId);
+
+// Define the route to get leaves by empDBId
+router.get("/archive-leaves", LeavesController.getAndArchiveLeaves);
+
+// Route for getting all leave records
+router.get("/getall-archive-leaves", LeavesController.getArchivedLeaves);
 
 //---------Designation Routes-------------------
 
@@ -221,6 +235,8 @@ router.delete(
 // Route to get attendance by date (using POST request and date in request body)
 router.get("/attendance/date/:date", attendanceController.getAttendanceByDate);
 
+// Define the route for updating attendance
+router.patch("/updateAttendance/:id", attendanceController.updateAttendance);
 //---------EmpReview Routes-------------------
 
 // Route to create a new employee review
@@ -237,5 +253,7 @@ router.delete("/reviews/delete/:id", EmpReviewController.deleteEmpReviewById);
 
 // Route to delete an employee review by ID
 router.get("/emp-reviews", EmpReviewController.getEmpReviews);
+
+//router.get("/nopay", NoPayHandler.getAbsentEmployeesWithoutLeave);
 
 module.exports = router;

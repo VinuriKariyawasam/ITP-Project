@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Container, Row, Col } from "react-bootstrap";
+import { Modal, Button, Container, Row, Col, Toast } from "react-bootstrap";
 import UpdateSalaryModal from "./SalaryUpdateModal";
 import html2pdf from "html2pdf.js";
 
@@ -8,6 +8,18 @@ function SalaryDetailsModal({ show, handleClose, id }) {
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [key, setKey] = useState(0); // Initialize key with 0
 
+  const [showToast, setShowToast] = useState(false);
+  const [toastHeader, setToastHeader] = useState("");
+  const [toastBody, setToastBody] = useState("");
+  const [toastType, setToastType] = useState("");
+
+  // Function to show toast notification
+  const showToastNotification = (type, header, body) => {
+    setToastType(type);
+    setToastHeader(header);
+    setToastBody(body);
+    setShowToast(true);
+  };
   const handleUpdate = async (updatedData) => {
     try {
       const response = await fetch(
@@ -33,10 +45,21 @@ function SalaryDetailsModal({ show, handleClose, id }) {
 
       setSalaryDetails(updatedDetails); // Update salaryDetails directly
       console.log("Updated salary details status:", salaryDetails);
+
       setUpdateModalShow(false); // Close the update modal
+      //alert("Salary details updated successfully");
+      setToastType("success");
+      setToastHeader("Success");
+      setToastBody("Salary updated successfully");
+      setShowToast(true);
+
       setKey((prevKey) => prevKey + 1); // Update the key to force a re-render
     } catch (error) {
       console.error("Error updating salary:", error);
+      setToastType("error");
+      setToastHeader("Error");
+      setToastBody("Error deleting leave record");
+      setShowToast(true);
     }
   };
 
@@ -63,6 +86,8 @@ function SalaryDetailsModal({ show, handleClose, id }) {
         setSalaryDetails(data);
       } catch (error) {
         console.error("Error fetching salary details:", error);
+
+        handleClose();
       }
     };
 
@@ -73,6 +98,26 @@ function SalaryDetailsModal({ show, handleClose, id }) {
   const currentDate = new Date().toLocaleDateString();
   return (
     <Modal show={show} onHide={handleClose}>
+      {/* Toast Notification */}
+      <Toast
+        show={showToast}
+        onClose={() => setShowToast(false)}
+        delay={8000}
+        autohide
+        style={{
+          position: "fixed",
+          top: 90,
+          right: 20,
+          minWidth: 300,
+          zIndex: 9999,
+        }}
+      >
+        <Toast.Header closeButton={true} className={`bg-${toastType}`}>
+          <strong className="me-auto">{toastHeader}</strong>
+        </Toast.Header>
+        <Toast.Body className={`bg-${toastType}`}>{toastBody}</Toast.Body>
+      </Toast>
+
       <Modal.Header closeButton>
         <Modal.Title>Salary Details</Modal.Title>
       </Modal.Header>

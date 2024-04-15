@@ -18,7 +18,7 @@ function Header() {
       {auth.isLoggedIn ? <Logo /> : <Logo2 />}
 
       {/* SearchBar component displayed only when logged in */}
-      {auth.isLoggedIn ? <SearchBar /> : null}
+      {/*{auth.isLoggedIn ? <SearchBar /> : null}*/}
       {/* Nav or AuthNav component displayed based on authentication status */}
       {auth.isLoggedIn ? <Nav /> : <StaffAuthNav />}
     </header>
