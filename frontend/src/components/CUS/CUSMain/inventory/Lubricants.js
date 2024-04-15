@@ -42,8 +42,8 @@ function Lubricants() {
   const increment = (productId, initialQuantity) => {
     if (
       quantities[productId] < initialQuantity ||
-      initialQuantity > 0 || 
-      (quantities[productId] === 0 && initialQuantity > 0) 
+      initialQuantity > 0 ||
+      (quantities[productId] === 0 && initialQuantity > 0)
     ) {
       setQuantities((prevQuantities) => ({
         ...prevQuantities,
@@ -162,59 +162,99 @@ function Lubricants() {
         const cartItems = cartRes.data;
         axios
           .get("http://localhost:5000/Product/lubricantstock")
-          .then((stockRes) => {
-            const stockItems = stockRes.data;
+          .then((lubStockRes) => {
+            const lubStockItems = lubStockRes.data;
+            axios
+              .get("http://localhost:5000/Product/Tirestock")
+              .then((tireStockRes) => {
+                const tireStockItems = tireStockRes.data;
 
-            cartItems.forEach((cartItem) => {
-              const matchingStockItem = stockItems.find(
-                (stockItem) => stockItem.Product_name === cartItem.Product_name
-              );
+                cartItems.forEach((cartItem) => {
+                  const matchingLubStockItem = lubStockItems.find(
+                    (lubStockItem) =>
+                      lubStockItem.Product_name === cartItem.Product_name
+                  );
+                  if (matchingLubStockItem) {
+                    const newLubQuantity =
+                      cartItem.Quantity + matchingLubStockItem.Quantity;
 
-              if (matchingStockItem) {
-                const newQuantity =
-                  cartItem.Quantity + matchingStockItem.Quantity;
+                    const updateLub = {
+                      Product_name: matchingLubStockItem.Product_name,
+                      Product_brand: matchingLubStockItem.Product_brand,
+                      Quantity: newLubQuantity,
+                      Unit_price: matchingLubStockItem.Unit_price,
+                      image: matchingLubStockItem.image,
+                    };
 
-                const updateLub = {
-                  Product_name: matchingStockItem.Product_name,
-                  Product_brand: matchingStockItem.Product_brand,
-                  Quantity: newQuantity,
-                  Unit_price: matchingStockItem.Unit_price,
-                  image: matchingStockItem.image,
-                };
+                    axios
+                      .put(
+                        `http://localhost:5000/Product/updatelubricant/${matchingLubStockItem._id}`,
+                        updateLub
+                      )
+                      .then((response) => {
+                        console.log(response);
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                      });
+                  } else {
+                    console.log(
+                      "No matching lubricant stock item found for cart item:",
+                      cartItem
+                    );
+                  }
+                  const matchingTireStockItem = tireStockItems.find(
+                    (tireStockItem) =>
+                      tireStockItem.Product_name === cartItem.Product_name
+                  );
+                  if (matchingTireStockItem) {
+                    const newTireQuantity =
+                      cartItem.Quantity + matchingTireStockItem.Quantity;
+
+                    const updateTire = {
+                      Product_name: matchingTireStockItem.Product_name,
+                      Product_brand: matchingTireStockItem.Product_brand,
+                      vehicle_Type: matchingTireStockItem.vehicle_Type,
+                      Quantity: newTireQuantity,
+                      Unit_price: matchingTireStockItem.Unit_price,
+                      image: matchingTireStockItem.image,
+                    };
+
+                    axios
+                      .put(
+                        `http://localhost:5000/Product/updateTire/${matchingTireStockItem._id}`,
+                        updateTire
+                      )
+                      .then((response) => {
+                        console.log(response);
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                      });
+                  } else {
+                    console.log(
+                      "No matching tire stock item found for cart item:",
+                      cartItem
+                    );
+                  }
+                });
 
                 axios
-                  .put(
-                    `http://localhost:5000/Product/updatelubricant/${matchingStockItem._id}`,
-                    updateLub
-                  )
-                  .then((response) => {
-                    console.log(response);
+                  .delete("http://localhost:5000/Product/emptycart")
+                  .then(() => {
+                    console.log("Cart emptied successfully.");
+                    window.location.reload();
                   })
                   .catch((error) => {
-                    console.error(error);
+                    console.error("Error emptying cart:", error);
                   });
-              } else {
-                console.log(
-                  "No matching stock item found for cart item:",
-                  cartItem
-                );
-              }
-            });
-
-            // After updating lubricant stock, delete cart
-            axios
-              .delete("http://localhost:5000/Product/emptycart")
-              .then(() => {
-                console.log("Cart emptied successfully.");
-                // Reload the page after emptying the cart
-                window.location.reload();
               })
-              .catch((error) => {
-                console.error("Error emptying cart:", error);
+              .catch((tireStockErr) => {
+                console.error("Error fetching tire stock data:", tireStockErr);
               });
           })
-          .catch((stockErr) => {
-            console.error("Error fetching stock data:", stockErr);
+          .catch((lubStockErr) => {
+            console.error("Error fetching lubricant stock data:", lubStockErr);
           });
       })
       .catch((cartErr) => {
@@ -235,59 +275,99 @@ function Lubricants() {
     }
     getcart();
   }, []);
+
   const Delete = (id, pname, quantity) => {
     axios
       .get("http://localhost:5000/Product/lubricantstock")
-      .then((stockRes) => {
-        const stockItems = stockRes.data;
-  
-        const matchingStockItem = stockItems.find(
-          (stockItem) => stockItem.Product_name === pname
-        );
-  
-        if (matchingStockItem) {
-          const newQuantity =
-            quantity + matchingStockItem.Quantity;
-  
-          const updateLub = {
-            Product_name: matchingStockItem.Product_name,
-            Product_brand: matchingStockItem.Product_brand,
-            Quantity: newQuantity,
-            Unit_price: matchingStockItem.Unit_price,
-            image: matchingStockItem.image,
-          };
-  
-          axios
-            .put(
-              `http://localhost:5000/Product/updatelubricant/${matchingStockItem._id}`,
-              updateLub
-            )
-            .then((response) => {
-              console.log(response);
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        } else {
-          console.log(
-            "No matching stock item found for cart item:",
-            pname
-          );
-        }
-      })
-      .then(() => {
+      .then((lubStockRes) => {
+        const lubStockItems = lubStockRes.data;
+
         axios
-          .delete(`http://localhost:5000/Product/deletecart/${id}`)
-          .then((response) => {
-            console.log(response);
-            window.location.reload();
+          .get("http://localhost:5000/Product/Tirestock")
+          .then((tireStockRes) => {
+            const tireStockItems = tireStockRes.data;
+            const matchingLubStockItem = lubStockItems.find(
+              (lubStockItem) => lubStockItem.Product_name === pname
+            );
+            if (matchingLubStockItem) {
+              const newLubQuantity = quantity + matchingLubStockItem.Quantity;
+
+              const updateLub = {
+                Product_name: matchingLubStockItem.Product_name,
+                Product_brand: matchingLubStockItem.Product_brand,
+                Quantity: newLubQuantity,
+                Unit_price: matchingLubStockItem.Unit_price,
+                image: matchingLubStockItem.image,
+              };
+
+              axios
+                .put(
+                  `http://localhost:5000/Product/updatelubricant/${matchingLubStockItem._id}`,
+                  updateLub
+                )
+                .then((response) => {
+                  console.log(response);
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
+            } else {
+              console.log(
+                "No matching lubricant stock item found for cart item:",
+                pname
+              );
+            }
+            const matchingTireStockItem = tireStockItems.find(
+              (tireStockItem) => tireStockItem.Product_name === pname
+            );
+            if (matchingTireStockItem) {
+              const newTireQuantity = quantity + matchingTireStockItem.Quantity;
+
+              const updateTire = {
+                Product_name: matchingTireStockItem.Product_name,
+                Product_brand: matchingTireStockItem.Product_brand,
+                vehicle_Type: matchingTireStockItem.vehicle_Type,
+                Quantity: newTireQuantity,
+                Unit_price: matchingTireStockItem.Unit_price,
+                image: matchingTireStockItem.image,
+              };
+
+              axios
+                .put(
+                  `http://localhost:5000/Product/updateTire/${matchingTireStockItem._id}`,
+                  updateTire
+                )
+                .then((response) => {
+                  console.log(response);
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
+            } else {
+              console.log(
+                "No matching tire stock item found for cart item:",
+                pname
+              );
+            }
+
+            axios
+              .delete(`http://localhost:5000/Product/deletecart/${id}`)
+              .then((response) => {
+                console.log(response);
+                window.location.reload();
+              })
+              .catch((error) => {
+                console.error(error);
+              });
           })
-          .catch((error) => {
-            console.error(error);
+          .catch((tireStockErr) => {
+            console.error("Error fetching tire stock data:", tireStockErr);
           });
+      })
+      .catch((lubStockErr) => {
+        console.error("Error fetching lubricant stock data:", lubStockErr);
       });
   };
-  
 
   const checkout = () => {
     const allProducts = [];
@@ -330,7 +410,7 @@ function Lubricants() {
               subject: `Your Cart Details orderID :${orderId}`,
               text: `Here are your cart details: `,
               html: null,
-              orderId: orderId
+              orderId: orderId,
             };
 
             axios
@@ -341,14 +421,15 @@ function Lubricants() {
               .then((response) => {
                 console.log(response.data);
 
-                axios.delete("http://localhost:5000/Product/clear-cart")
-              .then((response) => {
-                console.log("Cart cleared successfully");
+                axios
+                  .delete("http://localhost:5000/Product/clear-cart")
+                  .then((response) => {
+                    console.log("Cart cleared successfully");
+                  })
+                  .catch((error) => {
+                    console.error("Error clearing cart:", error);
+                  });
               })
-              .catch((error) => {
-                console.error("Error clearing cart:", error);
-              });
-            })
               .catch((error) => {
                 console.error("Error sending email:", error);
               });
@@ -370,6 +451,41 @@ function Lubricants() {
     selectedBrand === ""
       ? Products
       : Products.filter((product) => product.Product_brand === selectedBrand);
+
+      if (filteredProducts.length === 0) {
+        return (
+        <div style={{ marginTop: "2%", marginLeft: "3%" }}>
+      <h1 style={{ textAlign: "center" }}>GET FIRST CLASS LUBRICANTS </h1>
+      <div style={{ display: "flex", marginTop: "4%" }}>
+        <Form.Label
+          style={{ marginLeft: "15%", fontWeight: "bold", fontSize: "20px" }}
+        >
+          Brand
+        </Form.Label>
+        <Form.Select
+          aria-label="Default select example"
+          style={{ marginLeft: "2%", width: "20%" }}
+          onChange={handleBrandChange}
+          value={selectedBrand}
+        >
+          <option value="">All</option>
+          <option value="val">val</option>
+          <option value="maxxies">maxxies</option>
+          <option value="Servo">Servo</option>
+        </Form.Select>
+        <Button
+          variant="outline-dark"
+          style={{ marginLeft: "45%" }}
+          size="lg"
+          onClick={handleShow}
+        >
+          Cart <i class="bi bi-cart"></i>
+        </Button>
+      </div>
+      <h1 style={{ marginTop: "2%", textAlign:"center",marginBottom:"3%"}}>No any products available</h1>
+      </div>
+  )}
+      
 
   return (
     <div style={{ marginTop: "2%", marginLeft: "3%" }}>
@@ -410,11 +526,14 @@ function Lubricants() {
         }}
       >
         {filteredProducts.map((product) => (
-          <Card style={{ width: "30%" }}>
-            <Card.Img
-              variant="top"
-              src={`http://localhost:5000/${product.image}`}
-            />
+          <Card style={{ width: "27%", height: "70%" }}>
+            <center>
+              <Card.Img
+                variant="top"
+                src={`http://localhost:5000/${product.image}`}
+                style={{ width: "70%", height: "80%", alignContent: "center" }}
+              />
+            </center>
             <Card.Body>
               <Card.Title style={{ textAlign: "center" }}>
                 {product.Product_name}
@@ -521,7 +640,13 @@ function Lubricants() {
                     <td>
                       <Button
                         variant="danger"
-                        onClick={() => Delete(cartItem._id,cartItem.Product_name,cartItem.Quantity)}
+                        onClick={() =>
+                          Delete(
+                            cartItem._id,
+                            cartItem.Product_name,
+                            cartItem.Quantity
+                          )
+                        }
                       >
                         remove
                       </Button>

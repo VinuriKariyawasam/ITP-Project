@@ -8,7 +8,7 @@ import Addlubricant from "../IMMain/Products/lubform";
 import Tires from "../IMMain/Products/Tires";
 import Tireform from "../IMMain/Products/Tireform";
 import SpareParts from "../IMMain/Products/SpareParts";
-
+import Sales from "../IMMain/Products/Sales";
 
 // Import front end routes
 import {
@@ -17,6 +17,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+
 
 
 
@@ -32,6 +33,7 @@ function IM() {
         <Route path="/Tires/*" element={<Tires/>} />
         <Route path="Tires/addproduct/" element={<Tireform />} />
         <Route path="sp/*" element={<SpareParts/>} />
+        <Route path="sales/*" element={<Sales/>} />
       </Routes>
     </>
   );
