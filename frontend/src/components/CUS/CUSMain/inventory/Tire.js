@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext} from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
+import { CusAuthContext } from "../../../../context/cus-authcontext"
 
 function Lubricants() {
   const [Products, setProducts] = useState([]);
@@ -15,6 +16,7 @@ function Lubricants() {
   const [cart, setcart] = useState([]);
   const [show, setShow] = useState(false);
   const [selectedvehicle, setSelectedtype] = useState("");
+  const cusauth = useContext(CusAuthContext);
 
   useEffect(() => {
     function getProducts() {
@@ -393,13 +395,19 @@ function Lubricants() {
 
         console.log(allProducts);
 
+        const currentDateUTC = new Date();
+        currentDateUTC.setHours(currentDateUTC.getHours() + 5); 
+        currentDateUTC.setMinutes(currentDateUTC.getMinutes() + 30); 
+        const formattedDate = currentDateUTC.toISOString(); 
+    
+
         const order = {
-          date: new Date(),
+          date: formattedDate,
+          email: cusauth.email,
           products: allProducts,
           total: total,
           status: "pending",
         };
-
         console.log(order);
         axios
           .post("http://localhost:5000/Product/addorder", order)
@@ -408,7 +416,7 @@ function Lubricants() {
             console.log(orderId);
 
             const emailData = {
-              to: "iamtharindunawarathne@gmail.com",
+              to: cusauth.email,
               subject: `Your Cart Details orderID :${orderId}`,
               text: `Here are your cart details: `,
               html: null,
@@ -427,6 +435,7 @@ function Lubricants() {
                   .delete("http://localhost:5000/Product/clear-cart")
                   .then((response) => {
                     console.log("Cart cleared successfully");
+                    window.location.reload();
                   })
                   .catch((error) => {
                     console.error("Error clearing cart:", error);

@@ -3,7 +3,6 @@ import ImPageTitle from "../ImPageTitle";
 import { useState} from 'react';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import Table from 'react-bootstrap/Table';
 import Table1 from './Sptable1';
 import Table2 from './Sptable2';
 import Table3 from './Sptable3';

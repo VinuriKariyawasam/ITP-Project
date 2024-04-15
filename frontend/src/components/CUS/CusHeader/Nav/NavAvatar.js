@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import cusavatar from '../../../../images/customerlogo.png'
 import { CusAuthContext } from "../../../../context/cus-authcontext"
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import { Modal, Button } from 'react-bootstrap';
 
 function NavAvatar() {
@@ -17,7 +17,9 @@ function NavAvatar() {
   };
 
   return (
+    <div>
     <li className="nav-item dropdown pe-3">
+      {cusauth.isLoggedIn && (
       <a
         className="nav-link nav-profile d-flex align-items-center pe-0"
         href="#"
@@ -26,9 +28,11 @@ function NavAvatar() {
         <img src={cusavatar} alt="Profile" className="rounded-circle" />
         <span className="d-none d-md-block dropdown-toggle ps-2">{cusauth.name}</span>
       </a>
-
+      )}
       <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow cus-profile">
-        <li className="cus-dropdown-header">
+      {cusauth.isLoggedIn && (
+        <>
+         <li className="cus-dropdown-header">
         <img src={cusavatar} alt="Profile" className="rounded-circle" />
           <h6 style={{float:"center"}}>{cusauth.name}</h6>
         </li>
@@ -92,6 +96,8 @@ function NavAvatar() {
             <span>Log Out</span>
           </a>
         </li>
+        </>
+      )}
       </ul>
 
       {/* Logout confirmation modal */}
@@ -111,7 +117,20 @@ function NavAvatar() {
           </Button>
         </Modal.Footer>
       </Modal>
+      
     </li>
+     {!cusauth.isLoggedIn && (
+      <div style={{display:"flex"}}>
+        <Link to="/customer/cuslogin">
+  <Button variant="outline-light">Signin </Button>
+  </Link>
+  <Link to="/customer/cusreg">
+  <Button variant="outline-light"style={{marginLeft:"1.5%"}}>Signup</Button>
+  </Link>
+  </div>
+  )}
+  </div>
+
   );
 }
 

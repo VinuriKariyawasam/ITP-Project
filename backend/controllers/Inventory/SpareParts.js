@@ -14,7 +14,8 @@ exports.addSP = async (req, res) => {
       contactNumber,
       description,
       status,
-      email
+      email,
+      orderdate
     } = req.body;
     const image = req.file ? req.file.path : null;
 
@@ -29,7 +30,8 @@ exports.addSP = async (req, res) => {
       !description ||
       !image ||
       !status ||
-      !email
+      !email ||
+      !orderdate 
     ) {
       return res.status(400).json({ error: "All fields are required" });
     }
@@ -51,7 +53,8 @@ exports.addSP = async (req, res) => {
       description: description,
       image: image,
       status: status,
-      email:email
+      email:email,
+      orderdate:orderdate
     });
 
     await newSP.save();

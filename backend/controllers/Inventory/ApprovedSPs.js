@@ -16,7 +16,8 @@ exports.addapprovedSP = async (req, res) => {
       image,
       status,
       email,
-      total
+      total,
+      orderdate
     } = req.body;
    
 
@@ -33,7 +34,8 @@ exports.addapprovedSP = async (req, res) => {
       !image ||
       !status ||
       !email ||
-      !total
+      !total ||
+      !orderdate
     ) {
       return res.status(400).json({ error: "All fields are required" });
     }
@@ -57,7 +59,8 @@ exports.addapprovedSP = async (req, res) => {
       image: image,
       status: status,
       email:email,
-      total:total
+      total:total,
+      orderdate:orderdate
     });
 
     await newSP.save();
@@ -96,7 +99,8 @@ exports.Spupdateongoing = async (req, res) => {
       image,
       status,
       email,
-      total
+      total,
+      orderdate,
     } = req.body;
 
     const updateorder = {
@@ -112,7 +116,8 @@ exports.Spupdateongoing = async (req, res) => {
       image: image,
       status: status,
       email:email,
-      total:total
+      total:total,
+      orderdate:orderdate
     };
 
     const updatedorder = await aspSchema.findByIdAndUpdate(
@@ -161,7 +166,9 @@ exports.Spupdatecompleted = async (req, res) => {
       image,
       status,
       email,
-      total
+      total,
+      orderdate,
+      completeddate
     } = req.body;
 
     const updateorder = {
@@ -177,7 +184,9 @@ exports.Spupdatecompleted = async (req, res) => {
       image: image,
       status: status,
       email:email,
-      total:total
+      total:total,
+      orderdate:orderdate,
+      completeddate:completeddate
     };
 
     const updatedorder = await aspSchema.findByIdAndUpdate(
