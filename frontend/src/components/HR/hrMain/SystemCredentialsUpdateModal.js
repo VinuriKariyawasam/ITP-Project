@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Modal, Col } from "react-bootstrap";
 
-function SystemCredentialsUpdateModal({ show, onHide, employee, token }) {
+function SystemCredentialsUpdateModal({
+  show,
+  onHide,
+  employee,
+  submitHandler,
+}) {
   // State to manage form data
   const [formData, setFormData] = useState({
     email: employee.email,
@@ -130,7 +135,8 @@ function SystemCredentialsUpdateModal({ show, onHide, employee, token }) {
       if (!response.ok) {
         throw new Error("Failed to update system credentials");
       }
-      onHide(); // Close the modal after successful submission
+      //onHide(); // Close the modal after successful submission
+      submitHandler();
     } catch (error) {
       console.error("Error updating system credentials:", error.message);
     }

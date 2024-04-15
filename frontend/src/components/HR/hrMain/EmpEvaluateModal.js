@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
-const CreateReviewModal = ({ show, handleClose, empId, empDBId, name }) => {
+const CreateReviewModal = ({
+  show,
+  handleClose,
+  handleSubmit,
+  empId,
+  empDBId,
+  name,
+}) => {
   const initialFormData = {
     empId: empId || "",
     empDBId: empDBId || "",
@@ -37,7 +44,8 @@ const CreateReviewModal = ({ show, handleClose, empId, empDBId, name }) => {
       }
       const data = await response.json();
       console.log("Review created:", data);
-      handleClose(); // Close the modal after successful submission
+      //handleClose(); // Close the modal after successful submission
+      handleSubmit();
     } catch (error) {
       console.error("Error creating review:", error.message);
     }

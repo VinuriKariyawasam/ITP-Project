@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Button,
@@ -20,6 +20,28 @@ import { useNavigate } from "react-router-dom";
 function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
   //to redirect after success
   const navigate = useNavigate();
+
+  const [designations, setDesignations] = useState([]);
+
+  //get designations
+  useEffect(() => {
+    const fetchDesignations = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/hr/designations"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch designations");
+        }
+        const data = await response.json();
+        setDesignations(data); // Assuming the response data is an array of designations
+      } catch (error) {
+        console.error("Error fetching designations:", error);
+      }
+    };
+
+    fetchDesignations();
+  }, []);
 
   //to tool tip
   const renderTooltip = (props) => (
@@ -279,13 +301,15 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
                       handlePositionChange(e); // Call function to update selected position
                     }}
                   >
-                    <option>Choose...</option>
-                    <option value="HR Manager">HR Manager</option>
-                    <option value="Inventory Manager">Inventory Manager</option>
-                    <option value="Service Manager">Service Manager</option>
-                    <option value="Finance Manager">Finance Manager</option>
-                    <option value="Supervisor">Supervisor</option>
-                    <option value="Technician">Technician</option>
+                    <option value="">Choose...</option>
+                    {designations.map((designation) => (
+                      <option
+                        key={designation._id}
+                        value={designation.position}
+                      >
+                        {designation.position}
+                      </option>
+                    ))}
                   </Form.Select>
                 )}
               />

@@ -138,6 +138,12 @@ router.patch(
 // Define the route to get leaves by empDBId
 router.get("/emp-leaves/:empDBId", LeavesController.getLeavesByEmpDBId);
 
+// Define the route to get leaves by empDBId
+router.get("/archive-leaves", LeavesController.getAndArchiveLeaves);
+
+// Route for getting all leave records
+router.get("/getall-archive-leaves", LeavesController.getArchivedLeaves);
+
 //---------Designation Routes-------------------
 
 // Validation middleware function for validating the designation request data
@@ -225,6 +231,8 @@ router.delete(
 // Route to get attendance by date (using POST request and date in request body)
 router.get("/attendance/date/:date", attendanceController.getAttendanceByDate);
 
+// Define the route for updating attendance
+router.patch("/updateAttendance/:id", attendanceController.updateAttendance);
 //---------EmpReview Routes-------------------
 
 // Route to create a new employee review

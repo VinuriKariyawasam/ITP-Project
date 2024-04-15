@@ -217,8 +217,12 @@ function Salary() {
 
       const data = await response.json();
       console.log("Response:", data); // Log the response from the server
+      if (data) {
+        alert("Salary records sent to finance successfully");
+      }
     } catch (error) {
       console.error("Error:", error);
+      alert("Salary records sent to finance unsuccessfull.Try Again.");
     }
   };
 

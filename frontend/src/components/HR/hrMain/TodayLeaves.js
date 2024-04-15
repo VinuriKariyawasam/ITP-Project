@@ -40,6 +40,16 @@ function TodayLeaves() {
   // Get today's date
   const today = new Date();
 
+  // Check if there are any leaves for today
+  const leavesForToday =
+    Array.isArray(leaveRecords) &&
+    leaveRecords.some(
+      (record) =>
+        record.status === "Approved" &&
+        isDateInRange(today, new Date(record.fromDate), new Date(record.toDate))
+    );
+  console.log(leavesForToday);
+
   // Function to handle delete confirmation
   //delete confirm modal handeling
   const handleDeleteConfirmation = (recordId) => {
@@ -82,16 +92,6 @@ function TodayLeaves() {
     }
     setShowDeleteConfirmationModal(false);
   };
-
-  // Check if there are any leaves for today
-  const leavesForToday =
-    Array.isArray(leaveRecords) &&
-    leaveRecords.some(
-      (record) =>
-        record.status === "Approved" &&
-        isDateInRange(today, new Date(record.fromDate), new Date(record.toDate))
-    );
-  console.log(leavesForToday);
 
   return (
     <>

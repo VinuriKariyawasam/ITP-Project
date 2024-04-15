@@ -8,6 +8,7 @@ import {
   Image,
   Modal,
   Card,
+  Toast,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
@@ -41,10 +42,23 @@ function EmployeeDetails() {
   const [showReviewsModal, setShowReviewsModal] = useState(false);
   const [showCredentialsModal, setShowCredentialsModal] = useState(false);
   const [leaves, setLeaves] = useState([]);
-  const [totalLeaves, setTotalLeaves] = useState([]);
-  const [approvedLeaves, setApprovedLeaves] = useState([]);
-  const [rejectedLeaves, setRejectedLeaves] = useState([]);
+  const [totalLeaves, setTotalLeaves] = useState(0);
+  const [approvedLeaves, setApprovedLeaves] = useState(0);
+  const [rejectedLeaves, setRejectedLeaves] = useState(0);
   const [showLeaveTable, setShowLeaveTable] = useState(false);
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastHeader, setToastHeader] = useState("");
+  const [toastBody, setToastBody] = useState("");
+  const [toastType, setToastType] = useState("");
+
+  // Function to show toast notification
+  const showToastNotification = (type, header, body) => {
+    setToastType(type);
+    setToastHeader(header);
+    setToastBody(body);
+    setShowToast(true);
+  };
 
   //Function to fetch employee personal data by database
   const fetchEmployeeById = async (employeeId) => {
@@ -140,8 +154,11 @@ function EmployeeDetails() {
       ).length;
 
       // Set the state with the calculated counts
+      console.log("Total Leaves:", totalLeaves);
       setTotalLeaves(totalLeaves);
+      console.log("Approved Leaves:", approvedLeaves);
       setApprovedLeaves(approvedLeaves);
+      console.log("Rejected Leaves:", rejectedLeaves);
       setRejectedLeaves(rejectedLeaves);
     } catch (error) {
       console.error("Error fetching leaves:", error);
@@ -214,13 +231,15 @@ function EmployeeDetails() {
     fetchEmployeeById(employeeId); //this used because of error
     //setEmployee(updatedData); // Update the employee data in the state
     setShowUpdateModal(false); // Close the update modal
+    setToastType("success");
+    setToastHeader("Success");
+    setToastBody("Personal Details Updated Successfully");
+    setShowToast(true);
   };
 
   /*----Parts regarding employee evaluating-------*/
   const handleEvaluateModalClose = () => {
     setShowEvaluateModal(false);
-    fetchReviews(employeeId);
-    fetchEmployeeById(employeeId);
   };
 
   const handleEvaluateModalShow = () => {
@@ -232,6 +251,12 @@ function EmployeeDetails() {
     console.log(formData);
     // Close the modal after submission
     handleEvaluateModalClose();
+    fetchReviews(employeeId);
+    fetchEmployeeById(employeeId);
+    setToastType("success");
+    setToastHeader("Success");
+    setToastBody("Add evaluation review successfully");
+    setShowToast(true);
   };
 
   /*----Parts regarding employee archive(delete)-------*/
@@ -303,11 +328,39 @@ function EmployeeDetails() {
   // Function to hide the modal
   const hideCredentialsModalHandler = () => {
     setShowCredentialsModal(false);
+  };
+
+  const handleCredUpdate = async () => {
+    setShowCredentialsModal(false);
     fetchEmployeeById(employeeId);
+    setToastType("success");
+    setToastHeader("Success");
+    setToastBody("Credentials Updated Successfully");
+    setShowToast(true);
   };
 
   return (
     <Card style={{ padding: "20px" }}>
+      {/* Toast Notification */}
+      <Toast
+        show={showToast}
+        onClose={() => setShowToast(false)}
+        delay={8000}
+        autohide
+        style={{
+          position: "fixed",
+          top: 90,
+          right: 20,
+          minWidth: 300,
+          zIndex: 9999,
+        }}
+      >
+        <Toast.Header closeButton={true} className={`bg-${toastType}`}>
+          <strong className="me-auto">{toastHeader}</strong>
+        </Toast.Header>
+        <Toast.Body className={`bg-${toastType}`}>{toastBody}</Toast.Body>
+      </Toast>
+
       <h2>
         <Button
           variant="dark"
@@ -670,12 +723,13 @@ function EmployeeDetails() {
               </Col>
               <Col>
                 <h5 style={{ margin: "10px" }}>
-                  Approved Leaves:{approvedLeaves}
+                  Approved Leaves:{" "}
+                  {approvedLeaves !== null ? approvedLeaves : 0}
                 </h5>
               </Col>
               <Col>
                 <h5 style={{ margin: "10px" }}>
-                  Rejected Leaves:{rejectedLeaves}
+                  Rejected Leaves:{rejectedLeaves !== null ? rejectedLeaves : 0}
                 </h5>
               </Col>
               <Col>
@@ -768,6 +822,7 @@ function EmployeeDetails() {
         show={showCredentialsModal}
         onHide={hideCredentialsModalHandler}
         employee={employee}
+        submitHandler={handleCredUpdate}
       />
     </Card>
   );

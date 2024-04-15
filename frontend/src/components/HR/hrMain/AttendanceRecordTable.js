@@ -5,6 +5,7 @@ import { CSVLink } from "react-csv";
 import html2pdf from "html2pdf.js";
 import DatePicker from "react-datepicker"; // Import the date picker component
 import "react-datepicker/dist/react-datepicker.css"; // Date picker styles
+import { set } from "date-fns";
 
 const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
   const [presentCount, setPresentCount] = useState(0);
@@ -13,6 +14,7 @@ const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null); // State for selected date
   const [filteredTableData, setFilteredTableData] = useState([]);
+  const [date, setDate] = useState("");
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -310,17 +312,7 @@ const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
           <tbody>{renderTableRows()}</tbody>
         </table>
       </div>
-      <Modal
-        show={showModal}
-        onHide={handleCloseModal}
-        style={{
-          top: "95%",
-          left: "40%",
-          transform: "translate(-50%, -50%)",
-          position: "fixed",
-          bottom: "10px",
-        }}
-      >
+      <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Employee Attendance</Modal.Title>
         </Modal.Header>

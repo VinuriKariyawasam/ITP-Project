@@ -67,6 +67,13 @@ const LeaveRecordsTable = ({
     setShowCalendar(!showCalendar);
   };
 
+  const filteredRecords = filteredTableData.filter(
+    (record) =>
+      record &&
+      (statusFilter === "all" || record.status === statusFilter) &&
+      dateFilter(record.fromDate, record.toDate)
+  );
+
   const renderTableRows = () => {
     return filteredTableData.map((record) => {
       if (
@@ -281,6 +288,7 @@ const LeaveRecordsTable = ({
           </thead>
           <tbody>{renderTableRows()}</tbody>
         </table>
+        {filteredRecords.length === 0 && <p>No records found</p>}
       </div>
     </div>
   );
