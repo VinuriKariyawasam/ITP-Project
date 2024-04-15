@@ -3,9 +3,10 @@ import axios from "axios";
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
-import { toPng } from "html-to-image";
 import { Link } from 'react-router-dom';
 import { Form, Stack ,Container, Row ,Col} from "react-bootstrap";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const SMmMechanicalService = props => {
 
@@ -79,18 +80,29 @@ const SMmMechanicalService = props => {
 
   const handleDownloadReports = () => {
     const container = document.getElementById("RequestC");
-
+  
     if (container) {
-      toPng(container)
-        .then(function (dataUrl) {
-          const downloadLink = document.createElement("a");
-          downloadLink.href = dataUrl;
-          downloadLink.download = "Mechanical Requests.png";
-          downloadLink.click();
-        })
-        .catch(function (error) {
-          console.error("Error generating image:", error);
-        });
+      html2canvas(container).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        const imgWidth = 208;
+        const pageHeight = 295;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+  
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+  
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+  
+        pdf.save("Mechanical_Requests.pdf");
+      });
     }
   };
 
