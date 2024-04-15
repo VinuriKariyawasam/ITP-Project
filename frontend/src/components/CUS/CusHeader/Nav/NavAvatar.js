@@ -54,17 +54,21 @@ function NavAvatar() {
                 <hr className="dropdown-divider" />
               </li>
 
-              <li>
-                <a
-                  className="cus-dropdown-item d-flex align-items-center"
-                  href="users-profile.html"
-                >
-                  <span>My Payments</span>
-                </a>
-              </li>
-              <li>
-                <hr className="dropdown-divider" />
-              </li>
+              {cusauth.isLoggedIn && (
+                <>
+                  <li>
+                    <a
+                      className="cus-dropdown-item d-flex align-items-center"
+                      href="http://localhost:3000/customer/payments/payonline"
+                    >
+                      <span>My Payments</span>
+                    </a>
+                  </li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
+                </>
+              )}
 
               <li>
                 <a
