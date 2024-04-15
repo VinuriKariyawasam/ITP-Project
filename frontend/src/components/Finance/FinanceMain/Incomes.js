@@ -4,7 +4,9 @@ import PageTitle from "./PageTitle";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
+import Card from "react-bootstrap/Card";
 import { CusAuthContext } from "../../../context/cus-authcontext";
+import jsPDF from "jspdf";
 
 const Incomes = () => {
   const navigate = useNavigate();
@@ -12,12 +14,12 @@ const Incomes = () => {
   const [incomes, setIncomes] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [incomeToDelete, setIncomeToDelete] = useState(null);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [filterDate, setFilterDate] = useState("");
+  const [filteredIncomes, setFilteredIncomes] = useState([]);
 
   useEffect(() => {
-    
-    fetch("http://localhost:5000/api/finance/incomes", {
-      
-    })
+    fetch("http://localhost:5000/api/finance/incomes")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -26,12 +28,23 @@ const Incomes = () => {
       })
       .then((data) => {
         setIncomes(data);
+        calculateTotalIncome(data);
       })
       .catch((error) => {
         console.error("Error fetching incomes:", error);
       });
   }, []);
 
+  const calculateTotalIncome = (incomes) => {
+    const currentDate = new Date().toISOString().split("T")[0];
+    let total = 0;
+    incomes.forEach((income) => {
+      if (formatDate(income.date) === currentDate) {
+        total += income.amount;
+      }
+    });
+    setTotalIncome(total);
+  };
 
   const handleAddIncomeClick = () => {
     navigate("add-income");
@@ -59,6 +72,7 @@ const Incomes = () => {
       .then(() => {
         setIncomes(incomes.filter((inc) => inc._id !== incomeToDelete));
         setShowDeleteModal(false);
+        calculateTotalIncome(incomes.filter((inc) => inc._id !== incomeToDelete));
       })
       .catch((error) => console.error("Error deleting income:", error));
   };
@@ -71,6 +85,25 @@ const Incomes = () => {
     return `IN${(index + 1).toString().padStart(4, "0")}`;
   };
 
+  const handleFilterChange = (e) => {
+    setFilterDate(e.target.value);
+    if (e.target.value === "") {
+      setFilteredIncomes([]);
+      calculateTotalIncome(incomes);
+    } else {
+      const filtered = incomes.filter((income) => formatDate(income.date) === e.target.value);
+      setFilteredIncomes(filtered);
+      calculateTotalIncome(filtered);
+    }
+  };
+
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Incomes & Funds", 10, 10);
+    doc.autoTable({ html: '#income-table' });
+    doc.save("incomes.pdf");
+  };
+
   return (
     <main id="main" className="main">
       <PageTitle path="Finance / Incomes & Funds" title="Incomes & Funds " />
@@ -78,8 +111,17 @@ const Incomes = () => {
         <Button variant="primary" onClick={handleAddIncomeClick}>
           Add Funds
         </Button>
-        <br></br><br></br>
-        <Table striped bordered hover>
+        <br /><br />
+        <input type="date" value={filterDate} onChange={handleFilterChange} />
+        <br /><br />
+        <Card>
+          <Card.Body>
+            <Card.Title>Total Income for the Day</Card.Title>
+            <Card.Text>Rs. {totalIncome}</Card.Text>
+          </Card.Body>
+        </Card>
+        <br /><br />
+        <Table id="income-table" striped bordered hover>
           <thead>
             <tr>
               <th>Income/Fund ID</th>
@@ -94,7 +136,7 @@ const Incomes = () => {
             </tr>
           </thead>
           <tbody>
-            {incomes.map((income, index) => (
+            {(filterDate !== "" ? filteredIncomes : incomes).map((income, index) => (
               <tr key={income._id}>
                 <td>{generateIncomeID(index)}</td>
                 <td>{income.title}</td>
@@ -116,6 +158,9 @@ const Incomes = () => {
             ))}
           </tbody>
         </Table>
+        <Button variant="success" onClick={handleDownloadPDF}>
+          Download as PDF
+        </Button>
       </div>
       {/* Delete confirmation modal */}
       <Modal show={showDeleteModal} onHide={handleCloseModal}>

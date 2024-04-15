@@ -18,20 +18,62 @@ const AddExpense = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        let newErrors = { ...errors };
+
+        // Title validation
+        if (name === 'title') {
+            if (value.trim() === '') {
+                newErrors[name] = 'Title is required';
+            } else {
+                delete newErrors[name];
+            }
+        }
+
+        // Amount validation
+        if (name === 'amount') {
+            if (value.trim() === '') {
+                newErrors[name] = 'Amount is required';
+            } else if (isNaN(parseFloat(value))) {
+                newErrors[name] = 'Amount must be a number';
+            } else if (parseFloat(value) <= 0) {
+                newErrors[name] = 'Amount must be positive';
+            } else {
+                delete newErrors[name];
+            }
+        }
+
+        // Type validation
+        if (name === 'type') {
+            if (value.trim() === '') {
+                newErrors[name] = 'Type is required';
+            } else {
+                delete newErrors[name];
+            }
+        }
+
+        // Date validation
+        if (name === 'date') {
+            if (value.trim() === '') {
+                newErrors[name] = 'Date is required';
+            } else {
+                delete newErrors[name];
+            }
+        }
+
+        setErrors(newErrors);
+
         setFormData({
             ...formData,
             [name]: value
         });
+
         // Clear previous error message when user starts typing
-        setErrors({
-            ...errors,
-            [name]: ''
-        });
+        setErrorMessage('');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validateForm()) {
+        if (Object.keys(errors).length === 0) {
             try {
                 const response = await fetch("http://localhost:5000/api/finance/expenses/add-expense", {
                     method: 'POST',
@@ -59,32 +101,9 @@ const AddExpense = () => {
                 console.error('Error adding expense:', error);
                 setErrorMessage('Failed to add expense');
             }
+        } else {
+            setErrorMessage('Please fix the validation errors before submitting');
         }
-    };
-
-    const validateForm = () => {
-        const newErrors = {};
-        // Title validation
-        if (formData.title.trim() === '') {
-            newErrors.title = 'Title is required';
-        }
-        // Amount validation
-        if (formData.amount.trim() === '') {
-            newErrors.amount = 'Amount is required';
-        } else if (isNaN(parseFloat(formData.amount))) {
-            newErrors.amount = 'Amount must be a number';
-        }
-        // Type validation
-        if (formData.type.trim() === '') {
-            newErrors.type = 'Type is required';
-        }
-        // Date validation
-        if (formData.date.trim() === '') {
-            newErrors.date = 'Date is required';
-        }
-        setErrors(newErrors);
-        // If there are no errors, return true; otherwise, return false
-        return Object.keys(newErrors).length === 0;
     };
 
     const handleCancel = () => {
@@ -158,7 +177,7 @@ const AddExpense = () => {
                         value={formData.description} 
                         onChange={handleChange} 
                     />
-                </Form.Group>
+                </Form.Group><br></br>
                 <Button variant="primary" type="submit">
                     Add Expense
                 </Button>{" "}
