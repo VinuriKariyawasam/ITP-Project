@@ -3,11 +3,15 @@ import axios from "axios";
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
+import { toPng } from "html-to-image";
+import { Link } from 'react-router-dom';
+import { Form, Stack ,Container, Row ,Col} from "react-bootstrap";
 
 const SMmVehicleCarriers = props => {
 
   const [carrierRequests, setCarrierRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [search, setSearch] = useState('');
 
   const [cusName, setCusName] = useState("");
   const [cusEmail, setCusEmail] = useState("");
@@ -51,6 +55,14 @@ const SMmVehicleCarriers = props => {
     setSelectedRequest(null);
   };
 
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const clearFilters = () => {
+    setSearch('');
+  };
+
   const deleteRequest = (id) => {
     const shouldDelete = window.confirm("Please confirm deletion!");
     if (shouldDelete) {
@@ -65,10 +77,39 @@ const SMmVehicleCarriers = props => {
     }
   };
 
+  const handleDownloadReports = () => {
+    const container = document.getElementById("RequestC");
+
+    if (container) {
+      toPng(container)
+        .then(function (dataUrl) {
+          const downloadLink = document.createElement("a");
+          downloadLink.href = dataUrl;
+          downloadLink.download = "Vehicle Carrier Requests.png";
+          downloadLink.click();
+        })
+        .catch(function (error) {
+          console.error("Error generating image:", error);
+        });
+    }
+  };
+
   return (
     <main id="main" className="main">
       <div>
+      <Link to='/staff/sm/mobilemain'>
+      <Button variant="outline-dark"  ><i class="bi bi-arrow-left-square-fill"></i></Button></Link>
         <h2 className="SMmMechanicalService-heading">Vehicle Carrier Service Requests</h2>
+        <Row><Col><Stack direction="horizontal" gap={1}><div>
+            <i class="bi bi-search"></i></div><div>
+            <Form.Group controlId="search">
+              <Form.Control type="text" placeholder="Search here by vehicle No" value={search} onChange={handleSearch} />
+            </Form.Group> </div><div>
+            <Button variant="outline-dark" onClick={clearFilters}>Clear Search</Button>
+          </div></Stack></Col>
+          <Col><Button variant="outline-dark" onClick={handleDownloadReports}>Download report of Vehicle carrier requests</Button>
+          </Col></Row><br />
+          <Container className="my-4" id="RequestC">
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -83,7 +124,11 @@ const SMmVehicleCarriers = props => {
             </tr>
           </thead>
           <tbody>
-            {carrierRequests.map((request) => (
+            {carrierRequests
+            .filter((request) =>
+                  request.vehicleNo?.toLowerCase().includes(search.toLowerCase())
+                  )
+            .map((request) => (
               <tr key={request._id} onClick={() => handleTableRowClick(request)}>
                 <td>{request.cusName}</td>
                 <td>{request.cusEmail}</td>
@@ -106,7 +151,7 @@ const SMmVehicleCarriers = props => {
               </tr>
             ))}
           </tbody>
-        </Table>
+        </Table></Container>
         
         {selectedRequest && (
           <Card>
