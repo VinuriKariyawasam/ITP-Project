@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import { Form, Col, Row, Button, InputGroup } from 'react-bootstrap';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +6,7 @@ import DatePicker from "react-datepicker";
 import { useForm } from "../../../../data/CUS/Appointment/apform-hook";
 import accidentalrepairs from '../../../../images/CUS/Appointment/accidental repairs.jpg'
 import './AccidentalAppointment.css'
-
+import { CusAuthContext } from "../../../../context/cus-authcontext";
 
 const AccidentalAppointment = () => {
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ const AccidentalAppointment = () => {
 
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState('');
+  const cusauth = useContext(CusAuthContext)
 
   const handleNameChange = (event) => {
     const value = event.target.value;
@@ -77,6 +78,7 @@ const AccidentalAppointment = () => {
     event.preventDefault();
     try {
       const formData = new FormData();
+      formData.append("userId", cusauth.userId);
       formData.append("name", formState.inputs.name.value);
       formData.append("vType", formState.inputs.vType.value);
       formData.append("vNo", formState.inputs.vNo.value);

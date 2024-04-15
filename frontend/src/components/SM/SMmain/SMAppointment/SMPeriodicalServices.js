@@ -14,7 +14,7 @@ const SMPeriodicalServices = props => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   
 
-
+  const [userId, setuserId] = useState("");
   const [name, setname] = useState("");
   const [vType, setvType] = useState("");
   const [vNo, setvNo] = useState("");
@@ -35,6 +35,7 @@ const SMPeriodicalServices = props => {
     const serviceType = "Periodical Services";
     //create javascript object
     const newacceptedappointment = {
+      userId,
       name,
       vType,
       vNo,
@@ -62,6 +63,7 @@ const SMPeriodicalServices = props => {
    
     //create javascript object
     const newacceptedPeriodicalAppointment = {
+      userId,
       name,
       vType,
       vNo,
@@ -87,6 +89,7 @@ const SMPeriodicalServices = props => {
 
        //set values to columnns in accepted appointment
        const handleTableRowClick = (appointment) => {
+        setuserId(appointment.userId);
         setname(appointment.name);
         setvType(appointment.vType);
         setvNo(appointment.vNo);
@@ -235,8 +238,13 @@ const SMPeriodicalServices = props => {
           </tbody>
         </Table>
         <Link to='/staff/sm/periodicalhistory'>
-        <Button variant="secondary" >
+        <Button variant="success" >
                     View History of accepted appointments
+        </Button><br/><br/>
+        </Link>
+        <Link to='/staff/sm/appointmentMain'>
+        <Button variant="secondary" >
+                    Back
         </Button>
         </Link>
       </div>

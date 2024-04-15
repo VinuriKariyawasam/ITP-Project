@@ -5,6 +5,7 @@ import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import jsPDF from 'jspdf';
+import { Link } from 'react-router-dom';
 
 
 const PeriodicalHistory = props => {
@@ -183,7 +184,13 @@ const PeriodicalHistory = props => {
           </tbody>
         </Table>
       </div>
-      <Button variant="success" onClick={() => generatePDF()}>Download PDF</Button>
+      <Button variant="success" onClick={() => generatePDF()}>Download PDF</Button><br/><br/>
+
+      <Link to='/staff/sm/periodicalappointment'>
+        <Button variant="secondary" >
+                    Back
+        </Button>
+        </Link>
     </main>
   )
 }
