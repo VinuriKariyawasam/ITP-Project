@@ -46,6 +46,15 @@ const spSchema = new schema({
     email:{
         type:String,
         required:true
+    },
+    orderdate: {
+        type: Date,
+        default: Date.now,
+        required : true
+    },
+    completeddate:{
+        type:Date,
+        default: Date.now
     }
 
 })

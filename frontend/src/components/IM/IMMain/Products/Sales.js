@@ -15,6 +15,7 @@ const [pendingorder, setpendingorder] = useState([]);
 const [completedorder, setcompletedorder] = useState([]); 
 const [selectedOrder, setSelectedOrder] = useState(null);
 const [showModal, setShowModal] = useState(false);
+const [searchDate, setSearchDate] = useState('');
 
 useEffect(() => {
     function getpendingorder() {
@@ -52,9 +53,55 @@ useEffect(() => {
     setShowModal(false);
   };
 
+
+  const filteredPendingOrders = pendingorder.filter(order =>
+    order.date.includes(searchDate)
+);
+
+const filteredCompletedOrders = completedorder.filter(order =>
+    order.date.includes(searchDate)
+);
+
+const handleClear = () => {
+  setSearchDate('');
+};
+
 return (
 <main id="main" className="main">
  <ImPageTitle title="Sales" url="/staff/im/sales" />
+ <div style={{ display: 'flex', alignItems: 'center' ,marginBottom:"2%"}}>
+      <input
+        type="date"
+        placeholder="Search by Date"
+        value={searchDate}
+        onChange={(e) => setSearchDate(e.target.value)}
+        style={{
+          padding: '8px 12px',
+          fontSize: '16px',
+          border: '1px solid #ccc',
+          borderRadius: '5px',
+          boxShadow: 'none',
+          outline: 'none',
+          transition: 'border-color 0.3s ease',
+          width: '200px', 
+        }}
+      />
+      <button
+        onClick={handleClear}
+        style={{
+          padding: '8px 12px',
+          fontSize: '16px',
+          backgroundColor: '#ddd',
+          border: 'none',
+          borderRadius: '5px',
+          marginLeft: '10px',
+          cursor: 'pointer',
+          transition: 'background-color 0.3s ease',
+        }}
+      >
+        Clear
+      </button>
+    </div>
  <Tabs
   id="controlled-tab-example"
   activeKey={key}
@@ -74,7 +121,7 @@ return (
     </tr>
   </thead>
   <tbody>
-  {pendingorder.map((pendingorder) => (
+  {filteredPendingOrders.map((pendingorder) => (
     <tr key={pendingorder._id}>
       <td>{pendingorder._id}</td>
       <td>{pendingorder.date.split('T')[0]}</td>
@@ -128,7 +175,7 @@ return (
       </tr>
     </thead>
     <tbody>
-    {completedorder.map((completedorder) => (
+    {filteredCompletedOrders.map((completedorder) => (
       <tr key={completedorder._id}>
         <td>{completedorder._id}</td>
         <td>{completedorder.date.split('T')[0]}</td>

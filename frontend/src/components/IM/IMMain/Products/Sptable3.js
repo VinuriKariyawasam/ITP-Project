@@ -35,8 +35,16 @@ function Sptable3() {
 
   const handleSuccessClick = (SpareParts) => {
 
+    
+    const currentDateUTC = new Date();
+    currentDateUTC.setHours(currentDateUTC.getHours() + 5); 
+    currentDateUTC.setMinutes(currentDateUTC.getMinutes() + 30); 
+    const formattedDate = currentDateUTC.toISOString(); 
+
+
     const updateorder = {
       status: 'completed',
+      completeddate: formattedDate
      
     };
     
@@ -82,6 +90,7 @@ function Sptable3() {
             <th>Customer Name</th>
             <th>Vehicle Number</th>
             <th>Contact Number</th>
+            <th>Ordered date</th>
             <th>Total</th>
             <th>Status</th>
             <th>Explore</th>
@@ -94,6 +103,7 @@ function Sptable3() {
               <td>{SpareParts.name}</td>
               <td>{SpareParts.vehicleNumber}</td>
               <td>{SpareParts.contactNumber}</td>
+              <td>{SpareParts.orderdate.split('T')[0]}</td>
               <td>{SpareParts.total}</td>
               <td>
                 <Badge bg="danger">{SpareParts.status}</Badge>

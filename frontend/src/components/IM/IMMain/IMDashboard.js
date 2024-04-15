@@ -8,6 +8,8 @@ function IMDashboard() {
   const [lubricantCount, setLubricantCount] = useState(0);
   const [TireCount, setTireCount] = useState(0);
   const [OrderCount,setOrderCount] = useState(0);
+  const [completedOrderTotal, setCompletedOrderTotal] = useState(0);
+  const [completedSparePartTotal, setCompletedSparePartTotal] = useState(0);
   useEffect(() => {
     function getLubricants() {
       axios
@@ -35,6 +37,36 @@ function IMDashboard() {
         });
     }
     getTires();
+  }, []);
+
+  useEffect(() => {
+    function getCompletedOrders() {
+      axios
+        .get("http://localhost:5000/Product/getordercompleted")
+        .then((res) => {
+          const total = res.data.reduce((acc, order) => acc + order.total, 0);
+          setCompletedOrderTotal(total);
+        })
+        .catch((err) => {
+          alert("error");
+        });
+    }
+    getCompletedOrders();
+  }, []);
+
+  useEffect(() => {
+    function getCompletedSpareParts() {
+      axios
+        .get("http://localhost:5000/Product/completedsp")
+        .then((res) => {
+          const total = res.data.reduce((acc, sparePart) => acc + sparePart.total, 0);
+          setCompletedSparePartTotal(total);
+        })
+        .catch((err) => {
+          alert("error");
+        });
+    }
+    getCompletedSpareParts();
   }, []);
 
   
@@ -75,10 +107,10 @@ function IMDashboard() {
           />
           <DbCard
             title="Total Income"
-            value1="Rs.1,220,460.00"
-            value2=""
+            value1={`Products: Rs.${completedOrderTotal}`}
+            value2={`Spare parts: Rs.${completedSparePartTotal}`}
             iconClass="bi bi-cash-coin"
-            duration="This month"
+            duration="All the time"
           />
         </div>
         
