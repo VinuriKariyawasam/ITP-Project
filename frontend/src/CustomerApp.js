@@ -15,6 +15,7 @@ import CusLogin from "./components/CUS/CUSMain/CusLogin";
 import CusProfile from "./components/CUS/CUSMain/CusProfile";
 import CusFooter from "../src/components/CUS/CusFooter/CusFooter";
 import { CusAuthContext } from "./context/cus-authcontext";
+import ContactUs from "../src/components/CUS/CUSMain/ContactUs";
 
 // Import Bootstrap CSS and icons
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -113,6 +114,7 @@ function CustomerApp() {
         <Header />
         <Routes>
           <Route path="/" element={<Cushome />} />
+          <Route path="/contactus" element={<ContactUs />} />
           <Route path="/products/*" element={<Products />} />
           <Route path="/appointment/*" element={<CUSAppointment />} />
           <Route path="/payments/*" element={<Payment />} />
