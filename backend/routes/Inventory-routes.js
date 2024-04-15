@@ -4,8 +4,10 @@ const fileUpload = require('../controllers/Inventory/ImageUpload');
 const { addTires, TireStock, deleteTires, updateTire} = require('../controllers/Inventory/Tires');
 const { addSP, SPpendingorders, deletependingsp } = require('../controllers/Inventory/SpareParts');
 const{addcart, cartStock, updatecart, deletecarts, emptycart, generatePDF, clearCart} = require('../controllers/Inventory/carts')
-const { sendMail } = require("../config/inventorynodemailer");
-const { addorder } = require('../controllers/Inventory/Orders');
+const { sendIMail } = require("../config/inventorynodemailer");
+const {sendMail} = require("../config/nodemailer");
+const { addorder, pendingOrders, completedOrders } = require('../controllers/Inventory/Orders');
+const { addapprovedSP,  SPapprovedorders, SPongoingorders, SPcompletedorders, Spupdateongoing, Spupdatecompleted} = require('../controllers/Inventory/ApprovedSPs');
 const router = require("express").Router();
 
 router.post("/addlubricant",fileUpload.single('image'),addLubricant)
@@ -22,6 +24,13 @@ router.post("/addsp",fileUpload.single('image'),addSP)
 router.get("/pendingsp", SPpendingorders)
 router.delete('/deletependingsp/:id', deletependingsp )
 
+router.post("/addapprovedsp",addapprovedSP)
+router.get("/approvedsp",SPapprovedorders)
+router.put("/updatetoongoing/:id",Spupdateongoing)
+router.get("/ongoingsp",SPongoingorders)
+router.put("/updatetocomplete/:id",Spupdatecompleted)
+router.get("/completedsp",SPcompletedorders)
+
 router.post("/addcart", addcart)
 router.get("/getcart", cartStock)
 router.put("/updatecart/:id",updatecart)
@@ -31,7 +40,10 @@ router.get('/generate-pdf',generatePDF);
 router.delete("/clear-cart", clearCart);
 
 router.post("/addorder",addorder)
+router.get("/getorderpending",pendingOrders)
+router.get("/getordercompleted",completedOrders)
 
-router.post("/sendinventoryemail",sendMail)
+router.post("/sendinventoryemail",sendIMail)
+router.post("/sendrejectemail",sendMail)
 
 module.exports = router;
