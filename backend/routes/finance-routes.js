@@ -25,6 +25,9 @@ const {uploadInvoice}= require("../controllers/finance/uploadinvoice")
 const {saveInPersonRecord,saveOnlineRecord,getAllInPersonRecords,getAllOnlineRecords}=require("../controllers/finance/invoicerecord");
 const { sendMail } = require("../config/nodemailer");
 const {processSalaryList} = require("../controllers/finance/empbenefitcal")
+const {getAllServiceReports,
+  getUnapprovedServiceReports,
+  updateFinanceApproval,}=require("../controllers/finance/importservice")
 
 
 // router.use(checkAuth)
@@ -88,6 +91,11 @@ router.get("/empbenefits/all",getAllEmpBenefits)
 router.post("/empbenefits/updatebenefits",processSalaryList)
 
 
+//service record routes
+
+router.get("/service-record/all",getAllServiceReports)
+router.get("/service-record/pending",getUnapprovedServiceReports)
+router.patch("/service-record/update/:id",updateFinanceApproval)
 
 
 
