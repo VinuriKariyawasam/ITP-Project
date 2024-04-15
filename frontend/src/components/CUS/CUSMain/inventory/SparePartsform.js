@@ -49,6 +49,14 @@ function SparePartsform() {
         value: null,
         isValid: false,
       },
+      status:{
+        value:"",
+        isValid:true
+      },
+      email:{
+        value:"",
+        isValid:true
+      }
     },
     false
   );
@@ -66,12 +74,14 @@ function SparePartsform() {
       formData.append("contactNumber", formState.inputs.contactNumber.value);
       formData.append("description", formState.inputs.description.value);
       formData.append("image", formState.inputs.image.value);
+      formData.append("status", "pending");
+      formData.append("email", "iamtharindunawarathne@gmail.com");
 
       console.log(formState.inputs)
 
       const response = await axios.post("http://localhost:5000/Product//addsp", formData);
 
-      navigate("");
+      navigate("/customer/products");
       console.log(response);
       console.log(formState.inputs);
     } catch (err) {
@@ -100,7 +110,7 @@ function SparePartsform() {
   }, [formState.inputs.image.value]);
 
   return (
-    <div style={{ marginTop: "2%", marginLeft: "3%" }}>
+    <div style={{ marginTop: "2%", marginLeft: "3%",marginBottom:"3%"}}>
       <div style={{ flex: "1", marginRight: "6%" }}>
         <div style={{ textAlign: "center" }}>
           <h1>Your Ultimate Destination for Quality Spare Parts</h1>

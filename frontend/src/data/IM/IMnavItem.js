@@ -27,6 +27,7 @@ const navList = [
     _id: 5,
     name: "Sales",
     icon: "bi bi-receipt-cutoff",
+    href: "/staff/im/sales",
   },
  
 ];

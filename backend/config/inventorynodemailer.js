@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
   
 });
 
-exports.sendMail = async (req, res) => {
+exports.sendIMail = async (req, res) => {
   const { to, subject, text, html, orderId} = req.body;
 
   try {

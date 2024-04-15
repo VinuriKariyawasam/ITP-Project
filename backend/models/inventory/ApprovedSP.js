@@ -2,7 +2,11 @@ const mongoose = require("mongoose");
 
 const schema = mongoose.Schema;
 
-const spSchema = new schema({
+const aspSchema = new schema({
+    id:{
+        type:String,
+        required: true
+    },
     name: {
         type: String,
         required: true
@@ -46,11 +50,14 @@ const spSchema = new schema({
     email:{
         type:String,
         required:true
+    },total:{
+        type:Number,
+        required: true
     }
 
 })
 
-const sp = mongoose.model("SpareParts", spSchema);
+const asp = mongoose.model("ApprovedSpareParts", aspSchema);
 
 
-module.exports = sp;
+module.exports = asp;
