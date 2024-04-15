@@ -26,7 +26,7 @@ router.delete('/deletependingsp/:id', deletependingsp )
 
 router.post("/addapprovedsp",addapprovedSP)
 router.get("/approvedsp",SPapprovedorders)
-router.put("/updatetoongoing/:id",Spupdateongoing)
+router.patch("/updatetoongoing/:id",Spupdateongoing)
 router.get("/ongoingsp",SPongoingorders)
 router.put("/updatetocomplete/:id",Spupdatecompleted)
 router.get("/completedsp",SPcompletedorders)
