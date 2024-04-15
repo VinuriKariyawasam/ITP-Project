@@ -15,8 +15,8 @@ function AddServiceReq() {
     name: "",
     issue: "",
     request: "",
-    report: null,
-    status: ""
+    report: null
+    //status: ""
   });
 
   const [errors, setErrors] = useState({});
@@ -45,9 +45,9 @@ function AddServiceReq() {
       case "request":
         errorMessage = !/^[a-zA-Z\s]*$/.test(value) ? "Request should contain only letters" : "";
         break;
-      case "status":
+      /*case "status":
         errorMessage = !/^[a-zA-Z\s]*$/.test(value) ? "Status should contain only letters" : "";
-        break;
+        break;*/
       default:
         break;
     }
@@ -88,7 +88,7 @@ function AddServiceReq() {
         formDataToSend.append("issue", formData.issue);
         formDataToSend.append("request", formData.request);
         formDataToSend.append("report", formData.report);
-        formDataToSend.append("status", formData.status);
+        //formDataToSend.append("status", formData.status);
         formDataToSend.append("reportFileName", formData.report.name);
         const response = await fetch("http://localhost:5000/api/vehicle/add-serviceReq", {
           method: "POST",
@@ -209,11 +209,7 @@ function AddServiceReq() {
             />
           </Form.Group>
 
-          <div className='mb-2'>
-            <label htmlFor="status">Status</label>
-            <input type="text" name="status" value={formData.status} onChange={handleChange} className={`form-control ${errors.status ? 'is-invalid' : ''}`} />
-            {errors.status && <div className="invalid-feedback">{errors.status}</div>}
-          </div>
+          
 
           <div className="d-flex justify-content-center mt-3">
             <Button variant="primary" className="me-5">

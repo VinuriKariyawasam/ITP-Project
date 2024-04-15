@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
+import Badge from "react-bootstrap/Badge";
 
 function ServiceReqDash() {
   const [serviceReqs, setServiceReqs] = useState([]);
@@ -11,7 +12,7 @@ function ServiceReqDash() {
   const [showModal, setShowModal] = useState(false);
   const [selectedServiceReq, setSelectedServiceReq] = useState(null);
   const [deletedServiceReq, setDeletedServiceReq] = useState(null);
-  const [formData, setFormData] = useState({});
+
   const [search, setSearch] = useState("");
   const [error, setError] = useState(null);
   const [reportUrl, setReportUrl] = useState(null);
@@ -19,6 +20,9 @@ function ServiceReqDash() {
   const [successMessage, setSuccessMessage] = useState(""); // Added state for success message
   const [reportFilePath, setReportFilePath] = useState("");
   const location = useLocation();
+  const [formData, setFormData] = useState({
+    status: "pending", // Set default status to "pending"
+  });
 
   useEffect(() => {
     const fetchDataAndReportUrl = async () => {
@@ -27,12 +31,17 @@ function ServiceReqDash() {
         if (response.ok) {
           const data = await response.json();
           const serviceReqs = data.serviceReqs || [];
-          setServiceReqs(serviceReqs);
+          // Map each service request and set its status to "pending"
+          const updatedServiceReqs = serviceReqs.map(serviceReq => ({
+            ...serviceReq,
+            status: "pending"
+          }));
+          setServiceReqs(updatedServiceReqs);
           setLoading(false);
         } else {
           throw new Error("Failed to fetch data");
         }
-
+  
         const queryParams = new URLSearchParams(location.search);
         const reportUrl = queryParams.get("reportUrl");
         setReportUrl(reportUrl);
@@ -42,9 +51,10 @@ function ServiceReqDash() {
         setLoading(false);
       }
     };
-
+  
     fetchDataAndReportUrl();
   }, [location.search]);
+  
 
   const handleDelete = async (id) => {
     const shouldDelete = window.confirm(
@@ -105,7 +115,7 @@ function ServiceReqDash() {
       issue: serviceReq.issue,
       request: serviceReq.request,
       report: serviceReq.report,
-      status: serviceReq.status,
+
       reportFileName: serviceReq.reportFileName,
     });
     setShowModal(true);
@@ -129,7 +139,7 @@ function ServiceReqDash() {
       case "name":
       case "issue":
       case "request":
-      case "status":
+
         errorMessage = !/^[a-zA-Z\s]*$/.test(value)
           ? `${name.charAt(0).toUpperCase() + name.slice(1)} should contain only letters`
           : "";
@@ -289,6 +299,7 @@ function ServiceReqDash() {
               </tr>
             </thead>
             <tbody>
+            {console.log(serviceReqs)}
               {serviceReqs
                 .filter((serviceReq) =>
                   serviceReq.vehicleNo
@@ -328,7 +339,15 @@ function ServiceReqDash() {
 
 
                     </td>
-                    <td>{serviceReq.status}</td>
+                    
+                    <td>
+  {serviceReq.status === "pending" ? (
+    <Badge bg="warning">pending</Badge>
+  ) : (
+    // Render other status or default content if needed
+    <Badge>{serviceReq.status}</Badge>
+  )}
+</td>
                     <td>
                       <button
                         onClick={() => handleShowUpdateModal(serviceReq)}
@@ -459,19 +478,7 @@ function ServiceReqDash() {
                     onChange={handleFileChange}
                   />
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="formStatus">
-                  <Form.Label>Status</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}
-                    isInvalid={errors.status}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.status}
-                  </Form.Control.Feedback>
-                </Form.Group>
+                
               </Form>
             </Modal.Body>
             <Modal.Footer>
