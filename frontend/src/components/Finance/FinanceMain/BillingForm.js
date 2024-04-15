@@ -7,7 +7,7 @@ const BillingForm = () => {
 
   const [formData, setFormData] = useState({
     serviceRecordId: '',
-    paymentInvoiceId: generatePaymentInvoiceId(),
+    paymentInvoiceId: '',
     name: '',
     address: '',
     email: '',
@@ -21,6 +21,48 @@ const BillingForm = () => {
     currentDate: '',
     currentTime: '',
   });
+
+  const [invoiceType, setInvoiceType] = useState('');
+
+  useEffect(() => {
+    showConfirmationBox();
+  }, []);
+
+  const showConfirmationBox = () => {
+    const result = window.confirm('Please select Invoice Type:\n1. Product\n2. Spare Parts\n3. Service');
+    if (result) {
+      const type = parseInt(prompt('Enter the option number (1 for Product, 2 for Spare Parts, 3 for Service):'));
+      if (type === 1) {
+        setInvoiceType('PA');
+      } else if (type === 2) {
+        setInvoiceType('PB');
+      } else if (type === 3) {
+        setInvoiceType('PC');
+      } else {
+        alert('Invalid option selected. Defaulting to Product.');
+        setInvoiceType('PA');
+      }
+    } else {
+      alert('Invoice type not selected. Defaulting to Product.');
+      setInvoiceType('PA');
+    }
+  };
+
+  useEffect(() => {
+    if (invoiceType) {
+      const paymentInvoiceId = generatePaymentInvoiceId(invoiceType);
+      setFormData((prevData) => ({
+        ...prevData,
+        paymentInvoiceId,
+      }));
+    }
+  }, [invoiceType]);
+
+  const generatePaymentInvoiceId = (type) => {
+    const timestamp = new Date().getTime();
+    const randomNum = Math.floor(Math.random() * 900000) + 100000; // Generates a 6-digit random number
+    return `${type}-${timestamp}-${randomNum}`.slice(0, 12); // Limiting to 12 characters
+  };
 
   useEffect(() => {
     calculateTotal();
@@ -76,13 +118,6 @@ const BillingForm = () => {
     }
   };
 
-  function generatePaymentInvoiceId() {
-    const timestamp = new Date().getTime();
-    const randomNum = Math.floor(Math.random() * 900000) + 100000; // Generates a 6-digit random number
-    const invoiceId = `P${timestamp}-${randomNum}`.slice(0, 12); // Limiting to 12 characters
-    return invoiceId;
-  }
-
   const handleCancel = () => {
     navigate('/staff/finance/billing/all')
   };
@@ -95,10 +130,10 @@ const BillingForm = () => {
           <Row>
             <Col md={6}>
               <Form.Group controlId="serviceRecordId">
-                <Form.Label>Service Record ID</Form.Label>
+                <Form.Label>Service Record ID/Vehicle No</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter Service Record ID"
+                  placeholder="Enter Service Record ID or Vehicle Number"
                   name="serviceRecordId"
                   value={formData.serviceRecordId}
                   onChange={handleChange}

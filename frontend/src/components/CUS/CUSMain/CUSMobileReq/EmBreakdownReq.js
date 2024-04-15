@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import '../CUSMobileReq/Mechanicalreq.css'
 import axios from "axios"
 import Row from 'react-bootstrap/Row';
@@ -8,8 +8,9 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import BreakdownImg from '../../../../images/MobileServices/EmergencyBreakdownIMG.jpg';
 
-function EmBreakdownReq() {
 
+function EmBreakdownReq() {
+  const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
   const onSubmit = data => {
@@ -25,6 +26,7 @@ function EmBreakdownReq() {
         contactNo: data.contactNo
     }).then(()=>{
           alert("Your Emergency Breakdown Request Successfully completed");
+          navigate("/customer/mobservices/mobilemain");
           reset();
 
         }).catch((err)=>{

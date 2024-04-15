@@ -163,9 +163,9 @@ const BillsList = () => {
 
   return (
     <main id="main" className="main">
-      <PageTitle path="Finance /All-Bills" title="All Bills" />
+      <PageTitle path="Finance /Service-Bills" title="All Bills" />
       <div>
-        <h1 className="text-center my-4">All Bills
+        <h1 className="text-center my-4">Service Bills
           <Button variant="primary" style={{ float: 'right' }} onClick={() => navigate('/staff/finance/billing/new')}>
             Create New Bill
           </Button>

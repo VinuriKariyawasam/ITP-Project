@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import '../CUSMobileReq/Mechanicalreq.css'
 import axios from "axios"
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
+import { Form, Col, Row, Button } from 'react-bootstrap';
 import MechanicalImg from '../../../../images/MobileServices/MobMechanicalIMG.webp';
 
 function Mechanicalreq() {
-
+  const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
   const onSubmit = data => {
@@ -27,6 +25,7 @@ function Mechanicalreq() {
         contactNo: data.contactNo
     }).then(()=>{
           alert("Your Mobile Request Successfully completed");
+          navigate("/customer/mobservices/mobilemain");
           reset();
 
         }).catch((err)=>{
@@ -74,8 +73,8 @@ function Mechanicalreq() {
             <div className="mobform-element">
               <label htmlFor="reqDate" className='mobL1'>Date</label> <br />
               <input {...register("reqDate", { required: true, pattern: {
-                                                value: /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{2}$/, //date format validation
-                                                message: "Invalid date format (DD/MM/YY)"
+                                                value: /^([0-2][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{2}$/, //date format validation
+                                                message: "Invalid date format (DD/MM/YY)",
                                                 } })} 
               className="mobinput-styles" type="text" id="reqDate" placeholder="DD/MM/YY" />
             </div></Col> </Row>
