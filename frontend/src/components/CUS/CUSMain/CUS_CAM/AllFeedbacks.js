@@ -63,7 +63,7 @@ function AllFeedbacks(){
                       Specific Employee mentioned : {feedback.employee}<br/><br/>
                       FeedBack : {feedback.feedback}<br></br>
                       </h5>
-                      <p className="card-text"><small class="text-muted">userId@{feedback.userId}</small></p>
+                      <p className="card-text"><small class="text-muted">user@{feedback.userId}</small></p>
                     </div>
                     </div>
                     </div>

@@ -49,6 +49,7 @@ class FeedbackController {
       console.log("Request Body:", req.body);
 
       const userId = req.body["userId"];
+      const name = req.body["name"];
       const serviceType = req.body["serviceType"];
       const employee = req.body["employee"];
       const files = req.body["files"];
@@ -65,6 +66,7 @@ class FeedbackController {
       // Assign properties one by one to the new feedback object
       const newFeedback = new feedbackModel();
       newFeedback.userId = userId;
+      newFeedback.name = name;
       newFeedback.serviceType = serviceType;
       newFeedback.employee = employee;
       newFeedback.files = filePaths;

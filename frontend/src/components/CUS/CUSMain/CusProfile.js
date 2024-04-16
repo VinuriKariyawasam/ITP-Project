@@ -205,7 +205,7 @@ const CusProfile = () => {
                     <br></br>
                     <Button
                       variant="warning"
-                      style={{ marginLeft: "200px" }}
+                      style={{ marginLeft: "400px" }}
                       type="submit"
                       disabled={!cusauth.userId}>
                       Update Profile
