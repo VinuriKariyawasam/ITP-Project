@@ -7,6 +7,9 @@ function SystemCredentialsUpdateModal({
   employee,
   submitHandler,
 }) {
+  // State to manage password visibility
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   // State to manage form data
   const [formData, setFormData] = useState({
     email: employee.email,
@@ -87,6 +90,11 @@ function SystemCredentialsUpdateModal({
         confirmPassword: value === formData.password,
       }));
     }
+  };
+
+  // Function to toggle password visibility
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
   };
 
   // Function to handle form submission
@@ -187,6 +195,7 @@ function SystemCredentialsUpdateModal({
               isInvalid={!!errors.password}
               isValid={valid.password}
             />
+
             <Form.Text className="text-danger">{errors.password}</Form.Text>
             {valid.password && (
               <Form.Text className="text-success">

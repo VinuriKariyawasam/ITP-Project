@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFormContext } from "react-hook-form";
 import {
   Button,
   Form,
@@ -100,6 +100,14 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
     } catch (error) {
       console.error("Error updating data:", error.message);
     }
+  };
+
+  const [isCnomValid, setIsCnomValid] = useState(false);
+
+  const handleContactChange = (e) => {
+    const inputValue = e.target.value;
+    const isValidInput = /^[0-9]{10}$/.test(inputValue);
+    setIsCnomValid(isValidInput);
   };
 
   return (
@@ -205,7 +213,17 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
               control={control}
               rules={{ required: "Address is required" }}
               render={({ field }) => (
-                <Form.Control placeholder="1234 Main St" {...field} />
+                <>
+                  <Form.Control
+                    placeholder="1234 Main St"
+                    {...field}
+                    isInvalid={!!errors.address}
+                    isValid={field.value && !errors.address}
+                  />
+                  {field.value && !errors.address && (
+                    <i className="bi bi-check-circle-fill text-success"></i>
+                  )}
+                </>
               )}
             />
             <Form.Text className="text-danger">
@@ -244,13 +262,23 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
                 control={control}
                 rules={{ required: "Contact No. is required" }}
                 render={({ field }) => (
-                  <Form.Control
-                    type="tel"
-                    placeholder="0715897598"
-                    {...field}
-                    pattern="[0-9]{10}"
-                    length="10"
-                  />
+                  <>
+                    <Form.Control
+                      type="tel"
+                      placeholder="0715897598"
+                      {...field}
+                      pattern="[0-9]{10}"
+                      maxLength={10}
+                      onChange={(e) => {
+                        handleContactChange(e);
+                        field.onChange(e);
+                      }}
+                      isCnomValid={isCnomValid && field.value.length === 10}
+                    />
+                    {isCnomValid && field.value.length === 10 && (
+                      <i className="bi bi-check-circle-fill text-success"></i>
+                    )}
+                  </>
                 )}
               />
               <Form.Text className="text-danger">
