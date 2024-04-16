@@ -2,6 +2,7 @@ import React from "react";
 import DbCard from "./SuperDbCard";
 
 function SuperDashboard() {
+  
   return (
     <section>
       <div className="col">

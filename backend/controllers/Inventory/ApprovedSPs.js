@@ -1,8 +1,20 @@
 const { config } = require("dotenv");
 const aspSchema = require("../../models/inventory/ApprovedSP");
 
+function generateRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 exports.addapprovedSP = async (req, res) => {
+
+  
+
+
   try {
+
+    const randomNumber = generateRandomNumber(100, 999);
+
+  const customId = `ord_${randomNumber}`;
     const {
       id,
       name,
@@ -16,10 +28,12 @@ exports.addapprovedSP = async (req, res) => {
       image,
       status,
       email,
-      total
+      total,
+      orderdate
     } = req.body;
    
 
+    
     if (
       !id||
       !name ||
@@ -33,7 +47,8 @@ exports.addapprovedSP = async (req, res) => {
       !image ||
       !status ||
       !email ||
-      !total
+      !total ||
+      !orderdate
     ) {
       return res.status(400).json({ error: "All fields are required" });
     }
@@ -46,6 +61,7 @@ exports.addapprovedSP = async (req, res) => {
 
     const newSP = aspSchema({
       id:id,
+      orderId : customId,
       name: name,
       vehicleNumber: vehicleNumber,
       brand: brand,
@@ -57,7 +73,8 @@ exports.addapprovedSP = async (req, res) => {
       image: image,
       status: status,
       email:email,
-      total:total
+      total:total,
+      orderdate:orderdate
     });
 
     await newSP.save();
@@ -96,7 +113,8 @@ exports.Spupdateongoing = async (req, res) => {
       image,
       status,
       email,
-      total
+      total,
+      orderdate,
     } = req.body;
 
     const updateorder = {
@@ -112,7 +130,8 @@ exports.Spupdateongoing = async (req, res) => {
       image: image,
       status: status,
       email:email,
-      total:total
+      total:total,
+      orderdate:orderdate
     };
 
     const updatedorder = await aspSchema.findByIdAndUpdate(
@@ -161,7 +180,9 @@ exports.Spupdatecompleted = async (req, res) => {
       image,
       status,
       email,
-      total
+      total,
+      orderdate,
+      completeddate
     } = req.body;
 
     const updateorder = {
@@ -177,7 +198,9 @@ exports.Spupdatecompleted = async (req, res) => {
       image: image,
       status: status,
       email:email,
-      total:total
+      total:total,
+      orderdate:orderdate,
+      completeddate:completeddate
     };
 
     const updatedorder = await aspSchema.findByIdAndUpdate(

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext} from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
+import { CusAuthContext } from "../../../../context/cus-authcontext"
 
 function Lubricants() {
   const [Products, setProducts] = useState([]);
@@ -15,6 +16,7 @@ function Lubricants() {
   const [cart, setcart] = useState([]);
   const [show, setShow] = useState(false);
   const [selectedvehicle, setSelectedtype] = useState("");
+  const cusauth = useContext(CusAuthContext);
 
   useEffect(() => {
     function getProducts() {
@@ -372,79 +374,154 @@ function Lubricants() {
   };
 
   const checkout = () => {
-    const allProducts = [];
-    let total = 0;
     axios
-      .get("http://localhost:5000/Product/getcart")
-      .then((res) => {
-        const cart = res.data;
-        total = cart.reduce(
-          (acc, item) => acc + item.Unit_price * item.Quantity,
-          0
-        );
-
-        cart.forEach((item) => {
-          allProducts.push({
-            product_name: item.Product_name,
-            unit_price: item.Unit_price,
-            quantity: item.Quantity,
-          });
-        });
-
-        console.log(allProducts);
-
-        const order = {
-          date: new Date(),
-          products: allProducts,
-          total: total,
-          status: "pending",
-        };
-
-        console.log(order);
+      .get("http://localhost:5000/Product/lubricantstock")
+      .then((lubStockRes) => {
+        const lubStockItems = lubStockRes.data;
+        console.log(lubStockItems);
         axios
-          .post("http://localhost:5000/Product/addorder", order)
-          .then((response) => {
-            const orderId = response.data.orderId;
-            console.log(orderId);
+          .get("http://localhost:5000/Product/Tirestock")
+          .then((tireStockRes) => {
+            const tireStockItems = tireStockRes.data;
+            console.log(tireStockItems);
+            const itemsToUpdate = [];
 
-            const emailData = {
-              to: "iamtharindunawarathne@gmail.com",
-              subject: `Your Cart Details orderID :${orderId}`,
-              text: `Here are your cart details: `,
-              html: null,
-              orderId: orderId,
-            };
+            lubStockItems.forEach((lubItem) => {
+              if (lubItem.Quantity < 5) {
+                itemsToUpdate.push({
+                  product_name: lubItem.Product_name,
+                  product_type: "lubricant",
+                });
+              }
+            });
 
+            tireStockItems.forEach((tireItem) => {
+              if (tireItem.Quantity < 5) {
+                itemsToUpdate.push({
+                  product_name: tireItem.Product_name,
+                  product_type: "tire",
+                });
+              }
+            });
             axios
-              .post(
-                "http://localhost:5000/Product/sendinventoryemail",
-                emailData
-              )
-              .then((response) => {
-                console.log(response.data);
+              .get("http://localhost:5000/Product/getquantity")
+              .then((quantityRes) => {
+                const quantityCollection = quantityRes.data;
+                console.log(quantityCollection);
 
+                itemsToUpdate.forEach((item) => {
+                  const existingProduct = quantityCollection.find(
+                    (product) => product. Product_name === item.product_name
+                  );
+                  console.log(existingProduct)
+                  if (!existingProduct) {
+                    axios
+                      .post("http://localhost:5000/Product/addquantity", {
+                        product_name: item.product_name,
+                        product_type: item.product_type,
+                      })
+                      .then((response) => {
+                        console.log(response.data);
+                      });
+                  } else {
+                    console.log("Product already in collection:", item.product_name);
+                  }
+                });
+              })
+              .catch((error) => {
+                console.error("Error fetching Quantity collection:", error);
+              });
+
+            const allProducts = [];
+            let total = 0;
+            axios
+              .get("http://localhost:5000/Product/getcart")
+              .then((res) => {
+                const cart = res.data;
+                total = cart.reduce(
+                  (acc, item) => acc + item.Unit_price * item.Quantity,
+                  0
+                );
+
+                cart.forEach((item) => {
+                  allProducts.push({
+                    product_name: item.Product_name,
+                    unit_price: item.Unit_price,
+                    quantity: item.Quantity,
+                  });
+                });
+
+                console.log(allProducts);
+
+                const currentDateUTC = new Date();
+                currentDateUTC.setHours(currentDateUTC.getHours() + 5);
+                currentDateUTC.setMinutes(currentDateUTC.getMinutes() + 30);
+                const formattedDate = currentDateUTC.toISOString();
+
+                const order = {
+                  date: formattedDate,
+                  email: cusauth.email,
+                  products: allProducts,
+                  total: total,
+                  status: "pending",
+                };
+
+                console.log(order);
                 axios
-                  .delete("http://localhost:5000/Product/clear-cart")
+                  .post("http://localhost:5000/Product/addorder", order)
                   .then((response) => {
-                    console.log("Cart cleared successfully");
+                    const orderId = response.data.orderId;
+                    console.log(orderId);
+
+                    const emailData = {
+                      to: cusauth.email,
+                      subject: `Your Cart Details : orderID :${orderId}`,
+                      text: `Thank you for shopping with us !!!
+                    Here are your cart details: `,
+                      html: null,
+                      orderId: orderId,
+                    };
+
+                    axios
+                      .post(
+                        "http://localhost:5000/Product/sendinventoryemail",
+                        emailData
+                      )
+                      .then((response) => {
+                        console.log(response.data);
+
+                        axios
+                          .delete("http://localhost:5000/Product/clear-cart")
+                          .then((response) => {
+                            console.log("Cart cleared successfully");
+                            window.location.reload();
+                          })
+                          .catch((error) => {
+                            console.error("Error clearing cart:", error);
+                          });
+                      })
+                      .catch((error) => {
+                        console.error("Error sending email:", error);
+                      });
                   })
                   .catch((error) => {
-                    console.error("Error clearing cart:", error);
+                    console.error("Error adding order:", error);
                   });
               })
               .catch((error) => {
-                console.error("Error sending email:", error);
+                console.error("Error fetching cart:", error);
+                alert("error");
               });
           })
-          .catch((error) => {
-            console.error("Error adding order:", error);
+          .catch((tireStockErr) => {
+            console.error("Error fetching tire stock data:", tireStockErr);
           });
       })
-      .catch((error) => {
-        console.error("Error fetching cart:", error);
-        alert("error");
+      .catch((lubStockErr) => {
+        console.error("Error fetching lubricant stock data:", lubStockErr);
       });
   };
+
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -480,9 +557,13 @@ function Lubricants() {
           value={selectedBrand}
         >
           <option value="">All</option>
-          <option value="val">val</option>
-          <option value="maxxies">maxxies</option>
-          <option value="Servo">Servo</option>
+          <option value="Bridgestone">Bridgestone</option>
+          <option value="Michelin">Michelin</option>
+          <option value="Maxxis">Maxxis</option>
+          <option value="Pirelli">Pirelli</option>
+          <option value="Goodyear">Goodyear</option>
+          <option value="DSI">DSI</option>
+
         </Form.Select>
         <Form.Label
           style={{ marginLeft: "7%", fontWeight: "bold", fontSize: "20px" }}
@@ -533,9 +614,12 @@ function Lubricants() {
           value={selectedBrand}
         >
           <option value="">All</option>
-          <option value="val">val</option>
-          <option value="maxxies">maxxies</option>
-          <option value="Servo">Servo</option>
+          <option value="Bridgestone">Bridgestone</option>
+          <option value="Michelin">Michelin</option>
+          <option value="Maxxis">Maxxis</option>
+          <option value="Pirelli">Pirelli</option>
+          <option value="Goodyear">Goodyear</option>
+          <option value="DSI">DSI</option>
         </Form.Select>
         <Form.Label
           style={{ marginLeft: "7%", fontWeight: "bold", fontSize: "20px" }}

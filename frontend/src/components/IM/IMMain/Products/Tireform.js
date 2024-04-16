@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ImPageTitle from '../ImPageTitle';
 import { useForm } from "../../../../data/IM/form-hook";
+import InputGroup from 'react-bootstrap/InputGroup';
 
 const Tireform = () => {
   const navigate = useNavigate();
@@ -99,6 +100,7 @@ const Tireform = () => {
             <Form.Label>Product Name</Form.Label>
             <Form.Control
               id="product_name"
+              maxLength={100}
               type="text"
               placeholder="Enter product name"
               onInput={(event) =>
@@ -112,6 +114,7 @@ const Tireform = () => {
             <Form.Control
               id="product_brand"
               type="text"
+              maxLength={40}
               placeholder="Enter product brand"
               onInput={(event) =>
                 inputHandler("product_brand", event.target.value, true)
@@ -126,6 +129,7 @@ const Tireform = () => {
         <Form.Control
           id="vehicle_Type"
           type="text"
+          maxLength={20}
           placeholder="Enter vehicle type"
           onInput={(event) =>
             inputHandler("vehicle_Type", event.target.value, true)
@@ -148,6 +152,8 @@ const Tireform = () => {
           </Form.Group>
           <Form.Group as={Col} md="5" controlId="validationCustom01">
             <Form.Label>Unit Price</Form.Label>
+            <InputGroup>
+            <InputGroup.Text>Rs.</InputGroup.Text>
             <Form.Control
              className="remove-spinner" 
               id="unit_price"
@@ -159,6 +165,7 @@ const Tireform = () => {
               }
               required
             />
+            </InputGroup>
           </Form.Group>
         </Row>
         <Row className="mb-3">

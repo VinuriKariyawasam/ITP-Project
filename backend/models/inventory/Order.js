@@ -3,9 +3,17 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
+    orderId:{
+        type:String,
+        required:true
+    },
     date: {
         type: Date,
         required: true
+    },
+    email:{
+        type:String,
+        required:true
     },
     products: [{
         product_name: {

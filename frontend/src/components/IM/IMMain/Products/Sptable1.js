@@ -26,7 +26,7 @@ function Sptable1() {
       }, []);
 
       const handleReject = (id, email) => {
-        const shouldDelete = window.confirm('Confirm Delete');
+        const shouldDelete = window.confirm('Confirm Reject');
         if (shouldDelete) {
           const emailData = {
             to: email ,
@@ -78,25 +78,26 @@ function Sptable1() {
           image: order.image,
           status: "approved",
           email: order.email,
-          total: total
+          total: total,
+          orderdate:order.orderdate
         };
       console.log(formData)
 
       axios.post("http://localhost:5000/Product/addapprovedsp",formData).then((res) =>{
           console.log(res.data)
-          const newOrderId = res.data.order._id;
+          const newOrderId = res.data.order.orderId;
           
           const emailData = {
             to: order.email,
-            subject: `Your Cart Details orderID :${newOrderId}`,
-            text: `Here are your cart details: `,
+            subject: `Thank you for shopping with us!!!`,
+            text: `Your Cart Details orderID :${newOrderId}
+            Total : ${total}`,
             html: null,
-            orderId:newOrderId,
           };
 
           axios
             .post(
-              "http://localhost:5000/Product/sendinventoryemail",
+              "http://localhost:5000/Product/sendrejectemail",
               emailData
             )
             .then((response) => {
@@ -136,6 +137,7 @@ function Sptable1() {
         <th>Customer Name</th>
         <th>Vehicle Number</th>
         <th>Contact Number</th>
+        <th>Ordered date</th>
         <th>Status</th>
         <th>Explore</th>
       </tr>
@@ -146,6 +148,7 @@ function Sptable1() {
         <td>{SpareParts.name}</td>
         <td>{SpareParts.vehicleNumber}</td>
         <td>{SpareParts.contactNumber}</td>
+        <td>{SpareParts.orderdate.split('T')[0]}</td>
         <td><Badge bg="warning">{SpareParts.status}</Badge></td>
         <td><Button variant="secondary" onClick={() => handleMoreButtonClick(SpareParts)}>more</Button>
 </td>

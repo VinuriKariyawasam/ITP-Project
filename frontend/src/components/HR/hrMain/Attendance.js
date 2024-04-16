@@ -4,36 +4,44 @@ import AddAttend from "./AddAttend";
 import TodayLeaves from "./TodayLeaves";
 import { Row, Col, Button, Stack, Card, Badge } from "react-bootstrap";
 import AttendanceRecords from "./AttendanceRecords";
+import UpdateAttend from "./UpdateAttend";
 
 function Attendance() {
   const [attendanceData, setAttendanceData] = useState([]);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   //to button navigates
   const navigate = useNavigate();
+  const fetchAttendance = async () => {
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      const response = await fetch(
+        `http://localhost:5000/api/hr/attendance/date/${today}`
+      );
 
-  useEffect(() => {
-    const fetchAttendance = async () => {
-      try {
-        const today = new Date().toISOString().split("T")[0];
-        const response = await fetch(
-          `http://localhost:5000/api/hr/attendance/date/${today}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (data && data.length > 0) {
-          setAttendanceData(data);
-        }
-      } catch (error) {
-        console.error("Error fetching attendance records:", error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
 
+      const data = await response.json();
+
+      if (data && data.length > 0) {
+        setAttendanceData(data);
+      }
+    } catch (error) {
+      console.error("Error fetching attendance records:", error);
+    }
+  };
+  useEffect(() => {
     fetchAttendance();
   }, []); // Empty dependency array to run only once on component mount
+
+  const handleOpenModal = () => {
+    setShowUpdateModal(true);
+  };
+  const updateHandler = () => {
+    setShowUpdateModal(false);
+    fetchAttendance();
+  };
 
   return (
     <section>
@@ -47,6 +55,14 @@ function Attendance() {
                     style={{ backgroundColor: "black", color: "white" }}
                   >
                     Today Attendance
+                    {/* Button to open modal */}
+                    <Button
+                      variant="primary"
+                      onClick={handleOpenModal}
+                      style={{ margin: "10px" }}
+                    >
+                      <i className="bi bi-pencil-square"></i>{" "}
+                    </Button>
                   </Card.Header>
                   <Card.Body
                     style={{
@@ -116,6 +132,14 @@ function Attendance() {
           </Row>
         </Card.Body>
       </Card>
+      {/* Modal for updating attendance */}
+      {attendanceData.length > 0 && (
+        <UpdateAttend
+          showModal={showUpdateModal}
+          setShowModal={setShowUpdateModal}
+          updatedHandler={updateHandler}
+        />
+      )}
     </section>
   );
 }

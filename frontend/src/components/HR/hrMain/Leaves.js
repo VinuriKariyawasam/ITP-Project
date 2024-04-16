@@ -17,6 +17,7 @@ import LeaveUpdateModal from "./LeaveUpdateModal";
 import LeaveRecordsTable from "./LeaveRecordTable";
 import TodayLeaves from "./TodayLeaves";
 import LeaveCancelling from "./LeaveCancelling";
+import HRConfirmModal from "./HRConfirmModal";
 
 function Leaves() {
   const navigate = useNavigate();
@@ -35,8 +36,16 @@ function Leaves() {
   const [toastHeader, setToastHeader] = useState("");
   const [toastBody, setToastBody] = useState("");
   const [toastType, setToastType] = useState("");
-
+  const [showArchiveConfirmationModal, setShowArchiveConfirmationModal] =
+    useState(false);
+  const [archiveLeaveRecords, setarchiveLeaveRecords] = useState([]);
   const [key, setKey] = useState("pending");
+  const [showArchiveTab, setShowArchiveTab] = useState(false);
+
+  // Function to toggle the archive tab
+  const toggleArchiveTab = () => {
+    setShowArchiveTab(!showArchiveTab);
+  };
 
   useEffect(() => {
     // Fetch leave records from the backend when the component mounts
@@ -59,6 +68,29 @@ function Leaves() {
     };
     fetchLeaveRecords();
   }, [reloadLeaves]);
+
+  useEffect(() => {
+    // Fetch leave records from the backend when the component mounts
+    const fetchArchiveLeaveRecords = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/hr/getall-archive-leaves"
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        console.log(response);
+        const data = await response.json();
+        console.log(data);
+
+        setarchiveLeaveRecords(data);
+      } catch (error) {
+        console.error("Error fetching leave records:", error);
+      }
+    };
+    fetchArchiveLeaveRecords();
+  }, []);
 
   // Function to delete a leave record
   const deleteLeaveRecord = async (recordId) => {
@@ -255,6 +287,42 @@ function Leaves() {
     return `${month} ${year}`;
   };
 
+  //Archive records
+  // Function to handle a leave records
+  const archiveLeaveRecord = async (recordId) => {
+    setShowArchiveConfirmationModal(true);
+  };
+
+  const handleArchiveLeaves = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/hr/archive-leaves",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to archive leaves");
+      }
+
+      const data = await response.json();
+      console.log(data); // Log the response from the backend
+      // Optionally, display a success message to the user
+      setShowArchiveConfirmationModal(false);
+      setToastType("success");
+      setToastHeader("Success");
+      setToastBody("Leave records archived succesfully successfully");
+      setShowToast(true);
+    } catch (error) {
+      console.error("Error archiving leaves:", error.message);
+      // Optionally, display an error message to the user
+    }
+  };
+
   return (
     <section>
       {/* Toast Notification */}
@@ -284,28 +352,43 @@ function Leaves() {
             </Col>
           </Row>
           <hr></hr>
-          <Row>
-            <Stack direction="horizontal">
-              <div className="p-2">
-                <Button
-                  variant="dark"
-                  size="md"
-                  onClick={() => navigate("add")}
-                  style={{ margin: "10px" }}
-                >
-                  Create New Leave
-                </Button>
+          <Row className="justify-content-between">
+            <Col xs={6}>
+              <Stack direction="horizontal">
+                <div className="p-2">
+                  <Button
+                    variant="dark"
+                    size="md"
+                    onClick={() => navigate("add")}
+                    style={{ margin: "10px" }}
+                  >
+                    Create New Leave
+                  </Button>
 
+                  <Button
+                    variant="dark"
+                    size="md"
+                    onClick={archiveLeaveRecord}
+                    style={{ margin: "10px" }}
+                  >
+                    Archive Old Records
+                  </Button>
+                </div>
+              </Stack>
+            </Col>
+            <Col xs={6}>
+              <div className="text-end">
                 <Button
                   variant="dark"
                   size="md"
-                  onClick={() => navigate("add")}
+                  onClick={toggleArchiveTab}
                   style={{ margin: "10px" }}
+                  id="archiveButton"
                 >
-                  Archive Records
+                  <i className="bi bi-archive-fill archiveButton"></i>
                 </Button>
               </div>
-            </Stack>
+            </Col>
           </Row>
           <Tabs
             id="controlled-tab-example"
@@ -345,71 +428,86 @@ function Leaves() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Array.isArray(leaveRecords) &&
-                      leaveRecords.map((record) => {
-                        if (record && record.status === "Pending") {
-                          return (
-                            <tr key={record._id}>
-                              <td>{record.empId}</td>
-                              <td>{record.name}</td>
-                              <td>{record.days}</td>
-                              <td>{`${new Date(
-                                record.fromDate
-                              ).toLocaleDateString()} - ${new Date(
-                                record.toDate
-                              ).toLocaleDateString()}`}</td>
-                              <td>{record.reason}</td>
-                              <td>
-                                <Badge bg="warning" text="dark">
-                                  {record.status}
-                                </Badge>
-                              </td>
-                              <td>
-                                <Button
-                                  variant="outline-success"
-                                  size="sm"
-                                  style={{ margin: "5px" }}
-                                  onClick={() => approveLeaveRecord(record._id)}
-                                >
-                                  Approve
-                                </Button>{" "}
-                                <Button
-                                  variant="outline-danger"
-                                  size="sm"
-                                  style={{ margin: "5px" }}
-                                  onClick={() => rejectLeaveRecord(record._id)}
-                                >
-                                  Reject
-                                </Button>{" "}
-                              </td>
-                              <td>
-                                <Button
-                                  variant="dark"
-                                  size="sm"
-                                  style={{ margin: "5px" }}
-                                  onClick={() => handleUpdateClick(record._id)}
-                                >
-                                  <i className="bi bi-pencil-square"></i>{" "}
-                                  {/* Update icon */}
-                                </Button>{" "}
-                                <Button
-                                  variant="dark"
-                                  size="sm"
-                                  style={{ margin: "5px" }}
-                                  onClick={() =>
-                                    handleDeleteConfirmation(record._id)
-                                  }
-                                >
-                                  <i className="bi bi-trash"></i>{" "}
-                                  {/* Delete icon */}
-                                </Button>{" "}
-                              </td>
-                            </tr>
-                          );
-                        } else {
-                          return null;
-                        }
-                      })}
+                    {Array.isArray(leaveRecords) ? (
+                      leaveRecords.filter(
+                        (record) => record && record.status === "Pending"
+                      ).length > 0 ? (
+                        leaveRecords.map((record) => {
+                          if (record && record.status === "Pending") {
+                            return (
+                              <tr key={record._id}>
+                                <td>{record.empId}</td>
+                                <td>{record.name}</td>
+                                <td>{record.days}</td>
+                                <td>{`${new Date(
+                                  record.fromDate
+                                ).toLocaleDateString()} - ${new Date(
+                                  record.toDate
+                                ).toLocaleDateString()}`}</td>
+                                <td>{record.reason}</td>
+                                <td>
+                                  <Badge bg="warning" text="dark">
+                                    {record.status}
+                                  </Badge>
+                                </td>
+                                <td>
+                                  <Button
+                                    variant="outline-success"
+                                    size="sm"
+                                    style={{ margin: "5px" }}
+                                    onClick={() =>
+                                      approveLeaveRecord(record._id)
+                                    }
+                                  >
+                                    Approve
+                                  </Button>{" "}
+                                  <Button
+                                    variant="outline-danger"
+                                    size="sm"
+                                    style={{ margin: "5px" }}
+                                    onClick={() =>
+                                      rejectLeaveRecord(record._id)
+                                    }
+                                  >
+                                    Reject
+                                  </Button>{" "}
+                                </td>
+                                <td>
+                                  <Button
+                                    variant="dark"
+                                    size="sm"
+                                    style={{ margin: "5px" }}
+                                    onClick={() =>
+                                      handleUpdateClick(record._id)
+                                    }
+                                  >
+                                    <i className="bi bi-pencil-square"></i>{" "}
+                                    {/* Update icon */}
+                                  </Button>{" "}
+                                  <Button
+                                    variant="dark"
+                                    size="sm"
+                                    style={{ margin: "5px" }}
+                                    onClick={() =>
+                                      handleDeleteConfirmation(record._id)
+                                    }
+                                  >
+                                    <i className="bi bi-trash"></i>{" "}
+                                    {/* Delete icon */}
+                                  </Button>{" "}
+                                </td>
+                              </tr>
+                            );
+                          } else {
+                            return null;
+                          }
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan="8">No Pending Requests</td>
+                        </tr>
+                      )
+                    ) : null}
                   </tbody>
                 </table>
                 <LeaveUpdateModal
@@ -419,82 +517,48 @@ function Leaves() {
                   showToast={showToastNotification}
                 />
                 {/* Delete confirmation modal */}
-                <Modal
+                <HRConfirmModal
                   show={showDeleteConfirmationModal}
                   onHide={() => setShowDeleteConfirmationModal(false)}
-                >
-                  <Modal.Header closeButton>
-                    <Modal.Title>Delete Confirmation</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    Are you sure you want to delete this leave request?
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button
-                      variant="secondary"
-                      onClick={() => setShowDeleteConfirmationModal(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      variant="danger"
-                      onClick={() => deleteLeaveRecord(recordToDelete)}
-                    >
-                      Delete
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
+                  title="Delete Confirmation"
+                  message="Are you sure you want to delete this leave request? This process cannot be undone."
+                  onConfirm={() => deleteLeaveRecord(recordToDelete)}
+                  btnColor={"danger"}
+                  btnName={"Delete"}
+                />
 
                 {/* Your component JSX */}
                 {/* Approve Confirmation Modal */}
-                <Modal
+                <HRConfirmModal
                   show={showApproveConfirmationModal}
                   onHide={() => setShowApproveConfirmationModal(false)}
-                >
-                  <Modal.Header closeButton>
-                    <Modal.Title>Approve Confirmation</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    Are you sure you want to approve this leave request?This
-                    process cannot undo.
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button
-                      variant="secondary"
-                      onClick={() => setShowApproveConfirmationModal(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button variant="success" onClick={handleConfirmApprove}>
-                      Approve
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
+                  title="Approve Confirmation"
+                  message="Are you sure you want to approve this leave request?This process cannot undo."
+                  onConfirm={handleConfirmApprove}
+                  btnColor={"success"}
+                  btnName={"Approve"}
+                />
 
                 {/* Reject Confirmation Modal */}
-                <Modal
+                <HRConfirmModal
                   show={showRejectConfirmationModal}
                   onHide={() => setShowRejectConfirmationModal(false)}
-                >
-                  <Modal.Header closeButton>
-                    <Modal.Title>Reject Confirmation</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    Are you sure you want to reject this leave request? This
-                    process cannot undo.
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button
-                      variant="secondary"
-                      onClick={() => setShowRejectConfirmationModal(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button variant="danger" onClick={handleConfirmReject}>
-                      Reject
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
+                  title="Reject Confirmation"
+                  message="Are you sure you want to reject this leave request? This process cannot undo."
+                  onConfirm={handleConfirmReject}
+                  btnColor={"danger"}
+                  btnName={"Reject"}
+                />
+                {/* Archive confirmation modal */}
+                <HRConfirmModal
+                  show={showArchiveConfirmationModal}
+                  onHide={() => setShowArchiveConfirmationModal(false)}
+                  title="Archive Leaves Confirmation"
+                  message="Are you sure you want to archive leave requests older than 6 months? This process cannot be undone.*Archiive process only apply for approved leaves."
+                  onConfirm={handleArchiveLeaves}
+                  btnColor={"warning"}
+                  btnName={"Archive"}
+                />
               </div>
             </Tab>
             <Tab eventKey="approved" title="Approved">
@@ -608,6 +672,16 @@ function Leaves() {
             <Tab eventKey="cancelling" title="Cancel Leave">
               <LeaveCancelling />
             </Tab>
+            {showArchiveTab && (
+              <Tab eventKey="archives" title="Archives">
+                <LeaveRecordsTable
+                  leaveRecords={archiveLeaveRecords}
+                  statusFilter="all"
+                  dateFilter={() => true}
+                  tableName={`All Leave Records for ${getMonthYear()}`}
+                />
+              </Tab>
+            )}
           </Tabs>
         </Card.Body>
       </Card>

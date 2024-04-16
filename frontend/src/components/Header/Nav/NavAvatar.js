@@ -68,7 +68,10 @@ function NavAvatar() {
         )}
       </a>
 
-      <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+      <ul
+        className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile"
+        style={{ backgroundColor: "lightgrey" }}
+      >
         <li className="dropdown-header">
           <h6>{employeeData ? employeeData.firstName : "Loading..."}</h6>
           <span>{employeeData ? employeeData.position : "Loading..."}</span>
@@ -80,36 +83,10 @@ function NavAvatar() {
         <li>
           <a
             className="dropdown-item d-flex align-items-center"
-            href="users-profile.html"
+            href="/staff/staffprofile"
           >
             <i className="bi bi-person"></i>
             <span>My Profile</span>
-          </a>
-        </li>
-        <li>
-          <hr className="dropdown-divider" />
-        </li>
-
-        <li>
-          <a
-            className="dropdown-item d-flex align-items-center"
-            href="users-profile.html"
-          >
-            <i className="bi bi-gear"></i>
-            <span>Account Settings</span>
-          </a>
-        </li>
-        <li>
-          <hr className="dropdown-divider" />
-        </li>
-
-        <li>
-          <a
-            className="dropdown-item d-flex align-items-center"
-            href="pages-faq.html"
-          >
-            <i className="bi bi-question-circle"></i>
-            <span>Need Help?</span>
           </a>
         </li>
         <li>

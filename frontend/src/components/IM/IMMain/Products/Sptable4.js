@@ -40,6 +40,8 @@ function Sptable4() {
         <th>Customer Name</th>
         <th>Vehicle Number</th>
         <th>Contact Number</th>
+        <th>Ordered date</th>
+        <th>Completed date</th>
         <th>Total</th>
         <th>Status</th>
         <th>Explore</th>
@@ -51,6 +53,8 @@ function Sptable4() {
         <td>{SpareParts.name}</td>
         <td>{SpareParts.vehicleNumber}</td>
         <td>{SpareParts.contactNumber}</td>
+        <td>{SpareParts.orderdate.split('T')[0]}</td>
+        <td>{SpareParts.completeddate.split('T')[0]}</td>
         <td>{SpareParts.total}</td>
         <td><Badge bg="success">{SpareParts.status}</Badge></td>
         <td><Button variant="secondary" onClick={() => handleMoreButtonClick(SpareParts)}>more</Button>
@@ -65,6 +69,7 @@ function Sptable4() {
       </Modal.Header>
       <Modal.Body>
         <img style={{width:"50%",height:"50%"}} src={`http://localhost:5000/${selectedOrder?.image}`} alt="Product Image" />
+        <p>Order Id: {selectedOrder?.orderId}</p>
         <p>Customer Name: {selectedOrder?.name}</p>
         <p>Vehicle Number: {selectedOrder?.vehicleNumber}</p>
         <p>Vehicle Brand: {selectedOrder?.brand}</p>

@@ -36,9 +36,11 @@ function Cushome() {
       <br /> shop woth us online today.
     </p>
     <br />
+    <Link to='http://localhost:3000/customer/products'>
     <Button variant="light" className="exbtn">
-      <b>Book now</b>
+      <b>Shop with us</b>
     </Button>
+    </Link>
   </div>
 </div>
 

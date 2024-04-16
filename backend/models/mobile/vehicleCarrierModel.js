@@ -22,10 +22,10 @@ const carrierrequestsSchema = new mongoose.Schema({
     ],
   },
   reqDate: {
-    type: Date,
+    type: String,
     required: true,
     match: [
-      /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{2}$/i,
+      /^([0-2][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{2}$/i,
       "Invalid Date format",
     ],
   },

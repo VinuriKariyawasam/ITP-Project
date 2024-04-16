@@ -26,15 +26,34 @@ import StaffLogin from "./components/Staff/staff-login";
 import RestrictedPage from "./components/util/RestrictedPage";
 import { StaffAuthContext } from "./context/StaffAuthContext";
 import GM from "./components/GM/GMPages/GM";
+import AlreadyLogIn from "./components/util/AlreadyLogIn";
+import StaffMyProfile from "./components/Staff/staffMyProfile";
+import NotFoundPage from "./components/util/NotFoundPage";
 
 function StaffApp() {
-  const { userPosition, isLoggedIn } = useContext(StaffAuthContext);
+  const { userId, userPosition, isLoggedIn } = useContext(StaffAuthContext);
+
   return (
     <>
       <Header />
       <Routes>
-        {isLoggedIn === false && (
+
+        <Route path="/" element={<NotFoundPage page="http://localhost:3000/"/>} />
+
+
+        {isLoggedIn === false ? (
           <Route path="/login" element={<StaffLogin />} />
+        ) : (
+          <Route path="/login" element={<AlreadyLogIn />} />
+        )}
+
+        {isLoggedIn === true ? (
+          <Route
+            path="/staffprofile"
+            element={<StaffMyProfile userId={userId} />}
+          />
+        ) : (
+          <Route path="/staffprofile" element={<AlreadyLogIn />} />
         )}
 
         {userPosition === "General Manager" ? (

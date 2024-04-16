@@ -1,26 +1,76 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Form, Button, Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Container, Form, Button, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const BillingForm = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    serviceRecordId: '',
-    paymentInvoiceId: generatePaymentInvoiceId(),
-    name: '',
-    address: '',
-    email: '',
-    phone: '',
-    partsPrice: 0,
-    partsDiscount: 0,
-    servicePrice: 0,
-    serviceDiscount: 0,
-    taxRate: 0,
-    total: 0,
-    currentDate: '',
-    currentTime: '',
+    serviceRecordId: "",
+    paymentInvoiceId: "",
+    name: "",
+    address: "",
+    email: "",
+    phone: "",
+    partsPrice: "",
+    partsDiscount: "",
+    servicePrice: "",
+    serviceDiscount: "",
+    taxRate: "",
+    total: "",
+    currentDate: "",
+    currentTime: "",
   });
+
+  const [errors, setErrors] = useState({});
+
+  const [invoiceType, setInvoiceType] = useState("");
+
+  useEffect(() => {
+    showConfirmationBox();
+  }, []);
+
+  const showConfirmationBox = () => {
+    const result = window.confirm(
+      "Please select Invoice Type:\n1. Product\n2. Spare Parts\n3. Service"
+    );
+    if (result) {
+      const type = parseInt(
+        prompt(
+          "Enter the option number (1 for Product, 2 for Spare Parts, 3 for Service):"
+        )
+      );
+      if (type === 1) {
+        setInvoiceType("PA");
+      } else if (type === 2) {
+        setInvoiceType("PB");
+      } else if (type === 3) {
+        setInvoiceType("PC");
+      } else {
+        alert("Invalid option selected. Defaulting to Product.");
+        setInvoiceType("PA");
+      }
+    } else {
+      alert("Invoice type not selected. Defaulting to Product.");
+      setInvoiceType("PA");
+    }
+  };
+
+  useEffect(() => {
+    if (invoiceType) {
+      const paymentInvoiceId = generatePaymentInvoiceId(invoiceType);
+      setFormData((prevData) => ({
+        ...prevData,
+        paymentInvoiceId,
+      }));
+    }
+  }, [invoiceType]);
+
+  const generatePaymentInvoiceId = (type) => {
+    const timestamp = new Date().getTime();
+    const randomNum = Math.floor(Math.random() * 900000) + 100000; // Generates a 6-digit random number
+    return `${type}-${timestamp}-${randomNum}`.slice(0, 12); // Limiting to 12 characters
+  };
 
   useEffect(() => {
     calculateTotal();
@@ -31,15 +81,51 @@ const BillingForm = () => {
       currentDate,
       currentTime,
     }));
-  }, [formData.partsPrice, formData.partsDiscount, formData.servicePrice, formData.serviceDiscount, formData.taxRate]);
+  }, [
+    formData.partsPrice,
+    formData.partsDiscount,
+    formData.servicePrice,
+    formData.serviceDiscount,
+    formData.taxRate,
+  ]);
 
   const calculateTotal = () => {
-    const subtotal = parseFloat(formData.partsPrice) + parseFloat(formData.servicePrice);
+    const partsPrice = parseFloat(formData.partsPrice);
+    const partsDiscount = parseFloat(formData.partsDiscount);
+    const servicePrice = parseFloat(formData.servicePrice);
+    const serviceDiscount = parseFloat(formData.serviceDiscount);
+    const taxRate = parseFloat(formData.taxRate);
+
+    if (
+      isNaN(partsPrice) ||
+      isNaN(partsDiscount) ||
+      isNaN(servicePrice) ||
+      isNaN(serviceDiscount) ||
+      isNaN(taxRate)
+    ) {
+      return;
+    }
+
+    if (
+      partsPrice < 0 ||
+      partsDiscount < 0 ||
+      servicePrice < 0 ||
+      serviceDiscount < 0 ||
+      taxRate < 0
+    ) {
+      return;
+    }
+
+    if (partsDiscount > 100 || serviceDiscount > 100 || taxRate > 100) {
+      return;
+    }
+
+    const subtotal = partsPrice + servicePrice;
     const totalAfterDiscount =
       subtotal -
-      (formData.partsPrice * parseFloat(formData.partsDiscount) / 100) -
-      (formData.servicePrice * parseFloat(formData.serviceDiscount) / 100);
-    const taxAmount = (totalAfterDiscount * parseFloat(formData.taxRate)) / 100;
+      (partsPrice * partsDiscount) / 100 -
+      (servicePrice * serviceDiscount) / 100;
+    const taxAmount = (totalAfterDiscount * taxRate) / 100;
     const finalTotal = totalAfterDiscount + taxAmount;
     setFormData((prevData) => ({
       ...prevData,
@@ -53,38 +139,168 @@ const BillingForm = () => {
       ...prevData,
       [name]: value,
     }));
+
+    validateField(name, value);
+  };
+
+  const validateField = (name, value) => {
+    let error = "";
+    switch (name) {
+      case "serviceRecordId":
+        error =
+          value.length === 0 ? "Service Record ID/Vehicle No is required" : "";
+        break;
+      case "name":
+        error = value.length === 0 ? "Name is required" : "";
+        break;
+      case "address":
+        error = value.length === 0 ? "Address is required" : "";
+        break;
+      case "email":
+        error =
+          value.length === 0
+            ? "Email is required"
+            : !isValidEmail(value)
+            ? "Invalid email format"
+            : "";
+        break;
+      case "phone":
+        error =
+          value.length === 0
+            ? "Phone is required"
+            : !isValidPhone(value)
+            ? "Invalid phone number"
+            : "";
+        break;
+      case "partsPrice":
+      case "servicePrice":
+        error =
+          isNaN(value) || parseFloat(value) < 0
+            ? "Amount should be a positive number"
+            : "";
+        break;
+      case "partsDiscount":
+      case "serviceDiscount":
+        error =
+          isNaN(value) || parseFloat(value) < 0 || parseFloat(value) > 100
+            ? "Discount should be a positive number less than 100"
+            : "";
+        break;
+      case "taxRate":
+        error =
+          isNaN(value) || parseFloat(value) < 0 || parseFloat(value) > 100
+            ? "Tax rate should be a positive number less than 100"
+            : "";
+        break;
+      default:
+        break;
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: error,
+    }));
+  };
+
+  const isValidEmail = (email) => {
+    // Simple email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidPhone = (phone) => {
+    // Phone number should start with 0 and be 10 digits long
+    const phoneRegex = /^0\d{9}$/;
+    return phoneRegex.test(phone);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const isValid = validateForm();
+    if (!isValid) {
+      return;
+    }
+
     try {
-      const response = await fetch('http://localhost:5000/api/finance/billing/createbill', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/finance/billing/createbill",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       if (!response.ok) {
-        throw new Error('Failed to create bill');
+        throw new Error("Failed to create bill");
       }
-      alert('Bill created successfully!');
-      navigate('/staff/finance/billing/all');
+      alert("Bill created successfully!");
+      navigate("/staff/finance/billing/all");
     } catch (error) {
-      console.error('Error creating bill:', error.message);
-      alert('Failed to create bill. Please try again later.');
+      console.error("Error creating bill:", error.message);
+      alert("Failed to create bill. Please try again later.");
     }
   };
 
-  function generatePaymentInvoiceId() {
-    const timestamp = new Date().getTime();
-    const randomNum = Math.floor(Math.random() * 900000) + 100000; // Generates a 6-digit random number
-    const invoiceId = `P${timestamp}-${randomNum}`.slice(0, 12); // Limiting to 12 characters
-    return invoiceId;
-  }
+  const validateForm = () => {
+    const {
+      serviceRecordId,
+      name,
+      address,
+      email,
+      phone,
+      partsPrice,
+      partsDiscount,
+      servicePrice,
+      serviceDiscount,
+      taxRate,
+    } = formData;
+
+    let isValid = true;
+
+    if (
+      !serviceRecordId ||
+      !name ||
+      !address ||
+      !email ||
+      !phone ||
+      !partsPrice ||
+      !partsDiscount ||
+      !servicePrice ||
+      !serviceDiscount ||
+      !taxRate
+    ) {
+      alert("All fields are required");
+      isValid = false;
+    }
+
+    if (
+      parseFloat(partsPrice) < 0 ||
+      parseFloat(partsDiscount) < 0 ||
+      parseFloat(servicePrice) < 0 ||
+      parseFloat(serviceDiscount) < 0 ||
+      parseFloat(taxRate) < 0
+    ) {
+      alert("Amounts should be positive");
+      isValid = false;
+    }
+
+    if (
+      parseFloat(partsDiscount) > 100 ||
+      parseFloat(serviceDiscount) > 100 ||
+      parseFloat(taxRate) > 100
+    ) {
+      alert("Discount and tax rate should be less than 100");
+      isValid = false;
+    }
+
+    return isValid;
+  };
 
   const handleCancel = () => {
-    navigate('/staff/finance/billing/all')
+    navigate("/staff/finance/billing/all");
   };
 
   return (
@@ -95,15 +311,19 @@ const BillingForm = () => {
           <Row>
             <Col md={6}>
               <Form.Group controlId="serviceRecordId">
-                <Form.Label>Service Record ID</Form.Label>
+                <Form.Label>Service Record ID/Vehicle No</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter Service Record ID"
+                  placeholder="Enter Service Record ID or Vehicle Number"
                   name="serviceRecordId"
                   value={formData.serviceRecordId}
                   onChange={handleChange}
                   required
+                  isInvalid={!!errors.serviceRecordId}
                 />
+                <Form.Control.Feedback type="invalid" style={{ color: "red" }}>
+                  {errors.serviceRecordId}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -130,7 +350,11 @@ const BillingForm = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
+                  isInvalid={!!errors.name}
                 />
+                <Form.Control.Feedback type="invalid" style={{ color: "red" }}>
+                  {errors.name}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -143,7 +367,11 @@ const BillingForm = () => {
                   value={formData.address}
                   onChange={handleChange}
                   required
+                  isInvalid={!!errors.address}
                 />
+                <Form.Control.Feedback type="invalid" style={{ color: "red" }}>
+                  {errors.address}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
@@ -158,7 +386,11 @@ const BillingForm = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  isInvalid={!!errors.email}
                 />
+                <Form.Control.Feedback type="invalid" style={{ color: "red" }}>
+                  {errors.email}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -171,7 +403,11 @@ const BillingForm = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   required
+                  isInvalid={!!errors.phone}
                 />
+                <Form.Control.Feedback type="invalid" style={{ color: "red" }}>
+                  {errors.phone}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
@@ -187,7 +423,11 @@ const BillingForm = () => {
                   value={formData.partsPrice}
                   onChange={handleChange}
                   required
+                  isInvalid={!!errors.partsPrice}
                 />
+                <Form.Control.Feedback type="invalid" style={{ color: "red" }}>
+                  {errors.partsPrice}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -201,7 +441,11 @@ const BillingForm = () => {
                   value={formData.partsDiscount}
                   onChange={handleChange}
                   required
+                  isInvalid={!!errors.partsDiscount}
                 />
+                <Form.Control.Feedback type="invalid" style={{ color: "red" }}>
+                  {errors.partsDiscount}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
@@ -217,7 +461,11 @@ const BillingForm = () => {
                   value={formData.servicePrice}
                   onChange={handleChange}
                   required
+                  isInvalid={!!errors.servicePrice}
                 />
+                <Form.Control.Feedback type="invalid" style={{ color: "red" }}>
+                  {errors.servicePrice}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -231,7 +479,11 @@ const BillingForm = () => {
                   value={formData.serviceDiscount}
                   onChange={handleChange}
                   required
+                  isInvalid={!!errors.serviceDiscount}
                 />
+                <Form.Control.Feedback type="invalid" style={{ color: "red" }}>
+                  {errors.serviceDiscount}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
           </Row>
@@ -246,7 +498,11 @@ const BillingForm = () => {
                   value={formData.taxRate}
                   onChange={handleChange}
                   required
+                  isInvalid={!!errors.taxRate}
                 />
+                <Form.Control.Feedback type="invalid" style={{ color: "red" }}>
+                  {errors.taxRate}
+                </Form.Control.Feedback>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -256,7 +512,12 @@ const BillingForm = () => {
                   type="text"
                   placeholder="Tax Amount"
                   name="taxAmount"
-                  value={`Rs.${((parseFloat(formData.partsPrice) + parseFloat(formData.servicePrice)) * parseFloat(formData.taxRate) / 100).toFixed(2)}`}
+                  value={`Rs.${(
+                    ((parseFloat(formData.partsPrice) +
+                      parseFloat(formData.servicePrice)) *
+                      parseFloat(formData.taxRate)) /
+                    100
+                  ).toFixed(2)}`}
                   readOnly
                 />
               </Form.Group>

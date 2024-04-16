@@ -11,7 +11,7 @@ exports.addaccidentalAppointment = async (req, res) => {
     const {userId, name, vType, vNo, dateAccidentaOccured, damagedOccured, contactNo, appointmentdate, appointmenttime } = req.body;
     const image = req.file ? req.file.path : null;
 
-    if (!name || !vType || !vNo || !dateAccidentaOccured || !damagedOccured || !contactNo || !appointmentdate || !appointmenttime || !image) {
+    if (!userId||!name || !vType || !vNo || !dateAccidentaOccured || !damagedOccured || !contactNo || !appointmentdate || !appointmenttime || !image) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -51,6 +51,35 @@ exports.getaccidentalAppointment = async (req, res) => {
   })
 
 }
+
+exports.updateAccidentalAppointment= async (req, res) => {
+  let accidentalAppId = req.params.id;
+  //to get existing values
+  const {userId, name, vType, vNo, dateAccidentaOccured, damagedOccured, contactNo, appointmentdate, appointmenttime,image } = req.body
+
+  //object to store new values
+  const updateAccidentalAppointment = {
+    userId,
+    name,
+    vType,
+    vNo,
+    dateAccidentaOccured,
+    damagedOccured,
+    contactNo,
+    appointmentdate,
+    appointmenttime,
+    image
+  }
+
+  //to find relavant apoointment to update
+  const update = await  accidentalSchema.findByIdAndUpdate(accidentalAppId, updateAccidentalAppointment).then(() => {
+      res.status(200).send({ status: "Updated"})
+  }).catch((err) => {
+      res.status(500).send({ status: "server error with update data", error: err.message });
+  })
+
+}
+
 exports.deleteaccidentalAppointment = async (req, res) => {
   const { id } = req.params;
 
@@ -76,6 +105,7 @@ exports.deleteaccidentalAppointment = async (req, res) => {
     res.status(500).send({ status: "Internal server error" });
   }
 };
+
 exports.getaccidentalappointmentbyuserId = async (req, res) => {
   const { userId } = req.params;
   try {

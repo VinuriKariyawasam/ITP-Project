@@ -7,6 +7,10 @@ const aspSchema = new schema({
         type:String,
         required: true
     },
+    orderId:{
+        type:String,
+        required: true
+    },
     name: {
         type: String,
         required: true
@@ -53,6 +57,14 @@ const aspSchema = new schema({
     },total:{
         type:Number,
         required: true
+    },orderdate: {
+        type: Date,
+        default: Date.now,
+        required : true
+    },
+    completeddate:{
+        type:Date,
+        default: Date.now
     }
 
 })

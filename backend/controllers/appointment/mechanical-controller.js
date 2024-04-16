@@ -26,7 +26,7 @@ exports.addmechanicalAppointment = async (req, res) => {
     });
 
     try {
-        if (!name || !vType || !vNo || !issue ||  !contactNo || !appointmentdate || !appointmenttime ) {
+        if (!userId||!name || !vType || !vNo || !issue ||  !contactNo || !appointmentdate || !appointmenttime ) {
             return res.status(400).json({ message: 'All Fields Required' })
         }
         await newmechanicalAppointment.save()

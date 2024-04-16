@@ -4,11 +4,14 @@ import neo from "../../../images/neo-tech-high-resolution-logo-transparent.png";
 
 function CusFooter() {
   return (
-    <footer className="bg-dark text-white py-5">
+    <footer
+      className="bg-dark text-white py-5"
+      style={{ left: 0, bottom: 0, right: 0 }}
+    >
       <Container>
         <Row>
           <Col md={3} className="mb-4 mb-md-0">
-            <a href="/" className="d-flex align-items-center p-0 text-white">
+            <a href="http://localhost:3000/customer" className="d-flex align-items-center p-0 text-white">
               <img alt="logo" src={neo} width="200px" />
             </a>
             <p className="my-3">
@@ -31,12 +34,12 @@ function CusFooter() {
                 </a>
               </li>
               <li>
-                <a href="/" className="text-white">
+                <a href="http://localhost:3000/customer/contactus" className="text-white">
                   Contact Us
                 </a>
               </li>
               <li>
-                <a href="/" className="text-white">
+                <a href="http://localhost:3000/customer/cusaffairs/faq" className="text-white">
                   FAQ
                 </a>
               </li>
@@ -51,7 +54,7 @@ function CusFooter() {
             <h5 className="mb-4 fw-bold">Help</h5>
             <ul className="list-unstyled">
               <li>
-                <a href="/" className="text-white">
+                <a href="http://localhost:3000/customer/appointment/appointnmentMain" className="text-white">
                   Appointments
                 </a>
               </li>
@@ -66,12 +69,12 @@ function CusFooter() {
                 </a>
               </li>
               <li>
-                <a href="/" className="text-white">
+                <a href="http://localhost:3000/customer/cusaffairs/consultation" className="text-white">
                   Online Consultation
                 </a>
               </li>
               <li>
-                <a href="/" className="text-white">
+                <a href="http://localhost:3000/customer/products" className="text-white">
                   Products
                 </a>
               </li>
@@ -81,17 +84,17 @@ function CusFooter() {
             <h5 className="mb-4 fw-bold">Quick Links</h5>
             <ul className="list-unstyled">
               <li>
-                <a href="/" className="text-white">
+                <a href="http://localhost:3000/customer/cusreg" className="text-white">
                   Sign Up
                 </a>
               </li>
               <li>
-                <a href="/" className="text-white">
+                <a href="http://localhost:3000/customer/cuslogin" className="text-white">
                   Log in
                 </a>
               </li>
               <li>
-                <a href="/" className="text-white">
+                <a href="http://localhost:3000/customer/cusaffairs/allfeedback" className="text-white">
                   Feedbacks
                 </a>
               </li>

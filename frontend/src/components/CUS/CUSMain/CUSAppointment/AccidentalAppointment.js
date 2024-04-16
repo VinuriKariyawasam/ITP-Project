@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import { Form, Col, Row, Button, InputGroup } from 'react-bootstrap';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import { useForm } from "../../../../data/CUS/Appointment/apform-hook";
 import accidentalrepairs from '../../../../images/CUS/Appointment/accidental repairs.jpg'
 import './AccidentalAppointment.css'
+import { CusAuthContext } from "../../../../context/cus-authcontext";
 
 
 const AccidentalAppointment = () => {
@@ -16,6 +17,7 @@ const AccidentalAppointment = () => {
 
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState('');
+  const cusauth = useContext(CusAuthContext)
 
   const handleNameChange = (event) => {
     const value = event.target.value;
@@ -75,8 +77,16 @@ const AccidentalAppointment = () => {
 
   const appointmentSubmitHandler = async (event) => {
     event.preventDefault();
+
+    // Check if the contact number has exactly 9 digits
+  if (formState.inputs.contactNo.value.length !== 9) {
+    alert("Please enter a valid  contact number.");
+    return; // Exit the function if the contact number is not valid
+  }
+
     try {
       const formData = new FormData();
+      formData.append("userId", cusauth.userId);
       formData.append("name", formState.inputs.name.value);
       formData.append("vType", formState.inputs.vType.value);
       formData.append("vNo", formState.inputs.vNo.value);
@@ -93,6 +103,7 @@ const AccidentalAppointment = () => {
       );
 
       alert('Appointment Submitted Succesfully');
+      navigate('/customer/appointment/myappointment');
 
 
     } catch (err) {
@@ -244,7 +255,7 @@ const AccidentalAppointment = () => {
                   <Form.Label>Damaged occured</Form.Label>
                   <Form.Control
                     id="damagedOccured"
-                    type="text"
+                    type="textarea" rows={2}
                     placeholder="Enter damagedOccured"
                     onInput={(event) =>
                       inputHandler("damagedOccured", event.target.value, true)

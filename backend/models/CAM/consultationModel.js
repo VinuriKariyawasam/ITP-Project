@@ -1,7 +1,14 @@
 const mongoose = require('mongoose');
 
 const consultationSchema = new mongoose.Schema({
-
+    userId :{
+        type: String,
+        required: true,
+    },
+    consultId :{
+        type: String,
+        required: true,
+    },
     vehicleType :{
         type : String,
         required : true,
@@ -16,6 +23,10 @@ const consultationSchema = new mongoose.Schema({
         maxLength : 255,
     },
     solution :{
+        type : String,
+        maxLength : 255,
+    },
+    newsolution :{
         type : String,
         maxLength : 255,
     },

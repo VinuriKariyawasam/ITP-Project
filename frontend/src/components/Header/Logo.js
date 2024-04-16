@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./Logo.css";
 import logo from "../../images/logoblack_trans.png";
+import StaffAuthContext from "../../context/StaffAuthContext";
 
 export default function Logo() {
   const handleToggleSideBar = () => {

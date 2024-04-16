@@ -6,8 +6,9 @@ const { addSP, SPpendingorders, deletependingsp } = require('../controllers/Inve
 const{addcart, cartStock, updatecart, deletecarts, emptycart, generatePDF, clearCart} = require('../controllers/Inventory/carts')
 const { sendIMail } = require("../config/inventorynodemailer");
 const {sendMail} = require("../config/nodemailer");
-const { addorder, pendingOrders, completedOrders } = require('../controllers/Inventory/Orders');
+const { addorder, pendingOrders, completedOrders, orderupdatetocompleted } = require('../controllers/Inventory/Orders');
 const { addapprovedSP,  SPapprovedorders, SPongoingorders, SPcompletedorders, Spupdateongoing, Spupdatecompleted} = require('../controllers/Inventory/ApprovedSPs');
+const { addQuantity, Quantitystock,deleteQuantity } = require('../controllers/Inventory/Quantities')
 const router = require("express").Router();
 
 router.post("/addlubricant",fileUpload.single('image'),addLubricant)
@@ -42,6 +43,11 @@ router.delete("/clear-cart", clearCart);
 router.post("/addorder",addorder)
 router.get("/getorderpending",pendingOrders)
 router.get("/getordercompleted",completedOrders)
+router.put("/updatetocompletedorder/:id",orderupdatetocompleted)
+
+router.post('/addquantity',addQuantity)
+router.get('/getquantity',Quantitystock)
+router.delete('/deletequantity/:id',deleteQuantity)
 
 router.post("/sendinventoryemail",sendIMail)
 router.post("/sendrejectemail",sendMail)

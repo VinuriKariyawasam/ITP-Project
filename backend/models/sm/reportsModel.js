@@ -23,7 +23,9 @@ const serviceReportSchema = new mongoose.Schema({
   totalServicePrice: { type: Number, required: true },
   serviceDoneTechnicianId: { type: String },
   testDoneTechnicianId: { type: String },
+
   FinanceApproval:{type:Boolean ,default:false},
+
 });
 
 module.exports = mongoose.model('ServiceReport', serviceReportSchema);

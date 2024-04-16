@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useForm } from 'react-hook-form';
 import periodicalAppointment from '../../../../images/CUS/Appointment/periodicalAppointment.jpg'
 import axios from "axios"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Form, Col, Row, Button, InputGroup } from 'react-bootstrap';
-
-
+import { CusAuthContext } from "../../../../context/cus-authcontext";
+import { useNavigate } from "react-router-dom";
 
 function PeriodicalAppointment() {
 
   const [availableTimes, setAvailableTimes] = useState([]);
-
+  const cusauth = useContext(CusAuthContext)
   const { } = useForm();
+  const navigate = useNavigate();
 
 
   const [name, setname] = useState("");
@@ -30,8 +31,15 @@ function PeriodicalAppointment() {
   function sendata(e) {
     e.preventDefault();
 
+    // Check if the phone number has exactly 9 digits
+  if (phone.length !== 9) {
+    alert("Please enter a valid phone number.");
+    return; // Exit the function if the phone number is not valid
+  }
+
     //create javascript object
     const newPeriodicalAppointment = {
+      userId: cusauth.userId,
       name,
       vType,
       vNo,
@@ -50,6 +58,7 @@ function PeriodicalAppointment() {
       appointmentdate: new Date(appointmentdate.getTime() + (24 * 60 * 60 * 1000)) // Adding one day
     }).then(() => {
       alert("Your Appointment Success")
+      navigate('/customer/appointment/myappointment');
       setname("");
       setvType("");
       setvNo("");
@@ -153,7 +162,7 @@ function PeriodicalAppointment() {
 
                 <Form.Group as={Col} md='5'>
                   <Form.Label>What kind of service you want?</Form.Label>
-                  <Form.Control type="text" placeholder="Enter Service type" value={sType} onChange={(e) => setsType(e.target.value)} maxLength={10} required />
+                  <Form.Control type="text" placeholder="Enter Service type" value={sType} onChange={(e) => setsType(e.target.value)} maxLength={30} required />
                 </Form.Group>
               </Row>
               <Row className="mb-3">
@@ -169,6 +178,7 @@ function PeriodicalAppointment() {
                     <option value="2019">2019</option>
                     <option value="2018">2018</option>
                     <option value="before 2018">before 2018</option>
+                    <option value="first time">first time</option>
                   </select>
 
                 </Form.Group>
@@ -189,6 +199,7 @@ function PeriodicalAppointment() {
                     <option value="October">October</option>
                     <option value="November">November</option>
                     <option value="December">December</option>
+                    <option value="Fisrt time">Fisrt time</option>
                   </select>
 
 
@@ -205,7 +216,7 @@ function PeriodicalAppointment() {
                   <InputGroup>
                     <InputGroup.Text>+94</InputGroup.Text>
                     <Form.Control
-                      type="text"
+                      type="phone"
                       maxLength={9} // Allow for the length of "+94" and 10 digits
                       placeholder="Enter Contact Number"
                       value={phone}

@@ -1,46 +1,28 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import Modal from 'react-bootstrap/Modal';
-import  MyApPer from './MyAppPer'
-import MyApMec from './MyAppMec'
+import  MyApPer from './MyApPer'
+import MyApMec from './MyApMec'
 import MyAppAccid from './MyAppAccid'
+import MyApApp from './MyApApp'
 
 const MyAppointment = props => {
 
-
-  const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState("Periodical Appointment");
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
-
-   
-    
-    const handleCloseModal = () => {
-      setShowModal(false);
-  };
-  const handleMoreButtonClick = (appointment) => {
-      setSelectedAppointment(appointment);
-      setShowModal(true);
-  };
 
   return(
-    <main id="main" className="main">
+    <main>
      
   <div>
-  <h1 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' ,marginLeft: '30%'}}>Your Appointments</h1>
-  <Button variant="secondary" style={{ marginLeft:"35%",marginBottom:"5%",marginTop:5}}>
-   Approved Appointments
-  </Button><br></br>
-  <Button variant="secondary" style={{ marginLeft:"35%"}}>
-   Pending Appointments
-  </Button>
-  <div>
   
-        </div>
+  <h1 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' ,marginLeft: '40%',marginTop:'0%'}}>Your Appointments</h1>
+  <h3 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Approved Appointments</h3><br/><br/>
+<MyApApp/><br></br>
+  
 
+
+  <h3 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Appointment Pending for Approval </h3><br/><br/>
         <div>
         <Tabs
             id="controlled-tab-example"
