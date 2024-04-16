@@ -272,12 +272,15 @@ function VehicleDash() {
   <td>{vehicle.name}</td>
   <td>{vehicle.contact}</td>
   <td>
-    <Button
-      variant="secondary"
-      onClick={() => handleMoreClick(vehicle.vehicleNo)}
-    >
-      More
-    </Button>
+  <button
+  className="btn btn-secondary me-2"
+  onClick={() => {
+    handleMoreClick(vehicle.vehicleNo);
+    window.location.href = "/staff/supervisor/records";
+  }}
+>
+  More
+</button>
   </td>
   <td> {/* Move the buttons inside a separate <td> */}
     <button
