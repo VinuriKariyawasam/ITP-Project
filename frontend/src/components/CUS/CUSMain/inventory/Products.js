@@ -6,7 +6,7 @@ import Card from "react-bootstrap/Card";
 import img1 from "../../../../images/im/lubricants.jpg";
 import img2 from "../../../../images/im/tires.jpg";
 import img3 from "../../../../images/im/spareparts.jpg";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 
 function Products() {
   const scrollDown = (amount) => {
@@ -16,14 +16,17 @@ function Products() {
     });
   };
 
- 
   return (
-    <main id="cusmain" className="cusmain">
+    <main
+      id="cusmain"
+      className="cusmain"
+      style={{ marginLeft: "9%", marginRight: "9%", marginTop: "2%" }}
+    >
       <h1 className="inventory_h1">
         Explore Our Premium Automotive Essentials
       </h1>
       <div className="containerProduct">
-      <Slideshow />
+        <Slideshow />
         <div className="inventory_para1">
           <p>
             <a className="welcome" style={{ fontSize: "30px" }} diabled>
@@ -57,9 +60,9 @@ function Products() {
               lubricants for lasting performance."
             </Card.Text>
             <Link to="lubricants">
-            <Button variant="primary" className="exbtn">
-              Explore
-            </Button>
+              <Button variant="primary" className="exbtn">
+                Explore
+              </Button>
             </Link>
           </Card.Body>
         </Card>
@@ -72,9 +75,9 @@ function Products() {
               rides for every vehicle.
             </Card.Text>
             <Link to="tires">
-            <Button variant="primary" className="exbtn">
-              Explore
-            </Button>
+              <Button variant="primary" className="exbtn">
+                Explore
+              </Button>
             </Link>
           </Card.Body>
         </Card>
@@ -87,9 +90,9 @@ function Products() {
               top-notch procurement assistance.
             </Card.Text>
             <Link to="sparepartsform">
-            <Button variant="primary" className="exbtn">
-              Explore
-            </Button>
+              <Button variant="primary" className="exbtn">
+                Explore
+              </Button>
             </Link>
           </Card.Body>
         </Card>

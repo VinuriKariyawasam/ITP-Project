@@ -101,13 +101,7 @@ const ProductSales = () => {
     order.date.includes(searchDate)
   );
 
-  const filteredCompletedOrders = completedOrder.filter((order) =>
-    order.date.includes(searchDate)
-  );
 
-  const handleClear = () => {
-    setSearchDate("");
-  };
 
   return (
     <main id="main" className="main">
@@ -183,7 +177,7 @@ const ProductSales = () => {
         <tbody>
           {filteredPendingOrders.map((pendingorder) => (
             <tr key={pendingorder._id}>
-              <td>{pendingorder._id}</td>
+              <td>{pendingorder.orderId}</td>
               <td>{pendingorder.date.split('T')[0]}</td>
               <td>{pendingorder.total}</td>
               <td>
