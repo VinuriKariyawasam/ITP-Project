@@ -21,6 +21,14 @@ const navList = [
     name: "FAQ Review",
     icon: "bi bi-layout-text-window-reverse",
   },
+
+  {
+    _id: 5,
+    name: "Contact Us Responses",
+    icon: "bi bi-file-earmark-fill",
+    href: "/staff/cam/contactDash"
+    
+  },
  
   {
     _id: 6,
