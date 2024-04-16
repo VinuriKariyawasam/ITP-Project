@@ -9,9 +9,9 @@ import img3 from "../../../../images/im/spareparts.jpg";
 import {Link} from "react-router-dom"
 
 function Products() {
-  const scrollToBottom = () => {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
+  const scrollDown = (amount) => {
+    window.scrollBy({
+      top: amount,
       behavior: "smooth",
     });
   };
@@ -38,7 +38,7 @@ function Products() {
           <button
             type="button"
             class="btn btn-primary btn-lg"
-            onClick={scrollToBottom}
+            onClick={() => scrollDown(600)}
           >
             <b>
               Discover<span class="bi bi-arrow-right"></span>

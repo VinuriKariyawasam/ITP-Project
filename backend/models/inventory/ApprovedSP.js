@@ -7,6 +7,10 @@ const aspSchema = new schema({
         type:String,
         required: true
     },
+    orderId:{
+        type:String,
+        required: true
+    },
     name: {
         type: String,
         required: true
