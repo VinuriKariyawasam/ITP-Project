@@ -25,7 +25,6 @@ function NavAvatar() {
             href="#"
             data-bs-toggle="dropdown"
           >
-            <img src={cusavatar} alt="Profile" className="rounded-circle" />
             <span className="d-none d-md-block dropdown-toggle ps-2">
               {cusauth.name}
             </span>
@@ -35,8 +34,7 @@ function NavAvatar() {
           {cusauth.isLoggedIn && (
             <>
               <li className="cus-dropdown-header">
-                <img src={cusavatar} alt="Profile" className="rounded-circle" />
-                <h6 style={{ float: "center" }}>{cusauth.name}</h6>
+                <h6 style={{ textAlign: "center",marginBottom:"5%" }}>{cusauth.name}</h6>
               </li>
               <li>
                 <hr className="dropdown-divider" />
@@ -54,14 +52,14 @@ function NavAvatar() {
                 <hr className="dropdown-divider" />
               </li>
 
-              <li>
+              {/* <li>
                 <a
                   className="cus-dropdown-item d-flex align-items-center"
                   href="users-profile.html"
                 >
                   <span>My Payments</span>
                 </a>
-              </li>
+              </li> */}
               <li>
                 <hr className="dropdown-divider" />
               </li>

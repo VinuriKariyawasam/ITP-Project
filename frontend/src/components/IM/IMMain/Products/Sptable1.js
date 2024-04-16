@@ -26,7 +26,7 @@ function Sptable1() {
       }, []);
 
       const handleReject = (id, email) => {
-        const shouldDelete = window.confirm('Confirm Delete');
+        const shouldDelete = window.confirm('Confirm Reject');
         if (shouldDelete) {
           const emailData = {
             to: email ,
@@ -85,19 +85,19 @@ function Sptable1() {
 
       axios.post("http://localhost:5000/Product/addapprovedsp",formData).then((res) =>{
           console.log(res.data)
-          const newOrderId = res.data.order._id;
+          const newOrderId = res.data.order.orderId;
           
           const emailData = {
             to: order.email,
-            subject: `Your Cart Details orderID :${newOrderId}`,
-            text: `Here are your cart details: `,
+            subject: `Thank you for shopping with us!!!`,
+            text: `Your Cart Details orderID :${newOrderId}
+            Total : ${total}`,
             html: null,
-            orderId:newOrderId,
           };
 
           axios
             .post(
-              "http://localhost:5000/Product/sendinventoryemail",
+              "http://localhost:5000/Product/sendrejectemail",
               emailData
             )
             .then((response) => {

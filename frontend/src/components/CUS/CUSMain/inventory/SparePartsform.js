@@ -155,8 +155,8 @@ function SparePartsform() {
                   <Form.Control
                     id="vehicleNumber"
                     type="text"
-                    maxLength={9}
-                    placeholder="XX-XXXX"
+                    maxLength={8}
+                    placeholder="XXX-XXXX"
                     onInput={(event) =>
                       inputHandler("vehicleNumber", event.target.value, true)
                     }
@@ -197,12 +197,22 @@ function SparePartsform() {
                   <Form.Control
                     className="remove-spinner"
                     id="year"
-                    type="Number"
-                    maxLength={4}
+                    type="number"
+                    min="1960"
+                    max="2099"
                     placeholder="Enter Year"
-                    onInput={(event) =>
-                      inputHandler("year", event.target.value, true)
-                    }
+                    onChange={(event) => {
+                      let enteredValue = event.target.value.replace(/\D/g, ''); 
+                      if (enteredValue.length > 4) {
+                        enteredValue = enteredValue.slice(0, 4);
+                      }
+                      inputHandler("year", enteredValue, enteredValue.length === 4);
+                      if (enteredValue.length === 4) {
+                        event.target.disabled = true;
+                      } else {
+                        event.target.disabled = false;
+                      }
+                    }}
                     required
                   />
                 </Form.Group>
@@ -212,7 +222,7 @@ function SparePartsform() {
                   <Form.Control
                     id="color"
                     type="text"
-                    maxLength={20}
+                    maxLength={15}
                     placeholder="Enter color"
                     onInput={(event) =>
                       inputHandler("color", event.target.value, true)

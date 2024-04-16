@@ -69,6 +69,7 @@ function Sptable4() {
       </Modal.Header>
       <Modal.Body>
         <img style={{width:"50%",height:"50%"}} src={`http://localhost:5000/${selectedOrder?.image}`} alt="Product Image" />
+        <p>Order Id: {selectedOrder?.orderId}</p>
         <p>Customer Name: {selectedOrder?.name}</p>
         <p>Vehicle Number: {selectedOrder?.vehicleNumber}</p>
         <p>Vehicle Brand: {selectedOrder?.brand}</p>

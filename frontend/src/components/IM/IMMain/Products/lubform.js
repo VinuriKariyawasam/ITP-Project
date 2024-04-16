@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "../../../../data/IM/form-hook";
+import InputGroup from 'react-bootstrap/InputGroup';
 
 const LubForm = () => {
   const navigate = useNavigate();
@@ -95,6 +96,7 @@ const LubForm = () => {
               id="product_name"
               type="text"
               placeholder="Enter product name"
+              maxLength={100}
               onInput={(event) =>
                 inputHandler("product_name", event.target.value, true)
               }
@@ -106,6 +108,7 @@ const LubForm = () => {
             <Form.Control
               id="product_brand"
               type="text"
+              maxLength={40}
               placeholder="Enter product brand"
               onInput={(event) =>
                 inputHandler("product_brand", event.target.value, true)
@@ -121,7 +124,7 @@ const LubForm = () => {
               id="quantity"
               type="number"
               placeholder="Enter quantity"
-              min="1" 
+              min="1"
               onInput={(event) =>
                 inputHandler("quantity", event.target.value, true)
               }
@@ -130,17 +133,20 @@ const LubForm = () => {
           </Form.Group>
           <Form.Group as={Col} md="5" controlId="validationCustom01">
             <Form.Label>Unit Price</Form.Label>
+            <InputGroup>
+            <InputGroup.Text>Rs.</InputGroup.Text>
             <Form.Control
-             className="remove-spinner" 
+              className="remove-spinner"
               id="unit_price"
               type="number"
               placeholder="Enter unit price"
-              min="1" 
+              min="1"
               onInput={(event) =>
                 inputHandler("unit_price", event.target.value, true)
               }
               required
             />
+            </InputGroup>
           </Form.Group>
         </Row>
         <Row className="mb-3">
@@ -156,18 +162,18 @@ const LubForm = () => {
               }
               required
             />
-             {fileError && (
-                <Form.Text className="text-danger">{fileError}</Form.Text>
-              )}
+            {fileError && (
+              <Form.Text className="text-danger">{fileError}</Form.Text>
+            )}
           </Form.Group>
-        
-        {previewUrl && (
-              <img
-                src={previewUrl}
-                alt="product image"
-                style={{ marginTop: "3%", width: "20%", height: "20%" }}
-              />
-             )}
+
+          {previewUrl && (
+            <img
+              src={previewUrl}
+              alt="product image"
+              style={{ marginTop: "3%", width: "20%", height: "20%" }}
+            />
+          )}
         </Row>
         <Button variant="primary" type="submit" disabled={!formState.isValid}>
           Submit

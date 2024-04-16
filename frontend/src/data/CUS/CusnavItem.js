@@ -1,9 +1,12 @@
+import {useContext} from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import { CusAuthContext } from "../../context/cus-authcontext";
 
 function CusnavItem() {
+  const cusauth = useContext(CusAuthContext);
   return (
     <>
       <Navbar bg="#212121" data-bs-theme="dark">
@@ -11,9 +14,11 @@ function CusnavItem() {
           <Nav className="me-auto">
             <Nav.Link href="http://localhost:3000/customer">Home</Nav.Link>
             <NavDropdown title="Service" id="basic-nav-dropdown">
+            {cusauth.isLoggedIn && (
               <NavDropdown.Item href="http://localhost:3000/customer/products">
                 Product
               </NavDropdown.Item>
+               )}
               <NavDropdown.Item href="http://localhost:3000/customer/mobservices/mobilemain">
                 Mobile Services
               </NavDropdown.Item>

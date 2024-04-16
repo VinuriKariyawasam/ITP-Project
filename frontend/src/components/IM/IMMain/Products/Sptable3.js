@@ -64,8 +64,8 @@ function Sptable3() {
 
     const emailData = {
         to: email ,
-        subject: `Order completed${id}`,
-        text: `Your order completed, Thanks for shopping with us!!!`,
+        subject: `Your Order Ready : ${id}`,
+        text: `Your order is ready, visit us and pickup your order!!!`,
         html: null,
       };
 
@@ -118,7 +118,7 @@ function Sptable3() {
               </td>
               <td><Button
                   variant="warning"
-                  onClick={() => handleNotifyButtonClick(SpareParts._id,SpareParts.email)}
+                  onClick={() => handleNotifyButtonClick(SpareParts.orderId,SpareParts.email)}
                 >
                   notify
                 </Button>
@@ -143,6 +143,7 @@ function Sptable3() {
             src={`http://localhost:5000/${selectedOrder?.image}`}
             alt="Product Image"
           />
+        <p>Order Id: {selectedOrder?.orderId}</p>
           <p>Customer Name: {selectedOrder?.name}</p>
           <p>Vehicle Number: {selectedOrder?.vehicleNumber}</p>
           <p>Vehicle Brand: {selectedOrder?.brand}</p>
