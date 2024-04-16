@@ -1,13 +1,6 @@
-.SMA-div1{
-    margin-top: 10%;
-}
-.SMA-div2222 {
-    margin-top: 2%;
-    margin-left: 35%;
-}
 
 .SMA-AppMainButtonPageHeading {
-
+    margin-top: 3%;
     color: #000;
     font-feature-settings: 'dlig' on;
     font-family: Jomhuria;
@@ -18,8 +11,8 @@
     width: 222px;
     height: 42px;
     flex-shrink: 0;
-    margin-top: 40px;
-    margin-left: 500px;
+    margin-left: 33%;
+    margin-bottom: 10%;
 }
 
 .SMA-SMMainbutton {

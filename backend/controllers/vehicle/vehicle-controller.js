@@ -5,6 +5,7 @@ const path = require("path");
 
 exports.createVehicle = async (req, res) => {
   try {
+    console.log("req.body", req.body);
     const vehicleData = req.body;
     const newVehicle = new VehicleModel(vehicleData);
     await newVehicle.save();
@@ -20,9 +21,7 @@ exports.getVehicles = async (req, res) => {
   try {
     let vehicles = await VehicleModel.find();
     res.json({
-      vehicles: vehicles.map((vehicle) =>
-        vehicle.toObject({ getters: true })
-      ),
+      vehicles: vehicles.map((vehicle) => vehicle.toObject({ getters: true })),
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -46,7 +45,11 @@ exports.updateVehicle = async (req, res) => {
   try {
     const vehicleId = req.params.id;
     const updatedVehicleData = req.body;
-    const updatedVehicle = await VehicleModel.findByIdAndUpdate(vehicleId, updatedVehicleData, { new: true });
+    const updatedVehicle = await VehicleModel.findByIdAndUpdate(
+      vehicleId,
+      updatedVehicleData,
+      { new: true }
+    );
     if (!updatedVehicle) {
       return res.status(404).json({ error: "Vehicle not found" });
     }
