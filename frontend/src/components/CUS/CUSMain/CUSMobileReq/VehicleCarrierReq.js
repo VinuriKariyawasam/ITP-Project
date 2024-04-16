@@ -1,16 +1,20 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import '../CUSMobileReq/Mechanicalreq.css'
 import axios from "axios"
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import VehicleCarrierIMG from '../../../../images/MobileServices/MobVehicleCarrierIMG.jpg';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function VehicleCarrReq() {
-
+  const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
+
+  const [reqDate, setReqDate] = useState(new Date());
 
   const onSubmit = data => {
     //console.log(data);
@@ -27,6 +31,7 @@ function VehicleCarrReq() {
         contactNo: data.contactNo
     }).then(()=>{
           alert("Your Vehicle Carrier Request Successfully completed");
+          navigate("/customer/mobservices/mobilemain");
           reset();
 
         }).catch((err)=>{
@@ -42,7 +47,7 @@ function VehicleCarrReq() {
     <main >
       <div className="mobbody" >
       <div style={{flex:"1" ,marginTop:"3%"}}>
-        <h2 className='mobheading'>Vehicle carrier Service Requests</h2><br />
+        <h2 className='mobheading'>Vehicle Carrier Service Requests</h2><br />
         <Row><Col><container className=''>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Row><Col>
@@ -74,8 +79,8 @@ function VehicleCarrReq() {
             <div className="mobform-element">
               <label htmlFor="reqDate" className='mobL1'>Date</label> <br />
               <input {...register("reqDate", { required: true, pattern: {
-                                                value: /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{2}$/, //date format validation
-                                                message: "Invalid date format (DD/MM/YY)"
+                                                value: /^([0-2][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{2}$/, //date format validation
+                                                message: "Invalid date format (DD/MM/YY)",
                                                 } })} 
               className="mobinput-styles" type="text" id="reqDate" placeholder="DD/MM/YY" />
             </div></Col> </Row>
