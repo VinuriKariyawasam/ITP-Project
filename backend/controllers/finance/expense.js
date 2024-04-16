@@ -54,9 +54,9 @@ exports.updateExpense = async (req, res) => {
         if (!title || !amount || !type || !date || !description) {
             return res.status(400).json({ message: 'All Fields Required' });
         }
-        if (amount <= 0 || typeof amount !== 'number') {
-            return res.status(400).json({ message: 'Amount should be a positive value' });
-        }
+        // if (amount <= 0 || amount !== 'number') {
+        //     return res.status(400).json({ message: 'Amount should be a positive value' });
+        // }
 
         const expenseToUpdate = await ExpenseSchema.findById(id);
         if (!expenseToUpdate) {

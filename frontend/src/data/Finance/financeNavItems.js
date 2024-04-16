@@ -7,7 +7,7 @@ const navList = [
     },
     {
       _id: 2,
-      name: "Incomes",
+      name: "Incomes & Funds",
       icon: "bi bi-cash",
       href:"/staff/finance/incomes"
       // children: [

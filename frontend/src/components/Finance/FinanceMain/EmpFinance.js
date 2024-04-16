@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
+import { Table, Modal, Button, Badge } from "react-bootstrap";
 import Container from 'react-bootstrap/Container';
-import Table from 'react-bootstrap/Table';
+
 import PageTitle from './PageTitle';
 
 const EmpFinance = () => {
@@ -202,9 +203,9 @@ const EmpFinance = () => {
                   <tr>
                     <th>Year</th>
                     <th>Month</th>
-                    <th>Total Salaries</th>
-                    <th>EPF Company Contribution</th>
-                    <th>ETF Company Contribution</th>
+                    <th>Total Salaries(Rs.)</th>
+                    <th>EPF Company Contribution(Rs.)</th>
+                    <th>ETF Company Contribution(Rs.)</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -236,8 +237,8 @@ const EmpFinance = () => {
                     <th>Year</th>
                     <th>Month</th>
                     <th>Total Salaries</th>
-                    <th>EPF Company Contribution</th>
-                    <th>ETF Company Contribution</th>
+                    <th>EPF Company Contribution(Rs.)</th>
+                    <th>ETF Company Contribution(Rs.)</th>
                     <th>Status</th>
                   </tr>
                 </thead>
@@ -249,7 +250,17 @@ const EmpFinance = () => {
                       <td>{entry.salaries.reduce((acc, curr) => acc + curr.netSal, 0)}</td>
                       <td>{entry.salaries.reduce((acc, curr) => acc + curr.EPFC, 0)}</td>
                       <td>{entry.salaries.reduce((acc, curr) => acc + curr.EPFE, 0)}</td>
-                      <td>{entry.status}</td>
+                      <td>
+  {entry.status === "pending" && (
+    <Badge bg="warning">Pending</Badge>
+  )}
+  {entry.status === "approved" && (
+    <Badge bg="success">Approved</Badge>
+  )}
+  {entry.status === "rejected" && (
+    <Badge bg="danger">Rejected</Badge>
+  )}
+</td>
                     </tr>
                   ))}
                 </tbody>
@@ -263,8 +274,8 @@ const EmpFinance = () => {
                 <tr>
                   <th>Employee ID</th>
                   <th>Employee Name</th>
-                  <th>Total EPF</th>
-                  <th>Total ETF</th>
+                  <th>Total EPF(Rs.)</th>
+                  <th>Total ETF(Rs.)</th>
                   <th>Updated Date</th>
                 </tr>
               </thead>
@@ -275,7 +286,7 @@ const EmpFinance = () => {
                     <td>{employee.employeeName}</td>
                     <td>{employee.epftotal}</td>
                     <td>{employee.etftotal}</td>
-                    <td>{employee.updatedDate}</td>
+                    <td>{employee.updatedDate.slice(0, 10)}</td>
                   </tr>
                 ))}
               </tbody>

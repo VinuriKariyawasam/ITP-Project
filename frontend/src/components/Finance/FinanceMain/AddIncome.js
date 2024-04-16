@@ -8,12 +8,12 @@ const AddIncome = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
-    serviceInvoiceId: "",
+    serviceInvoiceId: "FUNDS",
     amount: "",
-    type: "",
+    type: "FUNDS",
     date: "",
     time: "",
-    status: "",
+    status: "Received",
   });
 
   const [errors, setErrors] = useState({
@@ -63,10 +63,10 @@ const AddIncome = () => {
     }
 
     // Service Invoice ID validation
-    if (formData.serviceInvoiceId.trim() === "") {
-      newErrors.serviceInvoiceId = "Service Invoice ID is required";
-      valid = false;
-    }
+    // if (formData.serviceInvoiceId.trim() === "") {
+    //   newErrors.serviceInvoiceId = "Service Invoice ID is required";
+    //   valid = false;
+    // }
 
     // Amount validation
     if (formData.amount.trim() === "") {
@@ -74,6 +74,9 @@ const AddIncome = () => {
       valid = false;
     } else if (isNaN(parseFloat(formData.amount))) {
       newErrors.amount = "Amount must be a number";
+      valid = false;
+    } else if (parseFloat(formData.amount) <= 0) {
+      newErrors.amount = "Amount must be a positive value";
       valid = false;
     }
 
@@ -111,6 +114,52 @@ const AddIncome = () => {
       ...formData,
       [name]: value,
     });
+
+    // Perform validation for the changed field
+    validateField(name, value);
+  };
+
+  const validateField = (fieldName, value) => {
+    let errorMessage = "";
+
+    // Validation logic for each field
+    switch (fieldName) {
+      case "title":
+        errorMessage = value.trim() === "" ? "Title is required" : "";
+        break;
+      // case "serviceInvoiceId":
+      //   errorMessage = value.trim() === "" ? "Service Invoice ID is required" : "";
+      //   break;
+      case "amount":
+        errorMessage =
+          value.trim() === ""
+            ? "Amount is required"
+            : isNaN(parseFloat(value))
+            ? "Amount must be a number"
+            : parseFloat(value) <= 0
+            ? "Amount must be a positive value"
+            : "";
+        break;
+      case "type":
+        errorMessage = value.trim() === "" ? "Type is required" : "";
+        break;
+      case "date":
+        errorMessage = value.trim() === "" ? "Date is required" : "";
+        break;
+      case "time":
+        errorMessage = value.trim() === "" ? "Time is required" : "";
+        break;
+      case "status":
+        errorMessage = value.trim() === "" ? "Status is required" : "";
+        break;
+      default:
+        break;
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: errorMessage,
+    }));
   };
 
   const handleCancel = () => {
@@ -119,7 +168,7 @@ const AddIncome = () => {
 
   return (
     <main id="main" className="main">
-      <PageTitle path="Finance / Incomes / Add-Income" title="Add-Income" />
+      <PageTitle path="Finance / Incomes / Add-Funds" title="Add-Funds" />
       <Form onSubmit={handleFormSubmit}>
         <Form.Group controlId="title">
           <Form.Label>Title</Form.Label>
@@ -134,8 +183,8 @@ const AddIncome = () => {
             {errors.title}
           </Form.Control.Feedback>
         </Form.Group>
-        
-        <Form.Group controlId="serviceInvoiceId">
+
+        {/* <Form.Group controlId="serviceInvoiceId">
           <Form.Label>Service Invoice ID</Form.Label>
           <Form.Control
             type="text"
@@ -147,8 +196,8 @@ const AddIncome = () => {
           <Form.Control.Feedback type="invalid">
             {errors.serviceInvoiceId}
           </Form.Control.Feedback>
-        </Form.Group>
-        
+        </Form.Group> */}
+
         <Form.Group controlId="amount">
           <Form.Label>Amount</Form.Label>
           <Form.Control
@@ -162,7 +211,7 @@ const AddIncome = () => {
             {errors.amount}
           </Form.Control.Feedback>
         </Form.Group>
-        
+
         <Form.Group controlId="type">
           <Form.Label>Type</Form.Label>
           <Form.Control
@@ -176,7 +225,7 @@ const AddIncome = () => {
             {errors.type}
           </Form.Control.Feedback>
         </Form.Group>
-        
+
         <Form.Group controlId="date">
           <Form.Label>Date</Form.Label>
           <Form.Control
@@ -190,7 +239,7 @@ const AddIncome = () => {
             {errors.date}
           </Form.Control.Feedback>
         </Form.Group>
-        
+
         <Form.Group controlId="time">
           <Form.Label>Time</Form.Label>
           <Form.Control
@@ -204,25 +253,8 @@ const AddIncome = () => {
             {errors.time}
           </Form.Control.Feedback>
         </Form.Group>
-        
-        <Form.Group controlId="status">
-          <Form.Label>Status</Form.Label>
-          <Form.Control
-            as="select" 
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            isInvalid={!!errors.status}
-          >
-            <option value="">Select Status</option>
-            <option value="Pending">Pending</option>
-            <option value="Completed">Completed</option>
-            <option value="Cancelled">Cancelled</option>
-          </Form.Control>
-          <Form.Control.Feedback type="invalid">
-            {errors.status}
-          </Form.Control.Feedback>
-        </Form.Group>
+
+        <br />
 
         <Button variant="primary" type="submit">
           Submit
