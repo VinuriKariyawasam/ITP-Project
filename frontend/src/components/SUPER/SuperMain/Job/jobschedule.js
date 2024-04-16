@@ -6,7 +6,7 @@ const JobSchedulerForm = () => {
   const [technicians, setTechnicians] = useState([]);
   const [formData, setFormData] = useState({
     selectDate: '',
-    selectTask: ['Service','testRun'],
+    selectTask: ['Service',],
     selectTechnician: '',
   });
 
