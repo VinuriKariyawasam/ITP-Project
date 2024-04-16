@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFormContext } from "react-hook-form";
 import {
   Button,
   Form,
@@ -94,12 +94,50 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
 
       // Optionally update the UI or perform any other actions after successful submission
       onUpdate(response.data); // Assuming onUpdate is a function to update the UI with the updated data
+      console.log("Data updated successfully:", response.data);
+      const result = response.data;
+      const email = result.employee.email;
 
+      // Send email with the PDF attachment and HTML content
+      const emailOptions = {
+        to: `${email}`, // Replace with recipient email address
+        subject: `Emplyee Registration Confirmation- Neo Tech Motors`,
+
+        html: `<p><b>Dear Trusted Partner</b></p>
+            <p>Your staff credential for Neo Tech organizations management system has been reset.</p>
+            <p>With your designation you will have the access to our management system with this email and your given password.If any issue please contact HR Division.</p>
+            <p>Hope you have fun while working. Login Here<a href="http://localhost:3000/staff/login">Neo Tech Staff</a></p>
+            <p>Thank You</p>
+            <p>Warm regards,</p>
+            <p><b><i>HR Division- Neo Tech Motors</i></b></p>`,
+      };
+
+      // Send a fetch request to the backend controller for sending email
+      await fetch("http://localhost:5000/api/finance/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: emailOptions.to,
+          subject: emailOptions.subject,
+          text: emailOptions.text,
+          html: emailOptions.html,
+        }),
+      });
       // Close the modal or redirect to another page after successful submission
       onHide(); // Close the modal
     } catch (error) {
       console.error("Error updating data:", error.message);
     }
+  };
+
+  const [isCnomValid, setIsCnomValid] = useState(false);
+
+  const handleContactChange = (e) => {
+    const inputValue = e.target.value;
+    const isValidInput = /^[0-9]{10}$/.test(inputValue);
+    setIsCnomValid(isValidInput);
   };
 
   return (
@@ -205,7 +243,17 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
               control={control}
               rules={{ required: "Address is required" }}
               render={({ field }) => (
-                <Form.Control placeholder="1234 Main St" {...field} />
+                <>
+                  <Form.Control
+                    placeholder="1234 Main St"
+                    {...field}
+                    isInvalid={!!errors.address}
+                    isValid={field.value && !errors.address}
+                  />
+                  {field.value && !errors.address && (
+                    <i className="bi bi-check-circle-fill text-success"></i>
+                  )}
+                </>
               )}
             />
             <Form.Text className="text-danger">
@@ -244,13 +292,23 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
                 control={control}
                 rules={{ required: "Contact No. is required" }}
                 render={({ field }) => (
-                  <Form.Control
-                    type="tel"
-                    placeholder="0715897598"
-                    {...field}
-                    pattern="[0-9]{10}"
-                    length="10"
-                  />
+                  <>
+                    <Form.Control
+                      type="tel"
+                      placeholder="0715897598"
+                      {...field}
+                      pattern="[0-9]{10}"
+                      maxLength={10}
+                      onChange={(e) => {
+                        handleContactChange(e);
+                        field.onChange(e);
+                      }}
+                      isCnomValid={isCnomValid && field.value.length === 10}
+                    />
+                    {isCnomValid && field.value.length === 10 && (
+                      <i className="bi bi-check-circle-fill text-success"></i>
+                    )}
+                  </>
                 )}
               />
               <Form.Text className="text-danger">
