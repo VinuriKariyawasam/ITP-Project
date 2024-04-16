@@ -12,8 +12,7 @@ function AddServiceReq() {
     date: null,
     name: "",
     issue: "",
-    request: "",
-    report: null
+    request: ""
   });
 
   const [errors, setErrors] = useState({});
