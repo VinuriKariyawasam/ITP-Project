@@ -38,6 +38,9 @@ const ConsultancyPage = () => {
         const data = await response.json();
         setConsultation(data.consultations);
         console.log(consultation);
+        // Calculate the count of feedback
+        const consultationCount = data.consultations.length;
+        console.log("Feedback count:", consultationCount);
       }catch (error) {
         console.error("Error fetching data:", error);
       }

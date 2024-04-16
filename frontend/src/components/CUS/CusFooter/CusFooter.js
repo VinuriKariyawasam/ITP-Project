@@ -66,7 +66,7 @@ function CusFooter() {
                 </a>
               </li>
               <li>
-                <a href="/" className="text-white">
+                <a href="http://localhost:3000/customer/cusaffairs/consultation" className="text-white">
                   Online Consultation
                 </a>
               </li>
@@ -91,7 +91,7 @@ function CusFooter() {
                 </a>
               </li>
               <li>
-                <a href="/" className="text-white">
+                <a href="http://localhost:3000/customer/cusaffairs/allfeedback" className="text-white">
                   Feedbacks
                 </a>
               </li>
