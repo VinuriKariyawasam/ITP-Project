@@ -98,11 +98,12 @@ function AddVehicle() {
           ? "Year should contain exactly 4 digits"
           : "";
         break;
-      case "contact":
-        errorMessage = !/^\d{10}$/.test(value)
-          ? "Contact No. should contain exactly 10 digits"
-          : "";
-        break;
+        case "contact":
+          errorMessage = !/^\d{10}$/.test(value)
+            ? "Contact No. should contain exactly 10 digits"
+            : "";
+          break;
+      
       default:
         break;
     }
@@ -180,12 +181,12 @@ function AddVehicle() {
     }
 
     if (!formData.brand.trim().length) {
-      newErrors.issue = "Issue is required";
+      newErrors.brand = "Brand is required";
       valid = false;
     }
 
     if (!formData.model.trim().length) {
-      newErrors.request = "Request is required";
+      newErrors.model = "Model is required";
       valid = false;
     }
 
@@ -285,16 +286,16 @@ function AddVehicle() {
           </div>
 
           <div className="mb-2">
-            <label htmlFor="contactNo">Contact No.</label>
+            <label htmlFor="contact">Contact No.</label>
             <input
               type="text"
 
               name="contact"
               value={formData.contact}
               onChange={handleChange}
-              className={`form-control ${errors.contac ? 'is-invalid' : ''}`}
+              className={`form-control ${errors.contact ? 'is-invalid' : ''}`}
             />
-            {errors.contactNo && <div className="invalid-feedback">{errors.contactNo}</div>}
+            {errors.contact && <div className="invalid-feedback">{errors.contact}</div>}
 
           </div>
 

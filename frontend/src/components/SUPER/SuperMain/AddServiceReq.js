@@ -143,6 +143,11 @@ function AddServiceReq() {
     navigate("/staff/supervisor/serviceReq");
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
+
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
       <div style={{ width: "50%", margin: "auto", marginTop: "-20px" }} className="bg-white rounded p-3">
@@ -203,10 +208,10 @@ function AddServiceReq() {
           
 
           <div className="d-flex justify-content-center mt-3">
-            <Button variant="primary" className="me-5">
-              <Link to="/staff/supervisor/serviceReq" className="text-light text-decoration-none">
-                Back
-              </Link>
+            
+              <Button variant="primary" className="me-5" onClick={goBack}>
+              Back
+           
             </Button>
             <Button type="submit" variant="success">Add service request</Button>
           </div>

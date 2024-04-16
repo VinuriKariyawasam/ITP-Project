@@ -8,7 +8,7 @@ const path = require('path');
 
 
 // Define your upload directory
-const uploadDirectory = path.join(__dirname, "..", "..", "uploads", "super");
+const uploadDirectory = path.join("uploads", "super");
 
 // Create the directory if it does not exist
 if (!fs.existsSync(uploadDirectory)) {
