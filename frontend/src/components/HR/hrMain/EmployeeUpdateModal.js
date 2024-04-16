@@ -94,7 +94,37 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
 
       // Optionally update the UI or perform any other actions after successful submission
       onUpdate(response.data); // Assuming onUpdate is a function to update the UI with the updated data
+      console.log("Data updated successfully:", response.data);
+      const result = response.data;
+      const email = result.employee.email;
 
+      // Send email with the PDF attachment and HTML content
+      const emailOptions = {
+        to: `${email}`, // Replace with recipient email address
+        subject: `Emplyee Registration Confirmation- Neo Tech Motors`,
+
+        html: `<p><b>Dear Trusted Partner</b></p>
+            <p>Your staff credential for Neo Tech organizations management system has been reset.</p>
+            <p>With your designation you will have the access to our management system with this email and your given password.If any issue please contact HR Division.</p>
+            <p>Hope you have fun while working. Login Here<a href="http://localhost:3000/staff/login">Neo Tech Staff</a></p>
+            <p>Thank You</p>
+            <p>Warm regards,</p>
+            <p><b><i>HR Division- Neo Tech Motors</i></b></p>`,
+      };
+
+      // Send a fetch request to the backend controller for sending email
+      await fetch("http://localhost:5000/api/finance/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: emailOptions.to,
+          subject: emailOptions.subject,
+          text: emailOptions.text,
+          html: emailOptions.html,
+        }),
+      });
       // Close the modal or redirect to another page after successful submission
       onHide(); // Close the modal
     } catch (error) {
