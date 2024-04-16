@@ -114,8 +114,8 @@ function MyFeedback() {
                     <img src={feedbackimg1} style={{ height: "200px" }} alt="..." />
                     <div className="card-body">
                       <h5 className="card-title">
-                        Service Type: {feedback.serviceType} <br /><br/>
-                        Specific Employee mentioned: {feedback.employee} <br/><br/>
+                        Service Type: {feedback.serviceType} <br />
+                        Specific Employee mentioned: {feedback.employee} <br/>
                         Feedback: {feedback.feedback} <br />
                       </h5>
                       <p className="card-text">
