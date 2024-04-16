@@ -10,6 +10,7 @@ const router = require("express").Router();
 router.use(bodyParser.json());
 //const StaffCheckAuth = require("../config/auth/staff-check-auth");
 //const NoPayHandler = require("../controllers/hr/noPayHandler");
+const NoPayController = require("../controllers/hr/noPay-controller");
 
 //--------Employee Routes-----------------
 // Validation rules for creating an employee
@@ -254,6 +255,14 @@ router.delete("/reviews/delete/:id", EmpReviewController.deleteEmpReviewById);
 // Route to delete an employee review by ID
 router.get("/emp-reviews", EmpReviewController.getEmpReviews);
 
-//router.get("/nopay", NoPayHandler.getAbsentEmployeesWithoutLeave);
+/*------No Pay Routes------*/
+// Route to no pay deduction for yesterday
+router.get("/nopay", NoPayController.getAbsentEmployeesWithoutLeave);
+
+// Route to get logs for today
+router.get("/nopaylogs/today", NoPayController.getLogsForToday);
+
+// Route to get all records
+router.get("/allnopaylogs", NoPayController.getAllRecords);
 
 module.exports = router;

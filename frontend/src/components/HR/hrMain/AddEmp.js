@@ -8,11 +8,25 @@ import ImageUpload from "../HrUtil/ImageUpload";
 import FileUpload from "../HrUtil/FileUpload";
 import { BsArrowLeft } from "react-icons/bs";
 import { FaCheckCircle } from "react-icons/fa";
+import { differenceInYears, isBefore, isAfter, format } from "date-fns";
+import { BiCheckCircle, BiHide, BiShow } from "react-icons/bi";
 
 function AddEmp() {
   const [errorMessage, setErrorMessage] = useState("");
   const [designations, setDesignations] = useState([]);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  //to redirect after success
+  const navigate = useNavigate();
+  // State to track selected position
+  const [selectedPosition, setSelectedPosition] = useState("");
+  //for date picker
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const [isFirstNameValid, setIsFirstNameValid] = useState(false);
+  const [isLastNameValid, setIsLastNameValid] = useState(false);
 
   //get designations
   useEffect(() => {
@@ -34,15 +48,6 @@ function AddEmp() {
     fetchDesignations();
   }, []);
 
-  //to redirect after success
-  const navigate = useNavigate();
-
-  // State to track selected position
-  const [selectedPosition, setSelectedPosition] = useState("");
-
-  //for date picker
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -55,8 +60,10 @@ function AddEmp() {
     setValue,
     formState: { errors },
     getValues,
+    trigger,
   } = useForm();
 
+  //Submit function
   const onSubmit = async (data) => {
     if (data.password !== data.confirmPassword) {
       // The passwords do not match
@@ -97,6 +104,35 @@ function AddEmp() {
         const result = await response.json();
         console.log("Data submitted successfully:", result);
         alert("Employee Registered Successfully!");
+        const email = result.email;
+
+        // Send email with the PDF attachment and HTML content
+        const emailOptions = {
+          to: `${email}`, // Replace with recipient email address
+          subject: `Emplyee Registration Confirmation- Neo Tech Motors`,
+
+          html: `<p><b>Dear Trusted Partner</b></p>
+              <p>We're delighted to inform you that your you are officailly registred employee at our organization.</p>
+              <p>With your designation you will have the access to our management system with this email and your given password.</p>
+              <p>Hope you have fun while working. Login Here<a href="http://localhost:3000/staff/login">Neo Tech Staff</a></p>
+              <p>Thank You</p>
+              <p>Warm regards,</p>
+              <p><b><i>HR Division- Neo Tech Motors</i></b></p>`,
+        };
+
+        // Send a fetch request to the backend controller for sending email
+        await fetch("http://localhost:5000/api/finance/email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            to: emailOptions.to,
+            subject: emailOptions.subject,
+            text: emailOptions.text,
+            html: emailOptions.html,
+          }),
+        });
         // Redirect to the specified URL after successful submission
         navigate("/staff/hr/employee");
       } else if (response.status === 422) {
@@ -112,13 +148,9 @@ function AddEmp() {
       const result = await response.json();
       console.log("Data submitted successfully:", result);
 
-
       alert("Employee Registered Succesfully!");
 
       // app emp to employee benefits
-
-      
-
 
       // Redirect to the specified URL after successful submission
       navigate("/hr/employee");
@@ -160,6 +192,97 @@ function AddEmp() {
     password: null,
   };
 
+  /*------extra validation---*/
+  // Custom validation function for the first name and last name fields
+  const validateName = (value) => {
+    if (!value) return "This field is required";
+    if (!/^[A-Za-z]{3,}$/.test(value))
+      return "Please enter a valid name (minimum 3 characters, letters only)";
+    return true;
+  };
+
+  // Custom validation rule to check if the selected birthdate is older than 18 years old
+  const validateBirthDate = (selectedDate) => {
+    if (!selectedDate) return "Birth Date is required";
+    const currentDate = new Date();
+    const minDate = new Date(
+      currentDate.getFullYear() - 18,
+      currentDate.getMonth(),
+      currentDate.getDate()
+    ); // 18 years ago from today
+    console.log("Selected Date:", minDate, selectedDate);
+    if (!isBefore(selectedDate, minDate)) {
+      return "You must be at least 18 years old";
+    }
+    return true;
+  };
+
+  // Custom validation for NIC
+  const validateNIC = (value) => {
+    console.log("NIC:", value);
+    if (!value) return "NIC is required";
+    const nicRegex = /^(?:\d{9}[vV]|\d{12})$/; // Matches 9 digits followed by 'v' or 'V', or 12 digits
+    if (!nicRegex.test(value)) return "Invalid NIC format";
+    return true;
+  };
+
+  // Custom validation rule to check if the selected start date is not a future date
+  const validateStartDate = (selectedDate) => {
+    if (!selectedDate) return "Start Date is required";
+
+    const currentDate = new Date();
+    if (isAfter(selectedDate, currentDate)) {
+      return "Start Date cannot be a future date.";
+    }
+
+    return true;
+  };
+
+  // Custom validation rule for the bank field
+  const validateBank = (value) => {
+    if (!value) return "Bank is required";
+    if (value.length < 3) return "Bank name should be at least 3 characters";
+    if (!/^[a-zA-Z\s]*$/.test(value))
+      return "Bank name should contain only letters and spaces";
+    return true;
+  };
+
+  // Custom validation rule for the branch field
+  const validateBranch = (value) => {
+    if (!value) return "Branch is required";
+    if (value.length < 5) return "Branch name should be at least 5 characters";
+    if (!/^[a-zA-Z\s]*$/.test(value))
+      return "Branch name should contain only letters and spaces";
+    return true;
+  };
+
+  // Custom validation rule for the account field
+  const validateAccount = (value) => {
+    if (!value) return "Account No is required";
+    if (!/^\d{6,15}$/.test(value))
+      return "Account No should contain only numbers with a length between 6 and 15";
+    return true;
+  };
+
+  //validate email
+  const handleEmailChange = (value) => {
+    const isValid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value);
+    setIsEmailValid(isValid);
+  };
+
+  //validate password
+  const isPasswordValid = (password) => {
+    return /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$/.test(
+      password
+    );
+  };
+
+  //validate confirm password
+  const handleConfirmPasswordChange = (value) => {
+    const isValid = value === getValues("password");
+    setIsConfirmPasswordValid(isValid);
+  };
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <h3>
@@ -180,9 +303,18 @@ function AddEmp() {
           <Controller
             name="firstName"
             control={control}
-            rules={{ required: "First Name is required" }}
+            rules={{
+              required: "First Name is required",
+              validate: validateName,
+            }}
             render={({ field }) => (
-              <Form.Control placeholder="Sahan" {...field} />
+              <>
+                <Form.Control placeholder="Sahan" {...field} />
+
+                {!errors.firstName && field.value && (
+                  <i className="bi bi-check-circle-fill text-success"></i>
+                )}
+              </>
             )}
           />
           <Form.Text className="text-danger">
@@ -196,9 +328,18 @@ function AddEmp() {
           <Controller
             name="lastName"
             control={control}
-            rules={{ required: "Last Name is required" }}
+            rules={{
+              required: "Last Name is required",
+              validate: validateName,
+            }}
             render={({ field }) => (
-              <Form.Control placeholder="Siriwardana" {...field} />
+              <>
+                <Form.Control placeholder="Siriwardana" {...field} />
+
+                {!errors.lastName && field.value && (
+                  <i className="bi bi-check-circle-fill text-success"></i>
+                )}
+              </>
             )}
           />
           <Form.Text className="text-danger">
@@ -217,13 +358,25 @@ function AddEmp() {
             <Controller
               name="birthDate"
               control={control}
-              rules={{ required: "Birth Date is required" }}
+              rules={{
+                required: "Birth Date is required",
+                validate: validateBirthDate,
+              }}
               render={({ field }) => (
-                <DatePicker
-                  selected={field.value || null}
-                  onChange={(date) => field.onChange(date)}
-                  className="form-control mx-2"
-                />
+                <>
+                  <DatePicker
+                    selected={field.value || null}
+                    onChange={(date) => {
+                      field.onChange(date); // Trigger onChange of react-hook-form
+                      trigger("birthDate"); // Trigger validation for 'birthDate' field
+                    }}
+                    className="form-control mx-2"
+                  />
+
+                  {!errors.birthDate && field.value && (
+                    <i className="bi bi-check-circle-fill text-success"></i>
+                  )}
+                </>
               )}
             />
           </Row>
@@ -238,16 +391,27 @@ function AddEmp() {
           <Controller
             name="nic"
             control={control}
-            rules={{ required: "NIC is required" }}
+            rules={{ required: "NIC is required", validate: validateNIC }}
             render={({ field }) => (
-              <Form.Control
-                placeholder="791161645v"
-                {...field}
-                maxLength="12"
-              />
+              <>
+                <Form.Control
+                  placeholder="791161645v"
+                  {...field}
+                  maxLength="12"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    trigger("nic"); // Trigger validation for 'nic' field
+                  }}
+                />
+                {errors.nic && (
+                  <span className="text-danger">{errors.nic.message}</span>
+                )}
+                {!errors.nic && field.value && (
+                  <i className="bi bi-check-circle-fill text-success"></i>
+                )}
+              </>
             )}
           />
-          <Form.Text className="text-danger">{errors.nic?.message}</Form.Text>
         </Form.Group>
 
         {/* Contact No. */}
@@ -256,16 +420,31 @@ function AddEmp() {
           <Controller
             name="contact"
             control={control}
-            rules={{ required: "Contact No. is required" }}
+            rules={{
+              required: "Contact No. is required",
+              pattern: {
+                value: /^[0-9]{10}$/, // Regex pattern for 10-digit numbers
+                message: "Contact No. must be a 10-digit number",
+              },
+            }}
             render={({ field }) => (
-              <Form.Control
-                type="tel"
-                placeholder="0715897598"
-                {...field}
-                pattern="[0-9]{10}"
-                maxlength="10"
-                minLength="10"
-              />
+              <>
+                <Form.Control
+                  type="tel"
+                  placeholder="0715897598"
+                  {...field}
+                  maxLength="10"
+                  minLength="10"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    trigger("contact"); // Trigger validation for 'contact' field
+                  }}
+                />
+
+                {!errors.contact && field.value && (
+                  <i className="bi bi-check-circle-fill text-success"></i>
+                )}
+              </>
             )}
           />
           <Form.Text className="text-danger">
@@ -280,9 +459,21 @@ function AddEmp() {
         <Controller
           name="address"
           control={control}
-          rules={{ required: "Address is required" }}
+          rules={{
+            required: "Address is required",
+            minLength: {
+              value: 5,
+              message: "Address must be at least 5 characters long",
+            },
+          }}
           render={({ field }) => (
-            <Form.Control placeholder="1234 Main St" {...field} />
+            <>
+              <Form.Control placeholder="1234 Main St" {...field} />
+
+              {!errors.address && field.value && field.value.length >= 5 && (
+                <i className="bi bi-check-circle-fill text-success"></i>
+              )}
+            </>
           )}
         />
         <Form.Text className="text-danger">{errors.address?.message}</Form.Text>
@@ -346,13 +537,26 @@ function AddEmp() {
             <Controller
               name="startDate"
               control={control}
-              rules={{ required: "Start Date is required" }}
+              rules={{
+                required: "Start Date is required",
+                validate: validateStartDate,
+              }}
               render={({ field }) => (
-                <DatePicker
-                  selected={field.value}
-                  onChange={(date) => field.onChange(date)}
-                  className="form-control mx-2"
-                />
+                <>
+                  <DatePicker
+                    selected={field.value}
+                    onChange={(date) => field.onChange(date)}
+                    className="form-control mx-2"
+                  />
+                  {errors.startDate && (
+                    <span className="text-danger">
+                      {errors.startDate.message}
+                    </span>
+                  )}
+                  {!errors.startDate && isBefore(field.value, new Date()) && (
+                    <i className="bi bi-check-circle-fill text-success"></i>
+                  )}
+                </>
               )}
             />
           </Row>
@@ -369,14 +573,26 @@ function AddEmp() {
             control={control}
             rules={{ required: "Position is required" }}
             render={({ field }) => (
-              <Form.Select {...field}>
-                <option value="">Choose...</option>
-                {designations.map((designation) => (
-                  <option key={designation._id} value={designation.position}>
-                    {designation.position}
-                  </option>
-                ))}
-              </Form.Select>
+              <>
+                <Form.Select
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    setSelectedPosition(e.target.value); // Update the state here
+                  }}
+                >
+                  <option value="">Choose...</option>
+                  {designations.map((designation) => (
+                    <option key={designation._id} value={designation.position}>
+                      {designation.position}
+                    </option>
+                  ))}
+                </Form.Select>
+
+                {!errors.position && field.value && (
+                  <i className="bi bi-check-circle-fill text-success"></i>
+                )}
+              </>
             )}
           />
           <Form.Text className="text-danger">
@@ -393,9 +609,14 @@ function AddEmp() {
           <Controller
             name="bank"
             control={control}
-            rules={{ required: "Bank is required" }}
+            rules={{ required: "Bank is required", validate: validateBank }}
             render={({ field }) => (
-              <Form.Control placeholder="Sampath Bank" {...field} />
+              <>
+                <Form.Control placeholder="Sampath Bank" {...field} />
+                {!errors.bank && field.value && (
+                  <i className="bi bi-check-circle-fill text-success"></i>
+                )}
+              </>
             )}
           />
           <Form.Text className="text-danger">{errors.bank?.message}</Form.Text>
@@ -407,9 +628,15 @@ function AddEmp() {
           <Controller
             name="branch"
             control={control}
-            rules={{ required: "Branch is required" }}
+            rules={{ required: "Branch is required", validate: validateBranch }}
             render={({ field }) => (
-              <Form.Control placeholder="Maharagama" {...field} />
+              <>
+                <Form.Control placeholder="Maharagama" {...field} />
+
+                {!errors.branch && field.value && (
+                  <i className="bi bi-check-circle-fill text-success"></i>
+                )}
+              </>
             )}
           />
           <Form.Text className="text-danger">
@@ -423,9 +650,23 @@ function AddEmp() {
           <Controller
             name="account"
             control={control}
-            rules={{ required: "Account No is required" }}
+            rules={{
+              required: "Account No is required",
+              validate: validateAccount,
+            }}
             render={({ field }) => (
-              <Form.Control type="number" placeholder="200045879" {...field} />
+              <>
+                <Form.Control
+                  type="number"
+                  placeholder="200045879"
+                  {...field}
+                  maxLength={16}
+                />
+
+                {!errors.account && field.value && (
+                  <i className="bi bi-check-circle-fill text-success"></i>
+                )}
+              </>
             )}
           />
           <Form.Text className="text-danger">
@@ -503,11 +744,23 @@ function AddEmp() {
                 },
               }}
               render={({ field }) => (
-                <Form.Control
-                  type="email"
-                  placeholder="Enter email"
-                  {...field}
-                />
+                <>
+                  <Form.Control
+                    type="email"
+                    placeholder="Enter email"
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      handleEmailChange(e.target.value);
+                    }}
+                  />
+                  {isEmailValid && (
+                    <i
+                      className="bi bi-check-circle-fill text-success"
+                      style={{ marginLeft: "10px" }}
+                    ></i>
+                  )}
+                </>
               )}
             />
             <Form.Text className="text-danger">
@@ -523,20 +776,34 @@ function AddEmp() {
               control={control}
               rules={{
                 required: "Password is required",
-                pattern: {
-                  value:
-                    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$/,
-                  message:
-                    "Password must have at least one uppercase letter, one number, one symbol, and be at least 8 characters long",
-                },
               }}
               render={({ field }) => (
-                <Form.Control
-                  type="password"
-                  placeholder="Password"
-                  {...field}
-                  pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_+=])[A-Za-z\d!@#$%^&*()-_+=]{8,}$"
-                />
+                <>
+                  <Form.Control
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    {...field}
+                  />
+
+                  {showPassword ? (
+                    <BiHide
+                      onClick={() => setShowPassword(false)}
+                      className="text-primary"
+                    />
+                  ) : (
+                    <BiShow
+                      onClick={() => setShowPassword(true)}
+                      className="text-primary"
+                    />
+                  )}
+
+                  {field.value && isPasswordValid(field.value) && (
+                    <i
+                      className="bi bi-check-circle-fill text-success"
+                      style={{ marginLeft: "10px" }}
+                    ></i>
+                  )}
+                </>
               )}
             />
             <Form.Text className="text-danger">
@@ -559,14 +826,38 @@ function AddEmp() {
                 },
               }}
               render={({ field }) => (
-                <Form.Control
-                  type="password"
-                  placeholder="Confirm Password"
-                  {...field}
-                />
+                <div style={{ position: "relative" }}>
+                  <Form.Control
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm Password"
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      handleConfirmPasswordChange(e.target.value);
+                    }}
+                  />
+                  {showConfirmPassword ? (
+                    <BiHide
+                      onClick={() => setShowConfirmPassword(false)}
+                      className="text-primary"
+                    />
+                  ) : (
+                    <BiShow
+                      onClick={() => setShowConfirmPassword(true)}
+                      className="text-primary"
+                    />
+                  )}
+
+                  {field.value && isPasswordValid(field.value) && (
+                    <i
+                      className="bi bi-check-circle-fill text-success"
+                      style={{ marginLeft: "10px" }}
+                    ></i>
+                  )}
+                </div>
               )}
             />
-            {isConfirmPasswordValid && <FaCheckCircle color="green" />}
+
             <Form.Text className="text-danger">
               {errors.confirmPassword?.message}
             </Form.Text>

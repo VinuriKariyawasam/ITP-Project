@@ -11,7 +11,7 @@ const jwt = require("jsonwebtoken");
 const AttendanceModel = require("../../models/hr/attendanceModel");
 const defaultMaleAvatar = "/uploads/hr/DefaultMaleAvatar.jpg";
 const defaultFemaleAvatar = "/uploads/hr/DefaultFemaleAvatar.png";
-const empBenefitsSchema=require('../../models/finance/empbenefitsModel')
+const empBenefitsSchema = require("../../models/finance/empbenefitsModel");
 
 // Specify the new upload directory
 // Specify the relative upload directory
@@ -161,14 +161,12 @@ class EmployeeController {
         const savedEmployee = await newEmployee.save();
 
         //create an Employee Benefits profile for the new employee (For Finance Module)
-            const BenefitProfile = new empBenefitsSchema();
-            BenefitProfile.employeeid = employeeId;
-            BenefitProfile.employeeName = `${savedEmployee.firstName} ${savedEmployee.lastName}`;
-            BenefitProfile.updatedDate = new Date().toISOString().split("T")[0];
+        const BenefitProfile = new empBenefitsSchema();
+        BenefitProfile.employeeid = employeeId;
+        BenefitProfile.employeeName = `${savedEmployee.firstName} ${savedEmployee.lastName}`;
+        BenefitProfile.updatedDate = new Date().toISOString().split("T")[0];
 
-            await BenefitProfile.save();
-            
-
+        await BenefitProfile.save();
 
         // Create a new salary record
         const position = newEmployee.position;
@@ -212,10 +210,6 @@ class EmployeeController {
         newSalary.account = account;
         // Save the new salary record
         await newSalary.save();
-
-
-
-        
 
         res.status(201).json(savedEmployee);
       });
@@ -530,9 +524,9 @@ class EmployeeController {
         return res.status(400).json({ message: "Password is required." });
       }
 
-      await user.save();
+      const employee = await user.save();
 
-      return res.status(200).json({ message: "Password reset successfully." });
+      return res.status(200).json(employee);
     } catch (error) {
       console.error("Error resetting password:", error);
       return res.status(500).json({ message: "Internal server error." });
