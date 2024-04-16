@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 
-const NotFoundPage = () => {
+const NotFoundPage = (props) => {
   return (
     <Container
       fluid
@@ -14,7 +14,7 @@ const NotFoundPage = () => {
             <span className="text-danger">Opps!</span> Page not found.
           </p>
           <p className="lead">The page you’re looking for doesn’t exist.</p>
-          <Button href="index.html" variant="primary">
+          <Button href={props.page} variant="primary">
             Go Home
           </Button>
         </Col>
