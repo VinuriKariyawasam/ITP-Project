@@ -99,6 +99,7 @@ const ServiceOrders = () => {
               </div>
             </Col>
           </Row>
+          <br></br>
           <Row>
             <Col>
               <div>

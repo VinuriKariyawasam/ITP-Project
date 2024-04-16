@@ -46,24 +46,22 @@ exports.deletebreakdownreq = async (req,res)=>{
 
 exports.updatebreakdownreq = async (req, res) => {
     const { id } = req.params;
-    const {cusName,cusEmail,vehicleNo,reqLocation,issue,contactNo}= req.body
+    const {technician}= req.body
 
     try {
-        if(!cusName||!cusEmail||!vehicleNo||!reqLocation||!issue||!contactNo){
-            return res.status(400).json({message:'All Fields Required'})
+        if(!technician){
+            return res.status(400).json({message:'Technician is Required'})
         }
+        const breakdUpdate = await BreakdownRequestsSchema.findById(id);
+        if (!breakdUpdate) {
+            return res.status(404).json({ message: 'Breakdown Request not found' });
+        }
+        breakdUpdate.technician = technician;
 
-        breakdUpdate.cusName = cusName;
-        breakdUpdate.cusEmail = cusEmail;
-        breakdUpdate.vehicleNo = vehicleNo;
-        breakdUpdate.reqLocation = reqLocation;
-        breakdUpdate.issue = issue;
-        breakdUpdate.contactNo = contactNo;
-
-        await breakdUpdate.save();
+     await breakdUpdate.save();
         res.status(200).json({ message: 'Request Updated successfully' });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Server Error' });
     }
-
 }

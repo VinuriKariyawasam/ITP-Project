@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, useParams} from "react-router-dom";
+import {CusAuthContext} from "../../../../context/cus-authcontext";
+import { useContext } from "react";
 
 import Form from 'react-bootstrap/Form'
 import Container from 'react-bootstrap/Container';
@@ -16,6 +18,8 @@ import FileUpload from "../CUS_CAM/CUS_CAM_util/FileUpload";
 
 function OnlineConsultation(){
 
+  const cusAuth = useContext(CusAuthContext);
+  let id = cusAuth.userId;
   const navigate = useNavigate();
  // const { id } = useParams();
   const [Issues, setIssues] = useState([]);
@@ -31,6 +35,7 @@ function OnlineConsultation(){
     formState: { errors },
   } = useForm();
 
+
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
@@ -39,6 +44,8 @@ function OnlineConsultation(){
        Object.keys(data).forEach((key) => {
         formData.append(key, data[key]);
       });
+
+      formData.append("userId",cusAuth.userId);
 
       if (uploadedFile) {
         formData.append("files", uploadedFile);
@@ -56,10 +63,11 @@ function OnlineConsultation(){
         {
           method: "POST",
           body: formData,
-        }
+        },
+        alert("Consultation created Successfully!"),
+        navigate("/customer")
+        //window.location.reload()
       );
-      alert("Consultation created Successfully!");
-      window.location.reload()
       if (response.status === 201) {
         // Feedback created successfully
         const result = await response.json();
@@ -121,8 +129,13 @@ function OnlineConsultation(){
     fetchConsultations();
 },  []);
 
+useEffect(() => {
+  if(cusAuth.userId){
+    fetchConsultationById(cusAuth.userId);
+  }
+},[cusAuth.userId]);
 //get consultation by Id
-const id = "661b58073ea6d30a9cf8d6e4";
+//let userId = cusAuth.userId;
     const fetchConsultationById = async (id) => {
       try{
         const response = await fetch(
@@ -140,9 +153,6 @@ const id = "661b58073ea6d30a9cf8d6e4";
         return null;
       }
     };
-    useEffect(() => {
-      fetchConsultationById(id);   
-    }, [id]);
 
      /*----Parts regarding rendering employee personal details-------*/
   console.log("Rendering modal with consultation data:", consultation);
@@ -161,11 +171,10 @@ const id = "661b58073ea6d30a9cf8d6e4";
 
     return(
     <div>
-     <main style={{marginLeft:"20px"}}>
-     <PageTitle_cam path="consultation" title="OnlineConsultation" />
-      <Card style={{height:"100%"}}>
+     <main style={{marginLeft:"50px",marginTop:"20px"}}>
+      <Card style={{height:"100%",width:"96%"}}>
         <Card.Body>
-        <h2>Have a Question? Ask Us!</h2>
+        <PageTitle_cam path="consultation" title="Have a Question? Ask Us!" />
         <Container>
          <Row>
           <Col>
@@ -224,7 +233,6 @@ const id = "661b58073ea6d30a9cf8d6e4";
              <Row className="mb-3">
                <Form.Group style={{marginTop: "3px"}} controlId="formFileDocuments">
                  <Form.Label>Attach Files</Form.Label>
-                 <Form.Label>Attach Files</Form.Label>
           <FileUpload
             id="files"
             onInput={fileInputHandler}
@@ -242,12 +250,13 @@ const id = "661b58073ea6d30a9cf8d6e4";
          </Col>
          <Col> 
          <Form>
-          <Accordion defaultActiveKey="0">
-                      <Accordion.Item key={_id} eventKey={id.toString()} style={{marginTop:"5px"}}>
+         <Accordion defaultActiveKey="0">
+          {consultation.map((consultation,index) =>(
+                      <Accordion.Item key={index} eventKey={index.toString()} style={{marginTop:"5px"}}>
                         <Accordion.Header style={{fontWeight:"bold"}}>
-                          Vehicle Type : {vehicleType}<br></br>
-                          Component :   {component}<br></br>
-                          Issue :       {issue}<br></br>
+                          Vehicle Type : {consultation.vehicleType}<br></br>
+                          Component :   {consultation.component}<br></br>
+                          Issue :       {consultation.issue}<br></br>
                         </Accordion.Header>
                         <Accordion.Body>
                         <Row className="mb-3">
@@ -258,12 +267,14 @@ const id = "661b58073ea6d30a9cf8d6e4";
                    type="textarea"
                    placeholder="Answer Pending..."
                    rows={4}
+                   value={consultation.solution}
                    readOnly
                 />
                </Form.Group>
           </Row>
           </Accordion.Body>
           </Accordion.Item>
+          ))}
             </Accordion>
           </Form> 
         </Col>

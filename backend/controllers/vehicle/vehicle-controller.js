@@ -16,6 +16,7 @@ exports.createVehicle = async (req, res) => {
   }
 };
 
+
 exports.getVehicles = async (req, res) => {
   try {
     let vehicles = await VehicleModel.find();

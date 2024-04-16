@@ -4,7 +4,9 @@ import PageTitle from "./PageTitle";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
+import Card from "react-bootstrap/Card";
 import { CusAuthContext } from "../../../context/cus-authcontext";
+import html2pdf from "html2pdf.js";
 
 const Incomes = () => {
   const navigate = useNavigate();
@@ -12,12 +14,17 @@ const Incomes = () => {
   const [incomes, setIncomes] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [incomeToDelete, setIncomeToDelete] = useState(null);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [filterDate, setFilterDate] = useState("");
+  const [filteredIncomes, setFilteredIncomes] = useState([]);
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
 
   useEffect(() => {
-    
-    fetch("http://localhost:5000/api/finance/incomes", {
-      
-    })
+    fetchIncomes();
+  }, []);
+
+  const fetchIncomes = () => {
+    fetch("http://localhost:5000/api/finance/incomes")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -26,12 +33,23 @@ const Incomes = () => {
       })
       .then((data) => {
         setIncomes(data);
+        calculateTotalIncome(data);
       })
       .catch((error) => {
         console.error("Error fetching incomes:", error);
       });
-  }, []);
+  };
 
+  const calculateTotalIncome = (incomes) => {
+    const currentDate = new Date().toISOString().split("T")[0];
+    let total = 0;
+    incomes.forEach((income) => {
+      if (formatDate(income.date) === currentDate) {
+        total += income.amount;
+      }
+    });
+    setTotalIncome(total);
+  };
 
   const handleAddIncomeClick = () => {
     navigate("add-income");
@@ -59,6 +77,7 @@ const Incomes = () => {
       .then(() => {
         setIncomes(incomes.filter((inc) => inc._id !== incomeToDelete));
         setShowDeleteModal(false);
+        calculateTotalIncome(incomes.filter((inc) => inc._id !== incomeToDelete));
       })
       .catch((error) => console.error("Error deleting income:", error));
   };
@@ -71,30 +90,57 @@ const Incomes = () => {
     return `IN${(index + 1).toString().padStart(4, "0")}`;
   };
 
+  const handleFilterChange = (e) => {
+    setFilterDate(e.target.value);
+    if (e.target.value === "") {
+      setFilteredIncomes([]);
+      calculateTotalIncome(incomes);
+    } else {
+      const filtered = incomes.filter((income) => formatDate(income.date) === e.target.value);
+      setFilteredIncomes(filtered);
+      calculateTotalIncome(filtered);
+    }
+  };
+
+  const handleDownloadPDF = () => {
+    setDownloadingPDF(true);
+    const element = document.getElementById("income-table");
+    html2pdf().from(element).save().then(() => setDownloadingPDF(false));
+  };
+
   return (
     <main id="main" className="main">
-      <PageTitle path="Finance / Incomes" title="Incomes" />
+      <PageTitle path="Finance / Incomes & Funds" title="Incomes & Funds " />
       <div>
-        <Button variant="primary" onClick={handleAddIncomeClick}>
-          Add Income
+        <Button variant="primary" onClick={handleAddIncomeClick} disabled={downloadingPDF}>
+          Add Funds
         </Button>
-        <br />
-        <Table striped bordered hover>
+        <br /><br />
+        <input type="date" value={filterDate} onChange={handleFilterChange} disabled={downloadingPDF} />
+        <br /><br />
+        <Card>
+          <Card.Body>
+            <Card.Title>Total Income for the Day</Card.Title>
+            <Card.Text>Rs. {totalIncome}</Card.Text>
+          </Card.Body>
+        </Card>
+        <br /><br />
+        <Table id="income-table" striped bordered hover>
           <thead>
             <tr>
-              <th>Income ID</th>
+              <th>Income/Fund ID</th>
               <th>Title</th>
-              <th>Service Invoice ID</th>
+              <th>Reference</th>
               <th>Amount</th>
               <th>Type</th>
               <th>Date</th>
               <th>Time</th>
               <th>Status</th>
-              <th>Actions</th>
+              {!downloadingPDF && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
-            {incomes.map((income, index) => (
+            {(filterDate !== "" ? filteredIncomes : incomes).map((income, index) => (
               <tr key={income._id}>
                 <td>{generateIncomeID(index)}</td>
                 <td>{income.title}</td>
@@ -104,18 +150,23 @@ const Incomes = () => {
                 <td>{formatDate(income.date)}</td>
                 <td>{income.time}</td>
                 <td>{income.status}</td>
-                <td>
-                  <Button variant="dark" onClick={() => handleEditIncome(income._id)}>
-                    Edit
-                  </Button>{" "}
-                  <Button variant="danger" onClick={() => handleDeleteIncome(income._id)}>
-                    Delete
-                  </Button>{" "}
-                </td>
+                {!downloadingPDF && (
+                  <td>
+                    <Button variant="dark" onClick={() => handleEditIncome(income._id)} disabled={downloadingPDF}>
+                      Edit
+                    </Button>{" "}
+                    <Button variant="danger" onClick={() => handleDeleteIncome(income._id)} disabled={downloadingPDF}>
+                      Delete
+                    </Button>{" "}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
         </Table>
+        <Button variant="success" onClick={handleDownloadPDF} disabled={downloadingPDF}>
+          Download as PDF
+        </Button>
       </div>
       {/* Delete confirmation modal */}
       <Modal show={showDeleteModal} onHide={handleCloseModal}>
@@ -124,10 +175,10 @@ const Incomes = () => {
         </Modal.Header>
         <Modal.Body>Are you sure you want to delete this income?</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
+          <Button variant="secondary" onClick={handleCloseModal} disabled={downloadingPDF}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={confirmDeleteIncome}>
+          <Button variant="danger" onClick={confirmDeleteIncome} disabled={downloadingPDF}>
             Delete
           </Button>
         </Modal.Footer>
