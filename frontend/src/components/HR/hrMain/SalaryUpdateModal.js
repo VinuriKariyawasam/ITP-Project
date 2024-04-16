@@ -55,24 +55,38 @@ function UpdateSalaryModal({ show, handleClose, salaryDetails, handleUpdate }) {
           <Form.Group controlId="formBasicBasicSalary">
             <Form.Label>Basic Salary</Form.Label>
             <Form.Control
-              type="number"
+              type="text"
               placeholder="Enter basic salary"
               name="basicSalary"
               value={updatedData.basicSalary}
               onChange={handleInputChange}
               isInvalid={validationError && !updatedData.basicSalary}
+              isValid={updatedData.basicSalary && !validationError}
             />
+            {updatedData.basicSalary && !validationError && (
+              <i className="bi bi-check-circle-fill text-success"></i>
+            )}
+            <Form.Control.Feedback type="invalid">
+              Enter a valid positive float number with up to two decimal places.
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formBasicAllowance">
             <Form.Label>Allowance</Form.Label>
             <Form.Control
-              type="number"
+              type="text"
               placeholder="Enter allowance"
               name="allowance"
               value={updatedData.allowance}
               onChange={handleInputChange}
               isInvalid={validationError && !updatedData.allowance}
+              isValid={updatedData.allowance && !validationError}
             />
+            {updatedData.allowance && !validationError && (
+              <i className="bi bi-check-circle-fill text-success"></i>
+            )}
+            <Form.Control.Feedback type="invalid">
+              Enter a valid positive float number with up to two decimal places.
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group controlId="formBasicBank">
@@ -84,7 +98,15 @@ function UpdateSalaryModal({ show, handleClose, salaryDetails, handleUpdate }) {
               value={updatedData.bank}
               onChange={handleInputChange}
               isInvalid={validationError && !updatedData.bank}
+              isValid={updatedData.bank && !validationError}
             />
+            {updatedData.bank && !validationError && (
+              <i className="bi bi-check-circle-fill text-success"></i>
+            )}
+            <Form.Control.Feedback type="invalid">
+              Enter a valid bank name with a minimum length of 3 characters and
+              only letters.
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formBasicBranch">
             <Form.Label>Branch</Form.Label>
@@ -95,7 +117,15 @@ function UpdateSalaryModal({ show, handleClose, salaryDetails, handleUpdate }) {
               value={updatedData.branch}
               onChange={handleInputChange}
               isInvalid={validationError && !updatedData.branch}
+              isValid={updatedData.branch && !validationError}
             />
+            {updatedData.branch && !validationError && (
+              <i className="bi bi-check-circle-fill text-success"></i>
+            )}
+            <Form.Control.Feedback type="invalid">
+              Enter a valid branch name with a minimum length of 3 characters
+              and only letters.
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formBasicAccount">
             <Form.Label>Account Number</Form.Label>
