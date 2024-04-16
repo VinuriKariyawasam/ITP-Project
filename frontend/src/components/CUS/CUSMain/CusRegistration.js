@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { CusAuthContext } from "../../../context/cus-authcontext";
 import Card from "react-bootstrap/Card";
-import Form from 'react-bootstrap/Form'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Button from "react-bootstrap/Button";
+import { Form, Col, Alert ,InputGroup} from 'react-bootstrap';
+import { BsExclamationTriangleFill } from 'react-icons/bs';
+import { BsFillEyeFill } from 'react-icons/bs';
 
 import cusimage1 from '../../../../src/images/CUS/CustomerImg/cusimage1.png';
 import cusimage2 from '../../../../src/images/CUS/CustomerImg/cusimage2.jpg';
@@ -27,15 +28,112 @@ function CusRegistration(){
   });
 
   const [Name, setName] = useState("");
-  const [contact, setcontact] = useState("");
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
+  const [showWarning, setShowWarning] = useState(false);
+  const [contact, setContact] = useState("");
+  const [isValid, setIsValid] = useState(true);
+  const [email, setEmail] = useState("");
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [password, setPassword] = useState('');
+  const [warnings, setWarnings] = useState({
+    capitalLetter: false,
+    simpleLetter: false,
+    specialCharacter: false,
+    number: false,
+    minLength: false
+});
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [address, setaddress] = useState("");
+
+  //validations
+  const handleChangeName = (e) => {
+    const enteredValue = e.target.value;
+    // Regular expression to check if the entered value contains any numbers
+    const containsNumbers = /\d/.test(enteredValue);
+    if (!containsNumbers) {
+        // If the entered value does not contain numbers, update the state
+        setName(enteredValue);
+    }
+};
+
+  const handleChangeEmail = (e) => {
+    const enteredEmail = e.target.value;
+    setEmail(enteredEmail);
+    // Regular expression to check email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValid = emailRegex.test(enteredEmail);
+    setIsValidEmail(isValid);
+};
+
+const handleChangeContact = (e) => {
+  const enteredContact = e.target.value;
+  // Remove non-numeric characters from enteredContact
+  const numericValue = enteredContact.replace(/\D/g, '');
+  // Check if numericValue has exactly 10 digits
+  const isValidFormat = numericValue.length === 10;
+  // Update contact state with formatted value
+  setContact(numericValue);
+  // Update validation state
+  setIsValid(isValidFormat);
+};
+
+const handleChangePassword = (e) => {
+  const newPassword = e.target.value;
+  setPassword(newPassword);
+  
+  // Check for capital letter
+  const hasCapital = /[A-Z]/.test(newPassword);
+  // Check for simple letter
+  const hasSimple = /[a-z]/.test(newPassword);
+  // Check for special character
+  const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(newPassword);
+  // Check for number
+  const hasNumber = /[0-9]/.test(newPassword);
+  // Check for minimum length
+  const hasMinLength = newPassword.length >= 8;
+
+  // Update warning state
+  setWarnings({
+      capitalLetter: !hasCapital,
+      simpleLetter: !hasSimple,
+      specialCharacter: !hasSpecial,
+      number: !hasNumber,
+      minLength: !hasMinLength
+  });
+  // Check if passwords match
+  setPasswordMismatch(newPassword !== confirmPassword);
+};
+
+const handleChangeConfirmPassword = (e) => {
+  const enteredConfirmPassword = e.target.value;
+  setConfirmPassword(enteredConfirmPassword);
+  // Check if passwords match
+  setPasswordMismatch(password !== enteredConfirmPassword);
+};
+
+const handlePasswordChange = (e) => {
+  setPassword(e.target.value);
+  if (passwordMismatch) {
+      setPasswordMismatch(false); // Reset password mismatch error when password changes
+  }
+};
+
+const handleConfirmPasswordChange = (e) => {
+  const enteredConfirmPassword = e.target.value;
+  setConfirmPassword(enteredConfirmPassword);
+  // Check if passwords match
+  setPasswordMismatch(password !== enteredConfirmPassword);
+};
 
   function sendCusDetails(e){
     e.preventDefault();
-   
 
+    // Check if the phone number has exactly 9 digits
+  if (contact.length !== 10) {
+    alert("Please enter a valid 10-digit phone number.");
+    return; // Exit the function if the phone number is not valid
+  }
+   
     const newCustomer = {
       Name,
       contact,
@@ -80,54 +178,122 @@ function CusRegistration(){
                 <Card.Body>
                 <h1>Sign Up</h1>
               
-              <Form.Group as={Col} controlId="formGridExtra">  
-                     <Form.Label>Name*</Form.Label>   
-                     <Form.Control
-                        as="textarea"
+                <Form.Group as={Col} controlId="formGridExtra1">
+                <Form.Label>Name*</Form.Label>
+                <InputGroup hasValidation>
+                    <Form.Control
                         required
-                        type="textarea"
+                        type="text"
                         placeholder="Abby Jones"
                         rows={1}
                         value={Name}
-                        onChange={(e) => setName(e.target.value)}                   
+                        onChange={handleChangeName}
+                        isInvalid={/\d/.test(Name)} // Check if the value contains numbers
                     />
+                    {/* Display warning icon if contains numbers */}
+                    {/\d/.test(Name) && (
+                        <InputGroup.Text>
+                            <BsExclamationTriangleFill color="red" />
+                        </InputGroup.Text>
+                    )}
+                    {/* Display feedback message if contains numbers */}
+                    <Form.Control.Feedback type="invalid">
+                        Cannot enter numbers
+                    </Form.Control.Feedback>
+                </InputGroup>
+            </Form.Group>
+
+               <Form.Group as={Col} controlId="formGridExtra2">
+                <Form.Label>Contact No*</Form.Label>
+                <Form.Control
+                    as="textarea"
+                    required
+                    type="tel"
+                    placeholder="xxx xx xx xxx"
+                    rows={1}
+                    value={contact}
+                    onChange={handleChangeContact}
+                    isInvalid={!isValid}
+                    maxLength={10}
+                />
+                {/* Display feedback message based on validation */}
+                <Form.Control.Feedback type="invalid">
+                    {isValid ? null : "Please enter exactly 10 digits."}
+                </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group as={Col} controlId="formGridExtra">
-                     <Form.Label>Contact No*</Form.Label>
-                     <Form.Control
-                        as="textarea"
-                        required
-                        type="tel"
-                        placeholder="xxx xx xx xxx"
-                        rows={1}
-                        value={contact}
-                        onChange={(e) => setcontact(e.target.value)}
-                    />
-                </Form.Group>
+
                 <Form.Group as={Col} controlId="formGridEmail">
-                  <Form.Label>Email *</Form.Label>
-                  <Form.Control 
-                    type="email" 
-                    placeholder="Enter email"
-                    value={email}
-                    onChange={(e) => setemail(e.target.value)}
+                <Form.Label>Email *</Form.Label>
+                <InputGroup hasValidation>
+                    <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
+                    <Form.Control 
+                        type="email" 
+                        placeholder="Enter email"
+                        value={email}
+                        onChange={handleChangeEmail}
+                        isInvalid={!isValidEmail}
                     />
+                    {/* Display feedback message based on email validity */}
+                    <Form.Control.Feedback type="invalid">
+                        Please enter a valid email address.
+                    </Form.Control.Feedback>
+                </InputGroup>
+               </Form.Group>
+
+               <Form.Group as={Col} controlId="formGridExtra3">
+                <Form.Label>Password *</Form.Label>
+                <InputGroup hasValidation>
+                    <Form.Control 
+                        type="password" 
+                        placeholder="Password" 
+                        value={password}
+                        onChange={handleChangePassword}
+                        isInvalid={
+                            warnings.capitalLetter ||
+                            warnings.simpleLetter ||
+                            warnings.specialCharacter ||
+                            warnings.number ||
+                            warnings.minLength
+                        }
+                    />
+                    {/* Display feedback message based on validation */}
+                    <Form.Control.Feedback type="invalid">
+                        {warnings.capitalLetter && "Password must contain at least one capital letter."}<br />
+                        {warnings.simpleLetter && "Password must contain at least one simple letter."}<br />
+                        {warnings.specialCharacter && "Password must contain at least one special character."}<br />
+                        {warnings.number && "Password must contain at least one number."}<br />
+                        {warnings.minLength && "Password must be at least 8 characters long."}
+                    </Form.Control.Feedback>
+                    {/* Display eye icon if password is provided */}
+                    {password && (
+                        <InputGroup.Text>
+                            <BsFillEyeFill color="green" />
+                        </InputGroup.Text>
+                    )}
+                </InputGroup>
+            </Form.Group>
+            <Form.Group as={Col} controlId="formGridConfirmPassword">
+                <Form.Label>Confirm Password *</Form.Label>
+                <Form.Control 
+                    type="password" 
+                    placeholder="Confirm Password"
+                    value={confirmPassword}
+                    onChange={handleChangeConfirmPassword}
+                    isInvalid={passwordMismatch}
+                />
+                {/* Display password mismatch error */}
+                <Form.Control.Feedback type="invalid">
+                    Passwords do not match.
+                </Form.Control.Feedback>
                 </Form.Group>
-                 <Form.Label>Password *</Form.Label>
-                 <Form.Control 
-                  type="password" 
-                  placeholder="Password" 
-                  value={password}
-                  onChange={(e) => setpassword(e.target.value)}
-                  />
-                 <Form.Label>Confirm Password *</Form.Label>
-                 <Form.Control type="password" placeholder="Password"/>
+
                  <Form.Label>Address</Form.Label>
                  <Form.Control 
                   placeholder="1234 Main St"
                   value={address}
                   onChange={(e) => setaddress(e.target.value)}
                   /><br></br>
+
                 <div class="form-check">
                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
                   <label class="form-check-label" for="flexCheckDefault" required>

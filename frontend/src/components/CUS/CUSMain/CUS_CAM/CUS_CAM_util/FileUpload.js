@@ -46,7 +46,7 @@ const FileUpload = (props) => {
         ref={filePickerRef}
         style={{ display: "none" }}
         type="file"
-        accept=".pdf,.png"
+        accept=".pdf,.png,.jpg,.jpeg"
         onChange={pickedHandler}
       />
       <div className={`hr-image-upload ${props.center && "center"}`}>

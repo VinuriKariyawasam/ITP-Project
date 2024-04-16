@@ -10,19 +10,20 @@ router.use(bodyParser.json());
 //OnlineConsultation Routes
 router.post('/consultation/add-issue',ConsultationController.createConsultation)
 router.get('/consultation/get-issues',ConsultationController.getConsultation)
-router.patch('/consultation/update-solution/:id',ConsultationController.updateConsultationById)
-//router.delete('/consultation/delete-solution/:id',deleteSolution)
-router.get('/consultation/get-issue/:id',ConsultationController.getConsultationById)
+router.put('/consultation/update-solutionbyid/:consultId',ConsultationController.updateConsultationSolution)
+router.put('/consultation/delete-solutionbyid/:consultId',ConsultationController.deleteSolution)
+router.put('/consultation/update-newsolution/:consultId',ConsultationController.updateNewSolution)
+router.get('/consultation/get-issue/:userId',ConsultationController.getConsultationById)
+router.get('/consultation/get-consultid/:consultId',ConsultationController.getConsultationByconsultId)
 
 
 
-
-//Feedback Routes    
+//Feedback Routes   
 router.post('/feedback/add-feedback',FeedbackController.createFeedback)
 router.get('/feedback/get-feedbacks',FeedbackController.getFeedback)
-router.patch('/feedback/update-feedback/:id',FeedbackController.updateFeedbackById)
-router.delete('/feedback/delete-feedback/:id',FeedbackController.deleteFeedbackById)
-router.get('/feedback/get-feedback/:id',FeedbackController.getFeedbackById)
+router.patch('/feedback/update-feedback/:userId',FeedbackController.updateFeedbackByUserId)
+router.delete('/feedback/delete-feedback/:userId',FeedbackController.deleteFeedbackById)
+router.get('/feedback/get-feedback/:userId',FeedbackController.getFeedbackById)
 
     
 

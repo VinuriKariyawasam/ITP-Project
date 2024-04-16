@@ -1,28 +1,68 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CAM_dbCard from "./CAM_dbcard";
+import ConsultancyPage from "./ConsultancyPage";
 
 function CAM_dashboard() {
+  const [consultationCount, setConsultationCount] = useState(0);
+  const [feedbackCount, setFeedbackCount] = useState(0);
+
+  useEffect(() => {
+    const fetchConsultations = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/cam/consultation/get-issues");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status:${response.status}`);
+        }
+        const data = await response.json();
+        const count = data.consultations.length;
+        setConsultationCount(count);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchConsultations();
+  }, []);
+
+  useEffect(() => {
+    const fetchFeedbacks = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/cam/feedback/get-feedbacks");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status:${response.status}`);
+        }
+        const data = await response.json();
+        const count = data.feedbacks.length;
+        setFeedbackCount(count);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchFeedbacks();
+  }, []);
+
+  const reviewsCount = consultationCount + feedbackCount;
+
   return (
     <section>
       <div className="col">
         <div className="row">
           <CAM_dbCard
             title="Total Questions"
-            value="+10"
+            value={consultationCount}
             iconClass="bi-people-fill"
             duration="Today"
           />
           <CAM_dbCard
-            title="FeedBack"
-            value="+100"
+            title="Total FeedBack"
+            value={feedbackCount}
             iconClass="bi bi-card-checklist"
             duration="Today"
           />
           <CAM_dbCard
-            title="General Reports"
-            value="2"
+            title="Reviews"
+            value={reviewsCount}
             iconClass="bi bi-clipboard2-data"
-            duration="Monthly"
+            duration="Today"
           />
         </div>
       </div>
