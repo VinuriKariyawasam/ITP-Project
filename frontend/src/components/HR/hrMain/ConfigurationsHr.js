@@ -27,7 +27,7 @@ function Designations() {
     useState(false);
   const [designationToDelete, setDesignationToDelete] = useState(null);
   const [reloadDesignations, setReloadDesignations] = useState(false);
-  const [key, setKey] = useState("pending");
+  const [key, setKey] = useState("designations");
   // Define state variables for toast message
   const [toastHeader, setToastHeader] = useState("");
   const [toastBody, setToastBody] = useState("");
