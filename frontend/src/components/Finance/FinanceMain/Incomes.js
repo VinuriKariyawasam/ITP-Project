@@ -6,7 +6,7 @@ import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
 import Card from "react-bootstrap/Card";
 import { CusAuthContext } from "../../../context/cus-authcontext";
-import jsPDF from "jspdf";
+import html2pdf from "html2pdf.js";
 
 const Incomes = () => {
   const navigate = useNavigate();
@@ -17,8 +17,13 @@ const Incomes = () => {
   const [totalIncome, setTotalIncome] = useState(0);
   const [filterDate, setFilterDate] = useState("");
   const [filteredIncomes, setFilteredIncomes] = useState([]);
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
 
   useEffect(() => {
+    fetchIncomes();
+  }, []);
+
+  const fetchIncomes = () => {
     fetch("http://localhost:5000/api/finance/incomes")
       .then((response) => {
         if (!response.ok) {
@@ -33,7 +38,7 @@ const Incomes = () => {
       .catch((error) => {
         console.error("Error fetching incomes:", error);
       });
-  }, []);
+  };
 
   const calculateTotalIncome = (incomes) => {
     const currentDate = new Date().toISOString().split("T")[0];
@@ -98,21 +103,20 @@ const Incomes = () => {
   };
 
   const handleDownloadPDF = () => {
-    const doc = new jsPDF();
-    doc.text("Incomes & Funds", 10, 10);
-    doc.autoTable({ html: '#income-table' });
-    doc.save("incomes.pdf");
+    setDownloadingPDF(true);
+    const element = document.getElementById("income-table");
+    html2pdf().from(element).save().then(() => setDownloadingPDF(false));
   };
 
   return (
     <main id="main" className="main">
       <PageTitle path="Finance / Incomes & Funds" title="Incomes & Funds " />
       <div>
-        <Button variant="primary" onClick={handleAddIncomeClick}>
+        <Button variant="primary" onClick={handleAddIncomeClick} disabled={downloadingPDF}>
           Add Funds
         </Button>
         <br /><br />
-        <input type="date" value={filterDate} onChange={handleFilterChange} />
+        <input type="date" value={filterDate} onChange={handleFilterChange} disabled={downloadingPDF} />
         <br /><br />
         <Card>
           <Card.Body>
@@ -132,7 +136,7 @@ const Incomes = () => {
               <th>Date</th>
               <th>Time</th>
               <th>Status</th>
-              <th>Actions</th>
+              {!downloadingPDF && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -146,19 +150,21 @@ const Incomes = () => {
                 <td>{formatDate(income.date)}</td>
                 <td>{income.time}</td>
                 <td>{income.status}</td>
-                <td>
-                  <Button variant="dark" onClick={() => handleEditIncome(income._id)}>
-                    Edit
-                  </Button>{" "}
-                  <Button variant="danger" onClick={() => handleDeleteIncome(income._id)}>
-                    Delete
-                  </Button>{" "}
-                </td>
+                {!downloadingPDF && (
+                  <td>
+                    <Button variant="dark" onClick={() => handleEditIncome(income._id)} disabled={downloadingPDF}>
+                      Edit
+                    </Button>{" "}
+                    <Button variant="danger" onClick={() => handleDeleteIncome(income._id)} disabled={downloadingPDF}>
+                      Delete
+                    </Button>{" "}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
         </Table>
-        <Button variant="success" onClick={handleDownloadPDF}>
+        <Button variant="success" onClick={handleDownloadPDF} disabled={downloadingPDF}>
           Download as PDF
         </Button>
       </div>
@@ -169,10 +175,10 @@ const Incomes = () => {
         </Modal.Header>
         <Modal.Body>Are you sure you want to delete this income?</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
+          <Button variant="secondary" onClick={handleCloseModal} disabled={downloadingPDF}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={confirmDeleteIncome}>
+          <Button variant="danger" onClick={confirmDeleteIncome} disabled={downloadingPDF}>
             Delete
           </Button>
         </Modal.Footer>

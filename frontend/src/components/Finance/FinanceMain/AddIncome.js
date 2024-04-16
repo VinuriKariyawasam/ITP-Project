@@ -8,7 +8,7 @@ const AddIncome = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
-    serviceInvoiceId: "FUND ADDITION",
+    serviceInvoiceId: "",
     amount: "",
     type: "",
     date: "",
@@ -75,6 +75,9 @@ const AddIncome = () => {
     } else if (isNaN(parseFloat(formData.amount))) {
       newErrors.amount = "Amount must be a number";
       valid = false;
+    } else if (parseFloat(formData.amount) <= 0) {
+      newErrors.amount = "Amount must be a positive value";
+      valid = false;
     }
 
     // Type validation
@@ -111,6 +114,52 @@ const AddIncome = () => {
       ...formData,
       [name]: value,
     });
+
+    // Perform validation for the changed field
+    validateField(name, value);
+  };
+
+  const validateField = (fieldName, value) => {
+    let errorMessage = "";
+
+    // Validation logic for each field
+    switch (fieldName) {
+      case "title":
+        errorMessage = value.trim() === "" ? "Title is required" : "";
+        break;
+      case "serviceInvoiceId":
+        errorMessage = value.trim() === "" ? "Service Invoice ID is required" : "";
+        break;
+      case "amount":
+        errorMessage =
+          value.trim() === ""
+            ? "Amount is required"
+            : isNaN(parseFloat(value))
+            ? "Amount must be a number"
+            : parseFloat(value) <= 0
+            ? "Amount must be a positive value"
+            : "";
+        break;
+      case "type":
+        errorMessage = value.trim() === "" ? "Type is required" : "";
+        break;
+      case "date":
+        errorMessage = value.trim() === "" ? "Date is required" : "";
+        break;
+      case "time":
+        errorMessage = value.trim() === "" ? "Time is required" : "";
+        break;
+      case "status":
+        errorMessage = value.trim() === "" ? "Status is required" : "";
+        break;
+      default:
+        break;
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: errorMessage,
+    }));
   };
 
   const handleCancel = () => {
@@ -134,8 +183,8 @@ const AddIncome = () => {
             {errors.title}
           </Form.Control.Feedback>
         </Form.Group>
-        
-        {/* <Form.Group controlId="serviceInvoiceId">
+
+        <Form.Group controlId="serviceInvoiceId">
           <Form.Label>Service Invoice ID</Form.Label>
           <Form.Control
             type="text"
@@ -147,8 +196,8 @@ const AddIncome = () => {
           <Form.Control.Feedback type="invalid">
             {errors.serviceInvoiceId}
           </Form.Control.Feedback>
-        </Form.Group> */}
-        
+        </Form.Group>
+
         <Form.Group controlId="amount">
           <Form.Label>Amount</Form.Label>
           <Form.Control
@@ -162,7 +211,7 @@ const AddIncome = () => {
             {errors.amount}
           </Form.Control.Feedback>
         </Form.Group>
-        
+
         <Form.Group controlId="type">
           <Form.Label>Type</Form.Label>
           <Form.Control
@@ -176,7 +225,7 @@ const AddIncome = () => {
             {errors.type}
           </Form.Control.Feedback>
         </Form.Group>
-        
+
         <Form.Group controlId="date">
           <Form.Label>Date</Form.Label>
           <Form.Control
@@ -190,7 +239,7 @@ const AddIncome = () => {
             {errors.date}
           </Form.Control.Feedback>
         </Form.Group>
-        
+
         <Form.Group controlId="time">
           <Form.Label>Time</Form.Label>
           <Form.Control
@@ -204,10 +253,10 @@ const AddIncome = () => {
             {errors.time}
           </Form.Control.Feedback>
         </Form.Group>
-       
-        <br></br>
 
-        <Button variant="primary" type="submit" >
+        <br />
+
+        <Button variant="primary" type="submit">
           Submit
         </Button>{" "}
         <Button variant="secondary" onClick={handleCancel}>
