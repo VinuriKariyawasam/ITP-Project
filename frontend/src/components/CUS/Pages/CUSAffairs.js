@@ -6,6 +6,8 @@ import OnlineConsultation from "../CUSMain/CUS_CAM/OnlineConsultation";
 import MyFeedback from "../CUSMain/CUS_CAM/MyFeedback";
 import AllFeedbacks from "../CUSMain/CUS_CAM/AllFeedbacks";
 import FAQ from "../CUSMain/CUS_CAM/FAQ";
+import {CusAuthContext} from "../../../context/cus-authcontext";
+import { useContext } from "react";
 
 
 import {
@@ -18,6 +20,7 @@ import {
 
 
 function CUSAffairs() {
+  const CusAuth = useContext(CusAuthContext);
   return (
     <>
 
