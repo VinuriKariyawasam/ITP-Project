@@ -8,6 +8,7 @@ import accidentalrepairs from '../../../../images/CUS/Appointment/accidental rep
 import './AccidentalAppointment.css'
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 
+
 const AccidentalAppointment = () => {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState("");
@@ -95,6 +96,7 @@ const AccidentalAppointment = () => {
       );
 
       alert('Appointment Submitted Succesfully');
+      navigate('/customer/appointment/myappointment');
 
 
     } catch (err) {
@@ -246,7 +248,7 @@ const AccidentalAppointment = () => {
                   <Form.Label>Damaged occured</Form.Label>
                   <Form.Control
                     id="damagedOccured"
-                    type="text"
+                    type="textarea" rows={2}
                     placeholder="Enter damagedOccured"
                     onInput={(event) =>
                       inputHandler("damagedOccured", event.target.value, true)

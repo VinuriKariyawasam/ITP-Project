@@ -1,4 +1,4 @@
-import React, { useState, useEffect ,useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useForm } from 'react-hook-form';
 import periodicalAppointment from '../../../../images/CUS/Appointment/periodicalAppointment.jpg'
 import axios from "axios"
@@ -6,13 +6,15 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Form, Col, Row, Button, InputGroup } from 'react-bootstrap';
 import { CusAuthContext } from "../../../../context/cus-authcontext";
+import { useNavigate } from "react-router-dom";
 
 function PeriodicalAppointment() {
 
   const [availableTimes, setAvailableTimes] = useState([]);
   const cusauth = useContext(CusAuthContext)
   const { } = useForm();
-  
+  const navigate = useNavigate();
+
 
   const [name, setname] = useState("");
   const [vType, setvType] = useState("");
@@ -31,7 +33,7 @@ function PeriodicalAppointment() {
 
     //create javascript object
     const newPeriodicalAppointment = {
-      userId:cusauth.userId,
+      userId: cusauth.userId,
       name,
       vType,
       vNo,
@@ -50,6 +52,7 @@ function PeriodicalAppointment() {
       appointmentdate: new Date(appointmentdate.getTime() + (24 * 60 * 60 * 1000)) // Adding one day
     }).then(() => {
       alert("Your Appointment Success")
+      navigate('/customer/appointment/myappointment');
       setname("");
       setvType("");
       setvNo("");

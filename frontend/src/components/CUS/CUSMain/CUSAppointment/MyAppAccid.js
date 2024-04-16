@@ -24,33 +24,31 @@ function MyAppAccid() {
   const cusauth = useContext(CusAuthContext)
 
   useEffect(() => {
-    getAccidentalData(userId).then(() => {
-        // Set selectedAppointment to the first appointment if available
-        if (accidentalAppointment.length > 0) {
-            setSelectedAppointment(accidentalAppointment[0]);
-        }
-    });
-}, [cusauth.userId]);
+    if (cusauth.userId) {
+      getAccidentalData(cusauth.userId)
+    }
 
-let userId = cusauth.userId;
-const getAccidentalData  = async(userId) => {
-        try {
-            const response = await axios.get(`http://localhost:5000/appointment/get-accidentalAppointmentbyuserId/${userId}`);
-            setaccidentalAppointment(response.data.data);
+  }, [cusauth.userId])
 
-        } catch (error) {
-            console.error('Error fetching appointments:', error);
-        }
-    };
-   
-  
+  let userId = cusauth.userId;
+  const getAccidentalData = async (userId) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/appointment/get-accidentalAppointmentbyuserId/${userId}`);
+      setaccidentalAppointment(response.data.data);
+
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+    }
+  };
 
 
-  
- 
 
-   // Function to handle the "Update" button click
-   const handleUpdateClick = () => {
+
+
+
+
+  // Function to handle the "Update" button click
+  const handleUpdateClick = () => {
     setShowDatePicker(true); // Show the date picker
     setShowSelect(true); // Show the select input
     setShowUpdateAppointmentButton(true);
@@ -66,12 +64,12 @@ const getAccidentalData  = async(userId) => {
         name: selectedAppointment.name,
         vType: selectedAppointment.vType,
         vNo: selectedAppointment.vNo,
-        dateAccidentaOccured:selectedAppointment.dateAccidentaOccured,
+        dateAccidentaOccured: selectedAppointment.dateAccidentaOccured,
         damagedOccured: selectedAppointment.damagedOccured,
         contactNo: selectedAppointment.contactNo,
         appointmentdate: new Date(appointmentdate.getTime() + (24 * 60 * 60 * 1000)), // Adding one day
         appointmenttime: selectedAppointment.appointmenttime, // Use appointmenttime from selectedAppointment
-        image:selectedAppointment.image,
+        image: selectedAppointment.image,
       })
         .then(response => {
           console.log(response);
@@ -202,70 +200,70 @@ const getAccidentalData  = async(userId) => {
         </tbody>
       </Table>
       {selectedAppointment && (
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Accidental Repair Appointment</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          
-          <p>Vehicle No:{selectedAppointment.vNo} </p>
-          <p>Customer Name:{selectedAppointment.name} </p>
-          <p>Vehicle Type:{selectedAppointment.vType}  </p>
-          <p>Accident occured on:{selectedAppointment.dateAccidentaOccured}</p>
-          <p>Damaged Occured:{selectedAppointment.damagedOccured}</p>
-          <lable>Date:{selectedAppointment.appointmentdate.split('T')[0]} </lable><br /><br />
-          {showDatePicker && ( // Render date picker only if showDatePicker is true
-            <DatePicker
-              placeholderText='Appointment Date'
-              selected={appointmentdate}
-              onChange={(date) => setappointmentdate(date)}
-              dateFormat='MM/dd/yyyy'
-              minDate={getTomorrow()}
-              required
-            />
-          )}
-          <label>Time:{selectedAppointment.appointmenttime}</label><br /><br />
-          {showSelect && ( // Render select input only if showSelect is true
-            <div>
+        <Modal show={showModal} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Accidental Repair Appointment</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
 
-              <select
-                className="form-select"
-                value={selectedAppointment.appointmenttime}
-                onChange={(e) => handleTimeChange(selectedAppointment._id, e.target.value)}
+            <p>Vehicle No:{selectedAppointment.vNo} </p>
+            <p>Customer Name:{selectedAppointment.name} </p>
+            <p>Vehicle Type:{selectedAppointment.vType}  </p>
+            <p>Accident occured on:{selectedAppointment.dateAccidentaOccured}</p>
+            <p>Damaged Occured:{selectedAppointment.damagedOccured}</p>
+            <lable>Date:{selectedAppointment.appointmentdate.split('T')[0]} </lable><br /><br />
+            {showDatePicker && ( // Render date picker only if showDatePicker is true
+              <DatePicker
+                placeholderText='Appointment Date'
+                selected={appointmentdate}
+                onChange={(date) => setappointmentdate(date)}
+                dateFormat='MM/dd/yyyy'
+                minDate={getTomorrow()}
                 required
-              >
-                <option value="">Choose</option>
-                {availableTimes.length > 0 ? (
-                  availableTimes.map((time, index) => (
-                    <option key={index} value={time}>{time}</option>
-                  ))
-                ) : (
-                  <option value="" disabled>No available times</option>
-                )}
-              </select>
-            </div>
-          )}
-          <p>Contact No: {selectedAppointment.phone}</p>
-          <label>Image </label>
-          <img src={`http://localhost:5000/${selectedAppointment.image}`} style={{ maxWidth: '100%', maxHeight: '300px' }}  />
-          
-        </Modal.Body>
-        <Modal.Footer>
-          {!showUpdateAppointmentButton && ( // Render the "Update" button only if showUpdateAppointmentButton is false
-            <Button variant="warning" onClick={handleUpdateClick}>
-              Update
+              />
+            )}
+            <label>Time:{selectedAppointment.appointmenttime}</label><br /><br />
+            {showSelect && ( // Render select input only if showSelect is true
+              <div>
+
+                <select
+                  className="form-select"
+                  value={selectedAppointment.appointmenttime}
+                  onChange={(e) => handleTimeChange(selectedAppointment._id, e.target.value)}
+                  required
+                >
+                  <option value="">Choose</option>
+                  {availableTimes.length > 0 ? (
+                    availableTimes.map((time, index) => (
+                      <option key={index} value={time}>{time}</option>
+                    ))
+                  ) : (
+                    <option value="" disabled>No available times</option>
+                  )}
+                </select>
+              </div>
+            )}
+            <p>Contact No: {selectedAppointment.phone}</p>
+            <label>Image </label>
+            <img src={`http://localhost:5000/${selectedAppointment.image}`} style={{ maxWidth: '100%', maxHeight: '300px' }} />
+
+          </Modal.Body>
+          <Modal.Footer>
+            {!showUpdateAppointmentButton && ( // Render the "Update" button only if showUpdateAppointmentButton is false
+              <Button variant="warning" onClick={handleUpdateClick}>
+                Update
+              </Button>
+            )}
+            {showUpdateAppointmentButton && (
+              <Button variant="warning" onClick={handleUpdateAppointment}>
+                Update Appointment
+              </Button>
+            )}
+            <Button variant="danger" onClick={() => Delete(selectedAppointment._id)}>
+              cancle
             </Button>
-          )}
-          {showUpdateAppointmentButton && (
-            <Button variant="warning" onClick={handleUpdateAppointment}>
-              Update Appointment
-            </Button>
-          )}
-          <Button variant="danger" onClick={() => Delete(selectedAppointment._id)}>
-            cancle
-          </Button>
-        </Modal.Footer>
-      </Modal>
+          </Modal.Footer>
+        </Modal>
       )}
 
     </div>

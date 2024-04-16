@@ -24,13 +24,11 @@ function MyApPer() {
 
 
     useEffect(() => {
-        getPeriodicalData(userId).then(() => {
-            // Set selectedAppointment to the first appointment if available
-            if (periodicalAppointment.length > 0) {
-                setSelectedAppointment(periodicalAppointment[0]);
-            }
-        });
-    }, [cusauth.userId]);
+        if (cusauth.userId) {
+            getPeriodicalData(cusauth.userId)
+        }
+
+    }, [cusauth.userId])
     let userId = cusauth.userId;
     const getPeriodicalData = async (userId) => {
         try {
@@ -82,10 +80,6 @@ function MyApPer() {
                 });
         }
     };
-
-
-
-
 
 
     const Delete = (id) => {
