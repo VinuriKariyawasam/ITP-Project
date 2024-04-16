@@ -5,7 +5,6 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import axios from 'axios';
 import Table from 'react-bootstrap/Table';
-import jsPDF from 'jspdf';
 
 
 
@@ -99,57 +98,6 @@ const Shedules = () => {
   };
 
 
-  // Function to generate PDF
-  const generatePDF = (selectedAppointment) => {
-    //console.log("Selected Appointment for PDF generation:", selectedAppointment);
-    if (!selectedAppointment) {
-      // Handle the case where selectedAppointment is null
-      console.error("No appointment selected.");
-      return;
-    }
-
-    const doc = new jsPDF();
-    doc.setFont("helvetica");
-    doc.setFontSize(16); // Increase font size for the topic
-    doc.setTextColor(0, 0, 255); // Set text color to blue
-
-    doc.text("Schedule Report", 10, 10); // Corrected the title
-
-    // Reset font size and color for the rest of the content
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0); // Set text color to black
-
-    const startY = 20;
-    const lineHeight = 10;
-    const xOffset = 10;
-    let yOffset = startY;
-
-    // Assuming 'selectedAppointment' contains the appointment details
-    doc.text(`Vehicle No: ${selectedAppointment.vNo}`, xOffset + 5, yOffset); // Corrected the label
-    doc.text(`Customer Name: ${selectedAppointment.name}`, xOffset + 45, yOffset);
-    doc.text(`Vehicle Type: ${selectedAppointment.vType}`, xOffset + 85, yOffset);
-    doc.text(`Service Type: ${selectedAppointment.serviceType}`, xOffset + 120, yOffset);
-    doc.text(`Requesting Service: ${selectedAppointment.issue}`, xOffset + 155, yOffset);
-    doc.text(`Date and Time: ${selectedAppointment.appointmentdate ? `${selectedAppointment.appointmentdate.split('T')[0]} ${selectedAppointment.appointmenttime}` : ''}`, xOffset + 10, yOffset + lineHeight);
-    doc.text(`Contact No: ${selectedAppointment.contactNo}`, xOffset + 10, yOffset + 2 * lineHeight);
-
-    console.log("Before converting PDF to blob...");
-    // Convert the PDF to a blob
-    // Convert the PDF to a blob
-    doc.output("blob", function (blob) {
-      if (blob) {
-        console.log("PDF converted to blob successfully.");
-        // Save the blob as a file using FileSaver.js
-        console.log("Before saving blob as a file...");
-        //saveAs(blob, `appointment_${new Date().toISOString()}.pdf`, { autoBom: true });
-        console.log("Blob saved as a file successfully.");
-      } else {
-        console.error("Error converting PDF to blob.");
-      }
-    });
-
-
-  };
 
   // Function to render the board component based on selected date
   const renderBoard = () => {
@@ -215,17 +163,17 @@ const Shedules = () => {
         </Card>
       )}
       <div style={{ marginLeft: '25%' }}>
-        <h2 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Appointment Scheduling Calendar</h2>
+        <h1 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Appointment Scheduling Calendar</h1>
+        {/*<h3 style={{fontSize: '24px', color: 'darkblue',marginRight:'150px',marginLeft:'12px'}}>Here comes the schedule of Appointments in Upcoming days</h3>*/}
+
+        
       </div>
       {/* Render the board component */}
       <div style={{ marginTop: '50px' }}>{renderBoard()}</div>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh', marginLeft: '50px', marginRight: '170px', marginTop: '0px' }}>
         <Calendar onChange={handleDateClick} value={value} minDate={new Date()} />
       </div>
-      {selectedAppointment && (
-        <Button variant="success" onClick={() => generatePDF(selectedAppointment)}>Download PDF</Button>
-
-      )}
+    
 
     </main>
   );
