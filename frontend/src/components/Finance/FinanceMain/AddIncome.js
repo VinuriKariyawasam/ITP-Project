@@ -8,9 +8,9 @@ const AddIncome = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
-    serviceInvoiceId: "",
+    serviceInvoiceId: "FUNDS",
     amount: "",
-    type: "",
+    type: "FUNDS",
     date: "",
     time: "",
     status: "Received",
@@ -63,10 +63,10 @@ const AddIncome = () => {
     }
 
     // Service Invoice ID validation
-    if (formData.serviceInvoiceId.trim() === "") {
-      newErrors.serviceInvoiceId = "Service Invoice ID is required";
-      valid = false;
-    }
+    // if (formData.serviceInvoiceId.trim() === "") {
+    //   newErrors.serviceInvoiceId = "Service Invoice ID is required";
+    //   valid = false;
+    // }
 
     // Amount validation
     if (formData.amount.trim() === "") {
@@ -127,9 +127,9 @@ const AddIncome = () => {
       case "title":
         errorMessage = value.trim() === "" ? "Title is required" : "";
         break;
-      case "serviceInvoiceId":
-        errorMessage = value.trim() === "" ? "Service Invoice ID is required" : "";
-        break;
+      // case "serviceInvoiceId":
+      //   errorMessage = value.trim() === "" ? "Service Invoice ID is required" : "";
+      //   break;
       case "amount":
         errorMessage =
           value.trim() === ""
@@ -184,7 +184,7 @@ const AddIncome = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group controlId="serviceInvoiceId">
+        {/* <Form.Group controlId="serviceInvoiceId">
           <Form.Label>Service Invoice ID</Form.Label>
           <Form.Control
             type="text"
@@ -196,7 +196,7 @@ const AddIncome = () => {
           <Form.Control.Feedback type="invalid">
             {errors.serviceInvoiceId}
           </Form.Control.Feedback>
-        </Form.Group>
+        </Form.Group> */}
 
         <Form.Group controlId="amount">
           <Form.Label>Amount</Form.Label>
