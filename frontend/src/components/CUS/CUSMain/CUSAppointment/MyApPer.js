@@ -163,34 +163,35 @@ function MyApPer() {
 
     return (
         <div>
-
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>Vehicle No</th>
-                        <th>Customer Name</th>
-                        <th>Date and Time</th>
-                        <th>Contact No</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {periodicalAppointment.map((appointment) => (
-                        <tr key={appointment._id} >
-
-                            <td>{appointment.vNo}</td>
-                            <td>{appointment.name}</td>
-                            <td>{`${appointment.appointmentdate.split('T')[0]} ${appointment.appointmenttime}`}</td>
-                            <td>{appointment.phone}</td>
-                            <td>{appointment.sType}</td>
-                            <td>
-                                <Button variant="secondary" onClick={() => handleMoreButtonClick(appointment)}>
-                                    More
-                                </Button></td>
+            <div style={{ marginLeft: "30px",marginRight: "20px" }}> {/* Adding left margin to the table */}
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>Vehicle No</th>
+                            <th>Customer Name</th>
+                            <th>Date and Time</th>
+                            <th>Contact No</th>
+                            <th>Description</th>
                         </tr>
-                    ))}
-                </tbody>
-            </Table>
+                    </thead>
+                    <tbody>
+                        {periodicalAppointment.map((appointment) => (
+                            <tr key={appointment._id} >
+
+                                <td>{appointment.vNo}</td>
+                                <td>{appointment.name}</td>
+                                <td>{`${appointment.appointmentdate.split('T')[0]} ${appointment.appointmenttime}`}</td>
+                                <td>{appointment.phone}</td>
+                                <td>{appointment.sType}</td>
+                                <td>
+                                    <Button variant="secondary" onClick={() => handleMoreButtonClick(appointment)}>
+                                        More
+                                    </Button></td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            </div>
             {selectedAppointment && (
                 <Modal show={showModal} onHide={handleCloseModal}>
                     <Modal.Header closeButton>

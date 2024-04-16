@@ -71,6 +71,7 @@ function MyApApp() {
         <p style={{fontSize: '24px', color: 'darkblue'}}>No appointments</p>
 
       ) : (
+        <div style={{ marginLeft: "30px" , marginRight: "20px"}}> {/* Adding left margin to the table */}
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -95,6 +96,7 @@ function MyApApp() {
           ))}
         </tbody>
       </Table>
+      </div>
       )}
       {selectedAppointment && (
 

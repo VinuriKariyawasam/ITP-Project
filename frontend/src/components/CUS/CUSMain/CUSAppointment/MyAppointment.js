@@ -12,11 +12,11 @@ const MyAppointment = props => {
   const [activeTab, setActiveTab] = useState("Periodical Appointment");
 
   return(
-    <main id="main" className="main">
+    <main>
      
   <div>
   
-  <h1 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' ,marginLeft: '30%',marginTop:'0%'}}>Your Appointments</h1>
+  <h1 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' ,marginLeft: '40%',marginTop:'0%'}}>Your Appointments</h1>
   <h3 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Approved Appointments</h3><br/><br/>
 <MyApApp/><br></br>
   

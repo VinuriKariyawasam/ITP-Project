@@ -31,6 +31,12 @@ function PeriodicalAppointment() {
   function sendata(e) {
     e.preventDefault();
 
+    // Check if the phone number has exactly 9 digits
+  if (phone.length !== 9) {
+    alert("Please enter a valid phone number.");
+    return; // Exit the function if the phone number is not valid
+  }
+
     //create javascript object
     const newPeriodicalAppointment = {
       userId: cusauth.userId,
@@ -210,7 +216,7 @@ function PeriodicalAppointment() {
                   <InputGroup>
                     <InputGroup.Text>+94</InputGroup.Text>
                     <Form.Control
-                      type="text"
+                      type="phone"
                       maxLength={9} // Allow for the length of "+94" and 10 digits
                       placeholder="Enter Contact Number"
                       value={phone}

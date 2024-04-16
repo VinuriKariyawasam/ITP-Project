@@ -163,6 +163,7 @@ function MyApMec() {
   return (
 
     <div>
+      <div style={{ marginLeft: "30px" ,marginRight: "20px"}}> {/* Adding left margin to the table */}
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -197,6 +198,7 @@ function MyApMec() {
           ))}
         </tbody>
       </Table>
+      </div>
       {selectedAppointment && (
         <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>

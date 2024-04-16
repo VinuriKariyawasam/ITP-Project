@@ -77,6 +77,13 @@ const AccidentalAppointment = () => {
 
   const appointmentSubmitHandler = async (event) => {
     event.preventDefault();
+
+    // Check if the contact number has exactly 9 digits
+  if (formState.inputs.contactNo.value.length !== 9) {
+    alert("Please enter a valid  contact number.");
+    return; // Exit the function if the contact number is not valid
+  }
+
     try {
       const formData = new FormData();
       formData.append("userId", cusauth.userId);

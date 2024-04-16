@@ -30,6 +30,13 @@ function MechanicalAppointment() { // Corrected function name
   function sendata(e) {
     e.preventDefault();
 
+        // Check if the phone number has exactly 9 digits
+  if (contactNo.length !== 9) {
+    alert("Please enter a valid phone number.");
+    return; // Exit the function if the phone number is not valid
+  }
+
+
     //create javascript object
     const newmechanicalAppointment = {
       userId: cusauth.userId,
