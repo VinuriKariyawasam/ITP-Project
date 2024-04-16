@@ -5,6 +5,9 @@ import SuperSideBar from "../SuperSidebar/SuperSideBar";
 import SuperServiceReq from "../SuperMain/SuperServiceReq";
 import SuperProducts from "../SuperMain/SuperProducts";
 import Shedules from "../../SM/SMmain/SMAppointment/Shedules";
+import SuperRecords from "../SuperMain/SuperRecords";
+import SuperQuotation from "../SuperMain/SuperQuotation";
+
 
 // Import front end routes
 import {
@@ -24,6 +27,8 @@ function SUPERVISOR() {
         <Route path="serviceReq/*" element={<SuperServiceReq />} />
         <Route path="products/*" element={<SuperProducts />} />
         <Route path="shedules/*" element={<Shedules />} />
+        <Route path="records/*" element={<SuperRecords />} />
+        <Route path="quotation/*" element={<SuperQuotation />} />
       </Routes>
    
     </main>
