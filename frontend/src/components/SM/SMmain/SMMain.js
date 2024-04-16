@@ -36,7 +36,9 @@ function SMMain() {
       <Card>
         <Card.Body>
           <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>Create a service report</Card.Text>
+          <Link to="/staff/sm/report/add">
           <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}} variance="primary">explore</Button>
+          </Link>
         </Card.Body>
       </Card>
 

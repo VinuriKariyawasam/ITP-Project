@@ -1,6 +1,7 @@
 const RecordController = require("../controllers/sm/record-controller");
 const quotationController = require("../controllers/sm/quotationController");
 const reportController = require("../controllers/sm/reportController");
+const job =require("../controllers/sm/jobscheduleController");
 const router = require("express").Router();
 
 router.get("/records", RecordController.getRecords);
@@ -20,7 +21,7 @@ router.post("/quotations", quotationController.createQuotation);
 router.get("/quotations", quotationController.getAllQuotations);
 
 // DELETE /api/sm/quotations/:id
-router.delete("/:id", quotationController.deleteQuotation);
+router.delete("/quotations/:id", quotationController.deleteQuotation);
 
 // POST /api/submit-report
 router.post("/reports", reportController.submitReport);
@@ -30,5 +31,18 @@ router.get("/reports", reportController.getAllReports);
 
 router.get("/reports/:id", reportController.getReportById);
 
-  
+//job schedule
+router.post("/assign-job", job.assignedJob);
+
+router.get("/jobs", job.getAllJobs);
+
+// Route to get count of service reports
+router.get('/count', reportController.getCountOfServiceReports);
+
+// Route to get count of all records
+router.get("/records/count", RecordController.getRecordCount);
+
+// Route to get count of all quotations
+router.get("/quotations/count", quotationController.getQuotationCount);
+
 module.exports = router;

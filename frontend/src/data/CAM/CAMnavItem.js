@@ -24,6 +24,7 @@ const navList = [
     href: "/staff/cam/faq_review"
   },
  
+
  /*{
     _id: 6,
     name: "Reports",

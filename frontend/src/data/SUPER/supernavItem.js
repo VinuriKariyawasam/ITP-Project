@@ -15,6 +15,7 @@ const supernavList = [
       _id: 3,
       name: "Job",
       icon: "bi bi-card-checklist",
+      href: "/staff/supervisor/jobs",
     },
     {
       _id: 4,

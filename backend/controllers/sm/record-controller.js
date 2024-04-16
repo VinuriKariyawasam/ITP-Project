@@ -107,6 +107,17 @@ class RecordController {
     }
   }
 
+  // Get count of all records
+  static async getRecordCount(req, res) {
+    try {
+      const count = await RecordModel.countDocuments();
+      res.status(200).json({ count });
+    } catch (error) {
+      console.error("Error counting records:", error);
+      res.status(500).json({ error: "Failed to count records" });
+    }
+  }
+
   // Get record by ID
   static async getRecordById(req, res) {
     try {
@@ -254,5 +265,7 @@ class RecordController {
   }
 
 }
+
+
 
 module.exports = RecordController;
