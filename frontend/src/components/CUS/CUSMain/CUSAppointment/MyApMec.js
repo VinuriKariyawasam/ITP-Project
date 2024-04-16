@@ -21,14 +21,7 @@ function MyApMec() {
   const cusauth = useContext(CusAuthContext)
 
 
-  useEffect(() => {
-    getMechanicalData(userId).then(() => {
-      // Set selectedAppointment to the first appointment if available
-      if (mechanicalAppointment.length > 0) {
-        setmechanicalAppointment(mechanicalAppointment[0]);
-      }
-    });
-  }, [cusauth.userId]);
+
   let userId = cusauth.userId;
   const getMechanicalData = async (userId) => {
     try {
@@ -41,6 +34,12 @@ function MyApMec() {
       console.error('Error fetching appointments:', error);
     }
   };
+  useEffect(() => {
+    if (cusauth.userId) {
+      getMechanicalData(cusauth.userId)
+    }
+
+  }, [cusauth.userId])
   // Function to handle the "Update" button click
   const handleUpdateClick = () => {
     setShowDatePicker(true); // Show the date picker
@@ -164,6 +163,7 @@ function MyApMec() {
   return (
 
     <div>
+      <div style={{ marginLeft: "30px" ,marginRight: "20px"}}> {/* Adding left margin to the table */}
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -198,6 +198,7 @@ function MyApMec() {
           ))}
         </tbody>
       </Table>
+      </div>
       {selectedAppointment && (
         <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
