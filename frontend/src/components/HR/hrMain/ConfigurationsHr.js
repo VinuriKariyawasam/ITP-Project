@@ -33,6 +33,7 @@ function Designations() {
   const [toastBody, setToastBody] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState("");
+  const [nopaylogs, setNopayLogs] = useState([]);
 
   useEffect(() => {
     // Fetch designation records from the backend when the component mounts
@@ -117,6 +118,24 @@ function Designations() {
     setShowModal(false);
   };
 
+  //function to get no pay logs
+  useEffect(() => {
+    fetchLogs();
+  }, []);
+
+  const fetchLogs = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/hr/allnopaylogs"); // Assuming this is the route you set up
+      if (!response.ok) {
+        throw new Error("Failed to fetch logs");
+      }
+      const data = await response.json();
+      setNopayLogs(data);
+    } catch (error) {
+      console.error("Error fetching logs:", error);
+    }
+  };
+
   return (
     <section style={{ position: "relative" }}>
       {/* Toast Component */}
@@ -146,7 +165,7 @@ function Designations() {
             onSelect={(k) => setKey(k)}
             className="mb-3"
           >
-            <Tab eventKey="pending" title="Designations List">
+            <Tab eventKey="designations" title="Designations List">
               <Row>
                 <Stack direction="horizontal">
                   <div className="p-2">
@@ -291,6 +310,48 @@ function Designations() {
                   }
                 />
               )}
+            </Tab>
+            <Tab eventKey="nopaylogs" title="No Pay Logs">
+              <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                <thead>
+                  <tr>
+                    <th style={{ border: "1px solid black", padding: "8px" }}>
+                      Date
+                    </th>
+                    <th style={{ border: "1px solid black", padding: "8px" }}>
+                      Status
+                    </th>
+                    <th style={{ border: "1px solid black", padding: "8px" }}>
+                      Absent Without Leave
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nopaylogs.map((log, index) => (
+                    <tr key={index}>
+                      <td style={{ border: "1px solid black", padding: "8px" }}>
+                        {new Date(log.date).toLocaleDateString()}
+                      </td>
+                      <td style={{ border: "1px solid black", padding: "8px" }}>
+                        {log.status}
+                      </td>
+                      <td style={{ border: "1px solid black", padding: "8px" }}>
+                        <ul
+                          style={{
+                            listStyleType: "none",
+                            padding: 0,
+                            margin: 0,
+                          }}
+                        >
+                          {log.absentWithoutLeave.map((emp, empIndex) => (
+                            <li key={empIndex}>{emp.empDBId}</li>
+                          ))}
+                        </ul>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </Tab>
           </Tabs>
         </Card.Body>

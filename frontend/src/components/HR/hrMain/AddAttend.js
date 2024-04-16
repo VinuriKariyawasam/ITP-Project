@@ -10,7 +10,7 @@ import {
   Card,
 } from "react-bootstrap";
 
-function AddAttend() {
+function AddAttend({ afterSubmit }) {
   //to all emplyees
   const [tableData, setTableData] = useState([]);
 
@@ -92,7 +92,7 @@ function AddAttend() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
+      afterSubmit();
       alert("Attendance recorded successfully!");
     } catch (error) {
       console.error("Error recording attendance:", error);

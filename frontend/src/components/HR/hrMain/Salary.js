@@ -12,6 +12,7 @@ import {
 import SalaryDetailsModal from "./SalaryDetailsModal";
 import html2pdf from "html2pdf.js";
 import { CSVLink } from "react-csv";
+import HRConfirmModal from "./HRConfirmModal";
 
 function Salary() {
   //const navigate = useNavigate();
@@ -25,6 +26,9 @@ function Salary() {
   const [searchName, setSearchName] = useState("");
   const [searchEmployeeID, setSearchEmployeeID] = useState("");
   const [searchPosition, setSearchPosition] = useState("");
+
+  const [noPayLog, setNoPayLog] = useState(false);
+  const [showNoPayConfirm, setShowNopayConfirm] = useState(false);
 
   useEffect(() => {
     // Fetch salary records from the backend when the component mounts
@@ -46,6 +50,7 @@ function Salary() {
       }
     };
     fetchSalaryRecords();
+    fetchLogsForToday();
   }, [salaryReload]);
 
   const handleMoreButtonClick = (id) => {
@@ -226,6 +231,55 @@ function Salary() {
     }
   };
 
+  //no pay operations
+  /* useEffect(() => {
+    fetchLogsForToday();
+  }, []);*/
+
+  const fetchLogsForToday = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/hr//nopaylogs/today"
+      ); // Assuming this is the route you set up
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const data = await response.json();
+      console.log(data);
+      if (data.length > 0) {
+        setNoPayLog(true);
+      }
+    } catch (error) {
+      console.error("Error fetching logs:", error);
+    }
+  };
+
+  const handleNoPayClick = async () => {
+    setShowNopayConfirm(true);
+  };
+
+  const handleNoPayOp = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/hr/nopay", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to trigger function");
+      }
+      const data = await response.json();
+      console.log("Function triggered successfully:", data);
+      setShowNopayConfirm(false);
+      if (data) {
+        alert("No Pay deducts successfully");
+      }
+    } catch (error) {
+      console.error("Error triggering function:", error);
+    }
+  };
+
   return (
     <section>
       <Row>
@@ -263,6 +317,16 @@ function Salary() {
             >
               Send to Finance
             </Button>
+            {!noPayLog ? (
+              <Button
+                variant="dark"
+                size="md"
+                onClick={handleNoPayClick}
+                style={{ margin: "10px" }}
+              >
+                Deduct Yesterday Nopay
+              </Button>
+            ) : null}
           </div>
           <OverlayTrigger
             placement="right"
@@ -389,6 +453,17 @@ function Salary() {
         show={showSalaryModal}
         handleClose={handleCloseModal}
         id={selectedRecordId}
+      />
+
+      {/* No Pay confirmation modal */}
+      <HRConfirmModal
+        show={showNoPayConfirm}
+        onHide={() => setShowNopayConfirm(false)}
+        title="No Pay Deduct Confirmation"
+        message="Are you sure you want to update no pay deductions for yesterday? This process cannot be undone."
+        onConfirm={handleNoPayOp}
+        btnColor={"warning"}
+        btnName={"Deduct No Pay"}
       />
     </section>
   );

@@ -57,8 +57,6 @@ function StaffApp() {
           <Route path="/gm/*" element={<RestrictedPage />} />
         )}
 
-        <Route path="/gm/*" element={<GM />} />
-
         {userPosition === "HR Manager" || userPosition === "General Manager" ? (
           <Route path="/hr/*" element={<HR />} />
         ) : (
