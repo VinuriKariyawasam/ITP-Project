@@ -2,7 +2,7 @@ import React from 'react';
 import './AppoinmentMain.css'
 import img1 from '../../../../images/CUS/Appointment/img1.jpg'
 import mechanical from '../../../../images/CUS/Appointment/mechanical.jpg'
-import periodical from '../../../../images/CUS/Appointment/periodical.jpg'
+import periodical from '../../../../images/CUS/Appointment/periodical2.jpg'
 import accident from '../../../../images/CUS/Appointment/accident.jpg'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
@@ -53,7 +53,7 @@ const AppointnmentMain = () => {
             <Card.Title>Mechanical Repairs</Card.Title>
             <Card.Text>
             Experiencing issues while driving your vehicle? Don't let mechanical troubles disrupt your journey.Reach out to us today and let us get you back on track
-            </Card.Text>
+            </Card.Text><br/><br/>
             <Link to='/customer/appointment/mechanicalAppointment'>
             <Button variant="primary" className="exbtn">
                 Make an Appointment
@@ -67,7 +67,7 @@ const AppointnmentMain = () => {
             <Card.Title>Accident Repaires</Card.Title>
             <Card.Text>
             After an unfortunate accident, trust in our service center to restore your vehicle to its former glory. Have an appointment with our skilled technicians.
-            </Card.Text>
+            </Card.Text><br/><br/><br/>
             <Link to='/customer/appointment/accidentalAppointment'>
             <Button variant="primary" className="exbtn">
                 Make an Appointment

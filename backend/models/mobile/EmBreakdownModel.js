@@ -37,6 +37,9 @@ const breakdownrequestsSchema = new mongoose.Schema({
       "Invalid Contact No",
     ],
   },
+  technician: {
+    type: String,
+  },
 
 },{timestamps:true});
 

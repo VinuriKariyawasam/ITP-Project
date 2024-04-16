@@ -53,6 +53,9 @@ const mrequestsSchema = new mongoose.Schema({
       "Invalid Contact No",
     ],
   },
+  technician: {
+    type: String,
+  },
 
 },{timestamps:true});
 

@@ -1,0 +1,135 @@
+
+
+.aboutus-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+  }
+  
+  .aboutus-text {
+    width: 45%;
+  }
+  
+  .aboutus-heading {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .aboutus-description {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+  }
+  
+  
+  .aboutus_h1 {
+    text-align: center;
+    font-weight: bold;
+  }
+  .containerProduct {
+    margin-top: 3%;
+    max-width: 100%;
+    background-color: white;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border: solid;
+    border-color: rgb(243, 242, 242);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  #cusmain {
+    margin-left: 9%;
+    margin-right: 9%;
+    margin-top: 9%;
+  }
+  .welcome {
+    color: #00224d;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .welcome:hover {
+    color: #00224d;
+    text-decoration: none;
+  }
+  .aboutus_para1 {
+    max-width: 57%;
+    font-size: 23px;
+    background-color: white;
+    padding-top: 40px;
+    padding-bottom: 60px;
+    padding-left: 12px;
+    padding-right: 5px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-left: auto;
+  }
+  
+  .aboutus_h3 {
+    margin-top: 5%;
+    font-weight: bold;
+  }
+  .productcard-container {
+    display: flex;
+    justify-content: space-between; /* Distribute items evenly */
+  }
+  
+  .card-wrapper {
+    width: 48%; /* Adjust as needed to leave some space between the cards */
+  }
+  
+  @media only screen and (max-width: 600px) {
+    .inventory_h1 {
+      text-align: center;
+      font-weight: bold;
+    }
+    .containerProduct {
+        display: flex;
+        align-items: center; /* Center items vertically */
+      }
+    #cusmain {
+      margin-left: 9%;
+      margin-right: 9%;
+      margin-top: 9%;
+    }
+    .welcome {
+      font-weight: bold;
+      text-decoration: none;
+    }
+  
+    .welcome:hover {
+      color: inherit;
+      text-decoration: none;
+    }
+    .aboutus_para1 {
+        max-width: 100%; /* Adjust text container width for smaller screens */
+      }
+  
+      .aboutusimg-left {
+        width: 100%; /* Adjust image width for smaller screens */
+        max-width: 100%; /* Set maximum width to 100% for smaller screens */
+      }
+      
+  }
+  .container-img-text {
+    position: relative;
+  }
+  
+  .aboutusimg1 {
+    width: 100%;
+    max-height: 600px;  /* Adjust the height to maintain aspect ratio */
+  }
+  
+  .aboutus-text h6, .aboutus-text p {
+    margin-bottom: 15px; /* Add margin bottom to create space between lines */
+  }
+  
+    .aboutusimg-left {
+      width: 50%; /* Set the width of the image */
+      float: left; /* Align the image to the left */
+      margin-right: 20px; /* Add some space to the right of the image */
+    }
+    

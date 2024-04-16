@@ -12,17 +12,17 @@ const MyAppointment = props => {
   const [activeTab, setActiveTab] = useState("Periodical Appointment");
 
   return(
-    <main id="main" className="main">
+    <main>
      
   <div>
   
-  <h1 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' ,marginLeft: '30%'}}>Your Appointments</h1>
-  <h2 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Approved Appointments</h2><br/><br/>
-<MyApApp/>
+  <h1 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' ,marginLeft: '40%',marginTop:'0%'}}>Your Appointments</h1>
+  <h3 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Approved Appointments</h3><br/><br/>
+<MyApApp/><br></br>
   
 
 
-  <h2 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Appointment Pending for Approval </h2>
+  <h3 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Appointment Pending for Approval </h3><br/><br/>
         <div>
         <Tabs
             id="controlled-tab-example"
