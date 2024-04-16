@@ -9,7 +9,7 @@ import Products from "../../CUS/CUSMain/inventory/Products";
 
 import { Routes, Route, Navigate } from "react-router-dom";
 
-function SuperServiceReq() {
+function SuperProducts() {
     return (
       <main id="main" className="main">
         <SuperPageTitle title="Products" url="staff/supervisor/products/" />
@@ -18,4 +18,4 @@ function SuperServiceReq() {
     );
   }
   
-  export default SuperServiceReq;
+  export default SuperProducts;

@@ -52,7 +52,7 @@ function AddVehicle() {
     model: "",
     year: "",
     name: "",
-    contactNo: "", // Adjusted field name to match backend
+    contact: "", // Adjusted field name to match backend
     date: new Date(),
     records: null // Adjusted to set a default date
   });
@@ -111,18 +111,12 @@ function AddVehicle() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const formDataToSend = new FormData();
-        formDataToSend.append("vehicleNo", formData.vehicleNo);
-        formDataToSend.append("brand", formData.brand); // Adjusted to match backend
-        formDataToSend.append("model", formData.model); // Adjusted to match backend
-        formDataToSend.append("year", formData.year); 
-        formDataToSend.append("name", formData.name);// Adjusted to match backend
-        formDataToSend.append("contactNo", formData.contactNo); // Adjusted field name to match backend
-        formDataToSend.append("date", formData.date.toISOString());
-  
         const response = await fetch("http://localhost:5000/api/vehicle/add-vehicle", {
           method: "POST",
-          body: formDataToSend,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
         });
   
         if (response.ok) {
@@ -137,7 +131,8 @@ function AddVehicle() {
       }
     }
   };
-
+  
+  
   const handleCloseModal = () => {
     setShowModal(false);
     navigate("/staff/supervisor/vehicle");
@@ -217,7 +212,13 @@ function AddVehicle() {
   
           <div className='mb-2'>
             <label htmlFor="contactNo">Contact No.</label>
-            <input type="text" name="contactNo" value={formData.contactNo} onChange={handleChange} className={`form-control ${errors.contactNo ? 'is-invalid' : ''}`} />
+            <input
+              type="text"
+              name="contact"
+              value={formData.contact}
+              onChange={handleChange}
+              className={`form-control ${errors.contac ? 'is-invalid' : ''}`}
+            />
             {errors.contactNo && <div className="invalid-feedback">{errors.contactNo}</div>}
           </div>
   
