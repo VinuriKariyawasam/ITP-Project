@@ -16,6 +16,7 @@ import CusProfile from "./components/CUS/CUSMain/CusProfile";
 import CusFooter from "../src/components/CUS/CusFooter/CusFooter";
 import { CusAuthContext } from "./context/cus-authcontext";
 import ContactUs from "../src/components/CUS/CUSMain/ContactUs";
+import AboutUs from "./components/CUS/Pages/CUSAboutUs";
 
 // Import Bootstrap CSS and icons
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -123,6 +124,7 @@ function CustomerApp() {
           <Route path="/cusreg/*" element={<CusRegistration />} />
           <Route path="/cuslogin/*" element={<CusLogin />} />
           <Route path="/mobservices/*" element={<MobileService />} />
+          <Route path="/aboutus" element={<AboutUs />} />
         </Routes>
         <CusFooter />
       </CusAuthContext.Provider>
