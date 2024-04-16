@@ -7,12 +7,12 @@ const createQuotation = async (req, res) => {
     const { vnumber, startDate, services, borrowingItems } = req.body;
 
     // Calculate total price based on selected services
-const totalPrice = services.reduce((total, service) => {
-  if (service.selected && service.price) {
-    return total + parseFloat(service.price);
-  }
-  return total;
-}, 0);
+    const totalPrice = services.reduce((total, service) => {
+      if (service.selected && service.price) {
+        return total + parseFloat(service.price);
+      }
+      return total;
+    }, 0);
 
     // Create a new Quotation instance with the provided data including totalPrice
     const newQuotation = new Quotation({
@@ -42,6 +42,16 @@ const getAllQuotations = async (req, res) => {
   }
 };
 
+// Controller function to get count of all quotations
+const getQuotationCount = async (req, res) => {
+  try {
+    const count = await Quotation.countDocuments();
+    res.status(200).json({ count });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Delete a quotation by ID
 const deleteQuotation = async (req, res) => {
   try {
@@ -51,7 +61,6 @@ const deleteQuotation = async (req, res) => {
       return res.status(404).json({ message: "Quotation not found" });
     }
     res.status(200).json({ message: "Quotation deleted successfully" });
-    
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -60,5 +69,6 @@ const deleteQuotation = async (req, res) => {
 module.exports = {
   createQuotation,
   getAllQuotations,
+  getQuotationCount, // Include the new count function
   deleteQuotation,
 };

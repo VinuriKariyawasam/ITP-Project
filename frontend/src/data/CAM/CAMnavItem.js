@@ -22,6 +22,9 @@ const navList = [
     icon: "bi bi-layout-text-window-reverse",
   },
  
+  
+
+
   {
     _id: 6,
     name: "Reports",

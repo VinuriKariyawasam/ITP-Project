@@ -7,6 +7,7 @@ import MyFeedback from "../CUSMain/CUS_CAM/MyFeedback";
 import AllFeedbacks from "../CUSMain/CUS_CAM/AllFeedbacks";
 
 
+
 import {
   BrowserRouter as Router,
   Route,
@@ -25,6 +26,7 @@ function CUSAffairs() {
         <Route path="/feedback/*" element={<Feedback/>}></Route>
         <Route path="myfeedback/*" element={<MyFeedback/>}></Route>
         <Route path="/consultation/*" element={<OnlineConsultation/>}></Route>
+        
         
         
      </Routes>

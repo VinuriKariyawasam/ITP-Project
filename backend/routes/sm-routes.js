@@ -36,5 +36,13 @@ router.post("/assign-job", job.assignedJob);
 
 router.get("/jobs", job.getAllJobs);
 
+// Route to get count of service reports
+router.get('/count', reportController.getCountOfServiceReports);
+
+// Route to get count of all records
+router.get("/records/count", RecordController.getRecordCount);
+
+// Route to get count of all quotations
+router.get("/quotations/count", quotationController.getQuotationCount);
 
 module.exports = router;

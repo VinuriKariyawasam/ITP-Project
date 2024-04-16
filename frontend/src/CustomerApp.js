@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useEffect,useContext } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
+
 // Import components and context
 import Header from "../src/components/CUS/CusHeader/Header";
 import CUSAffairs from "./components/CUS/Pages/CUSAffairs";
@@ -15,7 +16,8 @@ import CusLogin from "./components/CUS/CUSMain/CusLogin";
 import CusProfile from "./components/CUS/CUSMain/CusProfile";
 import CusFooter from "../src/components/CUS/CusFooter/CusFooter";
 import { CusAuthContext } from "./context/cus-authcontext";
-import Contactus from "./components/CUS/CUSMain/ContactUs";
+
+
 
 // Import Bootstrap CSS and icons
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -122,7 +124,8 @@ function CustomerApp() {
           <Route path="/cusreg/*" element={<CusRegistration />} />
           <Route path="/cuslogin/*" element={<CusLogin />} />
           <Route path="/mobservices/*" element={<MobileService />} />
-          <Route path="/contactus*" element={<Contactus />} />
+         
+          
         </Routes>
         <CusFooter />
       </CusAuthContext.Provider>
