@@ -104,3 +104,14 @@ exports.getReportById = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch report' });
   }
 };
+
+// Get count of all service reports
+exports.getCountOfServiceReports = async (req, res) => {
+  try {
+    const count = await ServiceReport.countDocuments();
+    res.status(200).json({ count });
+  } catch (error) {
+    console.error('Error counting service reports:', error);
+    res.status(500).json({ error: 'Failed to count service reports' });
+  }
+};

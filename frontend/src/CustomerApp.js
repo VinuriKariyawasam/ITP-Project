@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useEffect,useContext } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
+
 // Import components and context
 import Header from "../src/components/CUS/CusHeader/Header";
 import CUSAffairs from "./components/CUS/Pages/CUSAffairs";
@@ -17,6 +18,8 @@ import CusFooter from "../src/components/CUS/CusFooter/CusFooter";
 import { CusAuthContext } from "./context/cus-authcontext";
 import ContactUs from "../src/components/CUS/CUSMain/ContactUs";
 import AboutUs from "./components/CUS/Pages/CUSAboutUs";
+
+
 
 // Import Bootstrap CSS and icons
 import "bootstrap-icons/font/bootstrap-icons.css";

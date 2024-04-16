@@ -1,8 +1,6 @@
 import React from "react";
 //import SMPageTitle from "./SMPageTitle";
-import Addquotation from "./quotation";
-import QuotaDash from "./QuotaDash";
-
+import ServiceReqDash from "./smservicReq";
 import "../SMMain";
 
 // Import front end routes
@@ -12,21 +10,19 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import RecDash from "./RecDash";
 
-function Smrecords() {
+
+function SmSrequest() {
   return (
     <main id="main" className="main">
       
       
 
       <Routes>
-       <Route path="/" element={<QuotaDash/>} />
-        <Route path="/add" element={<Addquotation/>} />
-        
+        <Route path="/" element ={<ServiceReqDash/>}/>
       </Routes>
     </main>
   );
 }
 
-export default Smrecords;
+export default SmSrequest;

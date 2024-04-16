@@ -13,18 +13,18 @@ import {
 } from "react-router-dom";
 import RecDash from "./RecDash";
 
-function Smrecords() {
+function Smreports() {
   return (
     <main id="main" className="main">
       
       
 
       <Routes>
-        <Route path="/" element ={ReportDash}/>
+        <Route path="/" element ={<ReportDash/>}/>
         <Route path="/add" element={<Addreport/>} />
       </Routes>
     </main>
   );
 }
 
-export default Smrecords;
+export default Smreports;
