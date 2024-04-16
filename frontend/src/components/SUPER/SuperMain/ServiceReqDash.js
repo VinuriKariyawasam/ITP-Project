@@ -404,7 +404,7 @@ function ServiceReqDash() {
               <Modal.Title>Update Service Request</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              {successMessage && <p className="text-success">{successMessage}</p>} {/* Display success message */}
+             
               <Form>
                 <Form.Group className="mb-3" controlId="formVehicleNo">
                   <Form.Label>Vehicle No.</Form.Label>

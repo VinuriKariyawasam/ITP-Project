@@ -1,4 +1,3 @@
-//AddServiceReq.js
 import React, { useState, useRef } from "react";
 import { Button, Col, Form, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -6,7 +5,6 @@ import { RiCalendarLine } from "react-icons/ri";
 import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
 import FileUpload from "../SuperUtil/SuperFileUpload";
-import "./AddVehicle.css";
 
 function AddServiceReq() {
   const [formData, setFormData] = useState({
@@ -16,7 +14,6 @@ function AddServiceReq() {
     issue: "",
     request: "",
     report: null
-    //status: ""
   });
 
   const [errors, setErrors] = useState({});
@@ -45,9 +42,6 @@ function AddServiceReq() {
       case "request":
         errorMessage = !/^[a-zA-Z\s]*$/.test(value) ? "Request should contain only letters" : "";
         break;
-      /*case "status":
-        errorMessage = !/^[a-zA-Z\s]*$/.test(value) ? "Status should contain only letters" : "";
-        break;*/
       default:
         break;
     }
@@ -88,7 +82,6 @@ function AddServiceReq() {
         formDataToSend.append("issue", formData.issue);
         formDataToSend.append("request", formData.request);
         formDataToSend.append("report", formData.report);
-        //formDataToSend.append("status", formData.status);
         formDataToSend.append("reportFileName", formData.report.name);
         const response = await fetch("http://localhost:5000/api/vehicle/add-serviceReq", {
           method: "POST",
@@ -104,7 +97,6 @@ function AddServiceReq() {
         }
       } catch (error) {
         console.error("Error creating service request:", error);
-        // Handle error
       }
     }
   };
@@ -153,8 +145,8 @@ function AddServiceReq() {
   };
 
   return (
-    <div className='vh-100 d-flex justify-content-center align-items-center'>
-      <div className='w-50 bg-white rounded p-3'>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+      <div style={{ width: "50%", margin: "auto", marginTop: "-20px" }} className="bg-white rounded p-3">
         <form noValidate onSubmit={handleSubmit}>
           <h2>Service Request</h2>
 
@@ -225,7 +217,7 @@ function AddServiceReq() {
               <Modal.Title>Success</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              Vehicle registered successfully.
+              Service Request added successfully.
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
