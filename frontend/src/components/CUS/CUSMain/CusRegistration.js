@@ -9,6 +9,7 @@ import Button from "react-bootstrap/Button";
 import { Form, Col, Alert ,InputGroup} from 'react-bootstrap';
 import { BsExclamationTriangleFill } from 'react-icons/bs';
 import { BsFillEyeFill } from 'react-icons/bs';
+import { BsFillEyeSlashFill } from 'react-icons/bs';
 
 import cusimage1 from '../../../../src/images/CUS/CustomerImg/cusimage1.png';
 import cusimage2 from '../../../../src/images/CUS/CustomerImg/cusimage2.jpg';
@@ -28,7 +29,8 @@ function CusRegistration(){
   });
 
   const [Name, setName] = useState("");
-  const [showWarning, setShowWarning] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [contact, setContact] = useState("");
   const [isValid, setIsValid] = useState(true);
   const [email, setEmail] = useState("");
@@ -206,7 +208,6 @@ const handleConfirmPasswordChange = (e) => {
                <Form.Group as={Col} controlId="formGridExtra2">
                 <Form.Label>Contact No*</Form.Label>
                 <Form.Control
-                    as="textarea"
                     required
                     type="tel"
                     placeholder="xxx xx xx xxx"
@@ -241,39 +242,39 @@ const handleConfirmPasswordChange = (e) => {
                </Form.Group>
 
                <Form.Group as={Col} controlId="formGridExtra3">
-                <Form.Label>Password *</Form.Label>
-                <InputGroup hasValidation>
-                    <Form.Control 
-                        type="password" 
-                        placeholder="Password" 
-                        value={password}
-                        onChange={handleChangePassword}
-                        isInvalid={
-                            warnings.capitalLetter ||
-                            warnings.simpleLetter ||
-                            warnings.specialCharacter ||
-                            warnings.number ||
-                            warnings.minLength
-                        }
-                    />
-                    {/* Display feedback message based on validation */}
-                    <Form.Control.Feedback type="invalid">
-                        {warnings.capitalLetter && "Password must contain at least one capital letter."}<br />
-                        {warnings.simpleLetter && "Password must contain at least one simple letter."}<br />
-                        {warnings.specialCharacter && "Password must contain at least one special character."}<br />
-                        {warnings.number && "Password must contain at least one number."}<br />
-                        {warnings.minLength && "Password must be at least 8 characters long."}
-                    </Form.Control.Feedback>
-                    {/* Display eye icon if password is provided */}
-                    {password && (
-                        <InputGroup.Text>
-                            <BsFillEyeFill color="green" />
-                        </InputGroup.Text>
-                    )}
-                </InputGroup>
-            </Form.Group>
+    <Form.Label>Password *</Form.Label>
+    <InputGroup hasValidation>
+        <Form.Control 
+            type={showPassword ? "text" : "password"} 
+            placeholder="Password" 
+            value={password}
+            onChange={handleChangePassword}
+            isInvalid={
+                warnings.capitalLetter ||
+                warnings.simpleLetter ||
+                warnings.specialCharacter ||
+                warnings.number ||
+                warnings.minLength
+            }
+        />
+        {/* Display feedback message based on validation */}
+        <Form.Control.Feedback type="invalid">
+            {warnings.capitalLetter && "Password must contain at least one capital letter."}<br />
+            {warnings.simpleLetter && "Password must contain at least one simple letter."}<br />
+            {warnings.specialCharacter && "Password must contain at least one special character."}<br />
+            {warnings.number && "Password must contain at least one number."}<br />
+            {warnings.minLength && "Password must be at least 8 characters long."}
+        </Form.Control.Feedback>
+        {/* Display eye icon to toggle password visibility */}
+        <InputGroup.Text onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
+            {showPassword ? <BsFillEyeSlashFill color="green" /> : <BsFillEyeFill color="green" />}
+        </InputGroup.Text>
+    </InputGroup>
+</Form.Group>
+
             <Form.Group as={Col} controlId="formGridConfirmPassword">
                 <Form.Label>Confirm Password *</Form.Label>
+                <InputGroup>
                 <Form.Control 
                     type="password" 
                     placeholder="Confirm Password"
@@ -285,6 +286,11 @@ const handleConfirmPasswordChange = (e) => {
                 <Form.Control.Feedback type="invalid">
                     Passwords do not match.
                 </Form.Control.Feedback>
+                 {/* Display eye icon to toggle password visibility */}
+                 <InputGroup.Text onClick={() => setShowConfirmPassword(!showConfirmPassword)} style={{ cursor: "pointer" }}>
+                    {showConfirmPassword ? <BsFillEyeSlashFill color="green" /> : <BsFillEyeFill color="green" />}
+                 </InputGroup.Text>
+                </InputGroup>
                 </Form.Group>
 
                  <Form.Label>Address</Form.Label>
