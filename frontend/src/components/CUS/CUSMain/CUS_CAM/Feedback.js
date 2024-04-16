@@ -45,6 +45,8 @@ function Feedback() {
       });
 
       formData.append("userId",cusAuth.userId);
+      formData.append("name",cusAuth.name);
+
 
       if (uploadedFile) {
         formData.append("files", uploadedFile);
