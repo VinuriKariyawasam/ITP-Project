@@ -25,6 +25,8 @@ function FAQ(){
     const [Issues, setIssues] = useState([]);
     const [consultation, setFetchedConsultation] = useState([]);
 
+    
+
     //get all consultations
   useEffect(() => {
     const fetchConsultations = async() => {
@@ -43,6 +45,15 @@ function FAQ(){
     fetchConsultations();
 },  []);
 
+//destructure Issues object
+const{
+  vehicleType,
+  component,
+  issue,
+  solution,
+  filesUrls,
+} = Issues
+
     return(
         <main>
             <div>
@@ -51,21 +62,12 @@ function FAQ(){
                     <PageTitle_cam path="faq" title="Frequently Asked Questions!" />
                     <Row>
                     <Col>
-         <Accordion defaultActiveKey="0">
-          {Issues.map((consultation,index) =>(
-                      <Accordion.Item key={index} eventKey={index.toString()} style={{marginTop:"5px"}}>
-                        <Accordion.Header style={{fontWeight:"bold"}}>
-                          Vehicle Type : {consultation.vehicleType}<br></br>
-                          Component :   {consultation.component}<br></br>
-                          Issue :       {consultation.issue}<br></br>
-                          Solution: {consultation.solution}
-                        </Accordion.Header>
-                        <Accordion.Body>
-                        Documents uploaded : {consultation.files}
-          </Accordion.Body>
-          </Accordion.Item>
-          ))}
-            </Accordion> 
+                    <div className="card-body">
+                      <h5 className="card-title"> 
+                      Issue :       {consultation.issue}<br></br>
+                      Solution: {consultation.solution}
+                      </h5>
+             </div>
             </Col>
             <Col>
             <div className="card mb-3">
