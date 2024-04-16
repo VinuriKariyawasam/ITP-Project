@@ -15,23 +15,21 @@ const navList = [
     _id: 3,
     name: "FeedBack Review",
     icon: "bi bi-layout-text-window-reverse",
+    href: "/staff/cam/feedback_review"
   },
   {
     _id: 4,
     name: "FAQ Review",
     icon: "bi bi-layout-text-window-reverse",
+    href: "/staff/cam/faq_review"
   },
  
-  {
+ /*{
     _id: 6,
     name: "Reports",
     icon: "bi bi-clipboard2-data",
-    children: [
-      { _id: 21, name: "FeedBack Review", icon: "bi bi-circle" },
-      { _id: 22, name: "Consultancy Support", icon: "bi bi-circle" },
-      { _id: 23, name: "Attendance", icon: "bi bi-circle" },
-    ],
-  },
+    href: "/staff/cam/reports"
+  },*/
 ];
 
 export default navList;
