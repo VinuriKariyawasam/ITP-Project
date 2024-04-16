@@ -313,20 +313,21 @@ function ServiceReqDash() {
                     <td>{serviceReq.name}</td>
                     <td>{serviceReq.issue}</td>
                     <td>
-                      <Link
-                        to={`/serviceReq/${serviceReq._id}/records`}
-                        className="btn"
-                        style={{
-                          backgroundColor: "#d3d3d3",
-                          borderColor: "#d3d3d3",
-                          color: "#000",
-                          textDecoration: "none",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        More
-                      </Link>
-                    </td>
+  <Link
+    to={`/staff/supervisor/quotation`}
+    className="btn"
+    style={{
+      backgroundColor: "#d3d3d3",
+      borderColor: "#d3d3d3",
+      color: "#000",
+      textDecoration: "none",
+      fontWeight: "bold",
+    }}
+  >
+    More
+  </Link>
+</td>
+
                     <td>{serviceReq.request}</td>
                     <td>
                     <Button
