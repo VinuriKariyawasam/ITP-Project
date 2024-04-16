@@ -4,6 +4,7 @@ import SuperVehicle from "../SuperMain/SuperVehicle";
 import SuperSideBar from "../SuperSidebar/SuperSideBar";
 import SuperServiceReq from "../SuperMain/SuperServiceReq";
 import UpdateVehicle from "../SuperMain/UpdateVehicle";
+import Sujob from "../SuperMain/Job/sujob";
 
 // Import front end routes
 import {
@@ -21,6 +22,7 @@ function SUPERVISOR() {
         <Route path="/" element={<SuperMain />} />
         <Route path="vehicle/*" element={<SuperVehicle />} />
         <Route path="serviceReq/*" element={<SuperServiceReq />} />
+        <Route path="jobs/*" element={<Sujob/>} />
       </Routes>
    
     </main>

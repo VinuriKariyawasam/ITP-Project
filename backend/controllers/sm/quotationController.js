@@ -51,6 +51,7 @@ const deleteQuotation = async (req, res) => {
       return res.status(404).json({ message: "Quotation not found" });
     }
     res.status(200).json({ message: "Quotation deleted successfully" });
+    
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

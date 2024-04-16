@@ -9,7 +9,7 @@ const navList = [
     _id: 2,
     name: "Service Request",
     icon: "bi bi-building-add",
-    href: "/staff/supervisor/serviceReq",
+    href: "/staff/sm/serviceReq",
   },
   {
     _id: 3,

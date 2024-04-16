@@ -17,6 +17,7 @@ import SMAccidentalRepairs from "../SMmain/SMAppointment/SMAccidental";
 import AccidentalHistory from "../SMmain/SMAppointment/accidentalHistory"
 import Smquotation from "../SMmain/SMService/Smquotation";
 import Smreports from "../SMmain/SMService/Smreports";
+import SmSrequest from "../SMmain/SMService/smSRequest";
 // Import front end routes
 import {
   BrowserRouter as Router,
@@ -51,6 +52,7 @@ function SM() {
         <Route path="/vehiclecarriers" exact element={<SMmVehicleCarriers/>} />
         <Route path="quotation/*" element={<Smquotation/>} />
         <Route path="report/*" element={<Smreports/>} />
+        <Route path="serviceReq/*" element={<SmSrequest/>} />
       </Routes>
     </>
   );

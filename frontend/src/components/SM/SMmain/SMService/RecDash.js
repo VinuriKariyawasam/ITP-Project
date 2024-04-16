@@ -172,6 +172,11 @@ function RecDash() {
           />
         </Card.Body>
       </Card>
+
+      {/* Back Button */}
+      <Button variant="dark" className="mt-3" onClick={() => window.history.back()}>
+        Back
+      </Button>
     </section>
   );
 }
