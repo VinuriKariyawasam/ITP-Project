@@ -1,6 +1,8 @@
 const { addmechanicalreqdata,getMechanical,updatemechanical,deleteMechanical } = require('../controllers/mobile/mobileController')
 const { addcarrierreqdata,getcarrierreq,updatecarrierreq,deletecarrierreq } = require('../controllers/mobile/vehicleCarrierController')
 const { addbreakdownreqdata,getbreakdownreq,updatebreakdownreq,deletebreakdownreq } = require('../controllers/mobile/emBreakdownController')
+const contactUsController =require ("../controllers/contactusController")
+
 
 // get this page if main route would be 'MobileService'
 
@@ -23,6 +25,11 @@ router.post('/add-breakdown',addbreakdownreqdata )
 router.get('/get-breakdown',getbreakdownreq)
 router.put('/update-breakdown/:id',updatebreakdownreq)
 router.delete('/delete-breakdown/:id',deletebreakdownreq)
+
+//contactus
+router.post('/contact', contactUsController.sendMessage);
+// Route to get all contact us messages
+router.get('/contact-us-messages', contactUsController.getAllContacts);
 
 
 module.exports=router

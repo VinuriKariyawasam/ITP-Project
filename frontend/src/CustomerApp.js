@@ -16,8 +16,9 @@ import CusLogin from "./components/CUS/CUSMain/CusLogin";
 import CusProfile from "./components/CUS/CUSMain/CusProfile";
 import CusFooter from "../src/components/CUS/CusFooter/CusFooter";
 import { CusAuthContext } from "./context/cus-authcontext";
-import ContactUs from "../src/components/CUS/CUSMain/ContactUs";
+import Contactus from "./components/CUS/CUSMain/ContactUs";
 import AboutUs from "./components/CUS/Pages/CUSAboutUs";
+
 
 
 
@@ -118,7 +119,6 @@ function CustomerApp() {
         <Header />
         <Routes>
           <Route path="/" element={<Cushome />} />
-          <Route path="/contactus" element={<ContactUs />} />
           <Route path="/products/*" element={<Products />} />
           <Route path="/appointment/*" element={<CUSAppointment />} />
           <Route path="/payments/*" element={<Payment />} />
@@ -127,6 +127,7 @@ function CustomerApp() {
           <Route path="/cusreg/*" element={<CusRegistration />} />
           <Route path="/cuslogin/*" element={<CusLogin />} />
           <Route path="/mobservices/*" element={<MobileService />} />
+          <Route path="/contactus*" element={<Contactus />} />
           <Route path="/aboutus" element={<AboutUs />} />
         </Routes>
         <CusFooter />
