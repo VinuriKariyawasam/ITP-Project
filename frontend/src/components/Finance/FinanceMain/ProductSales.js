@@ -9,7 +9,7 @@ const ProductSales = () => {
   const [approvedSpareParts, setApprovedSpareParts] = useState([]);
   const [pendingOrder, setPendingOrder] = useState([]);
   const [completedOrder, setCompletedOrder] = useState([]);
-  const [searchDate, setSearchDate] = useState('');
+  const [searchDate, setSearchDate] = useState("");
 
   useEffect(() => {
     function getApprovedSpareParts() {
@@ -115,7 +115,7 @@ const ProductSales = () => {
       <br />
       <div>
         <h4>Pending Spare Parts Orders</h4>
-        <Table>
+        <Table striped bordered hover>
           <thead>
             <tr>
               <th>Customer Name</th>
@@ -134,9 +134,15 @@ const ProductSales = () => {
                 <td>{SpareParts.vehicleNumber}</td>
                 <td>{SpareParts.contactNumber}</td>
                 <td>{SpareParts.total}</td>
-                <td><Badge bg="primary">In Finance</Badge></td>
-                <td><Button variant="secondary" onClick={() => handleMoreButtonClick(SpareParts)}>more</Button></td>
-                <td><Button variant="success" onClick={() => handleApprove(SpareParts)}>Approve</Button></td> {/* Approve button */}
+                <td>
+                  <Badge bg="primary">In Finance</Badge>
+                </td>
+                <td>
+                  <Button variant="secondary" onClick={() => handleMoreButtonClick(SpareParts)}>more</Button>
+                </td>
+                <td>
+                  <Button variant="success" onClick={() => handleApprove(SpareParts)}>Approve</Button> {/* Approve button */}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -163,7 +169,7 @@ const ProductSales = () => {
       </div>
 
       <h3>Pending Product Orders</h3>
-      <Table>
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>OrderID</th>
@@ -180,9 +186,15 @@ const ProductSales = () => {
               <td>{pendingorder._id}</td>
               <td>{pendingorder.date.split('T')[0]}</td>
               <td>{pendingorder.total}</td>
-              <td><Badge bg="warning">{pendingorder.status}</Badge></td>
-              <td><Button variant="secondary" onClick={() => handleMoreButtonClick(pendingorder)}>more</Button></td>
-              <td><Button variant="success" onClick={() => productApprove(pendingorder)}>Approve</Button></td> {/* Approve button */}
+              <td>
+                <Badge bg="warning">{pendingorder.status}</Badge>
+              </td>
+              <td>
+                <Button variant="secondary" onClick={() => handleMoreButtonClick(pendingorder)}>more</Button>
+              </td>
+              <td>
+                <Button variant="success" onClick={() => productApprove(pendingorder)}>Approve</Button> {/* Approve button */}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -194,7 +206,7 @@ const ProductSales = () => {
         <Modal.Body>
           <p>Order Details:</p>
           {selectedOrder?.products && (
-            <Table>
+            <Table striped bordered hover>
               <thead>
                 <tr>
                   <th>Product Name</th>
