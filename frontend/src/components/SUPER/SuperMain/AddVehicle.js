@@ -1,8 +1,49 @@
-import React, { useState } from "react";
-import { Button, Form, Modal } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import React, { useState, useRef } from "react";
+import { Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { RiCalendarLine } from "react-icons/ri";
+import DatePicker from "react-datepicker";
+import FileUpload from "../SuperUtil/SuperFileUpload";
 import "./AddVehicle.css"; // Import CSS file for custom styles
+
+export function validate(name, value) {
+  if (name === "vehicleNo") {
+    if (!value.trim().length || value.trim().length > 10) {
+      return "Vehicle No. is required and must be at most 10 characters";
+    }
+  }
+  if (name === "date") {
+    if (!value) {
+      return "Date is required";
+    }
+  }
+  if (name === "name") {
+    if (!/^[a-zA-Z\s]*$/.test(value)) {
+      return "Name should contain only letters";
+    }
+  }
+  if (name === "issue") {
+    if (!/^[a-zA-Z\s]*$/.test(value)) {
+      return "Issue should contain only letters";
+    }
+  }
+  if (name === "request") {
+    if (!/^[a-zA-Z\s]*$/.test(value)) {
+      return "Request should contain only letters";
+    }
+  }
+  if (name === "year") {
+    if (!/^\d{4}$/.test(value)) {
+      return "Year should contain exactly 4 digits";
+    }
+  }
+  if (name === "contact") {
+    if (!/^\d{10}$/.test(value)) {
+      return "Contact No. should contain exactly 10 digits";
+    }
+  }
+  return "";
+}
 
 function AddVehicle() {
   const [formData, setFormData] = useState({
@@ -11,212 +52,298 @@ function AddVehicle() {
     model: "",
     year: "",
     name: "",
-    contact: "",
-    records: null // Assuming records is a file
+    contact: "", // Adjusted field name to match backend
+    date: new Date(),
+    records: null, // Adjusted to set a default date
   });
 
-  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [errorField, setErrorField] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [errorField, setErrorField] = useState(null); // Track the field causing the error
   const navigate = useNavigate();
+  const datePickerRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    let errorMessage = "";
+
+    // Validate each field as it's being typed
+    switch (name) {
+      case "vehicleNo":
+        errorMessage =
+          value.trim().length === 0 || value.trim().length > 10
+            ? "Vehicle No. is required and must be at most 10 characters"
+            : "";
+        break;
+      case "date":
+        errorMessage = !value ? "Date is required" : "";
+        break;
+      case "name":
+        errorMessage = !/^[a-zA-Z\s]*$/.test(value)
+          ? "Name should contain only letters"
+          : "";
+        break;
+      case "brand":
+        errorMessage = !/^[a-zA-Z\s]*$/.test(value)
+          ? "Issue should contain only letters"
+          : "";
+        break;
+      case "model":
+        errorMessage = !/^[a-zA-Z\s]*$/.test(value)
+          ? "Request should contain only letters"
+          : "";
+        break;
+      case "year":
+        errorMessage = !/^\d{4}$/.test(value)
+          ? "Year should contain exactly 4 digits"
+          : "";
+        break;
+      case "contact":
+        errorMessage = !/^\d{10}$/.test(value)
+          ? "Contact No. should contain exactly 10 digits"
+          : "";
+        break;
+      default:
+        break;
+    }
+
+    setErrors({ ...errors, [name]: errorMessage });
+    setErrorField(null);
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleClick = async (e) => {
+  const handleDateChange = (date) => {
+    // Validate date
+    const errorMessage = !date ? "Date is required" : "";
+    setErrors({ ...errors, date: errorMessage });
+    datePickerRef.current.setFocus(true);
+    setFormData({ ...formData, date });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = e.currentTarget;
+    if (validateForm()) {
+      try {
 
-    if (form.checkValidity() === false) {
-      form.reportValidity();
-      return;
-    }
-
-    // Check if vehicleNo field is empty
-    if (!formData.vehicleNo.trim()) {
-      setError('Failed to register the vehicle. Please enter the Vehicle No.');
-      setErrorField('vehicleNo');
-      return;
-    }
-
-    // Custom validations
-    if (!validateVehicleNo(formData.vehicleNo)) {
-      setError('Please enter a valid vehicle No.');
-      setErrorField('vehicleNo');
-      return;
-    }
-
-    if (!validateBrand(formData.brand)) {
-      setError('Failed to register the vehicle. Please enter vehicle brand.');
-      setErrorField('brand');
-      return;
-    }
-
-    if (!validateModel(formData.model)) {
-      setError('Failed to register the vehicle. Please enter vehicle model.');
-      setErrorField('model');
-      return;
-    }
-
-    if (!formData.year.trim()) {
-      setError('Failed to register the vehicle. Please enter year.');
-      setErrorField('year');
-      return;
-    }
+        const response = await fetch("http://localhost:5000/api/vehicle/add-vehicle", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
   
-    if (!validateYear(formData.year)) {
-      setError('Invalid year. Please enter again.');
-      setErrorField('year');
-      return;
-    }
 
-    if (!validateName(formData.name)) {
-      setError('Failed to register the vehicle. Please enter name.');
-      setErrorField('name');
-      return;
-    }
-
-    if (!formData.contact.trim()) {
-      setError('Failed to register the vehicle. Please enter contact number.');
-      setErrorField('contact');
-      return;
-    }
-
-    if (!validateContact(formData.contact)) {
-      setError('Invalid contact number. Please enter again.');
-      setErrorField('contact');
-      return;
-    }
-
-    try {
-      const res = await fetch('http://localhost:5000/api/vehicle/add-vehicle', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      console.log(data);
-      if (!res.ok) {
-        setError(data.error || 'Failed to save vehicle');
-        return;
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Vehicle registered:", data);
+          setShowModal(true);
+        } else {
+          throw new Error("Failed to register vehicle");
+        }
+      } catch (error) {
+        console.error("Error registering vehicle:", error);
       }
-      setShowModal(true);
-    } catch (error) {
-      setError(error.message || 'An error occurred.');
     }
   };
-
+  
+  
   const handleCloseModal = () => {
     setShowModal(false);
     navigate("/staff/supervisor/vehicle");
   };
 
-  // Custom validation functions
-  const validateVehicleNo = (vehicleNo) => {
-    return vehicleNo.trim().length > 0 && vehicleNo.trim().length <= 10;
-  };  
-
-  const validateBrand = (brand) => {
-    return brand.trim().length > 0;
+  const handleCalendarIconClick = () => {
+    datePickerRef.current.setFocus(true);
   };
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = {};
 
-  const validateModel = (model) => {
-    return model.trim().length > 0;
+    if (
+      !formData.vehicleNo.trim().length ||
+      formData.vehicleNo.trim().length > 10
+    ) {
+      newErrors.vehicleNo =
+        "Vehicle No. is required and must be at most 10 characters";
+      valid = false;
+    }
+
+    if (!formData.date) {
+      newErrors.date = "Date is required";
+      valid = false;
+    }
+
+    if (!formData.name.trim().length) {
+      newErrors.name = "Name is required";
+      valid = false;
+    }
+
+    if (!formData.brand.trim().length) {
+      newErrors.issue = "Issue is required";
+      valid = false;
+    }
+
+    if (!formData.model.trim().length) {
+      newErrors.request = "Request is required";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
   };
+  //const navigate = useNavigate();
 
-  const validateYear = (year) => {
-    return /^\d{4}$/.test(year);
-  };  
-
-  const validateName = (name) => {
-    return name.trim().length > 0;
+  const goBack = () => {
+    navigate(-1);
   };
-
-  const validateContact = (contact) => {
-    return /^\d{10}$/.test(contact);
-  };
-  
 
   return (
-    <div className='vh-100 d-flex justify-content-center align-items-center'>
-      <div className='w-50 bg-white rounded p-3'>
-        <form noValidate>
-          <h2>Vehicle</h2>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
+      <div
+        style={{ width: "50%", margin: "auto", marginTop: "-20px" }}
+        className="bg-white rounded p-3"
+      >
+        <form noValidate onSubmit={handleSubmit}>
+          <h2>Add Vehicle</h2>
 
-          <div className='mb-2'>
+          <div className="mb-2">
             <label htmlFor="vehicleNo">Vehicle No.</label>
-            <input type="text" name="vehicleNo" value={formData.vehicleNo} onChange={handleChange} className={`form-control ${errorField === 'vehicleNo' ? 'vehicle-error' : ''}`} required />
-            {errorField === 'vehicleNo' && <span className="vehicle-exclamation-mark">!</span>}
+            <input
+              type="text"
+              name="vehicleNo"
+              value={formData.vehicleNo}
+              onChange={handleChange}
+              className={`form-control ${errors.vehicleNo ? "is-invalid" : ""}`}
+            />
+            {errors.vehicleNo && (
+              <div className="invalid-feedback">{errors.vehicleNo}</div>
+            )}
           </div>
 
-          <div className='mb-2'>
+          <div className="mb-2">
             <label htmlFor="brand">Brand</label>
-            <input type="text" name="brand" value={formData.brand} onChange={handleChange} className={`form-control ${errorField === 'brand' ? 'vehicle-error' : ''}`} required />
-            {errorField === 'brand' && <span className="vehicle-exclamation-mark">!</span>}
+            <input
+              type="text"
+              name="brand"
+              value={formData.brand}
+              onChange={handleChange}
+              className={`form-control ${errors.brand ? "is-invalid" : ""}`}
+            />
+            {errors.brand && (
+              <div className="invalid-feedback">{errors.brand}</div>
+            )}
           </div>
 
-          <div className='mb-2'>
+          <div className="mb-2">
             <label htmlFor="model">Model</label>
-            <input type="text" name="model" value={formData.model} onChange={handleChange} className={`form-control ${errorField === 'model' ? 'vehicle-error' : ''}`} required />
-            {errorField === 'model' && <span className="vehicle-exclamation-mark">!</span>}
+            <input
+              type="text"
+              name="model"
+              value={formData.model}
+              onChange={handleChange}
+              className={`form-control ${errors.model ? "is-invalid" : ""}`}
+            />
+            {errors.model && (
+              <div className="invalid-feedback">{errors.model}</div>
+            )}
           </div>
 
-          <div className='mb-2'>
+          <div className="mb-2">
             <label htmlFor="year">Year</label>
-            <input type="text" name="year" value={formData.year} onChange={handleChange} className={`form-control ${errorField === 'year' ? 'vehicle-error' : ''}`} required />
-            {errorField === 'year' && <span className="vehicle-exclamation-mark">!</span>}
+            <input
+              type="text"
+              name="year"
+              value={formData.year}
+              onChange={handleChange}
+              className={`form-control ${errors.year ? "is-invalid" : ""}`}
+            />
+            {errors.year && (
+              <div className="invalid-feedback">{errors.year}</div>
+            )}
           </div>
 
-          <div className='mb-2'>
+          <div className="mb-2">
             <label htmlFor="name">Name</label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} className={`form-control ${errorField === 'name' ? 'vehicle-error' : ''}`} required />
-            {errorField === 'name' && <span className="vehicle-exclamation-mark">!</span>}
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className={`form-control ${errors.name ? "is-invalid" : ""}`}
+            />
+            {errors.name && (
+              <div className="invalid-feedback">{errors.name}</div>
+            )}
           </div>
 
-          <div className='mb-2'>
-            <label htmlFor="contact">Contact No.</label>
-            <input type="text" name="contact" value={formData.contact} onChange={handleChange} className={`form-control ${errorField === 'contact' ? 'vehicle-error' : ''}`} required />
-            {errorField === 'contact' && <span className="vehicle-exclamation-mark">!</span>}
+          <div className="mb-2">
+            <label htmlFor="contactNo">Contact No.</label>
+            <input
+              type="text"
+
+              name="contact"
+              value={formData.contact}
+              onChange={handleChange}
+              className={`form-control ${errors.contac ? 'is-invalid' : ''}`}
+            />
+            {errors.contactNo && <div className="invalid-feedback">{errors.contactNo}</div>}
+
           </div>
-          
-          <div className='mb-2'>
-            <label htmlFor="records">Current Records</label>
-            <input type="file" name="records" onChange={handleChange} className="form-control" />
+
+          <div className="mb-2">
+            <label htmlFor="date">Date</label>
+            <div className="input-group">
+              <DatePicker
+                selected={formData.date}
+                onChange={handleDateChange}
+                className={`form-control ${errors.date ? "is-invalid" : ""}`}
+                dateFormat="yyyy-MM-dd"
+                ref={datePickerRef}
+              />
+              <span
+                className="input-group-text"
+                onClick={handleCalendarIconClick}
+              >
+                <RiCalendarLine />
+              </span>
+            </div>
+            {errors.date && (
+              <div className="invalid-feedback">{errors.date}</div>
+            )}
           </div>
 
           <div className="d-flex justify-content-center mt-3">
-            <Button variant="primary" className="me-5">
-              <Link to="/staff/supervisor/vehicle" className="text-light text-decoration-none">
-                Back
-              </Link>
+            <Button variant="primary" className="me-5" onClick={goBack}>
+              Back
             </Button>
-            <Button type="submit" onClick={handleClick} variant="success">Register</Button>
+            <Button type="submit" variant="success">
+              Register
+            </Button>
           </div>
 
           <Modal show={showModal} onHide={handleCloseModal}>
             <Modal.Header closeButton>
               <Modal.Title>Success</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-              Vehicle registered successfully.
-            </Modal.Body>
+            <Modal.Body>Vehicle registered successfully.</Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                Close
+              </Button>
             </Modal.Footer>
           </Modal>
-
-          {error && <p className="vehicle-error-message">{error}</p>} {/* Display error message */}
         </form>
       </div>
     </div>
-  )
+  );
 }
 
 export default AddVehicle;

@@ -48,6 +48,8 @@ class FeedbackController {
       // Log the request body to see the uploaded data after file upload
       console.log("Request Body:", req.body);
 
+      const userId = req.body["userId"];
+      const name = req.body["name"];
       const serviceType = req.body["serviceType"];
       const employee = req.body["employee"];
       const files = req.body["files"];
@@ -63,6 +65,8 @@ class FeedbackController {
 
       // Assign properties one by one to the new feedback object
       const newFeedback = new feedbackModel();
+      newFeedback.userId = userId;
+      newFeedback.name = name;
       newFeedback.serviceType = serviceType;
       newFeedback.employee = employee;
       newFeedback.files = filePaths;
@@ -103,24 +107,23 @@ static async getFeedback(req, res){
 
 //Get feedback by ID
 static async getFeedbackById(req, res){
+  const userId = req.params;
+  console.log("Request Body:", userId);
   try{
-    // Check for validation errors using express-validator
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      new HttpError("Invalid inputs passed, please check your data.", 422);
-    }
-    const feedback = await feedbackModel.findById(req.params.id);
+    
+    const feedback = await feedbackModel.find( userId );
+    console.log("feedback", feedback)
     if(!feedback) {
       throw new HttpError("Feedback not found", 404);
     }
 
     //Construct the response object with file URLs
-    const feedbackData = {
-      ...feedback.toObject({ getters: true}),
-      filesUrls: feedback.files.map(
-        (doc) => `${req.protocol}://${req.get("host")}${doc}`
-      ),
-    };
+    const feedbackData = feedback.map((feed) => ({
+      ...feed.toObject({ getters: true}),
+      filesUrls: feed.files.length>0?feed.files.map(
+        (doc) => (`${req.protocol}://${req.get("host")}${doc}`)
+      ):null
+    }));
     res.status(200).json(feedbackData);
   }catch (error) {
     console.error("Error fetching feedback data:", error);
@@ -129,90 +132,50 @@ static async getFeedbackById(req, res){
 }
 
 //update feedback by Id
-static async updateFeedbackById(req, res, next) {
-  console.log("Request Body:", req.params.id);
-  console.log("Request Body:", req.body);
+static async updateFeedbackByUserId(req, res, next){
+  const { userId } = req.params; // Extract user ID from request parameters
+  console.log("Request Body:", userId);
+  const { serviceType, employee, feedback, rating, files } = req.body; // Extract updated data from request body
 
-  const {serviceType, employee, feedback, files} = req.body;
-  const id = req.params.id;
-
-  let fb;
-  try{
-    fb = await feedbackModel.findById(id);
-  }catch (err) {
-    const error = new HttpError(
-      "Something went wrong, could not find feedback.",
-      404
+  try {
+    // Find the feedback document by user ID and update it
+    const updatedFeedback = await feedbackModel.findOneAndUpdate(
+      { userId: userId }, // Search criteria
+      { serviceType, employee, feedback, rating, files }, // Updated data
+      { new: true } // Return the updated document
     );
-    return next(error);
+
+     // If the document is not found, return a 404 error
+     if (!updatedFeedback) {
+      return res.status(404).json({ error: "Feedback not found" });
+    }
+    // Return the updated feedback document
+    res.status(200).json(updatedFeedback);
+    console.log("Request Body:",updatedFeedback);
+  } catch (error) {
+    // Handle any errors that occur during the update process
+    console.error("Error updating feedback:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
+};
 
-  if(!fb){
-    const error = new HttpError("Feedback not found", 404);
-      return next(error);
-  }
-  // Update feedback fields with values from req.body
-  fb.serviceType = serviceType;
-  fb.employee = employee;
-  fb.feedback = feedback;
-  fb.files = files;
-
-  try{
-    // Check if there are file uploads
-    upload(req, res, async function (err) {
-      if (err instanceof multer.MulterError) {
-        console.error("File upload error:", err.message);
-        return res.status(400).json({ error: err.message });
-      } else if (err) {
-        console.error("File upload error:", err.message);
-        return res.status(500).json({ error: err.message });
-      }
-      // Handle photo upload if needed
-      if (req.files && req.files["files"]) {
-        const uploadedFileName = req.files["files"][0].originalname;
-
-        const dbFileName = fb.files ? path.basename(fb.files) : null;
-
-        if (!dbFileName || uploadedFileName !== dbFileName) {
-          // Upload photo and update photo URL in emp object
-          const filePath = `/uploads/CAM/${path.basename(
-            req.files["files"][0].path
-          )}`;
-          fb.files = filePath;
-  }
-}
-// Save the updated feedback
-try {
-  const updatedFeedback = await fb.save();
-  res.status(200).json(updatedFeedback);
-} catch (err) {
-  const error = new HttpError(
-    "Something went wrong, could not update feedback.",
-    500
-  );
-  return next(error);
-}
-});
-} catch (error) {
-res.status(500).json({ error: error.message });
-}
-}
-
-//Delete feedback by Id
-static async deleteFeedbackById (req, res) {
-  try{
+static async deleteFeedbackById(req, res) {
+  const { userId } = req.params; // Extract user ID from request parameters
+  console.log("Request Body:", userId);
+  try {
     // Find and delete the feedback from the original table
-    const deletedFeedback = await feedbackModel.findByIdAndDelete(
-      req.params.id
+    const deletedFeedback = await feedbackModel.deleteOne(
+      { userId: userId }, // Search criteria
     );
-    if (!deletedFeedback) {
+    if (deletedFeedback.deletedCount === 0) {
       return res.status(404).json({ error: "Feedback not found" });
     }
     res.status(204).json();
-  }catch (error) {
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 }
+
 }
 module.exports = FeedbackController;
 

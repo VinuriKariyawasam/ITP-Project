@@ -40,6 +40,7 @@ function QuotaDash() {
       console.log("Delete response:", response);
       if (response.ok) {
         // Refresh the quotations list after deletion
+        alert("Deleted successfully!");
         fetchQuotations();
       } else {
         throw new Error("Failed to delete quotation");
@@ -65,6 +66,10 @@ function QuotaDash() {
     setSearchQuery(e.target.value);
   };
 
+  const handleBackButtonClick = () => {
+    navigate(-1); // Navigate back to the previous page
+  };
+
   // Generate auto-incremented quotation IDs like SMQ01, SMQ02, ...
   const generateQuotationId = (index) => {
     const idNumber = (index + 1).toString().padStart(2, "0"); // Start index from 1
@@ -83,6 +88,10 @@ function QuotaDash() {
           </Button>
         </Col>
       </Row>
+
+      <Button variant="dark" onClick={handleBackButtonClick} className="mb-3">
+        Back
+      </Button>
 
       <Form className="mb-3">
         <Form.Group as={Row} controlId="searchQuotation">
@@ -148,3 +157,4 @@ function QuotaDash() {
 }
 
 export default QuotaDash;
+

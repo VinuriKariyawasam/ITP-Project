@@ -259,6 +259,7 @@ const PayHereIntegration = () => {
           </div>
         </div>
       </div>
+      <div style={{ marginBottom: "2cm" }}></div>
     </main>
   );
 };

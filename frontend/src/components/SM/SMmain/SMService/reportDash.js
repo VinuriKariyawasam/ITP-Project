@@ -53,6 +53,10 @@ const ReportDash = () => {
     return date.toLocaleDateString(); // Format date as MM/DD/YYYY
   };
 
+  const handleBackButtonClick = () => {
+    navigate(-1); // Navigate back to the previous page
+  };
+
   return (
     <div className="my-4">
       <Row className="mb-3">
@@ -65,6 +69,10 @@ const ReportDash = () => {
           </Button>
         </Col>
       </Row>
+
+      <Button variant="dark" onClick={handleBackButtonClick} className="mb-3">
+        Back
+      </Button>
 
       <Form className="mb-3">
         <Form.Group as={Row} controlId="searchReport">
@@ -112,11 +120,13 @@ const ReportDash = () => {
               <td>{report.totalServicePrice}</td>
               <td>
                 <ul>
-                  {report.services.map((service) => (
-                    <li key={service.id}>
-                      {service.name} - {service.completed ? "Completed" : "Not Completed"}
-                    </li>
-                  ))}
+                  {report.services
+                    .filter((service) => service.completed)
+                    .map((service) => (
+                      <li key={service.id}>
+                        {service.name}
+                      </li>
+                    ))}
                 </ul>
               </td>
               <td>{report.inventoryUsed ? "Yes" : "No"}</td>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Modal, Row, Stack } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import jsPDF from "jspdf";
 
 function VehicleDash() {
@@ -11,6 +11,7 @@ function VehicleDash() {
   const [deletedVehicle, setDeletedVehicle] = useState(null);
   const [formData, setFormData] = useState({});
   const [search, setSearch] = useState('');
+  
 
   useEffect(() => {
     fetchData();
@@ -199,6 +200,23 @@ function VehicleDash() {
     }
   };
 
+  const handleMoreClick = (vehicleNo) => {
+    // Check if the vehicle number exists in the list of vehicles
+    const vehicleExists = vehicles.some(
+      (vehicle) => vehicle.vehicleNo === vehicleNo
+    );
+    
+    if (vehicleExists) {
+      window.location.href = `/staff/sm/record?vnumber=${vehicleNo}`;
+    } else {
+      alert(`Vehicle with number ${vehicleNo} is not available.`);
+    }
+  };
+
+  const filteredVehicles = vehicles.filter((vehicle) =>
+  vehicle.vehicleNo.toLowerCase().includes(search.toLowerCase())
+);
+
   return (
     <div className="table">
       <Row>
@@ -247,42 +265,39 @@ function VehicleDash() {
                 )
                 .map((vehicle, index) => (
                   <tr key={index}>
-                    <td>{vehicle.vehicleNo}</td>
-                    <td>{vehicle.brand}</td>
-                    <td>{vehicle.model}</td>
-                    <td>{vehicle.year}</td>
-                    <td>{vehicle.name}</td>
-                    <td>{vehicle.contact}</td>
-                    <td>
-                      <Link
-                        to={`/vehicle/${vehicle._id}/records`}
-                        className="btn"
-                        style={{
-                          backgroundColor: "#d3d3d3", // Ash color
-                          borderColor: "#d3d3d3", // Border color
-                          color: "#000", // Text color
-                          textDecoration: "none", // Remove underline
-                          fontWeight: "bold", // Make text bold
-                        }}
-                      >
-                        More
-                      </Link>
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => handleShowUpdateModal(vehicle)}
-                        className="btn btn-warning me-2 text-dark font-weight-bold"
-                      >
-                        Update
-                      </button>
-                      <button
-                        onClick={() => handleDelete(vehicle._id)}
-                        className="btn btn-danger text-dark font-weight-bold"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
+  <td>{vehicle.vehicleNo}</td>
+  <td>{vehicle.brand}</td>
+  <td>{vehicle.model}</td>
+  <td>{vehicle.year}</td>
+  <td>{vehicle.name}</td>
+  <td>{vehicle.contact}</td>
+  <td>
+  <button
+  className="btn btn-secondary me-2"
+  onClick={() => {
+    handleMoreClick(vehicle.vehicleNo);
+    window.location.href = "/staff/supervisor/records";
+  }}
+>
+  More
+</button>
+  </td>
+  <td> {/* Move the buttons inside a separate <td> */}
+    <button
+      onClick={() => handleShowUpdateModal(vehicle)}
+      className="btn btn-warning me-2 text-dark font-weight-bold"
+    >
+      Update
+    </button>
+    <button
+      onClick={() => handleDelete(vehicle._id)}
+      className="btn btn-danger text-dark font-weight-bold"
+    >
+      Delete
+    </button>
+  </td>
+</tr>
+
                 ))}
             </tbody>
           </table>

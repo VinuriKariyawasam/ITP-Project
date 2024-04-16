@@ -136,8 +136,8 @@ const CusProfile = () => {
                         height: "100px",
                       }}
                     />
-                    <h4 style={{ marginRight: "100px" }}>
-                      Welcome {cusauth.userId}
+                    <h4 style={{ marginRight: "100px",fontWeight:"bold" }}>
+                      Welcome {cusauth.name}
                     </h4>
                     <Row className="mb-3">
                       <Form.Group as={Col} controlId="formGridExtra1">
@@ -195,22 +195,11 @@ const CusProfile = () => {
                           onChange={handleChange}
                         />
                       </Form.Group>
-                      <Form.Group as={Col}>
-                        <a href="#" className="link-success">
-                          change password
-                        </a>
-                      </Form.Group>
+                      <Col>
+                      </Col>
                     </Row>
                     <Row>
                       <Col>
-                        <Card>
-                          <Card.Body style={{ height: "100px" }}></Card.Body>
-                        </Card>
-                      </Col>
-                      <Col>
-                        <Card>
-                          <Card.Body style={{ height: "100px" }}></Card.Body>
-                        </Card>
                       </Col>
                     </Row>
                     <br></br>
@@ -218,8 +207,7 @@ const CusProfile = () => {
                       variant="warning"
                       style={{ marginLeft: "400px" }}
                       type="submit"
-                      disabled={!cusauth.userId}
-                    >
+                      disabled={!cusauth.userId}>
                       Update Profile
                     </Button>{" "}
                     <button

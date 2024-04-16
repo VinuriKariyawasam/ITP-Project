@@ -2,6 +2,7 @@ import React from "react";
 //import SMPageTitle from "./SMPageTitle";
 import Addquotation from "./quotation";
 import QuotaDash from "./QuotaDash";
+
 import "../SMMain";
 
 // Import front end routes
@@ -22,6 +23,7 @@ function Smrecords() {
       <Routes>
        <Route path="/" element={<QuotaDash/>} />
         <Route path="/add" element={<Addquotation/>} />
+        
       </Routes>
     </main>
   );

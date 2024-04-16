@@ -25,14 +25,12 @@ const serviceRequestSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  report: [
-    {
-      type: String,
-    },
-  ],
+  report: {
+    type: String,
+    required: false, // optional field
+  },
   status: {
     type: String,
-    required: true,
   },
 });
 

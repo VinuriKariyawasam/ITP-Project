@@ -41,8 +41,6 @@ function AllFeedbacks(){
         fetchFeedbacks();
     },  []);
 
-
-   
     return(
         <main>
             <div>
@@ -61,11 +59,11 @@ function AllFeedbacks(){
                       <img src={feedbackimg1} style={{height:"200px"}} alt="..."/>
                     <div className="card-body">
                       <h5 className="card-title"> 
-                      Service Type: {feedback.serviceType}<br></br>
-                      FeedBack: {feedback.feedback}<br></br>
-                      Ratings: {feedback.ratings}
+                      Service Type : {feedback.serviceType}<br></br>
+                      Specific Employee mentioned : {feedback.employee}<br/><br/>
+                      FeedBack : {feedback.feedback}<br></br>
                       </h5>
-                      <p className="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                      <p className="card-text"><small class="text-muted">user@{feedback.userId}</small></p>
                     </div>
                     </div>
                     </div>

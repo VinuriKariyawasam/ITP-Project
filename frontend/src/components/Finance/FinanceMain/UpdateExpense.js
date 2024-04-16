@@ -7,6 +7,7 @@ import PageTitle from './PageTitle';
 const UpdateExpense = () => {
     const navigate = useNavigate();
     const { id } = useParams();
+    const [backendError, setBackendError] = useState('');
     const [formData, setFormData] = useState({
         title: '',
         amount: '',
@@ -14,7 +15,12 @@ const UpdateExpense = () => {
         date: '',
         description: ''
     });
-    const [errorMessage, setErrorMessage] = useState('');
+    const [errors, setErrors] = useState({
+        title: '',
+        amount: '',
+        type: '',
+        date: ''
+    });
 
     useEffect(() => {
         const fetchExpense = async () => {
@@ -25,95 +31,141 @@ const UpdateExpense = () => {
                     // Update formData state with existing expense data
                     setFormData(data);
                 } else {
-                    setErrorMessage('Failed to fetch expense data');
+                    setBackendError('Failed to fetch expense data');
                 }
             } catch (error) {
                 console.error('Error fetching expense:', error);
-                setErrorMessage('Failed to fetch expense data');
+                setBackendError('Failed to fetch expense data');
             }
         };
 
         fetchExpense();
     }, [id]);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch(`http://localhost:5000/api/finance/expenses/update-expense/${id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-            const data = await response.json();
-            if (response.ok) {
-                // Reset form data if the request was successful
-                setFormData({
-                    title: '',
-                    amount: '',
-                    type: '',
-                    date: '',
-                    description: ''
-                });
-                // Redirect to previous page
-                navigate(-1);
-            } else {
-                setErrorMessage(data.message || 'Failed to update expense');
-            }
-        } catch (error) {
-            console.error('Error updating expense:', error);
-            setErrorMessage('Failed to update expense');
-        }
-    };
-
     const handleCancel = () => {
         // Navigate back to the previous page
         navigate(-1);
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Frontend validation
+        const newErrors = {};
+        if (!formData.title.trim()) {
+            newErrors.title = 'Title is required';
+        }
+        if (!formData.amount.trim() || parseFloat(formData.amount) <= 0) {
+            newErrors.amount = 'Amount must be a positive value';
+        }
+        if (!formData.type.trim()) {
+            newErrors.type = 'Type is required';
+        }
+        if (!formData.date.trim()) {
+            newErrors.date = 'Date is required';
+        }
+        setErrors(newErrors);
+
+        // Check if there are any validation errors
+        if (Object.values(newErrors).every((error) => !error)) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/finance/expenses/update-expense/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    // Reset form data if the request was successful
+                    setFormData({
+                        title: '',
+                        amount: '',
+                        type: '',
+                        date: '',
+                        description: ''
+                    });
+                    // Redirect to previous page
+                    navigate(-1);
+                } else {
+                    setBackendError(data.message || 'Failed to update expense');
+                }
+            } catch (error) {
+                console.error('Error updating expense:', error);
+                setBackendError('Failed to update expense');
+            }
+        }
+    };
+
     return (
         <main id="main" className="main">
-              <PageTitle path="Finance / Expenses / Edit-Expense"  title="Edit-Expense"/>
+            <PageTitle path="Finance / Expenses / Edit-Expense" title="Edit-Expense" />
             <Form onSubmit={handleSubmit}>
-                {errorMessage && <p className="error-message">{errorMessage}</p>}
+                {backendError && <p className="error-message">{backendError}</p>}
                 <Form.Group controlId="title">
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type="text" name="title" value={formData.title} onChange={handleChange} />
+                    <Form.Control
+                        type="text"
+                        name="title"
+                        value={formData.title}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        isInvalid={!!errors.title}
+                    />
+                    <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="amount">
                     <Form.Label>Amount</Form.Label>
-                    <Form.Control type="number" name="amount" value={formData.amount} onChange={handleChange} />
+                    <Form.Control
+                        type="number"
+                        name="amount"
+                        value={formData.amount}
+                        onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                        isInvalid={!!errors.amount}
+                    />
+                    <Form.Control.Feedback type="invalid">{errors.amount}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="type">
                     <Form.Label>Type</Form.Label>
-                    <Form.Control type="text" name="type" value={formData.type} onChange={handleChange} />
+                    <Form.Control
+                        type="text"
+                        name="type"
+                        value={formData.type}
+                        onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                        isInvalid={!!errors.type}
+                    />
+                    <Form.Control.Feedback type="invalid">{errors.type}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="date">
                     <Form.Label>Date</Form.Label>
-                    <Form.Control type="date" name="date" value={formData.date} onChange={handleChange} />
+                    <Form.Control
+                        type="date"
+                        name="date"
+                        value={formData.date}
+                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                        isInvalid={!!errors.date}
+                    />
+                    <Form.Control.Feedback type="invalid">{errors.date}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="description">
                     <Form.Label>Description</Form.Label>
-                    <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
+                    <Form.Control
+                        as="textarea"
+                        rows={3}
+                        name="description"
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    />
                 </Form.Group>
                 <Button variant="primary" type="submit">
                     Update Expense
-                </Button>{" "}
+                </Button>{' '}
                 <Button variant="secondary" onClick={handleCancel}>
                     Cancel
                 </Button>
             </Form>
         </main>
     );
-}
+};
 
 export default UpdateExpense;

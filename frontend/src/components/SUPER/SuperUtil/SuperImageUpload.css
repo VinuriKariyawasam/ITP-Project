@@ -1,0 +1,20 @@
+.super-image-upload.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .super-image-upload__preview img {
+    max-width: 100px; /* Set maximum width */
+    max-height: 100px; /* Set maximum height */
+    object-fit: cover; /* Maintain aspect ratio */
+  }
+  
+  
+  .super-image-upload__preview img {
+    width: 100px; /* Adjust the width as needed */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: contain; /* Maintain aspect ratio and fit inside the container */
+  }
+  

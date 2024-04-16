@@ -14,15 +14,15 @@ const SMMobileMain = () => {
           <div className="row">
             <DbCard
               title="Mobile mechanical service requests"
-              value="50"
+              value=""
             />
             <DbCard
               title="Breakdown service requests"
-              value="10"
+              value=""
             />
             <DbCard
               title="Vehicle carrier service requests"
-              value="6"
+              value=""
             />
           </div>
   

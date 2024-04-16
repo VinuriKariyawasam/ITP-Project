@@ -42,6 +42,9 @@ function Attendance() {
     setShowUpdateModal(false);
     fetchAttendance();
   };
+  const handleAfterSubmit = () => {
+    fetchAttendance();
+  };
 
   return (
     <section>
@@ -118,7 +121,7 @@ function Attendance() {
                       border: "1px solid black",
                     }}
                   >
-                    <AddAttend />
+                    <AddAttend afterSubmit={handleAfterSubmit} />
                   </Card.Body>
                 </Card>
               )}

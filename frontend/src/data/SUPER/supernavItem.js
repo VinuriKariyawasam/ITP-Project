@@ -15,6 +15,7 @@ const supernavList = [
       _id: 3,
       name: "Job",
       icon: "bi bi-card-checklist",
+      href: "/staff/supervisor/jobs",
     },
     {
       _id: 4,
@@ -26,11 +27,13 @@ const supernavList = [
       _id: 5,
       name: "Products",
       icon: "bi bi-card-checklist",
+      href: "/staff/supervisor/products",
     },
     {
       _id: 6,
       name: "Schedule",
       icon: "bi bi-calendar3",
+      href: "/staff/supervisor/shedules",
     },
   ];
   

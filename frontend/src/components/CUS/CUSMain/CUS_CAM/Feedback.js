@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
+import {CusAuthContext} from "../../../../context/cus-authcontext";
+import { useContext } from "react";
 
 import StarRating from "./StarRating";
 import PageTitle_cam from "./PageTitle_cam";
@@ -19,6 +20,8 @@ import "./StarRating.css";
 
 
 function Feedback() {
+  const cusAuth = useContext(CusAuthContext);
+  let id = cusAuth.userId;
   const navigate = useNavigate();
   const [validated, setValidated] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -41,6 +44,10 @@ function Feedback() {
         formData.append(key, data[key]);
       });
 
+      formData.append("userId",cusAuth.userId);
+      formData.append("name",cusAuth.name);
+
+
       if (uploadedFile) {
         formData.append("files", uploadedFile);
       }
@@ -57,7 +64,9 @@ function Feedback() {
         {
           method: "POST",
           body: formData,
-        }
+        },
+        alert("Feedback created Successfully!"),
+        navigate("/customer/cusaffairs/allfeedback")
       );
       if (response.status === 201) {
         // Feedback created successfully
@@ -102,6 +111,8 @@ function Feedback() {
     }
   };
 
+  
+
   return (
     <div>
       <Card style={{marginTop:"20px",marginLeft:"20px",marginRight:"20px"}}><Card.Body>
@@ -112,7 +123,7 @@ function Feedback() {
     <PageTitle_cam path="feedback / addfeedback" title="Tell us Anything!!" />
     <Row>
       <Col>
-      <Row className="cam-mb-3">
+      <Row className="cam-mb-3" style={{marginTop:"10px"}}>
       <Form.Group as={Col} controlId="formGridRole">
           <Form.Label>Service Type</Form.Label>
           <Controller
@@ -155,11 +166,11 @@ function Feedback() {
             }}
           >
             <option>Choose...</option>
-            <option value="Emp1">Emp1</option>
-            <option value="Emp2">Emp2</option>
-            <option value="Emp3">Emp3</option>
-            <option value="Emp4">Emp4</option>
-            <option value="Supervisor">Other</option>
+            <option value="OnSite Technician">OnSite Technician</option>
+            <option value="Mobile Service Technician">Mobile Service Technician</option>
+            <option value="Service Manager">Service Manager</option>
+            <option value="Supervisor">Supervisor</option>
+            <option value="Other">Other</option>
           </Form.Select>
           )}
           />
@@ -186,7 +197,8 @@ function Feedback() {
            control={control}
            rules={{required: "Feedback is required"}}
            render={({field}) => (
-            <Form.Control  
+            <Form.Control 
+            type="textarea" 
             placeholder="add your feedback"  {...field}/>
            )}
            />
@@ -198,17 +210,13 @@ function Feedback() {
       <Button variant="success" type="submit" style={{marginTop:"5px",marginLeft:"20px",marginBottom:"20px"}} >
         Submit
       </Button>
-      <Button variant="secondary"  style={{marginTop:"5px",marginLeft:"25px",marginBottom:"19px"}}>
+      <Button variant="secondary"  style={{marginTop:"5px",marginLeft:"25px",marginBottom:"19px"}}
+      onClick={() => navigate(-1)}>
         Cancel
       </Button>{" "}
       </Col>
       <Col>
-      <Row className="cam-mb-3">
-     <Form.Group as={Col}>
-          <h5 className="cam-h5">Rate us!!</h5>
-          <StarRating />
-        </Form.Group>
-      </Row>
+     
       <Row className="cam-mb-3">
       <Col>
       <div className="card" style={{width:"18rem"}}>

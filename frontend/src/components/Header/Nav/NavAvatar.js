@@ -4,7 +4,7 @@ import { StaffAuthContext } from "../../../context/StaffAuthContext";
 
 function NavAvatar() {
   const { logout } = useContext(StaffAuthContext);
-  const { userId } = useContext(StaffAuthContext);
+  const { userId, userPosition } = useContext(StaffAuthContext);
   const [employeeData, setEmployeeData] = useState(null);
 
   const handleLogout = () => {
@@ -83,7 +83,7 @@ function NavAvatar() {
         <li>
           <a
             className="dropdown-item d-flex align-items-center"
-            href="staffprofile"
+            href="/staff/staffprofile"
           >
             <i className="bi bi-person"></i>
             <span>My Profile</span>
