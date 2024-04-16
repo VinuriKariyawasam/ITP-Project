@@ -7,12 +7,14 @@ import { Link } from 'react-router-dom';
 import { Form, Stack ,Container, Row, Col} from "react-bootstrap";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import Modal from 'react-bootstrap/Modal';
 
 const SMmEmBreakdown = props => {
 
   const [breakdownRequests, setBreakdownRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [search, setSearch] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   const [cusName, setCusName] = useState("");
   const [cusEmail, setCusEmail] = useState("");
@@ -20,6 +22,22 @@ const SMmEmBreakdown = props => {
   const [reqLocation, setReqLocation] = useState("");
   const [issue, setIssue] = useState("");
   const [contactNo, setContactNo] = useState("");
+  const [technician, setTechnician] = useState("");
+
+const assignTechnician = () => {
+  // Send PUT request to update breakdown request with assigned technician
+  axios.put(`http://localhost:5000/api/mobile/update-breakdown/${selectedRequest._id}`, { 
+    technician: technician // Pass technician details to the backend
+  })
+  .then(response => {
+    console.log(response);
+    handleCloseModal();
+    getBreakdownRequests();
+  })
+  .catch(error => {
+    console.error(error);
+  });
+};
 
   useEffect(() => {
     getBreakdownRequests();
@@ -42,15 +60,25 @@ const SMmEmBreakdown = props => {
     setReqLocation(request.reqLocation);
     setIssue(request.issue);
     setContactNo(request.contactNo);
+    setTechnician(request.technician);
   };
+
 
   const handleMoreButtonClick = (request) => {
     setSelectedRequest(request);
   };
 
+  const handleModalButtonClick = (request) => {
+    setShowModal(true);
+  };
+
   const handleCardClose = () => {
     setSelectedRequest(null);
   };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+};
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -97,7 +125,7 @@ const SMmEmBreakdown = props => {
           heightLeft -= pageHeight;
         }
   
-        pdf.save("Vehicle Carrier Requests.pdf");
+        pdf.save("Breakdown Requests.pdf");
       });
     }
   };
@@ -127,6 +155,7 @@ const SMmEmBreakdown = props => {
               <th>Location</th>
               <th>Issue</th>
               <th>Contact No</th>
+              <th>Assigned Technician</th>
             </tr>
           </thead>
           <tbody>
@@ -142,6 +171,7 @@ const SMmEmBreakdown = props => {
                 <td>{request.reqLocation}</td>
                 <td>{request.issue}</td>
                 <td>{request.contactNo}</td>
+                <td>{request.technician}</td>
                 <td>
                   <Button variant="secondary" onClick={() => handleMoreButtonClick(request)}>
                     view
@@ -169,11 +199,32 @@ const SMmEmBreakdown = props => {
                 <strong>Location: </strong>{selectedRequest.reqLocation}<br />
                 <strong>Issue: </strong>{selectedRequest.issue}<br />
                 <strong>Contact No: </strong>{selectedRequest.contactNo}<br />
+                <strong>Assigned Technician:  </strong>{selectedRequest.technician}<br />
               </Card.Text>
-              <button type="button"  onClick={handleCardClose}>Assign Mobile Technician</button>
+              <button type="button"  onClick={handleModalButtonClick}>Assign Mobile Technician</button>
             </Card.Body>
           </Card>
         )}
+
+{selectedRequest && (
+
+<Modal show={showModal} onHide={handleCloseModal}>
+   <Modal.Header closeButton>
+     <Modal.Title>Assign Technician to Breakdown Request</Modal.Title>
+   </Modal.Header>
+   <Modal.Body>
+   <Form.Group controlId="technician">
+  <Form.Label>Assigned Technician</Form.Label>
+  <Form.Control type="text" placeholder="Enter technician's id" value={technician} onChange={(e) => setTechnician(e.target.value)} />
+</Form.Group>
+   </Modal.Body>
+   <Modal.Footer>
+   <Button variant="success" onClick={assignTechnician}>
+      Assign Technician
+  </Button>
+   </Modal.Footer>
+ </Modal>
+   )}
       </div>
     </main>
   )

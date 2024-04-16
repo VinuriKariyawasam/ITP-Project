@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import mechanicalrepairs from '../../../../images/CUS/Appointment/mechanical repairs.jpg'
 import axios from "axios";
@@ -6,12 +6,15 @@ import { Form, Col, Row, Button, InputGroup } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { CusAuthContext } from "../../../../context/cus-authcontext";
+import { useNavigate } from "react-router-dom";
 
 function MechanicalAppointment() { // Corrected function name
 
-  
+
   const [availableTimes, setAvailableTimes] = useState([]);
   const cusauth = useContext(CusAuthContext)
+  const navigate = useNavigate();
+
 
 
   const { } = useForm();
@@ -27,9 +30,16 @@ function MechanicalAppointment() { // Corrected function name
   function sendata(e) {
     e.preventDefault();
 
+        // Check if the phone number has exactly 9 digits
+  if (contactNo.length !== 9) {
+    alert("Please enter a valid phone number.");
+    return; // Exit the function if the phone number is not valid
+  }
+
+
     //create javascript object
     const newmechanicalAppointment = {
-      userId:cusauth.userId,
+      userId: cusauth.userId,
       name,
       vType,
       vNo,
@@ -45,6 +55,7 @@ function MechanicalAppointment() { // Corrected function name
     }).then(() => {
 
       alert("Your Appointment Success")
+      navigate('/customer/appointment/myappointment');
       setname(""); // Corrected assignment, use function instead of assignment
       setvType("");
       setvNo("");
@@ -52,6 +63,7 @@ function MechanicalAppointment() { // Corrected function name
       setcontactNo("");
       setappointmentdate("");
       setappointmenttime("");
+
     })
       .catch((err) => {
         alert(err)

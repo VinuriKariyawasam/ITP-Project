@@ -8,6 +8,7 @@ import accidentalrepairs from '../../../../images/CUS/Appointment/accidental rep
 import './AccidentalAppointment.css'
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 
+
 const AccidentalAppointment = () => {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState("");
@@ -76,6 +77,13 @@ const AccidentalAppointment = () => {
 
   const appointmentSubmitHandler = async (event) => {
     event.preventDefault();
+
+    // Check if the contact number has exactly 9 digits
+  if (formState.inputs.contactNo.value.length !== 9) {
+    alert("Please enter a valid  contact number.");
+    return; // Exit the function if the contact number is not valid
+  }
+
     try {
       const formData = new FormData();
       formData.append("userId", cusauth.userId);
@@ -95,6 +103,7 @@ const AccidentalAppointment = () => {
       );
 
       alert('Appointment Submitted Succesfully');
+      navigate('/customer/appointment/myappointment');
 
 
     } catch (err) {
@@ -246,7 +255,7 @@ const AccidentalAppointment = () => {
                   <Form.Label>Damaged occured</Form.Label>
                   <Form.Control
                     id="damagedOccured"
-                    type="text"
+                    type="textarea" rows={2}
                     placeholder="Enter damagedOccured"
                     onInput={(event) =>
                       inputHandler("damagedOccured", event.target.value, true)
