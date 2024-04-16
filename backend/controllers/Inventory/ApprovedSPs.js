@@ -1,8 +1,20 @@
 const { config } = require("dotenv");
 const aspSchema = require("../../models/inventory/ApprovedSP");
 
+function generateRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 exports.addapprovedSP = async (req, res) => {
+
+  
+
+
   try {
+
+    const randomNumber = generateRandomNumber(100, 999);
+
+  const customId = `ord_${randomNumber}`;
     const {
       id,
       name,
@@ -21,6 +33,7 @@ exports.addapprovedSP = async (req, res) => {
     } = req.body;
    
 
+    
     if (
       !id||
       !name ||
@@ -48,6 +61,7 @@ exports.addapprovedSP = async (req, res) => {
 
     const newSP = aspSchema({
       id:id,
+      orderId : customId,
       name: name,
       vehicleNumber: vehicleNumber,
       brand: brand,

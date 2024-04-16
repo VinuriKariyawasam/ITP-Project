@@ -123,7 +123,7 @@ return (
   <tbody>
   {filteredPendingOrders.map((pendingorder) => (
     <tr key={pendingorder._id}>
-      <td>{pendingorder._id}</td>
+      <td>{pendingorder.orderId}</td>
       <td>{pendingorder.date.split('T')[0]}</td>
       <td>{pendingorder.total}</td>
       <td ><Badge bg="warning">{pendingorder.status}</Badge></td>
@@ -177,7 +177,7 @@ return (
     <tbody>
     {filteredCompletedOrders.map((completedorder) => (
       <tr key={completedorder._id}>
-        <td>{completedorder._id}</td>
+        <td>{completedorder.orderId}</td>
         <td>{completedorder.date.split('T')[0]}</td>
         <td>{completedorder.total}</td>
         <td ><Badge bg="success">{completedorder.status}</Badge></td>
