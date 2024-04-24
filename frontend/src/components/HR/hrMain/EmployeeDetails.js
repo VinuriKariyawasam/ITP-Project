@@ -471,7 +471,7 @@ function EmployeeDetails() {
                         return (
                           <li key={docUrl}>
                             <a href={docUrl} target="_blank">
-                              {fileName}
+                              CV-{firstName}
                             </a>
                           </li>
                         );

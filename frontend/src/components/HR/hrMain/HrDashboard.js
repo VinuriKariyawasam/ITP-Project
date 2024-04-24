@@ -267,7 +267,7 @@ function HrDashboard() {
               >
                 <h5>Attendance not taken for today yet.</h5>
                 <Link to="/staff/hr/attendance">
-                  <button>Go to Destination</button>
+                  <button>Go to Attendance</button>
                 </Link>
               </Card.Body>
             </Card>

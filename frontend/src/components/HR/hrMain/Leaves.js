@@ -678,7 +678,7 @@ function Leaves() {
                   leaveRecords={archiveLeaveRecords}
                   statusFilter="all"
                   dateFilter={() => true}
-                  tableName={`All Leave Records for ${getMonthYear()}`}
+                  tableName={`Archived Leave Records`}
                 />
               </Tab>
             )}
