@@ -22,7 +22,7 @@ const ProductInvoice = () => {
     const fetchInvoiceData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/finance/billing/${paymentId}`
+          `${process.env.React_App_Backend_URL}/api/finance/billing/${paymentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch invoice data");
@@ -98,7 +98,7 @@ const ProductInvoice = () => {
 
       // Send PDF file to the server
       const response = await axios.post(
-        "http://localhost:5000/api/finance/billing/uploadinvoice",
+        `${process.env.React_App_Backend_URL}/api/finance/billing/uploadinvoice`,
         formData,
         {
           headers: {
@@ -123,7 +123,7 @@ const ProductInvoice = () => {
 
       // Send a POST request to the database
       const dbResponse = await axios.post(
-        "http://localhost:5000/api/finance/invoices/addonline",
+        `${process.env.React_App_Backend_URL}/api/finance/invoices/addonline`,
         postData,
         {
           headers: {
@@ -149,7 +149,7 @@ const ProductInvoice = () => {
       };
 
       // Send a fetch request to the backend controller for sending email
-      await fetch("http://localhost:5000/api/finance/email", {
+      await fetch(`${process.env.React_App_Backend_URL}/api/finance/email`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
