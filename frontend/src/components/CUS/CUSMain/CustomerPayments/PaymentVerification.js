@@ -16,7 +16,7 @@ const PaymentVerification = () => {
                 const urlParams = new URLSearchParams(window.location.search);
                 const orderIdParam = urlParams.get('order_id'); // Storing orderId in a variable
                 setOrderId(orderIdParam); // Setting orderId state
-                const response = await fetch(`http://localhost:5000/api/finance/payments/verifypayment/${orderIdParam}`);
+                const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/payments/verifypayment/${orderIdParam}`);
                 const data = await response.json();
                 setPaymentData(data);
                 setLoading(false);
@@ -32,7 +32,7 @@ const PaymentVerification = () => {
     const markPaymentCompleted = async (paymentId) => {
         try {
             const response = await fetch(
-                `http://localhost:5000/api/finance/billing/inpersonpayment/${paymentId}`,
+                `${process.env.React_App_Backend_URL}/api/finance/billing/inpersonpayment/${paymentId}`,
                 {
                     method: "PATCH",
                     headers: {

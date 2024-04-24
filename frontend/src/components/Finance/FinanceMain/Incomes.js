@@ -24,7 +24,7 @@ const Incomes = () => {
   }, []);
 
   const fetchIncomes = () => {
-    fetch("http://localhost:5000/api/finance/incomes")
+    fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -70,7 +70,7 @@ const Incomes = () => {
   };
 
   const confirmDeleteIncome = () => {
-    fetch(`http://localhost:5000/api/finance/incomes/delete-income/${incomeToDelete}`, {
+    fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes/delete-income/${incomeToDelete}`, {
       method: "DELETE",
     })
       .then((response) => response.json())

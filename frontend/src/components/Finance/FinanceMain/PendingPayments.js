@@ -19,7 +19,7 @@ const PendingPayments = () => {
   const fetchPendingPayments = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/finance/billing/pendingpayments"
+        `${process.env.React_App_Backend_URL}/api/finance/billing/pendingpayments`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch pending payments");
@@ -67,7 +67,7 @@ const PendingPayments = () => {
   const markAsCompleted = async (paymentId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/finance/billing/inpersonpayment/${paymentId}`,
+        `${process.env.React_App_Backend_URL}/api/finance/billing/inpersonpayment/${paymentId}`,
         {
           method: "PATCH",
           headers: {
@@ -91,7 +91,7 @@ const PendingPayments = () => {
   const markAsCancelled = async (paymentId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/finance/billing/inpersonpayment/${paymentId}`,
+        `${process.env.React_App_Backend_URL}/api/finance/billing/inpersonpayment/${paymentId}`,
         {
           method: "PATCH",
           headers: {

@@ -14,7 +14,7 @@ const ProductSales = () => {
   useEffect(() => {
     function getApprovedSpareParts() {
       axios
-        .get("http://localhost:5000/Product/approvedsp")
+        .get(`${process.env.React_App_Backend_URL}/Product/approvedsp`)
         .then((res) => {
           setApprovedSpareParts(res.data);
         })
@@ -28,7 +28,7 @@ const ProductSales = () => {
   useEffect(() => {
     function getPendingOrder() {
       axios
-        .get("http://localhost:5000/Product/getorderpending")
+        .get(`${process.env.React_App_Backend_URL}/Product/getorderpending`)
         .then((res) => {
           setPendingOrder(res.data);
         })
@@ -42,7 +42,7 @@ const ProductSales = () => {
   useEffect(() => {
     function getCompletedOrder() {
       axios
-        .get("http://localhost:5000/Product/getordercompleted")
+        .get(`${process.env.React_App_Backend_URL}/Product/getordercompleted`)
         .then((res) => {
           setCompletedOrder(res.data);
         })
@@ -55,7 +55,7 @@ const ProductSales = () => {
 
   const getPendingOrder = () => {
     axios
-      .get("http://localhost:5000/Product/getorderpending")
+      .get(`${process.env.React_App_Backend_URL}/Product/getorderpending`)
       .then((res) => {
         setPendingOrder(res.data);
       })
@@ -74,7 +74,7 @@ const ProductSales = () => {
   };
 
   const handleApprove = (order) => {
-    axios.put(`http://localhost:5000/Product/updatetoongoing/${order._id}`, { status: "ongoing" })
+    axios.put(`${process.env.React_App_Backend_URL}/Product/updatetoongoing/${order._id}`, { status: "ongoing" })
       .then((res) => {
         console.log("Order Approved:", order);
         getPendingOrder(); // Refresh pending orders
@@ -86,7 +86,7 @@ const ProductSales = () => {
   };
   
   const productApprove = (order) => {
-    axios.put(`http://localhost:5000/Product/updatetocompletedorder/${order._id}`, { status: "completed" })
+    axios.put(`${process.env.React_App_Backend_URL}/Product/updatetocompletedorder/${order._id}`, { status: "completed" })
       .then((res) => {
         console.log("Product Order Approved:", order);
         getPendingOrder(); // Refresh pending orders
@@ -146,7 +146,7 @@ const ProductSales = () => {
             <Modal.Title>Order Details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <img style={{ width: "50%", height: "50%" }} src={`http://localhost:5000/${selectedOrder?.image}`} alt="Product Image" />
+            <img style={{ width: "50%", height: "50%" }} src={`${process.env.React_App_Backend_URL}/${selectedOrder?.image}`} alt="Product Image" />
             <p>Customer Name: {selectedOrder?.name}</p>
             <p>Vehicle Number: {selectedOrder?.vehicleNumber}</p>
             <p>Vehicle Brand: {selectedOrder?.brand}</p>

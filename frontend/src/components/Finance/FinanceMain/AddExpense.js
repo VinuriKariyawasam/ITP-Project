@@ -75,7 +75,7 @@ const AddExpense = () => {
         e.preventDefault();
         if (Object.keys(errors).length === 0) {
             try {
-                const response = await fetch("http://localhost:5000/api/finance/expenses/add-expense", {
+                const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses/add-expense`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

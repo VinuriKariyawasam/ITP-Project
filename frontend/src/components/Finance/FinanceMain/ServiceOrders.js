@@ -12,14 +12,14 @@ const ServiceOrders = () => {
   useEffect(() => {
     const fetchAllServiceOrders = async () => {
       const response = await axios.get(
-        "http://localhost:5000/api/finance/service-record/all"
+        `${process.env.React_App_Backend_URL}/api/finance/service-record/all`
       );
       setAllServiceOrders(response.data);
     };
 
     const fetchPendingServiceOrders = async () => {
       const response = await axios.get(
-        "http://localhost:5000/api/finance/service-record/pending"
+        `${process.env.React_App_Backend_URL}/api/finance/service-record/pending`
       );
       setPendingServiceOrders(response.data);
     };
@@ -36,7 +36,7 @@ const ServiceOrders = () => {
   const confirmMarkAsCompleted = async () => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/finance/service-record/update/${orderIdToDelete}`,
+        `${process.env.React_App_Backend_URL}/api/finance/service-record/update/${orderIdToDelete}`,
         { price: 'Rs. 2000.00' }
       );
 
