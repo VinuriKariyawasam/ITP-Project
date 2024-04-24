@@ -29,7 +29,7 @@ const AddIncome = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      fetch("http://localhost:5000/api/finance/incomes/add-income", {
+      fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes/add-income`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

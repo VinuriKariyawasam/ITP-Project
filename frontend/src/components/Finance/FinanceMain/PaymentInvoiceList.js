@@ -9,7 +9,7 @@ const PaymentRecordPage = () => {
   useEffect(() => {
     const fetchOnlinePayments = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/finance/invoices/online/all');
+        const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/invoices/online/all`);
         const data = await response.json();
         setOnlinePayments(data);
       } catch (error) {
@@ -19,7 +19,7 @@ const PaymentRecordPage = () => {
 
     const fetchInPersonPayments = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/finance/invoices/inperson/all');
+        const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/invoices/inperson/all`);
         const data = await response.json();
         setInPersonPayments(data);
       } catch (error) {
