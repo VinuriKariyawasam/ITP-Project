@@ -283,6 +283,42 @@ function AddEmp() {
     setIsConfirmPasswordValid(isValid);
   };
 
+  const handleKeyDownNames = (e) => {
+    const allowedCharacters = /^[A-Za-z]*$/;
+    if (!allowedCharacters.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleKeyDownNic = (e) => {
+    // Allow backspace key
+    if (e.key === "Backspace") {
+      return;
+    }
+
+    const allowedCharacters = /^[0-9vV]*$/;
+    if (!allowedCharacters.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+  const handleInputChangeNic = (e) => {
+    const value = e.target.value;
+    const regex = /^[0-9vV]*$/;
+    if (!regex.test(value)) {
+      e.preventDefault();
+    }
+    trigger("nic");
+  };
+
+  const handleInputChangeContact = (e) => {
+    const value = e.target.value;
+    const regex = /^[0-9]*$/;
+    if (!regex.test(value)) {
+      e.preventDefault();
+    }
+    trigger("contact");
+  };
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <h3>
@@ -305,11 +341,16 @@ function AddEmp() {
             control={control}
             rules={{
               required: "First Name is required",
-              validate: validateName,
             }}
             render={({ field }) => (
               <>
-                <Form.Control placeholder="Sahan" {...field} />
+                <Form.Control
+                  placeholder="Sahan"
+                  {...field}
+                  pattern="[A-Za-z]+"
+                  title="Please enter only alphabetical characters"
+                  onKeyDown={handleKeyDownNames}
+                />
 
                 {!errors.firstName && field.value && (
                   <i className="bi bi-check-circle-fill text-success"></i>
@@ -334,7 +375,13 @@ function AddEmp() {
             }}
             render={({ field }) => (
               <>
-                <Form.Control placeholder="Siriwardana" {...field} />
+                <Form.Control
+                  placeholder="Siriwardana"
+                  {...field}
+                  pattern="[A-Za-z]+"
+                  title="Please enter only alphabetical characters"
+                  onKeyDown={handleKeyDownNames}
+                />
 
                 {!errors.lastName && field.value && (
                   <i className="bi bi-check-circle-fill text-success"></i>
@@ -426,6 +473,14 @@ function AddEmp() {
                 value: /^[0-9]{10}$/, // Regex pattern for 10-digit numbers
                 message: "Contact No. must be a 10-digit number",
               },
+              validate: {
+                onlyNumbers: (value) => {
+                  return (
+                    /^\d+$/.test(value) ||
+                    "Contact No. must contain only numbers"
+                  );
+                },
+              },
             }}
             render={({ field }) => (
               <>
@@ -435,21 +490,16 @@ function AddEmp() {
                   {...field}
                   maxLength="10"
                   minLength="10"
-                  onChange={(e) => {
-                    field.onChange(e);
-                    trigger("contact"); // Trigger validation for 'contact' field
-                  }}
                 />
 
-                {!errors.contact && field.value && (
-                  <i className="bi bi-check-circle-fill text-success"></i>
+                {errors.contact && (
+                  <Form.Text className="text-danger">
+                    {errors.contact.message}
+                  </Form.Text>
                 )}
               </>
             )}
           />
-          <Form.Text className="text-danger">
-            {errors.contact?.message}
-          </Form.Text>
         </Form.Group>
       </Row>
 
@@ -612,7 +662,13 @@ function AddEmp() {
             rules={{ required: "Bank is required", validate: validateBank }}
             render={({ field }) => (
               <>
-                <Form.Control placeholder="Sampath Bank" {...field} />
+                <Form.Control
+                  placeholder="Sampath Bank"
+                  {...field}
+                  pattern="[A-Za-z]+"
+                  title="Please enter only alphabetical characters"
+                  onKeyDown={handleKeyDownNames}
+                />
                 {!errors.bank && field.value && (
                   <i className="bi bi-check-circle-fill text-success"></i>
                 )}
@@ -631,7 +687,13 @@ function AddEmp() {
             rules={{ required: "Branch is required", validate: validateBranch }}
             render={({ field }) => (
               <>
-                <Form.Control placeholder="Maharagama" {...field} />
+                <Form.Control
+                  placeholder="Maharagama"
+                  {...field}
+                  pattern="[A-Za-z]+"
+                  title="Please enter only alphabetical characters"
+                  onKeyDown={handleKeyDownNames}
+                />
 
                 {!errors.branch && field.value && (
                   <i className="bi bi-check-circle-fill text-success"></i>
@@ -864,6 +926,25 @@ function AddEmp() {
           </Form.Group>
         </Row>
       )}
+      {/* New Fiels */}
+      {/*<Form.Group className="mb-3" controlId="formGridAddress">
+        <Form.Label>New Field</Form.Label>
+        <Controller
+          name="newField"
+          control={control}
+          rules={{
+            required: "Address is required",
+          }}
+          render={({ field }) => (
+            <>
+              <Form.Control placeholder="Say something" {...field} />
+            </>
+          )}
+        />
+        <Form.Text className="text-danger">
+          {errors.newField?.message}
+        </Form.Text>
+        </Form.Group>*/}
 
       <Button variant="dark" type="submit">
         Submit

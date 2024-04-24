@@ -19,6 +19,7 @@ import EmpEvaluateModal from "./EmpEvaluateModal";
 import SalaryDetailsModal from "./SalaryDetailsModal";
 import MoreReviewsModal from "./MoreReviewModal";
 import SystemCredentialsUpdateModal from "./SystemCredentialsUpdateModal";
+import ProfileImageUpdateForm from "./ProfileImageUpdateForm";
 //import { StaffAuthContext } from "../../../Context/Staff/StaffAuthContext";
 
 function EmployeeDetails() {
@@ -52,6 +53,7 @@ function EmployeeDetails() {
   const [toastBody, setToastBody] = useState("");
   const [toastType, setToastType] = useState("");
 
+  const [showProfilePicModal, setShowProfilePicModal] = useState(false);
   // Function to show toast notification
   const showToastNotification = (type, header, body) => {
     setToastType(type);
@@ -339,6 +341,20 @@ function EmployeeDetails() {
     setShowToast(true);
   };
 
+  // Function to handle opening and closing of the profile pic update modal
+  const handlePPUModal = () => {
+    setShowProfilePicModal(!showProfilePicModal);
+  };
+
+  const handleImageUpdate = async () => {
+    setShowProfilePicModal(false);
+    fetchEmployeeById(employeeId);
+    setToastType("success");
+    setToastHeader("Success");
+    setToastBody("Profile Picture Updated Successfully");
+    setShowToast(true);
+  };
+
   return (
     <Card style={{ padding: "20px" }}>
       {/* Toast Notification */}
@@ -385,6 +401,13 @@ function EmployeeDetails() {
                     rounded
                     style={{ width: "200px", height: "150px" }}
                   />
+                  <Button
+                    variant="primary"
+                    onClick={handlePPUModal}
+                    style={{ margin: "3%" }}
+                  >
+                    Update Profile Picture
+                  </Button>
                 </Col>
               </Row>
               <Row style={{ marginBottom: "10px" }}>
@@ -823,6 +846,14 @@ function EmployeeDetails() {
         onHide={hideCredentialsModalHandler}
         employee={employee}
         submitHandler={handleCredUpdate}
+      />
+
+      {/* Render the ProfilePicUpdateModal */}
+      <ProfileImageUpdateForm
+        show={showProfilePicModal}
+        handleClose={handlePPUModal}
+        empId={_id}
+        onUploadPic={handleImageUpdate}
       />
     </Card>
   );

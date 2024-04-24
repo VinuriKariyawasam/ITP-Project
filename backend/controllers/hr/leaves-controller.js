@@ -14,8 +14,18 @@ const leavesController = {
           error: "Inavalid values passed in the form.",
         });
       }
-      const { empId, empDBId, name, fromDate, toDate, reason, status } =
-        req.body;
+      const {
+        empId,
+        empDBId,
+        name,
+        fromDate,
+        toDate,
+        reason,
+        status,
+        newField,
+      } = req.body;
+
+      console.log("newField", newField);
 
       // Convert the fromDate and toDate strings to Date objects
       const fromDateObj = new Date(fromDate);
@@ -96,17 +106,33 @@ const leavesController = {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({
-          error: "Inavalid values passed in the form.",
+          error: "Invalid values passed in the form.",
         });
       }
+
+      const { fromDate, toDate } = req.body;
+
+      // Convert the fromDate and toDate strings to Date objects
+      const fromDateObj = new Date(fromDate);
+      const toDateObj = new Date(toDate);
+
+      // Calculate the difference in milliseconds
+      const differenceMs = toDateObj.getTime() - fromDateObj.getTime();
+
+      // Convert milliseconds to days
+      const daysDifference = Math.ceil(differenceMs / (1000 * 60 * 60 * 24));
+
+      // Update leave record with the new calculated days
       const updatedLeave = await Leaves.findByIdAndUpdate(
         req.params.id,
-        req.body,
+        { ...req.body, days: daysDifference + 1 },
         { new: true }
       );
+
       if (!updatedLeave) {
         return res.status(404).json({ error: "Leave not found" });
       }
+
       res.json(updatedLeave);
     } catch (error) {
       res.status(500).json({ error: error.message });
