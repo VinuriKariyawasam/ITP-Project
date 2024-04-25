@@ -14,7 +14,7 @@ import PaymentInvoiveList from "../FinanceMain/PaymentInvoiceList";
 import EmpFinance from "../FinanceMain/EmpFinance";
 import ProductSales from "../FinanceMain/ProductSales";
 import ServiceOrders from "../FinanceMain/ServiceOrders";
-import TransactionTable from "../FinanceMain/TwoColumn";
+import FinancialReports from "../FinanceMain/FinancialReports";
 
 
 
@@ -52,7 +52,7 @@ function Finance() {
         <Route path="emp-finance" element={<EmpFinance/>}/>
         <Route path="product-sales" element={<ProductSales/>}/>
       <Route path="service-orders" element={<ServiceOrders/>}/>
-      <Route path="twocolumn" element={<TransactionTable/>}/>
+      <Route path="financial-reports" element={<FinancialReports/>}/>
 
       
 

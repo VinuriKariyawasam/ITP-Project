@@ -5,8 +5,15 @@ const navList = [
       icon: "bi bi-grid",
       href:"/staff/finance"
     },
+
     {
       _id: 2,
+      name: "Financial Reoprts",
+      icon: "bi bi-file-earmark-text-fill",
+      href:"/staff/finance/financial-reports"
+    },
+    {
+      _id: 3,
       name: "Incomes & Funds",
       icon: "bi bi-cash",
       href:"/staff/finance/incomes"
@@ -19,36 +26,36 @@ const navList = [
       // ],
     },
     {
-      _id: 3,
+      _id: 4,
       name: "Expenses",
       icon: "bi bi-currency-dollar",
       href:"/staff/finance/expenses"
     },
     {
-      _id: 4,
+      _id: 5,
       name: "Employee Finance Management",
       icon: "bi bi-file-person-fill",
       href:"/staff/finance/emp-finance"
     },
     {
-      _id: 5,
+      _id: 6,
       name: "  Billing",
       icon: "bi bi-card-heading",
       href:"/staff/finance/billing/all"
     },
     {
-      _id: 6,
+      _id: 7,
       name: "Payment Invoices",
       icon: "bi bi-file-earmark-fill",
       href:"/staff/finance/invoices/all-invoices"
     },{
-      _id: 7,
+      _id: 8,
       name: "Products & Spare Parts Orders",
       icon: "bi bi-cart-check",
       href:"/staff/finance/product-sales"
     },
     {
-      _id: 8,
+      _id: 9,
       name: "Service Orders",
       icon: "bi bi-car-front-fill",
       href:"/staff/finance/service-orders"
