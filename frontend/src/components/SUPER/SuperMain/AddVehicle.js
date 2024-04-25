@@ -70,11 +70,15 @@ function AddVehicle() {
     // Validate each field as it's being typed
     switch (name) {
       case "vehicleNo":
-        errorMessage =
-          value.trim().length === 0 || value.trim().length > 10
+    errorMessage =
+        value.trim().length === 0 || value.trim().length > 10
             ? "Vehicle No. is required and must be at most 10 characters"
-            : "";
-        break;
+            : !/^[a-zA-Z\u0DC1\u0DCA\u200D\u0DBB\u0DD3\d]/.test(value)
+                ? "Vehicle No. must start with a letter, Sinhala word 'ශ්‍රී', or a number"
+                : "";
+    break;
+
+
       case "date":
         errorMessage = !value ? "Date is required" : "";
         break;
