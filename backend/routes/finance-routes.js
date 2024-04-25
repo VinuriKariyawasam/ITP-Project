@@ -30,7 +30,7 @@ const {getAllServiceReports,
   updateFinanceApproval,}=require("../controllers/finance/importservice")
 
 
-// router.use(checkAuth)
+
 
 // Expense routes
 router.post("/expenses/add-expense", addExpense);
@@ -38,6 +38,8 @@ router.delete("/expenses/delete-expense/:id", deleteExpense);
 router.patch("/expenses/update-expense/:id", updateExpense);
 router.get("/expenses/get-expense/:id", getExpenseById);
 router.get("/expenses", getExpenses);
+
+router.use(checkAuth)
 
 
 // Income routes
