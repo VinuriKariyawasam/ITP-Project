@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Table, Container, Row, Col, Alert } from 'react-bootstrap';
 import PageTitle from './PageTitle';
 
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US'); // Adjust locale as needed
+}
+
 function App() {
   const [creditData, setCreditData] = useState([]);
   const [debitData, setDebitData] = useState([]);
@@ -63,8 +68,10 @@ function App() {
             <thead>
               <tr>
                 <th>Credit ID</th>
+                <th>Date</th>
                 <th>Amount</th>
                 <th>Debit ID</th>
+                <th>Date</th>
                 <th>Amount</th>
               </tr>
             </thead>
@@ -72,9 +79,33 @@ function App() {
               {creditData.map((credit, index) => (
                 <tr key={index}>
                   <td>{credit.title}</td>
+                  <td>{formatDate(credit.date)}</td>
                   <td>{credit.amount}</td>
                   <td>{debitData[index] ? debitData[index].title : ''}</td>
+                  <td>{debitData[index] ? formatDate(debitData[index].date) : ''}</td>
                   <td>{debitData[index] ? debitData[index].amount : ''}</td>
+                </tr>
+              ))}
+              {/* Render additional credit rows if there are more credit entries */}
+              {debitData.length < creditData.length && creditData.slice(debitData.length).map((credit, index) => (
+                <tr key={index + debitData.length}>
+                  <td>{credit.title}</td>
+                  <td>{formatDate(credit.date)}</td>
+                  <td>{credit.amount}</td>
+                  <td></td> {/* Leave the debit fields blank */}
+                  <td></td>
+                  <td></td>
+                </tr>
+              ))}
+              {/* Render additional debit rows if there are more debit entries */}
+              {creditData.length < debitData.length && debitData.slice(creditData.length).map((debit, index) => (
+                <tr key={index + creditData.length}>
+                  <td></td> {/* Leave the credit fields blank */}
+                  <td></td>
+                  <td></td>
+                  <td>{debit.title}</td>
+                  <td>{formatDate(debit.date)}</td>
+                  <td>{debit.amount}</td>
                 </tr>
               ))}
             </tbody>

@@ -39,7 +39,7 @@ router.patch("/expenses/update-expense/:id", updateExpense);
 router.get("/expenses/get-expense/:id", getExpenseById);
 router.get("/expenses", getExpenses);
 
-router.use(checkAuth)
+//router.use(checkAuth)
 
 
 // Income routes
