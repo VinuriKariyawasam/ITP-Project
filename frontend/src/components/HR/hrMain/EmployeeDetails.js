@@ -208,9 +208,20 @@ function EmployeeDetails() {
   };
 
   /*----Parts regarding generate pdf from employee personal details-------*/
+
   const generatePDF = () => {
     const element = document.querySelector(".personalDetails"); // Select the container to convert to PDF
-    const opt = {
+    if (!element) {
+      console.error("Container element not found");
+      return;
+    }
+
+    // Remove the "Update Profile Picture" button before generating PDF
+    const profilePictureButtons = element.querySelectorAll("Button");
+    profilePictureButtons.forEach((button) => button.remove());
+
+    // Generate and save the PDF
+    const options = {
       margin: 0.5,
       filename: "personal_details.pdf",
       image: { type: "jpeg", quality: 0.98 },
@@ -218,7 +229,13 @@ function EmployeeDetails() {
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
 
-    html2pdf().from(element).set(opt).save(); // Generate and save the PDF
+    html2pdf()
+      .from(element)
+      .set(options)
+      .save()
+      .catch((error) => {
+        console.error("Error generating PDF:", error);
+      });
   };
 
   /*----Parts regarding updating employee personal details-------*/

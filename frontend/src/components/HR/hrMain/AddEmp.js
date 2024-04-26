@@ -25,9 +25,6 @@ function AddEmp() {
   //for date picker
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const [isFirstNameValid, setIsFirstNameValid] = useState(false);
-  const [isLastNameValid, setIsLastNameValid] = useState(false);
-
   //get designations
   useEffect(() => {
     const fetchDesignations = async () => {
@@ -319,6 +316,17 @@ function AddEmp() {
     trigger("contact");
   };
 
+  // Function to get the current date
+  const getEighteenYearsAgoDate = () => {
+    const currentDate = new Date();
+    const eighteenYearsAgo = new Date(
+      currentDate.getFullYear() - 18,
+      currentDate.getMonth(),
+      currentDate.getDate()
+    );
+    return eighteenYearsAgo;
+  };
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <h3>
@@ -417,6 +425,7 @@ function AddEmp() {
                       field.onChange(date); // Trigger onChange of react-hook-form
                       trigger("birthDate"); // Trigger validation for 'birthDate' field
                     }}
+                    maxDate={getEighteenYearsAgoDate()} // Disable future dates
                     className="form-control mx-2"
                   />
 
@@ -473,24 +482,26 @@ function AddEmp() {
                 value: /^[0-9]{10}$/, // Regex pattern for 10-digit numbers
                 message: "Contact No. must be a 10-digit number",
               },
-              validate: {
-                onlyNumbers: (value) => {
-                  return (
-                    /^\d+$/.test(value) ||
-                    "Contact No. must contain only numbers"
-                  );
-                },
-              },
             }}
             render={({ field }) => (
               <>
                 <Form.Control
-                  type="tel"
+                  type="text"
                   placeholder="0715897598"
                   {...field}
-                  maxLength="10"
-                  minLength="10"
+                  onChange={(e) => {
+                    // Remove non-numeric characters and limit to maximum length
+                    const input = e.target.value
+                      .replace(/\D/g, "")
+                      .slice(0, 10);
+                    field.onChange(input);
+                  }}
+                  maxLength="10" // Set maximum length
                 />
+
+                {field.value?.length === 10 && (
+                  <i className="bi bi-check-circle-fill text-success"></i>
+                )}
 
                 {errors.contact && (
                   <Form.Text className="text-danger">
@@ -721,11 +732,20 @@ function AddEmp() {
                 <Form.Control
                   type="number"
                   placeholder="200045879"
+                  min="0" // Set the minimum value to 0 to prevent entering negative numbers
                   {...field}
-                  maxLength={16}
+                  onChange={(e) => {
+                    // Prevent entering more than 15 numbers
+                    const input = e.target.value.slice(0, 15);
+                    field.onChange(input);
+                    validateAccount(input); // Call validateAccount on each change
+                  }}
                 />
 
-                {!errors.account && field.value && (
+                {errors.account && errors.account.type === "validate" && (
+                  <i className="bi bi-x-circle-fill text-danger"></i>
+                )}
+                {validateAccount(field.value) === true && (
                   <i className="bi bi-check-circle-fill text-success"></i>
                 )}
               </>
@@ -910,12 +930,14 @@ function AddEmp() {
                     />
                   )}
 
-                  {field.value && isPasswordValid(field.value) && (
-                    <i
-                      className="bi bi-check-circle-fill text-success"
-                      style={{ marginLeft: "10px" }}
-                    ></i>
-                  )}
+                  {field.value &&
+                    isPasswordValid(field.value) &&
+                    isConfirmPasswordValid && (
+                      <i
+                        className="bi bi-check-circle-fill text-success"
+                        style={{ marginLeft: "10px" }}
+                      ></i>
+                    )}
                 </div>
               )}
             />
