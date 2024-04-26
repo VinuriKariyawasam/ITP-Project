@@ -158,7 +158,7 @@ const handleConfirmPasswordChange = (e) => {
       .then(data => {
         alert("Registration Successfull");
         cusauth.login(data.userId,data.email,data.name,data.token);
-        console.log(data);
+      
         navigate("/customer");
       })
       .catch(error => {
