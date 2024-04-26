@@ -6,7 +6,7 @@ This web consist of major two frontends one for Neo Tech Customerrs and one for 
 *Here the eight functions and contributors*
 
 
-- **Employee Management** - [Rachcith Tharana (rachcha2002)](https://github.com/rachcha2002)
+- **Employee Management(HR)** - [Rachcith Tharana (rachcha2002)](https://github.com/rachcha2002)
 - **Finance Management** - Kavinda
 - **Inventory Management** - Tharindu
 - **Services Management** - Udara
