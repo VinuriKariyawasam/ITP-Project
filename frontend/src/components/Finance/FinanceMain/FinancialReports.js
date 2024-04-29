@@ -3,6 +3,8 @@ import { Tab, Nav } from 'react-bootstrap';
 import PageTitle from './PageTitle';
 
 import DailyReport from './DaillyReport'; // Import the new DailyReport component
+import YearlyReport from './YearlyReport';
+import MonthlyReport from './MonthlyReport';
 
 function FinancialReport() {
   return (
@@ -14,15 +16,22 @@ function FinancialReport() {
           <Nav.Link eventKey="day-range">Day Range Report</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="daily">Daily Report</Nav.Link> {/* Add the new tab for Daily Report */}
+          <Nav.Link eventKey="monthly">Monthly Report</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="yearly">Yearly Report</Nav.Link> {/* Add the new tab for Daily Report */}
         </Nav.Item>
       </Nav>
       <Tab.Content>
         <Tab.Pane eventKey="day-range">
           <DailyReport />
         </Tab.Pane>
-        <Tab.Pane eventKey="daily">
-          <DailyReport /> {/* Render the DailyReport component */}
+
+        <Tab.Pane eventKey="monthly">
+          <MonthlyReport />
+        </Tab.Pane>
+        <Tab.Pane eventKey="yearly">
+         <YearlyReport/> {/* Render the DailyReport component */}
         </Tab.Pane>
       </Tab.Content>
     </Tab.Container>

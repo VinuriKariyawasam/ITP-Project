@@ -7,26 +7,26 @@ function formatDate(dateString) {
   return date.toLocaleDateString("en-US"); // Adjust locale as needed
 }
 
-function DailyReport() {
+function YearlyReport() {
   const [creditData, setCreditData] = useState([]);
   const [debitData, setDebitData] = useState([]);
-  const [totalCreditAmount, setTotalCreditAmount] = useState(0);
-  const [totalDebitAmount, setTotalDebitAmount] = useState(0);
-  const [financialStatus, setFinancialStatus] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [totalCredit, setTotalCredit] = useState(0);
+  const [totalDebit, setTotalDebit] = useState(0);
+  const [status, setStatus] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
+  const [years, setYears] = useState([]);
 
   useEffect(() => {
-    // Fetch credit data
+    // Fetch credit and debit data
     fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes`)
       .then((response) => response.json())
       .then((data) => {
         setCreditData(data);
         calculateTotalCredit(data);
+        extractYears(data);
       })
       .catch((error) => console.error("Error fetching credit data:", error));
 
-    // Fetch debit data
     fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses`)
       .then((response) => response.json())
       .then((data) => {
@@ -38,89 +38,62 @@ function DailyReport() {
 
   const calculateTotalCredit = (data) => {
     const total = data.reduce((acc, curr) => acc + curr.amount, 0);
-    setTotalCreditAmount(total);
+    setTotalCredit(total);
   };
 
   const calculateTotalDebit = (data) => {
     const total = data.reduce((acc, curr) => acc + curr.amount, 0);
-    setTotalDebitAmount(total);
+    setTotalDebit(total);
   };
 
   useEffect(() => {
-    // Calculate financial status (Profit or Loss)
-    if (totalCreditAmount > totalDebitAmount) {
-      setFinancialStatus("Profit");
-    } else if (totalDebitAmount > totalCreditAmount) {
-      setFinancialStatus("Loss");
+    // Calculate status (Profit or Loss)
+    if (totalCredit > totalDebit) {
+      setStatus("Profit");
+    } else if (totalDebit > totalCredit) {
+      setStatus("Loss");
     } else {
-      setFinancialStatus("");
+      setStatus("");
     }
-  }, [totalCreditAmount, totalDebitAmount]);
+  }, [totalCredit, totalDebit]);
 
-  const handleStartDateChange = (event) => {
-    setStartDate(event.target.value);
+  const extractYears = (data) => {
+    const yearsArray = data.map((entry) => new Date(entry.date).getFullYear());
+    const uniqueYears = Array.from(new Set(yearsArray));
+    setYears(uniqueYears);
   };
 
-  const handleEndDateChange = (event) => {
-    setEndDate(event.target.value);
+  const handleYearChange = (event) => {
+    setSelectedYear(event.target.value);
   };
 
   const filteredCreditData = creditData.filter((credit) => {
-    const creditDate = new Date(credit.date);
-    return (
-      (!startDate || creditDate >= new Date(startDate)) &&
-      (!endDate || creditDate <= new Date(endDate))
-    );
+    const creditYear = new Date(credit.date).getFullYear();
+    return selectedYear === "" || creditYear.toString() === selectedYear;
   });
 
   const filteredDebitData = debitData.filter((debit) => {
-    const debitDate = new Date(debit.date);
-    return (
-      (!startDate || debitDate >= new Date(startDate)) &&
-      (!endDate || debitDate <= new Date(endDate))
-    );
+    const debitYear = new Date(debit.date).getFullYear();
+    return selectedYear === "" || debitYear.toString() === selectedYear;
   });
-
-  const calculateTotalsAndStatus = (filteredCreditData, filteredDebitData) => {
-    const totalCredit = filteredCreditData.reduce((acc, curr) => acc + curr.amount, 0);
-    const totalDebit = filteredDebitData.reduce((acc, curr) => acc + curr.amount, 0);
-    const difference = totalCredit - totalDebit;
-    let status = "";
-    if (difference > 0) {
-      status = "Profit";
-    } else if (difference < 0) {
-      status = "Loss";
-    }
-    return { totalCredit, totalDebit, difference, status };
-  };
-
-  const { totalCredit, totalDebit, difference, status } = calculateTotalsAndStatus(
-    filteredCreditData,
-    filteredDebitData
-  );
 
   return (
     <Container>
       <Row>
         <Col>
-          <h1 className="text-center">Daily Financial Report</h1>
+          <h1 className="text-center">Yearly Financial Report</h1>
           <br />
           <Row>
             <Col>
-              <label>Start Date:</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={handleStartDateChange}
-              />
-            </Col>
-            <Col>
-              <label>End Date:</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={handleEndDateChange}
-              />
+              <label>Select Year:</label>
+              <select value={selectedYear} onChange={handleYearChange}>
+                <option value="">All Years</option>
+                {years.map((year, index) => (
+                  <option key={index} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
             </Col>
           </Row>
           <br />
@@ -215,7 +188,7 @@ function DailyReport() {
             Total Debit: Rs.{totalDebit}
           </h4>
           <h4 className="text-center">
-            Difference: Rs.{difference}
+            Difference: Rs.{totalCredit - totalDebit}
           </h4>
           <h4 className="text-center">
             Status: {status === 'Profit' ? <Badge bg="success">Profit</Badge> : <Badge bg="danger">Loss</Badge>}
@@ -226,4 +199,4 @@ function DailyReport() {
   );
 }
 
-export default DailyReport;
+export default YearlyReport;

@@ -7,14 +7,11 @@ function formatDate(dateString) {
   return date.toLocaleDateString("en-US"); // Adjust locale as needed
 }
 
-function DailyReport() {
+function MonthlyReport() {
   const [creditData, setCreditData] = useState([]);
   const [debitData, setDebitData] = useState([]);
-  const [totalCreditAmount, setTotalCreditAmount] = useState(0);
-  const [totalDebitAmount, setTotalDebitAmount] = useState(0);
-  const [financialStatus, setFinancialStatus] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
 
   useEffect(() => {
     // Fetch credit data
@@ -22,7 +19,6 @@ function DailyReport() {
       .then((response) => response.json())
       .then((data) => {
         setCreditData(data);
-        calculateTotalCredit(data);
       })
       .catch((error) => console.error("Error fetching credit data:", error));
 
@@ -31,53 +27,31 @@ function DailyReport() {
       .then((response) => response.json())
       .then((data) => {
         setDebitData(data);
-        calculateTotalDebit(data);
       })
       .catch((error) => console.error("Error fetching debit data:", error));
   }, []);
 
-  const calculateTotalCredit = (data) => {
-    const total = data.reduce((acc, curr) => acc + curr.amount, 0);
-    setTotalCreditAmount(total);
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value);
   };
 
-  const calculateTotalDebit = (data) => {
-    const total = data.reduce((acc, curr) => acc + curr.amount, 0);
-    setTotalDebitAmount(total);
-  };
-
-  useEffect(() => {
-    // Calculate financial status (Profit or Loss)
-    if (totalCreditAmount > totalDebitAmount) {
-      setFinancialStatus("Profit");
-    } else if (totalDebitAmount > totalCreditAmount) {
-      setFinancialStatus("Loss");
-    } else {
-      setFinancialStatus("");
-    }
-  }, [totalCreditAmount, totalDebitAmount]);
-
-  const handleStartDateChange = (event) => {
-    setStartDate(event.target.value);
-  };
-
-  const handleEndDateChange = (event) => {
-    setEndDate(event.target.value);
+  const handleYearChange = (event) => {
+    setSelectedYear(event.target.value);
   };
 
   const filteredCreditData = creditData.filter((credit) => {
     const creditDate = new Date(credit.date);
     return (
-      (!startDate || creditDate >= new Date(startDate)) &&
-      (!endDate || creditDate <= new Date(endDate))
+      (!selectedMonth || creditDate.getMonth() + 1 === parseInt(selectedMonth)) &&
+      (!selectedYear || creditDate.getFullYear() === parseInt(selectedYear))
     );
   });
 
   const filteredDebitData = debitData.filter((debit) => {
     const debitDate = new Date(debit.date);
     return (
-      (!startDate || debitDate >= new Date(startDate)) &&
-      (!endDate || debitDate <= new Date(endDate))
+      (!selectedMonth || debitDate.getMonth() + 1 === parseInt(selectedMonth)) &&
+      (!selectedYear || debitDate.getFullYear() === parseInt(selectedYear))
     );
   });
 
@@ -103,24 +77,30 @@ function DailyReport() {
     <Container>
       <Row>
         <Col>
-          <h1 className="text-center">Daily Financial Report</h1>
+          <h1 className="text-center">Monthly Financial Reports</h1>
           <br />
           <Row>
             <Col>
-              <label>Start Date:</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={handleStartDateChange}
-              />
+              <label>Select Month:</label>
+              <select value={selectedMonth} onChange={handleMonthChange}>
+                <option value="">All Months</option>
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                  <option key={month} value={month}>
+                    {month}
+                  </option>
+                ))}
+              </select>
             </Col>
             <Col>
-              <label>End Date:</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={handleEndDateChange}
-              />
+              <label>Select Year:</label>
+              <select value={selectedYear} onChange={handleYearChange}>
+                <option value="">All Years</option>
+                {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
             </Col>
           </Row>
           <br />
@@ -208,17 +188,11 @@ function DailyReport() {
       </Row>
       <Row className="justify-content-center mt-3">
         <Col xs={6}>
+          <h4 className="text-center">Total Credit: Rs.{totalCredit}</h4>
+          <h4 className="text-center">Total Debit: Rs.{totalDebit}</h4>
+          <h4 className="text-center">Difference: Rs.{difference}</h4>
           <h4 className="text-center">
-            Total Credit: Rs.{totalCredit}
-          </h4>
-          <h4 className="text-center">
-            Total Debit: Rs.{totalDebit}
-          </h4>
-          <h4 className="text-center">
-            Difference: Rs.{difference}
-          </h4>
-          <h4 className="text-center">
-            Status: {status === 'Profit' ? <Badge bg="success">Profit</Badge> : <Badge bg="danger">Loss</Badge>}
+            Status: {status === "Profit" ? <Badge bg="success">Profit</Badge> : <Badge bg="danger">Loss</Badge>}
           </h4>
         </Col>
       </Row>
@@ -226,4 +200,4 @@ function DailyReport() {
   );
 }
 
-export default DailyReport;
+export default MonthlyReport;
