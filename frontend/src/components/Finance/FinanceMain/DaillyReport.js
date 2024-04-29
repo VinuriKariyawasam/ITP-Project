@@ -125,85 +125,72 @@ function DailyReport() {
           </Row>
           <br />
           <br />
-          <Table style={{ marginBottom: "0" }}>
-            <Row>
-              <Col>
-                <h3>Credits</h3>
-              </Col>
-              <Col style={{ textAlign: "right" }}>
-                <h3>Debits</h3>
-              </Col>
-            </Row>
-          </Table>
-          <Table
-            striped
-            bordered
-            hover
-            style={{ marginTop: "0", background: "none" }}
-          >
-            <thead>
-              <tr>
-                <th>Credit ID</th>
-                <th>Date</th>
-                <th>Amount(Rs.)</th>
-                <th>Debit ID</th>
-                <th>Date</th>
-                <th>Amount(Rs.)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCreditData.map((credit, index) => (
-                <tr key={index}>
-                  <td>{credit.title}</td>
-                  <td>{formatDate(credit.date)}</td>
-                  <td>{credit.amount}</td>
-                  <td>
-                    {filteredDebitData[index]
-                      ? filteredDebitData[index].title
-                      : ""}
-                  </td>
-                  <td>
-                    {filteredDebitData[index]
-                      ? formatDate(filteredDebitData[index].date)
-                      : ""}
-                  </td>
-                  <td>
-                    {filteredDebitData[index]
-                      ? filteredDebitData[index].amount
-                      : ""}
-                  </td>
-                </tr>
-              ))}
-              {/* Render additional credit rows if there are more credit entries */}
-              {filteredDebitData.length < filteredCreditData.length &&
-                filteredCreditData
-                  .slice(filteredDebitData.length)
-                  .map((credit, index) => (
-                    <tr key={index + filteredDebitData.length}>
+          <Row>
+            <Col>
+              <Table style={{ marginBottom: "0" }}>
+                <Row>
+                  <Col>
+                    <h3>Credits</h3>
+                  </Col>
+                </Row>
+              </Table>
+              <Table
+                striped
+                bordered
+                hover
+                style={{ marginTop: "0", background: "none" }}
+              >
+                <thead>
+                  <tr>
+                    <th>Credit ID</th>
+                    <th>Date</th>
+                    <th>Amount(Rs.)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredCreditData.map((credit, index) => (
+                    <tr key={index}>
                       <td>{credit.title}</td>
                       <td>{formatDate(credit.date)}</td>
                       <td>{credit.amount}</td>
-                      <td></td> {/* Leave the debit fields blank */}
-                      <td></td>
-                      <td></td>
                     </tr>
                   ))}
-              {/* Render additional debit rows if there are more debit entries */}
-              {filteredCreditData.length < filteredDebitData.length &&
-                filteredDebitData
-                  .slice(filteredCreditData.length)
-                  .map((debit, index) => (
-                    <tr key={index + filteredCreditData.length}>
-                      <td></td> {/* Leave the credit fields blank */}
-                      <td></td>
-                      <td></td>
+                </tbody>
+              </Table>
+            </Col>
+            <Col>
+              <Table style={{ marginBottom: "0" }}>
+                <Row>
+                  <Col style={{ textAlign: "right" }}>
+                    <h3>Debits</h3>
+                  </Col>
+                </Row>
+              </Table>
+              <Table
+                striped
+                bordered
+                hover
+                style={{ marginTop: "0", background: "none" }}
+              >
+                <thead>
+                  <tr>
+                    <th>Debit ID</th>
+                    <th>Date</th>
+                    <th>Amount(Rs.)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredDebitData.map((debit, index) => (
+                    <tr key={index}>
                       <td>{debit.title}</td>
                       <td>{formatDate(debit.date)}</td>
                       <td>{debit.amount}</td>
                     </tr>
                   ))}
-            </tbody>
-          </Table>
+                </tbody>
+              </Table>
+            </Col>
+          </Row>
         </Col>
       </Row>
       <Row className="justify-content-center mt-3">
