@@ -53,7 +53,7 @@ function Finance() {
         <Route path="product-sales" element={<ProductSales/>}/>
       <Route path="service-orders" element={<ServiceOrders/>}/>
       <Route path="financial-reports" element={<FinancialReports/>}/>
-      <Route path="monthly" element={<MonthlyReport/>}/>
+     
 
       
 
