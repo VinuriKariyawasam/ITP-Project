@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Table, Container, Row, Col, Badge } from "react-bootstrap";
-import PageTitle from "./PageTitle";
+import React, { useEffect, useState, useRef } from "react";
+import { Table, Container, Row, Col, Badge, Button } from "react-bootstrap";
+import html2pdf from "html2pdf.js"; // Import html2pdf library
+import CompanyHeader from "./CompanyHeader";
+import ReactToPrint from "react-to-print"; // Import ReactToPrint
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -77,112 +79,160 @@ function YearlyReport() {
     return selectedYear === "" || debitYear.toString() === selectedYear;
   });
 
+  const printableRef = useRef(null); // Create a ref for the printable component
+
+  const handleDownloadPDF = () => {
+    const element = document.getElementById("printable-content");
+    if (!element) {
+      console.error("Element with ID 'printable-content' not found");
+      return;
+    }
+
+    const opt = {
+      margin: 0.5,
+      filename: "yearly_report.pdf",
+      image: { type: "jpeg", quality: 1 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    };
+
+    try {
+      html2pdf().from(element).set(opt).save();
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
+
   return (
-    <Container>
-      <Row>
-        <Col>
-          <h1 className="text-center">Yearly Financial Report</h1>
+    <>
+      <main>
+        <div className="text-center mt-3" style={{ marginBottom: "0" }}>
+          <Button variant="primary" onClick={handleDownloadPDF}>
+            Download as PDF
+          </Button>{" "}
+          {/* ReactToPrint component */}
+          <ReactToPrint
+            trigger={() => <Button variant="success">Print</Button>}
+            content={() => printableRef.current} // Pass the ref to the content prop
+          />
+        </div>
+
+        <div>
           <br />
-          <Row>
-            <Col>
-              <label>Select Year:</label>
-              <select value={selectedYear} onChange={handleYearChange}>
-                <option value="">All Years</option>
-                {years.map((year, index) => (
-                  <option key={index} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </Col>
-          </Row>
-          <br />
-          <br />
-          <Row>
-            <Col>
-              <Table style={{ marginBottom: "0" }}>
-                <Row>
-                  <Col>
-                    <h3>Credits</h3>
-                  </Col>
-                </Row>
-              </Table>
-              <Table
-                striped
-                bordered
-                hover
-                style={{ marginTop: "0", background: "none" }}
-              >
-                <thead>
-                  <tr>
-                    <th>Credit ID</th>
-                    <th>Date</th>
-                    <th>Amount(Rs.)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredCreditData.map((credit, index) => (
-                    <tr key={index}>
-                      <td>{credit.title}</td>
-                      <td>{formatDate(credit.date)}</td>
-                      <td>{credit.amount}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Col>
-            <Col>
-              <Table style={{ marginBottom: "0" }}>
-                <Row>
-                  <Col style={{ textAlign: "right" }}>
-                    <h3>Debits</h3>
-                  </Col>
-                </Row>
-              </Table>
-              <Table
-                striped
-                bordered
-                hover
-                style={{ marginTop: "0", background: "none" }}
-              >
-                <thead>
-                  <tr>
-                    <th>Debit ID</th>
-                    <th>Date</th>
-                    <th>Amount(Rs.)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredDebitData.map((debit, index) => (
-                    <tr key={index}>
-                      <td>{debit.title}</td>
-                      <td>{formatDate(debit.date)}</td>
-                      <td>{debit.amount}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-      <Row className="justify-content-center mt-3">
-        <Col xs={6}>
-          <h4 className="text-center">
-            Total Credit: Rs.{totalCredit}
-          </h4>
-          <h4 className="text-center">
-            Total Debit: Rs.{totalDebit}
-          </h4>
-          <h4 className="text-center">
-            Difference: Rs.{totalCredit - totalDebit}
-          </h4>
-          <h4 className="text-center">
-            Status: {status === 'Profit' ? <Badge bg="success">Profit</Badge> : <Badge bg="danger">Loss</Badge>}
-          </h4>
-        </Col>
-      </Row>
-    </Container>
+          <div id="printable-content" ref={printableRef}>
+            <CompanyHeader />
+            <Container>
+              <Row>
+                <Col>
+                  <h1 className="text-center">Yearly Financial Report</h1>
+                  <br />
+                  <Row>
+                    <Col>
+                      <label>Select Year:</label>
+                      <select value={selectedYear} onChange={handleYearChange}>
+                        <option value="">All Years</option>
+                        {years.map((year, index) => (
+                          <option key={index} value={year}>
+                            {year}
+                          </option>
+                        ))}
+                      </select>
+                    </Col>
+                  </Row>
+                  <br />
+                  <br />
+                  <Row>
+                    <Col>
+                      <Table style={{ marginBottom: "0" }}>
+                        <Row>
+                          <Col>
+                            <h3>Credits</h3>
+                          </Col>
+                        </Row>
+                      </Table>
+                      <Table
+                        striped
+                        bordered
+                        hover
+                        style={{ marginTop: "0", background: "none" }}
+                      >
+                        <thead>
+                          <tr>
+                            <th>Credit ID</th>
+                            <th>Date</th>
+                            <th>Amount(Rs.)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredCreditData.map((credit, index) => (
+                            <tr key={index}>
+                              <td>{credit.title}</td>
+                              <td>{formatDate(credit.date)}</td>
+                              <td>{credit.amount}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </Col>
+                    <Col>
+                      <Table style={{ marginBottom: "0" }}>
+                        <Row>
+                          <Col style={{ textAlign: "right" }}>
+                            <h3>Debits</h3>
+                          </Col>
+                        </Row>
+                      </Table>
+                      <Table
+                        striped
+                        bordered
+                        hover
+                        style={{ marginTop: "0", background: "none" }}
+                      >
+                        <thead>
+                          <tr>
+                            <th>Debit ID</th>
+                            <th>Date</th>
+                            <th>Amount(Rs.)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredDebitData.map((debit, index) => (
+                            <tr key={index}>
+                              <td>{debit.title}</td>
+                              <td>{formatDate(debit.date)}</td>
+                              <td>{debit.amount}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+              <Row className="justify-content-center mt-3">
+                <Col xs={6}>
+                  <h4 className="text-center">
+                    Total Credit: Rs.{totalCredit}
+                  </h4>
+                  <h4 className="text-center">Total Debit: Rs.{totalDebit}</h4>
+                  <h4 className="text-center">
+                    Difference: Rs.{totalCredit - totalDebit}
+                  </h4>
+                  <h4 className="text-center">
+                    Status:{" "}
+                    {status === "Profit" ? (
+                      <Badge bg="success">Profit</Badge>
+                    ) : (
+                      <Badge bg="danger">Loss</Badge>
+                    )}
+                  </h4>
+                </Col>
+              </Row>
+            </Container>
+          </div>
+        </div>
+      </main>
+    </>
   );
 }
 
