@@ -138,7 +138,7 @@ console.log(customerId); // Example output: CUS2404001
     }
     res
     .status(201)
-    .json({ userId: savedCustomer.cusId, email:savedCustomer.email,name: savedCustomer.name, token: token });
+    .json({ userId: savedCustomer.cusId, email:savedCustomer.email,name: savedCustomer.Name, token: token });
         }catch (error) {
             // Log the error for debugging purposes
             console.error("Error while fetching(sending) customer to db:", error);
