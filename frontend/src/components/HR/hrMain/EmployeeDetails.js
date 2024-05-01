@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useParams } from "react-router-dom";
 import {
   Row,
@@ -20,10 +20,14 @@ import SalaryDetailsModal from "./SalaryDetailsModal";
 import MoreReviewsModal from "./MoreReviewModal";
 import SystemCredentialsUpdateModal from "./SystemCredentialsUpdateModal";
 import ProfileImageUpdateForm from "./ProfileImageUpdateForm";
-import Logo from "../../../images/logoblack_trans.png";
-//import { StaffAuthContext } from "../../../Context/Staff/StaffAuthContext";
+import logo from "../../../images/logoblack_trans.png";
+import { StaffAuthContext } from "../../../context/StaffAuthContext";
+import ReactToPrint from "react-to-print";
+import CompanyHeader from "./CompanyHeader";
 
 function EmployeeDetails() {
+  const componentRef = useRef();
+  const { userId, userPosition } = useContext(StaffAuthContext);
   const { employeeId } = useParams();
   //to redirect after success
   const navigate = useNavigate();
@@ -221,56 +225,48 @@ function EmployeeDetails() {
     const profilePictureButtons = element.querySelectorAll("Button");
     profilePictureButtons.forEach((button) => button.remove());
 
-    // Create a header element with company logo, name, authorization details, and generated date
-    const header = document.createElement("div");
-    header.classList.add("pdf-header");
+    // Create a wrapper div
+    const wrapper = document.createElement("div");
 
-    // Add logo image
-    const logoImg = document.createElement("img");
-    logoImg.src = { Logo }; // Replace "company_logo.png" with the path to your logo image
-    logoImg.classList.add("logo");
-    header.appendChild(logoImg);
+    // Add the header content
+    const headerContent = `
+      <div>
+        <h4 class="float-end font-size-15">Human Resources</h4>
+        <div class="mb-4">
+          <img src="${logo}" alt="Invoice Logo" width="200px" />
+        </div>
+        <div class="text-muted">
+          <p class="mb-1">323/1/A Main Street Battaramulla</p>
+          <p class="mb-1">
+            <i class="uil uil-envelope-alt me-1"></i> info@neotech.com
+          </p>
+          <p>
+            <i class="uil uil-phone me-1"></i> 0112887998
+          </p>
+        </div>
+        <hr/>
+      </div>
+    `;
+    wrapper.innerHTML = headerContent;
 
-    // Add company name
-    const companyName = document.createElement("h1");
-    companyName.textContent = "Neo Tech Motors & Services"; // Replace "Company Name" with your company name
-    header.appendChild(companyName);
-
-    // Add authorization details
-    const authorizationDetails = document.createElement("p");
-    authorizationDetails.textContent = `Authorized by: HR Division`; // Replace with authorization details
-    header.appendChild(authorizationDetails);
-
-    // Add generated date
-    const generatedDate = document.createElement("p");
-    generatedDate.textContent =
-      "Generated Date: " + new Date().toLocaleDateString(); // Current date
-    header.appendChild(generatedDate);
-
-    // Append the header element to the container
-    element.insertBefore(header, element.firstChild);
+    // Append the main content
+    wrapper.appendChild(element.cloneNode(true));
 
     // Generate and save the PDF
     const options = {
       margin: 0.5,
-      filename: "personal_details.pdf",
+      filename: `Personal_Details_${firstName}.pdf`,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
 
     html2pdf()
-      .from(element)
+      .from(wrapper)
       .set(options)
       .save()
-      .then(() => {
-        // Remove the header element after generating PDF
-        header.remove();
-      })
       .catch((error) => {
         console.error("Error generating PDF:", error);
-        // Remove the header element if an error occurs
-        header.remove();
       });
   };
 
@@ -468,15 +464,18 @@ function EmployeeDetails() {
         >
           <BsArrowLeft /> Employee
         </Button>
-        Employee Details of {firstName} {lastName}
+        Employee Details
       </h2>
       <hr />
       <Card.Body style={{ padding: "10px" }}>
         <Row>
           <Col md={6}>
             {/* Display Personal Details*/}
-            <Container className="personalDetails">
-              <h4>Personal Details</h4>
+            <Container className="personalDetails" ref={componentRef}>
+              <CompanyHeader />
+              <h4>
+                Personal Details of {firstName} {lastName}
+              </h4>
               <Row style={{ marginBottom: "10px" }}>
                 <Col xs={12} md={8}>
                   <Image
@@ -484,13 +483,6 @@ function EmployeeDetails() {
                     rounded
                     style={{ width: "200px", height: "200px" }}
                   />
-                  <Button
-                    variant="primary"
-                    onClick={handlePPUModal}
-                    style={{ margin: "3%" }}
-                  >
-                    Update Profile Picture
-                  </Button>
                 </Col>
               </Row>
               <Row style={{ marginBottom: "10px" }}>
@@ -588,13 +580,14 @@ function EmployeeDetails() {
               </Row>
             </Container>
             <hr />
-            <Button
-              variant="primary"
-              onClick={generatePDF}
-              style={{ margin: "10px" }}
-            >
-              Generate PDF
-            </Button>
+            <ReactToPrint
+              trigger={() => (
+                <Button variant="primary" style={{ margin: "10px" }}>
+                  Generate PDF
+                </Button>
+              )}
+              content={() => componentRef.current}
+            />
             {/* Personal Details Update Button */}
             <Button
               variant="dark"
@@ -612,6 +605,13 @@ function EmployeeDetails() {
                 Update Credentials
               </Button>
             )}
+            <Button
+              variant="dark"
+              onClick={handlePPUModal}
+              style={{ margin: "3%" }}
+            >
+              Update Profile Picture
+            </Button>
             <Button
               variant="danger"
               onClick={handleDeleteClick}
