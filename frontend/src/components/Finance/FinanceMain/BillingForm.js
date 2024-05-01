@@ -224,7 +224,7 @@ const BillingForm = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/finance/billing/createbill",
+        `${process.env.React_App_Backend_URL}/api/finance/billing/createbill`,
         {
           method: "POST",
           headers: {

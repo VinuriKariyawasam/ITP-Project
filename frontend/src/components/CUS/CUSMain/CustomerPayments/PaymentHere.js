@@ -30,7 +30,7 @@ const PayHereIntegration = () => {
     setError(null);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/finance/billing/pendingpayment/${paymentId}`
+        `${process.env.React_App_Backend_URL}/api/finance/billing/pendingpayment/${paymentId}`
       );
       if (!response.ok) {
         throw new Error("Payment not found");
@@ -108,7 +108,7 @@ const PayHereIntegration = () => {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/finance/payments/initiatepayment",
+        `${process.env.React_App_Backend_URL}/api/finance/payments/initiatepayment`,
         {
           method: "POST",
           headers: {

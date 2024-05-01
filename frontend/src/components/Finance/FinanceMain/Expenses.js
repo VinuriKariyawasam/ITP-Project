@@ -12,7 +12,7 @@ const Expenses = () => {
   const [expenseToDelete, setExpenseToDelete] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/finance/expenses")
+    fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses`)
       .then((response) => response.json())
       .then((data) => setExpenses(data))
       .catch((error) => console.error("Error fetching expenses:", error));
@@ -38,7 +38,7 @@ const Expenses = () => {
   };
 
   const confirmDeleteExpense = () => {
-    fetch(`http://localhost:5000/api/finance/expenses/delete-expense/${expenseToDelete}`, {
+    fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses/delete-expense/${expenseToDelete}`, {
       method: "DELETE",
     })
       .then((response) => response.json())

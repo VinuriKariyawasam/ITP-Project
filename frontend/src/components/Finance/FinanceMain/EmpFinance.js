@@ -20,9 +20,9 @@ const EmpFinance = () => {
 
   const fetchData = async () => {
     try {
-      const pendingResponse = await fetch('http://localhost:5000/api/finance/salarylist/pending');
-      const allResponse = await fetch('http://localhost:5000/api/finance/salarylist/all');
-      const benefitsResponse = await fetch('http://localhost:5000/api/finance/empbenefits/all');
+      const pendingResponse = await fetch(`${process.env.React_App_Backend_URL}/api/finance/salarylist/pending`);
+      const allResponse = await fetch(`${process.env.React_App_Backend_URL}/api/finance/salarylist/all`);
+      const benefitsResponse = await fetch(`${process.env.React_App_Backend_URL}/api/finance/empbenefits/all`);
 
       const pendingData = await pendingResponse.json();
       const allData = await allResponse.json();
@@ -46,7 +46,7 @@ const EmpFinance = () => {
     const confirmApproval = window.confirm(`Are you sure you want to approve salaries for ${entry.month} ${year}?`);
     if (confirmApproval) {
       try {
-        await fetch(`http://localhost:5000/api/finance/salarylist/updatestatus/${entry._id}`, {
+        await fetch(`${process.env.React_App_Backend_URL}/api/finance/salarylist/updatestatus/${entry._id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json'
@@ -69,7 +69,7 @@ const EmpFinance = () => {
     const confirmReject = window.confirm(`Are you sure you want to reject salaries for ${entry.month} ${year}?`);
     if (confirmReject) {
       try {
-        await fetch(`http://localhost:5000/api/finance/salarylist/updatestatus/${entry._id}`, {
+        await fetch(`${process.env.React_App_Backend_URL}/api/finance/salarylist/updatestatus/${entry._id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json'
@@ -87,7 +87,7 @@ const EmpFinance = () => {
   const sendSalaryPayments = async (entry) => {
     try {
       const totalSalary = entry.salaries.reduce((acc, curr) => acc + curr.netSal, 0);
-      const response = await fetch("http://localhost:5000/api/finance/expenses/add-expense", {
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses/add-expense`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -114,7 +114,7 @@ const EmpFinance = () => {
 
   const sendEPFPayment = async (entry) => {
     try {
-      const response = await fetch("http://localhost:5000/api/finance/expenses/add-expense", {
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses/add-expense`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -140,7 +140,7 @@ const EmpFinance = () => {
 
   const sendETFPayment = async (entry) => {
     try {
-      const response = await fetch("http://localhost:5000/api/finance/expenses/add-expense", {
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses/add-expense`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -166,7 +166,7 @@ const EmpFinance = () => {
 
   const updateBenefitProfiles = async (salaries) => {
     try {
-      const response = await fetch('http://localhost:5000/api/finance/empbenefits/updatebenefits', {
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/empbenefits/updatebenefits`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

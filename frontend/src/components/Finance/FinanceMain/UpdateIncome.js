@@ -20,7 +20,7 @@ const UpdateIncome = () => {
 
   useEffect(() => {
     // Fetch the income details based on the id from the URL
-    fetch(`http://localhost:5000/api/finance/incomes/get-income/${id}`)
+    fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes/get-income/${id}`)
       .then((response) => response.json())
       .then((data) => {
         // Set the fetched income data into the form state
@@ -68,7 +68,7 @@ const UpdateIncome = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      fetch(`http://localhost:5000/api/finance/incomes/update-income/${id}`, {
+      fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes/update-income/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

@@ -14,7 +14,8 @@ import PaymentInvoiveList from "../FinanceMain/PaymentInvoiceList";
 import EmpFinance from "../FinanceMain/EmpFinance";
 import ProductSales from "../FinanceMain/ProductSales";
 import ServiceOrders from "../FinanceMain/ServiceOrders";
-
+import FinancialReports from "../FinanceMain/FinancialReports";
+import MonthlyReport from "../FinanceMain/MonthlyReport";
 
 
 // Import front end routes
@@ -51,6 +52,8 @@ function Finance() {
         <Route path="emp-finance" element={<EmpFinance/>}/>
         <Route path="product-sales" element={<ProductSales/>}/>
       <Route path="service-orders" element={<ServiceOrders/>}/>
+      <Route path="financial-reports" element={<FinancialReports/>}/>
+     
 
       
 
