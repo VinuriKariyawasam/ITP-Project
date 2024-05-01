@@ -32,7 +32,7 @@ const {getAllServiceReports,
 
 const {addPaymentHistory,getPaymentByEmail} = require("../controllers/finance/paymenthistory")
 
-
+const {notifyIM,updateProductPaymentIdByOrderId,updateSPPaymentIdByOrderId}=require("../controllers/finance/notifyim")
 
 
 // Expense routes
@@ -107,6 +107,12 @@ router.patch("/service-record/update/:id",updateFinanceApproval)
 
 router.post("/paymenthistory/add",addPaymentHistory)
 router.get("/paymenthistory/get/:email",getPaymentByEmail)
+
+
+//update inventory status
+router.patch("/updateinventory/:paymentId",notifyIM)
+router.patch("/addproductpaymentid/:orderId",updateProductPaymentIdByOrderId)
+router.patch("/addsppaymentid/:orderId",updateSPPaymentIdByOrderId)
 
 
 

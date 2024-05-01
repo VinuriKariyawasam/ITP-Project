@@ -65,7 +65,11 @@ const aspSchema = new schema({
     completeddate:{
         type:Date,
         default: Date.now
+    },paymentId:{
+        type:String,
+        default:"not assigned"
     }
+
 
 })
 

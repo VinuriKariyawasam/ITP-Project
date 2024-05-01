@@ -64,6 +64,23 @@ const PendingPayments = () => {
     handleConfirmationClose();
   };
 
+  const sendUpdatetoInventory = async (paymentId) => {
+    try {
+      
+        
+        // Send a PATCH request to update inventory
+        await fetch(`${process.env.React_App_Backend_URL}/api/finance/updateinventory/${paymentId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
+
+}
+
   const markAsCompleted = async (paymentId) => {
     try {
       const response = await fetch(
@@ -79,6 +96,7 @@ const PendingPayments = () => {
       if (!response.ok) {
         throw new Error("Failed to mark payment as completed");
       }
+      sendUpdatetoInventory(paymentId);
       navigate('/staff/finance/billing/new-invoice', { state: { paymentId: paymentId } });
       // Refresh pending payments after successful update
      // fetchPendingPayments();

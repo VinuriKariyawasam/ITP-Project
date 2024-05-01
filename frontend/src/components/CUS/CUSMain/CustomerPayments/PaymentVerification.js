@@ -54,11 +54,31 @@ const PaymentVerification = () => {
         }
     };
 
+
+
+    const sendUpdatetoInventory = async (paymentId) => {
+        try {
+          
+            
+            // Send a PATCH request to update inventory
+            await fetch(`${process.env.React_App_Backend_URL}/api/finance/updateinventory/${paymentId}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+            });
+          } catch (error) {
+            console.error('Error:', error.message);
+          }
+
+    }
+
     if (error) {
         return <div>Error: {error.message}</div>;
     }
 
     if (paymentData && paymentData.status_code === 2 && paymentData.sv) {
+        sendUpdatetoInventory(orderId)
         markPaymentCompleted(orderId); // Using orderId from state
         return <PaymentSuccess paymentId={orderId}   />;
     } else {
