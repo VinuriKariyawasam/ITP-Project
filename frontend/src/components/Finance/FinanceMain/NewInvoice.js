@@ -161,7 +161,7 @@ const InvoiceComponent = () => {
 
       const paymentHistoryData = {
         invoice_id:paymentId,
-        name: name,
+        name: invoiceData.name,
         email: email,
         amount: total,
         date: currentDate,

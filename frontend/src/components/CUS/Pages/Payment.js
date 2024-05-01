@@ -12,6 +12,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import PaymentHistory from '../CUSMain/CustomerPayments/PaymentHistory';
 
 function Customer() {
   return (

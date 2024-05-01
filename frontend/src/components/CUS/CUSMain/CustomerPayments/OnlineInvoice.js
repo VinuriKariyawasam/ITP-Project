@@ -157,6 +157,28 @@ const OnlineInvoice = () => {
       );
 
 
+      const paymentHistoryData = {
+        invoice_id:paymentId,
+        name: invoiceData.name,
+        email: email,
+        amount: total,
+        date: currentDate,
+        url: downloadURL,
+
+      }
+
+
+      const PHResponse = await axios.post(
+        `${process.env.React_App_Backend_URL}/api/finance/paymenthistory/add`,
+        paymentHistoryData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+
       // Send email with the PDF attachment
       const emailOptions = {
         to: `${email}`, // Replace with recipient email address

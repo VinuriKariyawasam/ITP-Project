@@ -3,6 +3,7 @@ import { Button, Form, Carousel, Card, Spinner } from "react-bootstrap";
 import neotechpay from "../../../../images/Payment/neotechpay.png";
 import payhere from "../../../../images/Payment/payhere.png";
 import payheremobile from "../../../../images/Payment/payhere_mobile.png";
+import PaymentHistory from "./PaymentHistory";
 
 const PayHereIntegration = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -166,7 +167,7 @@ const PayHereIntegration = () => {
                     className="d-block w-100"
                     src={neotechpay}
                     alt="First slide"
-                    style={{ maxHeight: "450px", objectFit: "cover" }}
+                    style={{ height:"520px",maxHeight: "550px", objectFit: "cover" }}
                   />
                 </Carousel.Item>
                 <Carousel.Item>
@@ -174,25 +175,70 @@ const PayHereIntegration = () => {
                     className="d-block w-100"
                     src={payhere}
                     alt="Second slide"
-                    style={{ maxHeight: "450px", objectFit: "cover" }}
+                    style={{ maxHeight: "550px", objectFit: "cover",height:"520px" }}
                   />
                 </Carousel.Item>
               </Carousel>
             )}
           </div>
-          <div className="col-md-6">
-            <Form>
-              <Form.Control type="hidden" name="first_name" value={paymentData.first_name} />
-              <Form.Control type="hidden" name="last_name" value={paymentData.last_name} />
-              <Form.Control type="hidden" name="email" value={paymentData.email} />
-              <Form.Control type="hidden" name="phone" value={paymentData.phone} />
-              <Form.Control type="hidden" name="address" value={paymentData.address} />
-              <Form.Control type="hidden" name="city" value={paymentData.city} />
-              <Form.Control type="hidden" name="country" value={paymentData.country} />
-              <Form.Control type="hidden" name="order_id" value={paymentData.order_id} />
-              <Form.Control type="hidden" name="items" value={paymentData.items} />
-              <Form.Control type="hidden" name="currency" value={paymentData.currency} />
-              <Form.Control type="hidden" name="amount" value={paymentData.amount} />
+          <div className="col-md-6"  > 
+          <div>
+            <Form  >
+              <Form.Control
+                type="hidden"
+                name="first_name"
+                value={paymentData.first_name}
+              />
+              <Form.Control
+                type="hidden"
+                name="last_name"
+                value={paymentData.last_name}
+              />
+              <Form.Control
+                type="hidden"
+                name="email"
+                value={paymentData.email}
+              />
+              <Form.Control
+                type="hidden"
+                name="phone"
+                value={paymentData.phone}
+              />
+              <Form.Control
+                type="hidden"
+                name="address"
+                value={paymentData.address}
+              />
+              <Form.Control
+                type="hidden"
+                name="city"
+                value={paymentData.city}
+              />
+              <Form.Control
+                type="hidden"
+                name="country"
+                value={paymentData.country}
+              />
+              <Form.Control
+                type="hidden"
+                name="order_id"
+                value={paymentData.order_id}
+              />
+              <Form.Control
+                type="hidden"
+                name="items"
+                value={paymentData.items}
+              />
+              <Form.Control
+                type="hidden"
+                name="currency"
+                value={paymentData.currency}
+              />
+              <Form.Control
+                type="hidden"
+                name="amount"
+                value={paymentData.amount}
+              />
 
               <Form.Group controlId="paymentId">
                 <Form.Label>Enter Payment ID:</Form.Label>
@@ -220,7 +266,8 @@ const PayHereIntegration = () => {
                 ) : (
                   "Search"
                 )}
-              </Button>{` `}
+              </Button>
+              {` `}
               <Button
                 variant="secondary"
                 onClick={handleClear}
@@ -246,9 +293,7 @@ const PayHereIntegration = () => {
                 </Card>
               )}
               {error && (
-                <p style={{ color: "red", fontSize: "1.05em" }}>
-                  {error}
-                </p>
+                <p style={{ color: "red", fontSize: "1.05em" }}>{error}</p>
               )}
 
               <br />
@@ -257,8 +302,13 @@ const PayHereIntegration = () => {
               </Button>
             </Form>
           </div>
+          </div>
         </div>
       </div>
+      <br></br>
+      <br></br>
+      <br></br>
+      <PaymentHistory tyle={{ marginTop: "4cm" }} />
       <div style={{ marginBottom: "2cm" }}></div>
     </main>
   );
