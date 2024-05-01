@@ -36,7 +36,12 @@ const orderSchema = new Schema({
     status:{
         type:String,
         required: true
+    },
+    paymentId:{
+        type:String,
+        default:"not assigned"
     }
+
 });
 
 const Order = mongoose.model("Order", orderSchema);

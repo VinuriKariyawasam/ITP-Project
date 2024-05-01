@@ -112,9 +112,11 @@ const ProductSales = () => {
         <Table striped bordered hover>
           <thead>
             <tr>
+              <th>Order Id</th>
               <th>Customer Name</th>
-              <th>Vehicle Number</th>
+              <th>Email</th>
               <th>Contact Number</th>
+              <th>Date</th>
               <th>Total</th>
               <th>Status</th>
               <th>Explore</th>
@@ -124,9 +126,11 @@ const ProductSales = () => {
           <tbody>
             {approvedSpareParts.map((SpareParts) => (
               <tr key={SpareParts._id}>
+                <td>{SpareParts.orderId}</td>
                 <td>{SpareParts.name}</td>
-                <td>{SpareParts.vehicleNumber}</td>
+                <td>{SpareParts.email}</td>
                 <td>{SpareParts.contactNumber}</td>
+                <td>{SpareParts.orderdate.split('T')[0]}</td>
                 <td>{SpareParts.total}</td>
                 <td>
                   <Badge bg="primary">In Finance</Badge>
@@ -142,24 +146,25 @@ const ProductSales = () => {
           </tbody>
         </Table>
         <Modal show={showModal} onHide={handleCloseModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>Order Details</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <img style={{ width: "50%", height: "50%" }} src={`${process.env.React_App_Backend_URL}/${selectedOrder?.image}`} alt="Product Image" />
-            <p>Customer Name: {selectedOrder?.name}</p>
-            <p>Vehicle Number: {selectedOrder?.vehicleNumber}</p>
-            <p>Vehicle Brand: {selectedOrder?.brand}</p>
-            <p>Model: {selectedOrder?.model}</p>
-            <p>Year: {selectedOrder?.year}</p>
-            <p>Color: {selectedOrder?.color}</p>
-            <p>Contact Number: {selectedOrder?.contactNumber}</p>
-            <p>Description: {selectedOrder?.description}</p>
-            <p>Total: Rs.{selectedOrder?.total}</p>
-          </Modal.Body>
-          <Modal.Footer>
-          </Modal.Footer>
-        </Modal>
+      <Modal.Header closeButton>
+        <Modal.Title>Order Details</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <img style={{width:"50%",height:"50%"}} src={`http://localhost:5000/${selectedOrder?.image}`} alt="Product Image" />
+        <p>Order Id: {selectedOrder?.orderId}</p>
+        <p>Customer Name: {selectedOrder?.name}</p>
+        <p>Vehicle Number: {selectedOrder?.vehicleNumber}</p>
+        <p>Vehicle Brand: {selectedOrder?.brand}</p>
+        <p>Model: {selectedOrder?.model}</p>
+        <p>Year: {selectedOrder?.year}</p>
+        <p>Color: {selectedOrder?.color}</p>
+        <p>Contact Number: {selectedOrder?.contactNumber}</p>
+        <p>Description: {selectedOrder?.description}</p>
+        <p>Total: Rs.{selectedOrder?.total}</p>
+      </Modal.Body>
+      <Modal.Footer>
+      </Modal.Footer>
+    </Modal>
       </div>
 
       <h3>Pending Product Orders</h3>
@@ -167,10 +172,11 @@ const ProductSales = () => {
         <thead>
           <tr>
             <th>OrderID</th>
-            <th>Date</th>
+            <th>Email</th>
+            <th>Date</th> 
             <th>Total</th>
             <th>Status</th>
-            <th>Details</th>
+            
             <th>Action</th> {/* New action column */}
           </tr>
         </thead>
@@ -178,14 +184,13 @@ const ProductSales = () => {
           {filteredPendingOrders.map((pendingorder) => (
             <tr key={pendingorder._id}>
               <td>{pendingorder.orderId}</td>
+              <td>{pendingorder.email}</td>
               <td>{pendingorder.date.split('T')[0]}</td>
               <td>{pendingorder.total}</td>
               <td>
                 <Badge bg="warning">{pendingorder.status}</Badge>
               </td>
-              <td>
-                <Button variant="secondary" onClick={() => handleMoreButtonClick(pendingorder)}>more</Button>
-              </td>
+        
               <td>
                 <Button variant="success" onClick={() => productApprove(pendingorder)}>Approve</Button> {/* Approve button */}
               </td>
@@ -193,34 +198,7 @@ const ProductSales = () => {
           ))}
         </tbody>
       </Table>
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Order Details</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Order Details:</p>
-          {selectedOrder?.products && (
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Product Name</th>
-                  <th>Unit Price</th>
-                  <th>Quantity</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.keys(selectedOrder.products).map(productId => (
-                  <tr key={productId}>
-                    <td>{selectedOrder.products[productId].product_name}</td>
-                    <td>{selectedOrder.products[productId].unit_price}</td>
-                    <td>{selectedOrder.products[productId].quantity}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
-        </Modal.Body>
-      </Modal>
+      
     </main>
   );
 };
