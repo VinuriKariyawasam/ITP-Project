@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Button, Form, Modal, Row, Stack } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import jsPDF from "jspdf";
+import logo from "../../../images/Payment/neotechlogo.jpg";
+import "./vehicledash.css";
 
 function VehicleDash() {
   const [vehicles, setVehicles] = useState([]);
@@ -83,35 +85,78 @@ function VehicleDash() {
 
   const handleTakeReport = () => {
     const doc = new jsPDF();
-    doc.setFont("helvetica");
-    doc.setFontSize(16); // Increase font size for the topic
-    doc.setTextColor(0, 0, 255); // Set text color to blue
+  
+    // Create an Image object for the logo
+    const logoImg = new Image();
+    logoImg.src = logo;
+  
+    logoImg.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+  
+      canvas.width = logoImg.width;
+      canvas.height = logoImg.height;
+  
+      // Draw the logo onto the canvas
+      ctx.drawImage(logoImg, 0, 0);
+  
+      // Convert canvas to data URL
+      const logoDataUrl = canvas.toDataURL('image/jpeg');
+  
+      // Add the logo image to the PDF
+      doc.addImage(logoDataUrl, 'JPEG', 10, 10, 60, 30);
+  
+      // Add text "Welcome you"
+      doc.setFontSize(12);
+      doc.setTextColor(128, 128, 128);// Set text color to black
+      doc.text("323/1/A Main Street Battaramulla", 10, 55); // Adjusted position
+doc.text("info@neotech.com", 10, 59); // Adjusted position for email
+doc.text("0112887998", 10, 63); // Adjusted position for phone number
 
-    doc.text("Vehicle Report", 10, 10);
+     
 
-    // Reset font size and color for the rest of the content
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0); // Set text color to black
+  
+      // Add a line to separate
+      doc.setLineWidth(0.5);
+doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
 
-    const startY = 20;
-    const lineHeight = 10;
-    const xOffset = 10;
-    let yOffset = startY;
-
-    vehicles.forEach((vehicle, index) => {
-      doc.text(`${index + 1})`, xOffset, yOffset);
-      doc.text(`VehicleNo: ${vehicle.vehicleNo}`, xOffset + 5, yOffset);
-      doc.text(`Brand: ${vehicle.brand}`, xOffset + 45, yOffset);
-      //doc.text(`Model: ${vehicle.model}`, xOffset + 85, yOffset);
-      doc.text(`Year: ${vehicle.year}`, xOffset + 78, yOffset);
-      doc.text(`Name: ${vehicle.name}`, xOffset + 110, yOffset);
-      doc.text(`Contact: ${vehicle.contact}`, xOffset + 155, yOffset);
-
-      yOffset += lineHeight;
-    });
-
-    doc.save("vehicle_report.pdf");
+  
+      // Add "Vehicle Report" heading
+      doc.setFont('helvetica', 'bold'); // Set font to bold
+      doc.setTextColor(0, 0, 0); // Set text color to black
+      doc.text('Vehicle Report', 10, 76);
+  
+      // Add table
+      const tableColumns = ["#", "Vehicle No", "Brand", "Year", "Name", "Contact"];
+      const tableData = vehicles.map((vehicle, index) => [
+        index + 1,
+        vehicle.vehicleNo,
+        vehicle.brand,
+        vehicle.year,
+        vehicle.name,
+        vehicle.contact
+      ]);
+  
+      doc.autoTable({
+        startY: 80, // Adjusted startY to leave space for the logo, "welcome you" text, and horizontal line
+        head: [tableColumns],
+        body: tableData,
+        theme: 'plain', // Use 'plain' theme for simple styling
+        didDrawPage: function (data) {
+          // Add "Vehicle Report" heading on each page
+          doc.setFontSize(16);
+          doc.setTextColor(0, 0, 255);
+        }
+      });
+  
+      // Save the PDF
+      doc.save("vehicle_report.pdf");
+    };
   };
+  
+  
+  
+  
 
   const handleShowUpdateModal = (vehicle) => {
     setSelectedVehicle(vehicle);

@@ -70,11 +70,14 @@ function AddVehicle() {
     // Validate each field as it's being typed
     switch (name) {
       case "vehicleNo":
-        errorMessage =
-          value.trim().length === 0 || value.trim().length > 10
-            ? "Vehicle No. is required and must be at most 10 characters"
-            : "";
-        break;
+      errorMessage =
+        value.trim().length === 0 || value.trim().length > 10
+          ? "Vehicle No. is required and must be at most 10 characters"
+          : !/^[A-Z\u0DC1\u0DCA\u200D\u0DBB\u0DD3\d]+$/.test(value)
+          ? "Vehicle No. must contain only capital letters, Sinhala word 'ශ්‍රී', or numbers"
+          : "";
+      break;
+
       case "date":
         errorMessage = !value ? "Date is required" : "";
         break;
@@ -98,11 +101,12 @@ function AddVehicle() {
           ? "Year should contain exactly 4 digits"
           : "";
         break;
-      case "contact":
-        errorMessage = !/^\d{10}$/.test(value)
-          ? "Contact No. should contain exactly 10 digits"
-          : "";
-        break;
+        case "contact":
+          errorMessage = !/^\d{10}$/.test(value)
+            ? "Contact No. should contain exactly 10 digits"
+            : "";
+          break;
+      
       default:
         break;
     }
@@ -111,6 +115,16 @@ function AddVehicle() {
     setErrorField(null);
     setFormData({ ...formData, [name]: value });
   };
+
+  const handleAddSri = () => {
+    const updatedVehicleNo = formData.vehicleNo + "ශ්‍රී"; // Add "ශ්‍රී" to the end of the vehicle number
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      vehicleNo: updatedVehicleNo
+    }));
+  };
+  
+  
 
   const handleDateChange = (date) => {
     // Validate date
@@ -180,12 +194,12 @@ function AddVehicle() {
     }
 
     if (!formData.brand.trim().length) {
-      newErrors.issue = "Issue is required";
+      newErrors.brand = "Brand is required";
       valid = false;
     }
 
     if (!formData.model.trim().length) {
-      newErrors.request = "Request is required";
+      newErrors.model = "Model is required";
       valid = false;
     }
 
@@ -215,18 +229,20 @@ function AddVehicle() {
           <h2>Add Vehicle</h2>
 
           <div className="mb-2">
-            <label htmlFor="vehicleNo">Vehicle No.</label>
-            <input
-              type="text"
-              name="vehicleNo"
-              value={formData.vehicleNo}
-              onChange={handleChange}
-              className={`form-control ${errors.vehicleNo ? "is-invalid" : ""}`}
-            />
-            {errors.vehicleNo && (
-              <div className="invalid-feedback">{errors.vehicleNo}</div>
-            )}
-          </div>
+  <label htmlFor="vehicleNo">Vehicle No.</label>
+  <input
+    type="text"
+    name="vehicleNo"
+    value={formData.vehicleNo}
+    onChange={handleChange}
+    className={`form-control ${errors.vehicleNo ? "is-invalid" : ""}`}
+  />
+  <Button variant="secondary" onClick={handleAddSri}>Add ශ්‍රී</Button>
+  {errors.vehicleNo && (
+    <div className="invalid-feedback">{errors.vehicleNo}</div>
+  )}
+</div>
+
 
           <div className="mb-2">
             <label htmlFor="brand">Brand</label>
@@ -285,16 +301,16 @@ function AddVehicle() {
           </div>
 
           <div className="mb-2">
-            <label htmlFor="contactNo">Contact No.</label>
+            <label htmlFor="contact">Contact No.</label>
             <input
               type="text"
 
               name="contact"
               value={formData.contact}
               onChange={handleChange}
-              className={`form-control ${errors.contac ? 'is-invalid' : ''}`}
+              className={`form-control ${errors.contact ? 'is-invalid' : ''}`}
             />
-            {errors.contactNo && <div className="invalid-feedback">{errors.contactNo}</div>}
+            {errors.contact && <div className="invalid-feedback">{errors.contact}</div>}
 
           </div>
 
