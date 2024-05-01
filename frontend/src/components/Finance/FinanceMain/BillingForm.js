@@ -222,6 +222,44 @@ const BillingForm = () => {
       return;
     }
 
+//send email to customer regarding the bill
+
+try {
+  const emailOptions = {
+    to: `${formData.email}`, // Replace with recipient email address
+    subject: `Your Bill is Ready for Payment - ${formData.paymentInvoiceId}`,
+    html: `<p><b>Dear Valued Customer</b></p>
+          <p>We're reaching out to you regarding an invoice. Your bill is now ready for payment. You can now make the payment for the order using our online payment portal or by visiting our center in person.</p>
+          <p>Please find the details of the invoice below:</p>
+          <p>Bill Number: ${formData.paymentInvoiceId}</p>
+          <p>Amount: Rs.${formData.total}</p>
+          <p>Date: ${formData.currentDate}</p>
+          <p>Should you have any questions or require further assistance, please don't hesitate to reach out to our team. We're always here to help.</p>
+          <p>Thank you for choosing us as your trusted partner. We appreciate your business.</p>
+          <p>Warm regards,</p>
+          <p><b><i>Finance Division- Neo Tech Motors</i></b></p>`,
+  };
+
+  // Send a fetch request to the backend controller for sending email
+  await fetch(`${process.env.React_App_Backend_URL}/api/finance/email`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      to: emailOptions.to,
+      subject: emailOptions.subject,
+      text: emailOptions.text,
+      html: emailOptions.html,
+    }),
+  });
+  console.log("Email sent to backend controller successfully");
+} catch (error) {
+  console.error("Error sending email:", error.message);
+}
+
+
+
     try {
       const response = await fetch(
         `${process.env.React_App_Backend_URL}/api/finance/billing/createbill`,
