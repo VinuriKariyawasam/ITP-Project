@@ -30,6 +30,9 @@ const {getAllServiceReports,
   updateFinanceApproval,}=require("../controllers/finance/importservice")
 
 
+const {addPaymentHistory,getPaymentByEmail} = require("../controllers/finance/paymenthistory")
+
+
 
 
 // Expense routes
@@ -98,6 +101,12 @@ router.post("/empbenefits/updatebenefits",processSalaryList)
 router.get("/service-record/all",getAllServiceReports)
 router.get("/service-record/pending",getUnapprovedServiceReports)
 router.patch("/service-record/update/:id",updateFinanceApproval)
+
+
+//payment history routes
+
+router.post("/paymenthistory/add",addPaymentHistory)
+router.get("/paymenthistory/get/:email",getPaymentByEmail)
 
 
 

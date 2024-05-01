@@ -155,8 +155,37 @@ const InvoiceComponent = () => {
           },
         }
       );
+
+
+      // save in payment history
+
+      const paymentHistoryData = {
+        invoice_id:paymentId,
+        name: name,
+        email: email,
+        amount: total,
+        date: currentDate,
+        url: downloadURL,
+
+      }
+
+
+      const PHResponse = await axios.post(
+        `${process.env.React_App_Backend_URL}/api/finance/paymenthistory/add`,
+        paymentHistoryData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+
+
+
   
      console.log("Income data saved to database:", incomeResponse.data);
+     console.log("Payment History data saved to database:", PHResponse.data);
 
       // Send email with the PDF attachment and HTML content
       const emailOptions = {
