@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useForm, Controller, useFormContext } from "react-hook-form";
 import {
   Button,
@@ -16,10 +16,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios"; // Import axios for HTTP requests
 import { useNavigate } from "react-router-dom";
+import { StaffAuthContext } from "../../../context/StaffAuthContext";
 
 function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
   //to redirect after success
   const navigate = useNavigate();
+  const { userId, userPosition, isLoggedIn } = useContext(StaffAuthContext);
 
   const [designations, setDesignations] = useState([]);
 
@@ -93,39 +95,13 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
       }
 
       // Optionally update the UI or perform any other actions after successful submission
-      onUpdate(response.data); // Assuming onUpdate is a function to update the UI with the updated data
+      // Assuming onUpdate is a function to update the UI with the updated data
       console.log("Data updated successfully:", response.data);
       const result = response.data;
       const email = result.employee.email;
 
-      // Send email with the PDF attachment and HTML content
-      const emailOptions = {
-        to: `${email}`, // Replace with recipient email address
-        subject: `Emplyee Registration Confirmation- Neo Tech Motors`,
-
-        html: `<p><b>Dear Trusted Partner</b></p>
-            <p>Your staff credential for Neo Tech organizations management system has been reset.</p>
-            <p>With your designation you will have the access to our management system with this email and your given password.If any issue please contact HR Division.</p>
-            <p>Hope you have fun while working. Login Here<a href="http://localhost:3000/staff/login">Neo Tech Staff</a></p>
-            <p>Thank You</p>
-            <p>Warm regards,</p>
-            <p><b><i>HR Division- Neo Tech Motors</i></b></p>`,
-      };
-
-      // Send a fetch request to the backend controller for sending email
-      await fetch("http://localhost:5000/api/finance/email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          to: emailOptions.to,
-          subject: emailOptions.subject,
-          text: emailOptions.text,
-          html: emailOptions.html,
-        }),
-      });
       // Close the modal or redirect to another page after successful submission
+      onUpdate(response.data);
       onHide(); // Close the modal
     } catch (error) {
       console.error("Error updating data:", error.message);
@@ -284,36 +260,45 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
 
             {/* Contact No. */}
             <Form.Group as={Col} controlId="formGridContact">
-              <Form.Label>
-                Contact No. <i className="bi bi-pencil-square"></i>
-              </Form.Label>
+              <Form.Label>Contact No.</Form.Label>
               <Controller
                 name="contact"
                 control={control}
-                rules={{ required: "Contact No. is required" }}
+                rules={{
+                  required: "Contact No. is required",
+                  pattern: {
+                    value: /^[0-9]{10}$/, // Regex pattern for 10-digit numbers
+                    message: "Contact No. must be a 10-digit number",
+                  },
+                }}
                 render={({ field }) => (
                   <>
                     <Form.Control
-                      type="tel"
+                      type="text"
                       placeholder="0715897598"
                       {...field}
-                      pattern="[0-9]{10}"
-                      maxLength={10}
                       onChange={(e) => {
-                        handleContactChange(e);
-                        field.onChange(e);
+                        // Remove non-numeric characters and limit to maximum length
+                        const input = e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 10);
+                        field.onChange(input);
                       }}
-                      isCnomValid={isCnomValid && field.value.length === 10}
+                      maxLength="10" // Set maximum length
                     />
-                    {isCnomValid && field.value.length === 10 && (
+
+                    {field.value?.length === 10 && (
                       <i className="bi bi-check-circle-fill text-success"></i>
+                    )}
+
+                    {errors.contact && (
+                      <Form.Text className="text-danger">
+                        {errors.contact.message}
+                      </Form.Text>
                     )}
                   </>
                 )}
               />
-              <Form.Text className="text-danger">
-                {errors.contact?.message}
-              </Form.Text>
             </Form.Group>
           </Row>
 
@@ -358,6 +343,10 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
                       field.onChange(e);
                       handlePositionChange(e); // Call function to update selected position
                     }}
+                    disabled={
+                      userPosition !== "HR Manager" &&
+                      userPosition !== "General Manager"
+                    }
                   >
                     <option value="">Choose...</option>
                     {designations.map((designation) => (

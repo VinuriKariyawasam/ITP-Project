@@ -114,7 +114,8 @@ function AddEmp() {
               <p>Hope you have fun while working. Login Here<a href="http://localhost:3000/staff/login">Neo Tech Staff</a></p>
               <p>Thank You</p>
               <p>Warm regards,</p>
-              <p><b><i>HR Division- Neo Tech Motors</i></b></p>`,
+              <p><b><i>HR Division- Neo Tech Motors</i></b></p>
+              <a href="http://localhost:3000/customer"><img src="https://i.ibb.co/ySB2bhn/Logoblack.jpg" alt="Logoblack" border="0"></a>`,
         };
 
         // Send a fetch request to the backend controller for sending email

@@ -379,6 +379,52 @@ class EmployeeController {
       return next(error);
     }
 
+    if (emp.position != position) {
+      //get the basic salary from desigantion
+      let getDesignation;
+      try {
+        getDesignation = await Designation.findOne({ position: position });
+      } catch (err) {
+        const error = new HttpError(
+          "Error in finding designation. Try Again",
+          500
+        );
+        return next(error);
+      }
+
+      if (!getDesignation) {
+        const error = new HttpError("There is no such designation.", 422);
+        return next(error);
+      }
+
+      try {
+        // Find the salary document based on specific conditions (e.g., empId)
+        const salary = await Salary.findOne({ empDBId: emp._id });
+
+        if (!salary) {
+          return res.status(404).json({ message: "Salary not found" });
+        }
+
+        // Update the fields of the retrieved salary document with new values
+        salary.position = position;
+        salary.basicSalary = getDesignation.basicSalary;
+        salary.EPFC = salary.basicSalary * 0.12;
+        salary.EPFE = salary.basicSalary * 0.08;
+        salary.EPFT = salary.EPFC + salary.EPFE;
+        salary.ETF = salary.basicSalary * 0.03;
+        salary.totalSal = salary.basicSalary + salary.allowance;
+        salary.netSal = salary.totalSal - (salary.noPay + salary.EPFC);
+        // Update other fields as needed...
+
+        // Save the updated salary document
+        const updatedSalary = await salary.save();
+
+        res.status(200).json(updatedSalary); // Return the updated salary document
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+    }
+
     // Update employee fields with values from req.body
     emp.address = address;
     emp.contact = contact;
