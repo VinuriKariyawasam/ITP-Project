@@ -12,6 +12,11 @@ router.use(bodyParser.json());
 //const NoPayHandler = require("../controllers/hr/noPayHandler");
 const NoPayController = require("../controllers/hr/noPay-controller");
 
+const multer = require("multer");
+
+// Set up multer for handling file uploads
+const upload = multer();
+
 //--------Employee Routes-----------------
 // Validation rules for creating an employee
 const createEmployeeValidationRules = [
@@ -91,6 +96,20 @@ router.patch("/update-credentials/:id", EmployeeController.updateCredentials);
 //get archived employees
 // Define the route to get all archived employee records
 router.get("/archivedEmployees", EmployeeController.getAllArchivedEmployees);
+
+// Define the route for updating employee photo
+router.post(
+  "/updateemployeephoto/:employeeId",
+  upload.single("photo"),
+  EmployeeController.updateEmployeePhoto
+);
+
+// Add documents to an employee route
+/*router.post(
+  "/addemployeedocs/:employeeId",
+  multer().fields([{ name: "documents", maxCount: 10 }]),
+  EmployeeController.addEmployeeDocuments
+);*/
 
 //---------Leaves Routes-------------------
 
