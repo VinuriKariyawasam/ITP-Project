@@ -13,6 +13,7 @@ function VehicleDash() {
   const [deletedVehicle, setDeletedVehicle] = useState(null);
   const [formData, setFormData] = useState({});
   const [search, setSearch] = useState('');
+  const [email, setEmail] = useState('');
   
 
   useEffect(() => {
@@ -134,7 +135,9 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
         vehicle.brand,
         vehicle.year,
         vehicle.name,
-        vehicle.contact
+        vehicle.contact,
+        vehicle.email,
+        vehicle.type
       ]);
   
       doc.autoTable({
@@ -167,6 +170,8 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
       year: vehicle.year,
       name: vehicle.name,
       contact: vehicle.contact,
+      email: vehicle.email,
+      type: vehicle.type,
     });
     setShowModal(true);
   };
@@ -199,6 +204,11 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
     if (name === "contact") {
       if (!/^\d{10}$/.test(value)) {
         return "Contact No. must be 10 digits";
+      }
+    }
+    if (name === "email") {
+      if (!/\S+@\S+\.\S+/.test(value)) {
+        return "Invalid email address";
       }
     }
     return "";
@@ -299,6 +309,8 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
                 <th>Year</th>
                 <th>Name</th>
                 <th>Contact</th>
+                <th>E mail</th>
+                <th>Type</th>
                 <th>Records</th>
                 <th>Actions</th>
               </tr>
@@ -316,6 +328,8 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
   <td>{vehicle.year}</td>
   <td>{vehicle.name}</td>
   <td>{vehicle.contact}</td>
+  <td>{vehicle.email}</td>
+  <td>{vehicle.type}</td>
   <td>
   <button
   className="btn btn-secondary me-2"
@@ -361,6 +375,8 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
               <p>Year: {deletedVehicle.year}</p>
               <p>Name: {deletedVehicle.name}</p>
               <p>Contact: {deletedVehicle.contact}</p>
+              <p>E mail: {deletedVehicle.email}</p>
+              <p>Type: {deletedVehicle.type}</p>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleCloseModal}>
@@ -429,6 +445,16 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
                     onChange={handleChange}
                   />
                 </Form.Group>
+                <Form.Group className="mb-3" controlId="formEmail">
+  <Form.Label>Email</Form.Label>
+  <Form.Control
+    type="email"
+    name="email"
+    value={formData.email}
+    onChange={handleChange}
+  />
+</Form.Group>
+
               </Form>
             </Modal.Body>
             <Modal.Footer>
