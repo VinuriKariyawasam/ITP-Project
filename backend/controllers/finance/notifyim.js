@@ -37,14 +37,14 @@ async function updateOrderStatusAspSchema(orderId) {
 
 
 const notifyIM=async(req, res)=> {
-    const paymentId = req.params.paymentId;
+    const {paymentId} = req.params;
 
     try {
         if (paymentId.startsWith('PA')) {
             const order = await orderSchema.findOne({ paymentId : paymentId});
             if (order) {
                 await updateOrderStatusOrderSchema(order._id);
-                res.send('Order status updated to "complete"');
+                res.send('Order status updated to completed');
             } else {
                 res.status(404).send('Order not found');
             }
@@ -53,7 +53,7 @@ const notifyIM=async(req, res)=> {
             if (aspOrder) {
                 const orderId = aspOrder._id;
                 await updateOrderStatusAspSchema(orderId);
-                res.send('Order status updated to "complete"');
+                res.send('Order status updated to ongoing');
             } else {
                 res.status(404).send('Order not found');
             }
