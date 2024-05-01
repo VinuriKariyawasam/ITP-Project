@@ -30,16 +30,17 @@ import AlreadyLogIn from "./components/util/AlreadyLogIn";
 import StaffMyProfile from "./components/Staff/staffMyProfile";
 import NotFoundPage from "./components/util/NotFoundPage";
 
-function StaffApp() {
+function StaffApp({ toggleLoading }) {
   const { userId, userPosition, isLoggedIn } = useContext(StaffAuthContext);
 
   return (
     <>
       <Header />
       <Routes>
-
-        <Route path="/" element={<NotFoundPage page="http://localhost:3000/"/>} />
-
+        <Route
+          path="/"
+          element={<NotFoundPage page="http://localhost:3000/" />}
+        />
 
         {isLoggedIn === false ? (
           <Route path="/login" element={<StaffLogin />} />
@@ -57,13 +58,13 @@ function StaffApp() {
         )}
 
         {userPosition === "General Manager" ? (
-          <Route path="/gm/*" element={<GM />} />
+          <Route path="/gm/*" element={<GM toggleLoading={toggleLoading} />} />
         ) : (
           <Route path="/gm/*" element={<RestrictedPage />} />
         )}
 
         {userPosition === "HR Manager" || userPosition === "General Manager" ? (
-          <Route path="/hr/*" element={<HR />} />
+          <Route path="/hr/*" element={<HR toggleLoading={toggleLoading} />} />
         ) : (
           <Route path="/hr/*" element={<RestrictedPage />} />
         )}
