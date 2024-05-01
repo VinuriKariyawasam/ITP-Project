@@ -4,6 +4,7 @@ import html2pdf from "html2pdf.js"; // Import html2pdf library
 import PageTitle from "./PageTitle";
 import CompanyHeader from "./CompanyHeader";
 import ReactToPrint from "react-to-print"; // Import ReactToPrint
+import CompanyFooter from "./CompanyFooter";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -243,6 +244,9 @@ function MonthlyReport() {
                   )}
                 </h4>
               </Col>
+            </Row>
+            <Row>
+              <CompanyFooter/>
             </Row>
           </Container>
         </div>
