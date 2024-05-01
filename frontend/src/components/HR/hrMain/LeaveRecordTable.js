@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Badge, Button, Form, Col, Row } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 import html2pdf from "html2pdf.js";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // Main style file
 import "react-date-range/dist/theme/default.css"; // Theme CSS file
+import logo from "../../../images/logoblack_trans.png";
+import { StaffAuthContext } from "../../../context/StaffAuthContext";
 
 const LeaveRecordsTable = ({
   leaveRecords,
@@ -12,6 +14,7 @@ const LeaveRecordsTable = ({
   dateFilter,
   tableName,
 }) => {
+  const { userId, userPosition } = useContext(StaffAuthContext);
   const [filteredTableData, setFilteredTableData] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [searchEmployeeID, setSearchEmployeeID] = useState("");
@@ -176,6 +179,23 @@ const LeaveRecordsTable = ({
 
     const content = `
     <div style="margin: 20px;">
+    <div >
+        <h4 class="float-end font-size-15">Human Resources</h4>
+        <div class="mb-4">
+          <img src="${logo}" alt="Invoice Logo" width="200px" />
+        </div>
+        <div class="text-muted">
+        <p class="mb-1"><i class="bi bi-geo-alt-fill"></i>323/1/A Main Street Battaramulla</p>
+        <p class="mb-1">
+        <i class="bi bi-envelope-fill me-1"></i> info@neotech.com
+        </p>
+        <p>
+        <i class="bi bi-telephone-fill me-1"></i> 0112887998
+        </p>
+
+        </div>
+        <hr/>
+      </div>
     <h3 style="background-color: black; color: white; padding: 10px;">${tableName}</h3>
     <table style="width: 100%; border-collapse: collapse;">
       <thead>
@@ -192,6 +212,7 @@ const LeaveRecordsTable = ({
         ${tableRows}
       </tbody>
     </table>
+    <p style="text-align: right; margin-top: 20px;">Authorized By: ${userPosition}</p>
     <p style="text-align: right; margin-top: 20px;">Generated Date: ${currentDate}</p>
   </div>
     `;

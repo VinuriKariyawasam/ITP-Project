@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useParams } from "react-router-dom";
 import {
   Row,
@@ -19,9 +19,15 @@ import EmpEvaluateModal from "./EmpEvaluateModal";
 import SalaryDetailsModal from "./SalaryDetailsModal";
 import MoreReviewsModal from "./MoreReviewModal";
 import SystemCredentialsUpdateModal from "./SystemCredentialsUpdateModal";
-//import { StaffAuthContext } from "../../../Context/Staff/StaffAuthContext";
+import ProfileImageUpdateForm from "./ProfileImageUpdateForm";
+import logo from "../../../images/logoblack_trans.png";
+import { StaffAuthContext } from "../../../context/StaffAuthContext";
+import ReactToPrint from "react-to-print";
+import CompanyHeader from "./CompanyHeader";
 
 function EmployeeDetails() {
+  const componentRef = useRef();
+  const { userId, userPosition } = useContext(StaffAuthContext);
   const { employeeId } = useParams();
   //to redirect after success
   const navigate = useNavigate();
@@ -52,6 +58,7 @@ function EmployeeDetails() {
   const [toastBody, setToastBody] = useState("");
   const [toastType, setToastType] = useState("");
 
+  const [showProfilePicModal, setShowProfilePicModal] = useState(false);
   // Function to show toast notification
   const showToastNotification = (type, header, body) => {
     setToastType(type);
@@ -206,17 +213,61 @@ function EmployeeDetails() {
   };
 
   /*----Parts regarding generate pdf from employee personal details-------*/
+
   const generatePDF = () => {
     const element = document.querySelector(".personalDetails"); // Select the container to convert to PDF
-    const opt = {
+    if (!element) {
+      console.error("Container element not found");
+      return;
+    }
+
+    // Remove the "Update Profile Picture" button before generating PDF
+    const profilePictureButtons = element.querySelectorAll("Button");
+    profilePictureButtons.forEach((button) => button.remove());
+
+    // Create a wrapper div
+    const wrapper = document.createElement("div");
+
+    // Add the header content
+    const headerContent = `
+      <div>
+        <h4 class="float-end font-size-15">Human Resources</h4>
+        <div class="mb-4">
+          <img src="${logo}" alt="Invoice Logo" width="200px" />
+        </div>
+        <div class="text-muted">
+          <p class="mb-1">323/1/A Main Street Battaramulla</p>
+          <p class="mb-1">
+            <i class="uil uil-envelope-alt me-1"></i> info@neotech.com
+          </p>
+          <p>
+            <i class="uil uil-phone me-1"></i> 0112887998
+          </p>
+        </div>
+        <hr/>
+      </div>
+    `;
+    wrapper.innerHTML = headerContent;
+
+    // Append the main content
+    wrapper.appendChild(element.cloneNode(true));
+
+    // Generate and save the PDF
+    const options = {
       margin: 0.5,
-      filename: "personal_details.pdf",
+      filename: `Personal_Details_${firstName}.pdf`,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
 
-    html2pdf().from(element).set(opt).save(); // Generate and save the PDF
+    html2pdf()
+      .from(wrapper)
+      .set(options)
+      .save()
+      .catch((error) => {
+        console.error("Error generating PDF:", error);
+      });
   };
 
   /*----Parts regarding updating employee personal details-------*/
@@ -229,6 +280,7 @@ function EmployeeDetails() {
     // Logic to update employee data
     console.log("Updated employee data:", updatedData);
     fetchEmployeeById(employeeId); //this used because of error
+    fetchSalaryDetails(employeeId);
     //setEmployee(updatedData); // Update the employee data in the state
     setShowUpdateModal(false); // Close the update modal
     setToastType("success");
@@ -337,6 +389,49 @@ function EmployeeDetails() {
     setToastHeader("Success");
     setToastBody("Credentials Updated Successfully");
     setShowToast(true);
+
+    // Send email with the PDF attachment and HTML content
+    const emailOptions = {
+      to: `${email}`, // Replace with recipient email address
+      subject: `Login Credentials Update- Neo Tech Motors`,
+
+      html: `<p><b>Dear Trusted Partner</b></p>
+          <p>Your staff credential for Neo Tech organizations management system has been reset.</p>
+          <p>With your designation you will have the access to our management system with this email and your given password.If any issue please contact HR Division.</p>
+          <p>Hope you have fun while working. Login Here<a href="http://localhost:3000/staff/login">Neo Tech Staff</a></p>
+          <p>Thank You</p>
+          <p>Warm regards,</p>
+          <p><b><i>HR Division- Neo Tech Motors</i></b></p>
+          <a href="http://localhost:3000/customer"><img src="https://i.ibb.co/ySB2bhn/Logoblack.jpg" alt="Logoblack" border="0"></a>`,
+    };
+
+    // Send a fetch request to the backend controller for sending email
+    await fetch("http://localhost:5000/api/finance/email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: emailOptions.to,
+        subject: emailOptions.subject,
+        text: emailOptions.text,
+        html: emailOptions.html,
+      }),
+    });
+  };
+
+  // Function to handle opening and closing of the profile pic update modal
+  const handlePPUModal = () => {
+    setShowProfilePicModal(!showProfilePicModal);
+  };
+
+  const handleImageUpdate = async () => {
+    setShowProfilePicModal(false);
+    fetchEmployeeById(employeeId);
+    setToastType("success");
+    setToastHeader("Success");
+    setToastBody("Profile Picture Updated Successfully");
+    setShowToast(true);
   };
 
   return (
@@ -369,21 +464,24 @@ function EmployeeDetails() {
         >
           <BsArrowLeft /> Employee
         </Button>
-        Employee Details of {firstName} {lastName}
+        Employee Details
       </h2>
       <hr />
       <Card.Body style={{ padding: "10px" }}>
         <Row>
           <Col md={6}>
             {/* Display Personal Details*/}
-            <Container className="personalDetails">
-              <h4>Personal Details</h4>
+            <Container className="personalDetails" ref={componentRef}>
+              <CompanyHeader />
+              <h4>
+                Personal Details of {firstName} {lastName}
+              </h4>
               <Row style={{ marginBottom: "10px" }}>
                 <Col xs={12} md={8}>
                   <Image
                     src={photoUrl}
                     rounded
-                    style={{ width: "200px", height: "150px" }}
+                    style={{ width: "200px", height: "200px" }}
                   />
                 </Col>
               </Row>
@@ -482,13 +580,14 @@ function EmployeeDetails() {
               </Row>
             </Container>
             <hr />
-            <Button
-              variant="primary"
-              onClick={generatePDF}
-              style={{ margin: "10px" }}
-            >
-              Generate PDF
-            </Button>
+            <ReactToPrint
+              trigger={() => (
+                <Button variant="primary" style={{ margin: "10px" }}>
+                  Generate PDF
+                </Button>
+              )}
+              content={() => componentRef.current}
+            />
             {/* Personal Details Update Button */}
             <Button
               variant="dark"
@@ -506,6 +605,13 @@ function EmployeeDetails() {
                 Update Credentials
               </Button>
             )}
+            <Button
+              variant="dark"
+              onClick={handlePPUModal}
+              style={{ margin: "3%" }}
+            >
+              Update Profile Picture
+            </Button>
             <Button
               variant="danger"
               onClick={handleDeleteClick}
@@ -823,6 +929,14 @@ function EmployeeDetails() {
         onHide={hideCredentialsModalHandler}
         employee={employee}
         submitHandler={handleCredUpdate}
+      />
+
+      {/* Render the ProfilePicUpdateModal */}
+      <ProfileImageUpdateForm
+        show={showProfilePicModal}
+        handleClose={handlePPUModal}
+        empId={_id}
+        onUploadPic={handleImageUpdate}
       />
     </Card>
   );

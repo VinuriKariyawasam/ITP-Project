@@ -14,6 +14,7 @@ import { BsArrowLeft } from "react-icons/bs";
 import EmployeeUpdateModal from "../HR/hrMain/EmployeeUpdateModal";
 import SystemCredentialsUpdateModal from "../HR/hrMain/SystemCredentialsUpdateModal";
 //import { StaffAuthContext } from "../../../Context/Staff/StaffAuthContext";
+import ProfileImageUpdateForm from "../HR/hrMain/ProfileImageUpdateForm";
 
 function StaffMyProfile(props) {
   const employeeId = props.userId;
@@ -26,6 +27,7 @@ function StaffMyProfile(props) {
   const [employee, setEmployee] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showCredentialsModal, setShowCredentialsModal] = useState(false);
+  const [showProfilePicModal, setShowProfilePicModal] = useState(false);
 
   //Function to fetch employee personal data by database
   const fetchEmployeeById = async (employeeId) => {
@@ -110,6 +112,17 @@ function StaffMyProfile(props) {
     fetchEmployeeById(employeeId);
   };
 
+  // Function to handle opening and closing of the profile pic update modal
+  const handlePPUModal = () => {
+    setShowProfilePicModal(!showProfilePicModal);
+  };
+
+  const handleImageUpdate = async () => {
+    setShowProfilePicModal(false);
+    fetchEmployeeById(employeeId);
+    alert("Profile Picture Updated Successfully");
+  };
+
   return (
     <Card style={{ padding: "20px", marginTop: "60px" }}>
       <h2>
@@ -134,8 +147,15 @@ function StaffMyProfile(props) {
                   <Image
                     src={photoUrl}
                     rounded
-                    style={{ width: "200px", height: "150px" }}
+                    style={{ width: "200px", height: "200px" }}
                   />
+                  <Button
+                    variant="primary"
+                    onClick={handlePPUModal}
+                    style={{ margin: "3%" }}
+                  >
+                    Update Profile Picture
+                  </Button>
                 </Col>
               </Row>
               <Row style={{ marginBottom: "10px" }}>
@@ -278,6 +298,13 @@ function StaffMyProfile(props) {
         show={showCredentialsModal}
         onHide={hideCredentialsModalHandler}
         employee={employee}
+      />
+      {/* Render the ProfilePicUpdateModal */}
+      <ProfileImageUpdateForm
+        show={showProfilePicModal}
+        handleClose={handlePPUModal}
+        empId={_id}
+        onUploadPic={handleImageUpdate}
       />
     </Card>
   );

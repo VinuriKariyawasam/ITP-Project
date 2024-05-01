@@ -11,12 +11,12 @@ import {
   Navigate,
 } from "react-router-dom";
 
-function HrSalary() {
+function HrSalary({ toggleLoading }) {
   return (
     <main id="main" className="main">
       <HrPageTitle title="Salary" url="staff/hr/salary" />
       <Routes>
-        <Route path="/" element={<Salary />} />
+        <Route path="/" element={<Salary toggleLoading={toggleLoading} />} />
       </Routes>
     </main>
   );

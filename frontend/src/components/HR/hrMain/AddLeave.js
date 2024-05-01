@@ -32,6 +32,8 @@ const AddLeave = () => {
   const [toastBody, setToastBody] = useState("");
   const [toastType, setToastType] = useState("");
 
+  const [newField, setNewField] = useState("");
+
   useEffect(() => {
     // Fetch employees from the backend when the component mounts
     const fetchEmployees = async () => {
@@ -123,6 +125,7 @@ const AddLeave = () => {
       setValidationErrors(errors);
       return;
     }
+    leaveData.newField = newField;
 
     console.log(leaveData);
     try {
@@ -316,6 +319,19 @@ const AddLeave = () => {
                 value={leaveData.status}
               />
             </Form.Group>
+            {/*<Form.Group
+              controlId="formNewField"
+              style={{ marginBottom: "15px" }}
+            >
+              <Form.Label>New Field</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter reason"
+                name="newField"
+                value={leaveData.newField}
+                onChange={(e) => setNewField(e.target.value)}
+              />
+                </Form.Group>*/}
             <Button variant="dark" type="submit">
               Submit
             </Button>
