@@ -45,6 +45,21 @@ function AddQuotation() {
     formState: { errors },
   } = useForm();
 
+  // Custom validation rule for Sri Lankan vehicle number format
+  const validateVehicleNumber = (value) => {
+    // Define regular expressions for standard alphanumeric and Sinhala word formats
+    const alphanumericPattern = /^[A-Z]{2}\s\d{4}$/; // LL NNNN format
+    const sinhalaWordPattern = /^[\u0D81\u0DCA\u0DBB\u0DD3]$/; // Sinhala word sri format
+
+    // Validate against both patterns
+    return (
+      alphanumericPattern.test(value) ||
+      sinhalaWordPattern.test(value) ||
+      "Invalid Sri Lankan vehicle number"
+    );
+  };
+
+
   const handleCheckboxChange = (itemId) => {
     const updatedItems = items.map((item) =>
       item.id === itemId ? { ...item, selected: !item.selected } : item
@@ -138,7 +153,9 @@ function AddQuotation() {
             <Controller
               name="vnumber"
               control={control}
-              rules={{ required: "Vehicle number is required" }}
+              rules={{ required: "Vehicle number is required",
+                       validate: validateVehicleNumber,
+            }}
               render={({ field }) => (
                 <FormControl placeholder="Enter vehicle number" {...field} />
               )}
