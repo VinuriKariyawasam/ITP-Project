@@ -233,7 +233,7 @@ const BillsList = () => {
                 }
               }
             `}
-          </style>
+          </style>s
           <Table striped bordered hover>
             <thead>
               <tr>

@@ -6,7 +6,7 @@ import payheremobile from "../../../../images/Payment/payhere_mobile.png";
 import PaymentHistory from "./PaymentHistory";
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 
-const PayHereIntegration = () => {
+const PayHereIntegration = ({toggleLoading}) => {
   const cusauth = useContext(CusAuthContext);
   const [isMobile, setIsMobile] = useState(false);
   const [paymentData, setPaymentData] = useState({
@@ -29,9 +29,10 @@ const PayHereIntegration = () => {
   const [searchValid, setSearchValid] = useState(false);
 
   const handleSearch = async () => {
-    setLoading(true);
+    
     setError(null);
     try {
+      toggleLoading(true)
       const response = await fetch(
         `${process.env.React_App_Backend_URL}/api/finance/billing/pendingpayment/${paymentId}`
       );
@@ -59,7 +60,7 @@ const PayHereIntegration = () => {
       setError(error.message);
       setSearchValid(false); // Set search validity to false
     } finally {
-      setLoading(false);
+      toggleLoading(false)
     }
   };
 
@@ -318,7 +319,7 @@ const PayHereIntegration = () => {
       <br></br>
       <br></br>
       <br></br>
-      {cusauth.isLoggedIn && <PaymentHistory style={{ marginTop: "4cm" }} />}
+      {cusauth.isLoggedIn && <PaymentHistory toggleLoading={toggleLoading} style={{ marginTop: "4cm" }} />}
       <div style={{ marginBottom: "2cm" }}></div>
     </main>
   );

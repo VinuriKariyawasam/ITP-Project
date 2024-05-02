@@ -2,20 +2,35 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { CusAuthContext } from '../../../../context/cus-authcontext';
 
-const PaymentHistory = () => {
+const PaymentHistory = ({toggleLoading}) => {
   const [paymentHistory, setPaymentHistory] = useState([]);
   const cusauth = useContext(CusAuthContext);
 
   useEffect(() => {
-    // Check if cusauth.email is defined before making the request
-    if (cusauth.email) {
-      // Fetch data from the provided URL
-      fetch(`${process.env.React_App_Backend_URL}/api/finance/paymenthistory/get/${cusauth.email}`)
-        .then(response => response.json())
-        .then(data => setPaymentHistory(data))
-        .catch(error => console.error('Error fetching data:', error));
-    }
-  }, [cusauth.email]);
+    const fetchData = async () => {
+        try {
+            // Check if cusauth.email is defined before making the request
+            if (cusauth.email) {
+                // Fetch data from the provided URL
+                toggleLoading(true)
+                const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/paymenthistory/get/${cusauth.email}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setPaymentHistory(data);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            // Any cleanup code can go here
+            toggleLoading(false)
+        }
+    };
+
+    fetchData();
+
+}, [cusauth.email]);
 
   return (
    
