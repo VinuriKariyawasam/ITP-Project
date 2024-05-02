@@ -3,7 +3,6 @@ import { Button, Form, Modal, Row, Stack } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import jsPDF from "jspdf";
 import logo from "../../../images/Payment/neotechlogo.jpg";
-import "./vehicledash.css";
 
 function VehicleDash() {
   const [vehicles, setVehicles] = useState([]);
@@ -12,9 +11,8 @@ function VehicleDash() {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [deletedVehicle, setDeletedVehicle] = useState(null);
   const [formData, setFormData] = useState({});
-  const [search, setSearch] = useState('');
-  const [email, setEmail] = useState('');
-  
+  const [search, setSearch] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -45,7 +43,7 @@ function VehicleDash() {
   };
 
   const clearFilters = () => {
-    setSearch('');
+    setSearch("");
   };
 
   const handleDelete = async (id) => {
@@ -86,49 +84,52 @@ function VehicleDash() {
 
   const handleTakeReport = () => {
     const doc = new jsPDF();
-  
+
     // Create an Image object for the logo
     const logoImg = new Image();
     logoImg.src = logo;
-  
+
     logoImg.onload = () => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-  
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
       canvas.width = logoImg.width;
       canvas.height = logoImg.height;
-  
+
       // Draw the logo onto the canvas
       ctx.drawImage(logoImg, 0, 0);
-  
+
       // Convert canvas to data URL
-      const logoDataUrl = canvas.toDataURL('image/jpeg');
-  
+      const logoDataUrl = canvas.toDataURL("image/jpeg");
+
       // Add the logo image to the PDF
-      doc.addImage(logoDataUrl, 'JPEG', 10, 10, 60, 30);
-  
+      doc.addImage(logoDataUrl, "JPEG", 10, 10, 60, 30);
+
       // Add text "Welcome you"
       doc.setFontSize(12);
-      doc.setTextColor(128, 128, 128);// Set text color to black
+      doc.setTextColor(128, 128, 128); // Set text color to black
       doc.text("323/1/A Main Street Battaramulla", 10, 55); // Adjusted position
-doc.text("info@neotech.com", 10, 59); // Adjusted position for email
-doc.text("0112887998", 10, 63); // Adjusted position for phone number
+      doc.text("info@neotech.com", 10, 59); // Adjusted position for email
+      doc.text("0112887998", 10, 63); // Adjusted position for phone number
 
-     
-
-  
       // Add a line to separate
       doc.setLineWidth(0.5);
-doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
+      doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
 
-  
       // Add "Vehicle Report" heading
-      doc.setFont('helvetica', 'bold'); // Set font to bold
+      doc.setFont("helvetica", "bold"); // Set font to bold
       doc.setTextColor(0, 0, 0); // Set text color to black
-      doc.text('Vehicle Report', 10, 76);
-  
+      doc.text("Vehicle Report", 10, 76);
+
       // Add table
-      const tableColumns = ["#", "Vehicle No", "Brand", "Year", "Name", "Contact"];
+      const tableColumns = [
+        "#",
+        "Vehicle No",
+        "Brand",
+        "Year",
+        "Name",
+        "Contact",
+      ];
       const tableData = vehicles.map((vehicle, index) => [
         index + 1,
         vehicle.vehicleNo,
@@ -137,29 +138,25 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
         vehicle.name,
         vehicle.contact,
         vehicle.email,
-        vehicle.type
+        vehicle.type,
       ]);
-  
+
       doc.autoTable({
         startY: 80, // Adjusted startY to leave space for the logo, "welcome you" text, and horizontal line
         head: [tableColumns],
         body: tableData,
-        theme: 'plain', // Use 'plain' theme for simple styling
+        theme: "plain", // Use 'plain' theme for simple styling
         didDrawPage: function (data) {
           // Add "Vehicle Report" heading on each page
           doc.setFontSize(16);
           doc.setTextColor(0, 0, 255);
-        }
+        },
       });
-  
+
       // Save the PDF
       doc.save("vehicle_report.pdf");
     };
   };
-  
-  
-  
-  
 
   const handleShowUpdateModal = (vehicle) => {
     setSelectedVehicle(vehicle);
@@ -182,7 +179,7 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
         return "Invalid Vehicle No. Enter again.";
       }
     }
-    
+
     if (name === "brand" && !value.trim()) {
       return "Brand is required";
     }
@@ -225,7 +222,7 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
 
     setFormData({ ...formData, [name]: value });
   };
-  
+
   const handleSubmit = async () => {
     try {
       const response = await fetch(
@@ -260,7 +257,7 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
     const vehicleExists = vehicles.some(
       (vehicle) => vehicle.vehicleNo === vehicleNo
     );
-    
+
     if (vehicleExists) {
       window.location.href = `/staff/sm/record?vnumber=${vehicleNo}`;
     } else {
@@ -269,8 +266,8 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
   };
 
   const filteredVehicles = vehicles.filter((vehicle) =>
-  vehicle.vehicleNo.toLowerCase().includes(search.toLowerCase())
-);
+    vehicle.vehicleNo.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="table">
@@ -278,11 +275,18 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
         <Stack direction="horizontal" gap={3}>
           <div className="p-2">
             <Form.Group controlId="search">
-              <Form.Control type="text" placeholder="Search by vehicle No..." value={search} onChange={handleSearch} />
+              <Form.Control
+                type="text"
+                placeholder="Search by vehicle No..."
+                value={search}
+                onChange={handleSearch}
+              />
             </Form.Group>
           </div>
           <div>
-            <Button variant="secondary" onClick={clearFilters}>Clear Search</Button>
+            <Button variant="secondary" onClick={clearFilters}>
+              Clear Search
+            </Button>
           </div>
           <div className="p-2 ms-auto">
             <Button variant="success">
@@ -322,41 +326,42 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
                 )
                 .map((vehicle, index) => (
                   <tr key={index}>
-  <td>{vehicle.vehicleNo}</td>
-  <td>{vehicle.brand}</td>
-  <td>{vehicle.model}</td>
-  <td>{vehicle.year}</td>
-  <td>{vehicle.name}</td>
-  <td>{vehicle.contact}</td>
-  <td>{vehicle.email}</td>
-  <td>{vehicle.type}</td>
-  <td>
-  <button
-  className="btn btn-secondary me-2"
-  onClick={() => {
-    handleMoreClick(vehicle.vehicleNo);
-    window.location.href = "/staff/supervisor/records";
-  }}
->
-  More
-</button>
-  </td>
-  <td> {/* Move the buttons inside a separate <td> */}
-    <button
-      onClick={() => handleShowUpdateModal(vehicle)}
-      className="btn btn-warning me-2 text-dark font-weight-bold"
-    >
-      Update
-    </button>
-    <button
-      onClick={() => handleDelete(vehicle._id)}
-      className="btn btn-danger text-dark font-weight-bold"
-    >
-      Delete
-    </button>
-  </td>
-</tr>
-
+                    <td>{vehicle.vehicleNo}</td>
+                    <td>{vehicle.brand}</td>
+                    <td>{vehicle.model}</td>
+                    <td>{vehicle.year}</td>
+                    <td>{vehicle.name}</td>
+                    <td>{vehicle.contact}</td>
+                    <td>{vehicle.email}</td>
+                    <td>{vehicle.type}</td>
+                    <td>
+                      <button
+                        className="btn btn-secondary me-2"
+                        onClick={() => {
+                          handleMoreClick(vehicle.vehicleNo);
+                          window.location.href = "/staff/supervisor/records";
+                        }}
+                      >
+                        More
+                      </button>
+                    </td>
+                    <td>
+                      {" "}
+                      {/* Move the buttons inside a separate <td> */}
+                      <button
+                        onClick={() => handleShowUpdateModal(vehicle)}
+                        className="btn btn-warning me-2 text-dark font-weight-bold"
+                      >
+                        Update
+                      </button>
+                      <button
+                        onClick={() => handleDelete(vehicle._id)}
+                        className="btn btn-danger text-dark font-weight-bold"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
                 ))}
             </tbody>
           </table>
@@ -446,15 +451,14 @@ doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
                   />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formEmail">
-  <Form.Label>Email</Form.Label>
-  <Form.Control
-    type="email"
-    name="email"
-    value={formData.email}
-    onChange={handleChange}
-  />
-</Form.Group>
-
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
               </Form>
             </Modal.Body>
             <Modal.Footer>
