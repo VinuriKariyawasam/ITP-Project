@@ -25,6 +25,15 @@ const VehicleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  email: {
+    type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: ['government', 'nonGovernment'], // Add 'government' to the enum
+    required: true
+  },
   records: [
     {
       type: String, // Array of file paths or references
