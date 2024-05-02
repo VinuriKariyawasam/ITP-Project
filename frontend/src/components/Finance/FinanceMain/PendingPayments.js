@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Container, Table, Button, Alert, Modal } from "react-bootstrap";
+import { Table, Button, Alert, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-const PendingPayments = ({toggleLoading}) => {
+const PendingPayments = ({ toggleLoading }) => {
   const navigate = useNavigate();
   const [payments, setPayments] = useState([]);
   const [alert, setAlert] = useState(null); // State for alert message
@@ -18,7 +18,7 @@ const PendingPayments = ({toggleLoading}) => {
 
   const fetchPendingPayments = async () => {
     try {
-      toggleLoading(true)
+      toggleLoading(true);
       const response = await fetch(
         `${process.env.React_App_Backend_URL}/api/finance/billing/pendingpayments`
       );
@@ -29,8 +29,8 @@ const PendingPayments = ({toggleLoading}) => {
       setPayments(data.data);
     } catch (error) {
       console.error("Error fetching pending payments:", error.message);
-    }finally{
-      toggleLoading(false)
+    } finally {
+      toggleLoading(false);
     }
   };
 
@@ -69,20 +69,17 @@ const PendingPayments = ({toggleLoading}) => {
 
   const sendUpdatetoInventory = async (paymentId) => {
     try {
-      
-        
-        // Send a PATCH request to update inventory
-        await fetch(`${process.env.React_App_Backend_URL}/api/finance/updateinventory/${paymentId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-        });
-      } catch (error) {
-        console.error('Error:', error.message);
-      }
-
-}
+      // Send a PATCH request to update inventory
+      await fetch(`${process.env.React_App_Backend_URL}/api/finance/updateinventory/${paymentId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  };
 
   const markAsCompleted = async (paymentId) => {
     try {
@@ -101,9 +98,6 @@ const PendingPayments = ({toggleLoading}) => {
       }
       sendUpdatetoInventory(paymentId);
       navigate('/staff/finance/billing/new-invoice', { state: { paymentId: paymentId } });
-      // Refresh pending payments after successful update
-     // fetchPendingPayments();
-    //  setAlert("Payment marked as completed successfully"); // Set alert message
     } catch (error) {
       console.error("Error marking payment as completed:", error.message);
     }
@@ -124,9 +118,8 @@ const PendingPayments = ({toggleLoading}) => {
       if (!response.ok) {
         throw new Error("Failed to mark payment as completed");
       }
-      // Refresh pending payments after successful update
       fetchPendingPayments();
-      setAlert("Payment marked as cancelled."); // Set alert message
+      setAlert("Payment marked as cancelled.");
     } catch (error) {
       console.error("Error marking payment as completed:", error.message);
     }
@@ -134,72 +127,68 @@ const PendingPayments = ({toggleLoading}) => {
 
   return (
     <>
-      <Container>
-        <h4 className="mb-4">Pending Payments</h4>
-        {alert && (
-          <Alert variant="success" onClose={() => setAlert(null)} dismissible>
-            {alert}
-          </Alert>
-        )}{" "}
-        {/* Display alert */}
-        {payments.length === 0 ? (
-          <p>No Pending Payments</p>
-        ) : (
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>Invoice ID</th>
-                <th>Customer Name</th>
-                <th>Amount (Rs.)</th>
-                <th>Status</th>
-                <th>Action</th>
+      <h4 className="mb-4">Pending Payments</h4>
+      {alert && (
+        <Alert variant="success" onClose={() => setAlert(null)} dismissible>
+          {alert}
+        </Alert>
+      )}
+      {payments.length === 0 ? (
+        <p>No Pending Payments</p>
+      ) : (
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Invoice ID</th>
+              <th>Customer Name</th>
+              <th>Amount (Rs.)</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {payments.map((payment, index) => (
+              <tr key={index}>
+                <td>{payment.paymentInvoiceId}</td>
+                <td>{payment.name}</td>
+                <td>Rs.{payment.total}</td>
+                <td>
+                  <span
+                    className={`badge ${
+                      payment.status === "pending"
+                        ? "bg-warning"
+                        : payment.status === "completed"
+                        ? "bg-success"
+                        : "bg-danger"
+                    }`}
+                  >
+                    {payment.status}
+                  </span>
+                </td>
+                <td>
+                  {payment.status === "pending" && (
+                    <>
+                      <Button
+                        variant="outline-success"
+                        onClick={() => handleApproveConfirmation(payment.paymentInvoiceId)}
+                      >
+                        Approve
+                      </Button>{" "}
+                      <Button
+                        variant="outline-danger"
+                        onClick={() => handleCancelConfirmation(payment.paymentInvoiceId)}
+                      >
+                        Cancel
+                      </Button>
+                    </>
+                  )}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {payments.map((payment, index) => (
-                <tr key={index}>
-                  <td>{payment.paymentInvoiceId}</td>
-                  <td>{payment.name}</td>
-                  <td>Rs.{payment.total}</td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        payment.status === "pending"
-                          ? "bg-warning"
-                          : payment.status === "completed"
-                          ? "bg-success"
-                          : "bg-danger"
-                      }`}
-                    >
-                      {payment.status}
-                    </span>
-                  </td>
-                  <td>
-                    {payment.status === "pending" && (
-                      <>
-                        <Button
-                          variant="outline-success"
-                          onClick={() => handleApproveConfirmation(payment.paymentInvoiceId)}
-                        >
-                          Approve
-                        </Button>{" "}
-                        <Button
-                          variant="outline-danger"
-                          onClick={() => handleCancelConfirmation(payment.paymentInvoiceId)}
-                        >
-                          Cancel
-                        </Button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        )}
-      </Container>
+            ))}
+          </tbody>
+        </Table>
+      )}
 
-      {/* Confirmation Dialog */}
       <Modal show={confirmationDialog.show} onHide={handleConfirmationClose}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmation</Modal.Title>
