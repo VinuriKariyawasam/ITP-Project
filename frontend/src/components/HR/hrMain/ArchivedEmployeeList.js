@@ -3,7 +3,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
 
-function ArchivedEmployeeList() {
+function ArchivedEmployeeList({ toggleLoading }) {
   const [archivedEmployees, setArchivedEmployees] = useState([]);
   //to redirect after success
   const navigate = useNavigate();
@@ -12,8 +12,9 @@ function ArchivedEmployeeList() {
     // Fetch archived employee data from the backend
     const fetchArchivedEmployees = async () => {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const response = await fetch(
-          "http://localhost:5000/api/hr/archivedEmployees"
+          `${process.env.React_App_Backend_URL}/api/hr/archivedEmployees`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -22,6 +23,8 @@ function ArchivedEmployeeList() {
         setArchivedEmployees(data);
       } catch (error) {
         console.error("Error fetching archived employees:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
 

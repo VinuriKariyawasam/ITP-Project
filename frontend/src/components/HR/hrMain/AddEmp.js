@@ -11,7 +11,9 @@ import { FaCheckCircle } from "react-icons/fa";
 import { differenceInYears, isBefore, isAfter, format } from "date-fns";
 import { BiCheckCircle, BiHide, BiShow } from "react-icons/bi";
 
-function AddEmp() {
+function AddEmp({ toggleLoading }) {
+  const cusfrontendurl = `${process.env.React_App_Frontend_URL}/customer`;
+  const stafffrontendurl = `${process.env.React_App_Frontend_URL}/staff/login`;
   const [errorMessage, setErrorMessage] = useState("");
   const [designations, setDesignations] = useState([]);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false);
@@ -29,8 +31,9 @@ function AddEmp() {
   useEffect(() => {
     const fetchDesignations = async () => {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const response = await fetch(
-          "http://localhost:5000/api/hr/designations"
+          `${process.env.React_App_Backend_URL}/api/hr/designations`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch designations");
@@ -39,6 +42,8 @@ function AddEmp() {
         setDesignations(data); // Assuming the response data is an array of designations
       } catch (error) {
         console.error("Error fetching designations:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
 
@@ -69,6 +74,7 @@ function AddEmp() {
       return;
     }
     try {
+      toggleLoading(true); // Set loading to true before API call
       const formData = new FormData();
 
       // Append regular form data
@@ -89,7 +95,7 @@ function AddEmp() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/hr/add-employee",
+        `${process.env.React_App_Backend_URL}/api/hr/add-employee`,
         {
           method: "POST",
           body: formData,
@@ -111,15 +117,15 @@ function AddEmp() {
           html: `<p><b>Dear Trusted Partner</b></p>
               <p>We're delighted to inform you that your you are officailly registred employee at our organization.</p>
               <p>With your designation you will have the access to our management system with this email and your given password.</p>
-              <p>Hope you have fun while working. Login Here<a href="http://localhost:3000/staff/login">Neo Tech Staff</a></p>
+              <p>Hope you have fun while working. Login Here<a href=${stafffrontendurl}>Neo Tech Staff</a></p>
               <p>Thank You</p>
               <p>Warm regards,</p>
               <p><b><i>HR Division- Neo Tech Motors</i></b></p>
-              <a href="http://localhost:3000/customer"><img src="https://i.ibb.co/ySB2bhn/Logoblack.jpg" alt="Logoblack" border="0"></a>`,
+              <a href=${cusfrontendurl}><img src="https://i.ibb.co/ySB2bhn/Logoblack.jpg" alt="Logoblack" border="0"></a>`,
         };
 
         // Send a fetch request to the backend controller for sending email
-        await fetch("http://localhost:5000/api/finance/email", {
+        await fetch(`${process.env.React_App_Backend_URL}/api/finance/email`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -160,6 +166,8 @@ function AddEmp() {
       } else {
         console.error("Error:", error.message);
       }
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 

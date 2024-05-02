@@ -5,7 +5,7 @@ import html2pdf from "html2pdf.js";
 import logo from "../../../images/logoblack_trans.png";
 import { StaffAuthContext } from "../../../context/StaffAuthContext";
 
-function SalaryDetailsModal({ show, handleClose, id }) {
+function SalaryDetailsModal({ show, handleClose, id, toggleLoading }) {
   const [salaryDetails, setSalaryDetails] = useState(null);
   const [updateModalShow, setUpdateModalShow] = useState(false);
   const [key, setKey] = useState(0); // Initialize key with 0
@@ -26,8 +26,9 @@ function SalaryDetailsModal({ show, handleClose, id }) {
   };
   const handleUpdate = async (updatedData) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        `http://localhost:5000/api/hr/update-salaries/${id}`,
+        `${process.env.React_App_Backend_URL}/api/hr/update-salaries/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -64,6 +65,8 @@ function SalaryDetailsModal({ show, handleClose, id }) {
       setToastHeader("Error");
       setToastBody("Error deleting leave record");
       setShowToast(true);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -126,8 +129,9 @@ function SalaryDetailsModal({ show, handleClose, id }) {
   useEffect(() => {
     const fetchSalaryDetails = async () => {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const response = await fetch(
-          `http://localhost:5000/api/hr/salaries/${id}`
+          `${process.env.React_App_Backend_URL}/api/hr/salaries/${id}`
         );
 
         if (!response.ok) {
@@ -141,6 +145,8 @@ function SalaryDetailsModal({ show, handleClose, id }) {
         console.error("Error fetching salary details:", error);
 
         handleClose();
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
 

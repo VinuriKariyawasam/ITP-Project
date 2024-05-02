@@ -25,7 +25,9 @@ import { StaffAuthContext } from "../../../context/StaffAuthContext";
 import ReactToPrint from "react-to-print";
 import CompanyHeader from "./CompanyHeader";
 
-function EmployeeDetails() {
+function EmployeeDetails({ toggleLoading }) {
+  const cusfrontendurl = `${process.env.React_App_Frontend_URL}/customer`;
+  const stafffrontendurl = `${process.env.React_App_Frontend_URL}/staff/login`;
   const componentRef = useRef();
   const { userId, userPosition } = useContext(StaffAuthContext);
   const { employeeId } = useParams();
@@ -70,8 +72,9 @@ function EmployeeDetails() {
   //Function to fetch employee personal data by database
   const fetchEmployeeById = async (employeeId) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        `http://localhost:5000/api/hr/employee/${employeeId}`
+        `${process.env.React_App_Backend_URL}/api/hr/employee/${employeeId}`
       );
 
       if (!response.ok) {
@@ -84,14 +87,17 @@ function EmployeeDetails() {
     } catch (error) {
       console.error("Error fetching employee data:", error);
       return null;
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
   // Function to fetch bank details from the bank database
   const fetchSalaryDetails = async (employeeId) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const salaryResponse = await fetch(
-        `http://localhost:5000/api/hr/salary/${employeeId}`
+        `${process.env.React_App_Backend_URL}/api/hr/salary/${employeeId}`
       );
       if (!salaryResponse.ok) {
         throw new Error(`HTTP error! Status: ${salaryResponse.status}`);
@@ -100,14 +106,17 @@ function EmployeeDetails() {
       setSalaryDetails(salData);
     } catch (error) {
       console.error("Error fetching bank details:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
   // Function to fetch reviews from the reviews database
   const fetchReviews = async (employeeId) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const reviewsResponse = await fetch(
-        "http://localhost:5000/api/hr/emp-reviews"
+        `${process.env.React_App_Backend_URL}/api/hr/emp-reviews`
       );
       if (!reviewsResponse.ok) {
         throw new Error(`HTTP error! Status: ${reviewsResponse.status}`);
@@ -136,14 +145,17 @@ function EmployeeDetails() {
       setNegativeReviews(negativeReviews);
     } catch (error) {
       console.error("Error fetching reviews:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
   // Function to fetch leaves from the database
   const fetchLeaves = async (employeeId) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const leavesResponse = await fetch(
-        `http://localhost:5000/api/hr/emp-leaves/${employeeId}`
+        `${process.env.React_App_Backend_URL}/api/hr/emp-leaves/${employeeId}`
       );
       if (!leavesResponse.ok) {
         throw new Error(`HTTP error! Status: ${leavesResponse.status}`);
@@ -169,6 +181,8 @@ function EmployeeDetails() {
       setRejectedLeaves(rejectedLeaves);
     } catch (error) {
       console.error("Error fetching leaves:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -276,9 +290,9 @@ function EmployeeDetails() {
     setShowUpdateModal(true);
   };
   // Handle update employee data
-  const handleUpdateEmployee = async (updatedData) => {
+  const handleUpdateEmployee = async () => {
     // Logic to update employee data
-    console.log("Updated employee data:", updatedData);
+    console.log("Updated employee data:");
     fetchEmployeeById(employeeId); //this used because of error
     fetchSalaryDetails(employeeId);
     //setEmployee(updatedData); // Update the employee data in the state
@@ -319,16 +333,21 @@ function EmployeeDetails() {
 
   const handleConfirmDelete = async () => {
     try {
+      toggleLoading(true); // Set loading to true before API call
+
       // Send DELETE request to backend API using fetch
-      await fetch(`http://localhost:5000/api/hr/archive-employee/${_id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          // Add any additional headers if required
-        },
-        // Optionally, include credentials if necessary
-        // credentials: 'include',
-      });
+      await fetch(
+        `${process.env.React_App_Backend_URL}/api/hr/archive-employee/${_id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any additional headers if required
+          },
+          // Optionally, include credentials if necessary
+          // credentials: 'include',
+        }
+      );
 
       // Close the modal
       setShowConfirmDelete(false);
@@ -338,6 +357,8 @@ function EmployeeDetails() {
     } catch (error) {
       console.error("Error deleting employee:", error);
       // Handle error (e.g., display error message)
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -398,15 +419,16 @@ function EmployeeDetails() {
       html: `<p><b>Dear Trusted Partner</b></p>
           <p>Your staff credential for Neo Tech organizations management system has been reset.</p>
           <p>With your designation you will have the access to our management system with this email and your given password.If any issue please contact HR Division.</p>
-          <p>Hope you have fun while working. Login Here<a href="http://localhost:3000/staff/login">Neo Tech Staff</a></p>
+          <p>Hope you have fun while working. Login Here<a href=${stafffrontendurl}>Neo Tech Staff</a></p>
           <p>Thank You</p>
           <p>Warm regards,</p>
           <p><b><i>HR Division- Neo Tech Motors</i></b></p>
-          <a href="http://localhost:3000/customer"><img src="https://i.ibb.co/ySB2bhn/Logoblack.jpg" alt="Logoblack" border="0"></a>`,
+          <a href=${cusfrontendurl}><img src="https://i.ibb.co/ySB2bhn/Logoblack.jpg" alt="Logoblack" border="0"></a>`,
     };
 
     // Send a fetch request to the backend controller for sending email
-    await fetch("http://localhost:5000/api/finance/email", {
+    toggleLoading(true);
+    await fetch(`${process.env.React_App_Backend_URL}/api/finance/email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -418,6 +440,7 @@ function EmployeeDetails() {
         html: emailOptions.html,
       }),
     });
+    toggleLoading(false); // Set loading to false after API call
   };
 
   // Function to handle opening and closing of the profile pic update modal
@@ -876,6 +899,7 @@ function EmployeeDetails() {
           onHide={() => setShowUpdateModal(false)}
           employee={employee}
           onUpdate={handleUpdateEmployee}
+          toggleLoading={toggleLoading}
         />
       )}
 
@@ -906,6 +930,7 @@ function EmployeeDetails() {
         empId={empId} // Example empId passed as prop
         empDBId={_id} // Example empDBId passed as prop
         name={{ firstName, lastName }} // Example name passed as prop
+        toggleLoading={toggleLoading}
       />
 
       {/* Render the SalaryDetailsModal with appropriate props */}
@@ -913,6 +938,7 @@ function EmployeeDetails() {
         show={showSalaryModal}
         handleClose={handleCloseModal}
         id={selectedRecordId}
+        toggleLoading={toggleLoading}
       />
 
       {/* Render the MoreReviewsModal with appropriate props */}
@@ -921,6 +947,7 @@ function EmployeeDetails() {
         handleClose={handleCloseReviewModal}
         reviews={reviews}
         employeeId={employeeId}
+        toggleLoading={toggleLoading}
       />
 
       {/* Render the SystemCredentialsUpdateModal */}
@@ -929,6 +956,7 @@ function EmployeeDetails() {
         onHide={hideCredentialsModalHandler}
         employee={employee}
         submitHandler={handleCredUpdate}
+        toggleLoading={toggleLoading}
       />
 
       {/* Render the ProfilePicUpdateModal */}
@@ -937,6 +965,7 @@ function EmployeeDetails() {
         handleClose={handlePPUModal}
         empId={_id}
         onUploadPic={handleImageUpdate}
+        toggleLoading={toggleLoading}
       />
     </Card>
   );

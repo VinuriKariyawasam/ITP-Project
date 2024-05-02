@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Badge, Modal } from "react-bootstrap";
 
-function LeaveCancelling() {
+function LeaveCancelling({ toggleLoading }) {
   const [leaveRecords, setLeaveRecords] = useState([]);
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false);
@@ -15,7 +15,10 @@ function LeaveCancelling() {
     // Fetch leave records from the backend when the component mounts
     const fetchLeaveRecords = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/leaves");
+        toggleLoading(true); // Set loading to true before API call
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/leaves`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -27,6 +30,8 @@ function LeaveCancelling() {
         setLeaveRecords(data);
       } catch (error) {
         console.error("Error fetching leave records:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
     fetchLeaveRecords();
@@ -49,8 +54,9 @@ function LeaveCancelling() {
   // Function to delete a leave record
   const deleteLeaveRecord = async (recordId) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        `http://localhost:5000/api/hr/delete-leave/${recordId}`,
+        `${process.env.React_App_Backend_URL}/api/hr/delete-leave/${recordId}`,
         {
           method: "DELETE",
           headers: {
@@ -78,8 +84,10 @@ function LeaveCancelling() {
       setToastHeader("Error");
       setToastBody("Error deleting leave record");
       setShowToast(true);
+    } finally {
+      setShowDeleteConfirmationModal(false);
+      toggleLoading(false); // Set loading to false after API call
     }
-    setShowDeleteConfirmationModal(false);
   };
 
   return (

@@ -39,7 +39,9 @@ function Salary({ toggleLoading }) {
     const fetchSalaryRecords = async () => {
       try {
         toggleLoading(true);
-        const response = await fetch("http://localhost:5000/api/hr/salaries");
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/salaries`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -238,13 +240,17 @@ function Salary({ toggleLoading }) {
     console.log("Selected Month:", monthToSet);
 
     try {
-      const response = await fetch("http://localhost:5000/api/hr/pass-salary", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ month: monthToSet }), // Send the selected month in the request body
-      });
+      toggleLoading(true);
+      const response = await fetch(
+        `${process.env.React_App_Backend_URL}/api/hr/pass-salary`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ month: monthToSet }), // Send the selected month in the request body
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to set month");
@@ -258,6 +264,8 @@ function Salary({ toggleLoading }) {
     } catch (error) {
       console.error("Error:", error);
       alert("Salary records sent to finance unsuccessfull.Try Again.");
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -268,8 +276,9 @@ function Salary({ toggleLoading }) {
 
   const fetchLogsForToday = async () => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        "http://localhost:5000/api/hr//nopaylogs/today"
+        `${process.env.React_App_Backend_URL}/api/hr//nopaylogs/today`
       ); // Assuming this is the route you set up
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -281,6 +290,8 @@ function Salary({ toggleLoading }) {
       }
     } catch (error) {
       console.error("Error fetching logs:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -290,12 +301,17 @@ function Salary({ toggleLoading }) {
 
   const handleNoPayOp = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/hr/nopay", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      toggleLoading(true); // Set loading to true before API call
+
+      const response = await fetch(
+        `${process.env.React_App_Backend_URL}/api/hr/nopay`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to trigger function");
       }
@@ -307,6 +323,8 @@ function Salary({ toggleLoading }) {
       }
     } catch (error) {
       console.error("Error triggering function:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -483,6 +501,7 @@ function Salary({ toggleLoading }) {
         show={showSalaryModal}
         handleClose={handleCloseModal}
         id={selectedRecordId}
+        toggleLoading={toggleLoading}
       />
 
       {/* No Pay confirmation modal */}

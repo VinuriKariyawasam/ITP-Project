@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Form, Button, Modal } from "react-bootstrap";
 
-function UpdateAttend({ showModal, setShowModal, updatedHandler }) {
+function UpdateAttend({
+  showModal,
+  setShowModal,
+  updatedHandler,
+  toggleLoading,
+}) {
   const [attendData, setAttendData] = useState([]);
   const [attendanceDate, setAttendanceDate] = useState(new Date());
   const [attendanceRecords, setAttendanceRecords] = useState({});
@@ -11,9 +16,10 @@ function UpdateAttend({ showModal, setShowModal, updatedHandler }) {
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const today = new Date().toISOString().split("T")[0];
         const response = await fetch(
-          `http://localhost:5000/api/hr/attendance/date/${today}`
+          `${process.env.React_App_Backend_URL}/api/hr/attendance/date/${today}`
         );
 
         if (!response.ok) {
@@ -35,6 +41,8 @@ function UpdateAttend({ showModal, setShowModal, updatedHandler }) {
         }
       } catch (error) {
         console.error("Error fetching attendance records:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
 
@@ -85,10 +93,12 @@ function UpdateAttend({ showModal, setShowModal, updatedHandler }) {
       employeeAttendance: formattedAttendanceRecords,
     };
     try {
+      toggleLoading(true); // Set loading to true before API call
+
       const attendanceId = attendData.length > 0 ? attendData[0]._id : null;
 
       const response = await fetch(
-        `http://localhost:5000/api/hr/updateAttendance/${attendanceId}`,
+        `${process.env.React_App_Backend_URL}/api/hr/updateAttendance/${attendanceId}`,
         {
           method: "PATCH", // Change method to PATCH
           headers: {
@@ -107,6 +117,8 @@ function UpdateAttend({ showModal, setShowModal, updatedHandler }) {
     } catch (error) {
       console.error("Error updating attendance:", error);
       alert("Failed to update attendance. Please try again.");
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
