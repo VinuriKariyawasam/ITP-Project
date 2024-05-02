@@ -7,9 +7,11 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
+import { useNavigate } from "react-router-dom";
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 
 function Lubricants() {
+  const navigate = useNavigate();
   const [Products, setProducts] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [quantities, setQuantities] = useState({});
@@ -493,7 +495,7 @@ function Lubricants() {
                           .delete("http://localhost:5000/Product/clear-cart")
                           .then((response) => {
                             console.log("Cart cleared successfully");
-                            window.location.reload();
+                            navigate("/customer/products");
                           })
                           .catch((error) => {
                             console.error("Error clearing cart:", error);
