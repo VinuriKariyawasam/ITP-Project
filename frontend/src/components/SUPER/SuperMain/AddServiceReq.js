@@ -27,8 +27,13 @@ function AddServiceReq() {
     // Validate each field as it's being typed
     switch (name) {
       case "vehicleNo":
-        errorMessage = value.trim().length === 0 || value.trim().length > 10 ? "Vehicle No. is required and must be at most 10 characters" : "";
-        break;
+      errorMessage =
+        value.trim().length === 0 || value.trim().length > 10
+          ? "Vehicle No. is required and must be at most 10 characters"
+          : !/^[A-Z\u0DC1\u0DCA\u200D\u0DBB\u0DD3\d]+$/.test(value)
+          ? "Vehicle No. must contain only capital letters, Sinhala word 'ශ්‍රී', or numbers"
+          : "";
+      break;
       case "date":
         errorMessage = !value ? "Date is required" : "";
         break;
@@ -133,6 +138,14 @@ function AddServiceReq() {
     return valid;
   };
   
+  const handleAddSri = () => {
+    const updatedVehicleNo = formData.vehicleNo + "ශ්‍රී"; // Add "ශ්‍රී" to the end of the vehicle number
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      vehicleNo: updatedVehicleNo
+    }));
+  };
+  
 
   const handleCalendarIconClick = () => {
     datePickerRef.current.setFocus(true);
@@ -150,10 +163,18 @@ function AddServiceReq() {
           <h2>Service Request</h2>
 
           <div className='mb-2'>
-            <label htmlFor="vehicleNo">Vehicle No.</label>
-            <input type="text" name="vehicleNo" value={formData.vehicleNo} onChange={handleChange} className={`form-control ${errors.vehicleNo ? 'is-invalid' : ''}`} />
-            {errors.vehicleNo && <div className="invalid-feedback">{errors.vehicleNo}</div>}
-          </div>
+  <label htmlFor="vehicleNo">Vehicle No.</label>
+  <input
+    type="text"
+    name="vehicleNo"
+    value={formData.vehicleNo}
+    onChange={handleChange}
+    className={`form-control ${errors.vehicleNo ? 'is-invalid' : ''}`}
+  />
+  <Button variant="secondary" onClick={handleAddSri}>Add ශ්‍රී</Button>
+  {errors.vehicleNo && <div className="invalid-feedback">{errors.vehicleNo}</div>}
+</div>
+
 
           <div className='mb-2'>
             <label htmlFor="date">Date</label>

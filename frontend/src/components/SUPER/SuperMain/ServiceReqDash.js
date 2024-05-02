@@ -470,15 +470,7 @@ function ServiceReqDash() {
                     {errors.request}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="formReport">
-                  <Form.Label>Diagnosis Report</Form.Label>
-                  <Form.Control
-                    type="file"
-                    name="report"
-                    accept=".pdf"
-                    onChange={handleFileChange}
-                  />
-                </Form.Group>
+                
                 
               </Form>
             </Modal.Body>
