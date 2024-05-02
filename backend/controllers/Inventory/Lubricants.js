@@ -5,11 +5,11 @@ const express = require("express");
 const router = express.Router(); // Define router here
 const path = require("path");
 const fs = require("fs");
+const axios = require("axios")
 
 exports.addLubricant = async (req, res) => {
   try {
-    const { product_name, product_brand, quantity, unit_price } = req.body;
-    const image = req.file ? req.file.path : null;
+    const { product_name, product_brand, quantity, unit_price,image } = req.body;
 
     if (!product_name || !product_brand || !quantity || !unit_price || !image) {
       return res.status(400).json({ error: "All fields are required" });
@@ -91,6 +91,10 @@ exports.LubricantStock = async (req, res) => {
 
 exports.deleteLubricants = async (req, res) => {
   const { id } = req.params;
+  const Url = req.body.image;
+  await axios.delete("http://localhost:5000/Product/deleteimg", {
+    data: { Url: Url } 
+  });
 
   try {
     const lubricant = await LubricantSchema.findById(id);
@@ -98,15 +102,7 @@ exports.deleteLubricants = async (req, res) => {
     if (!lubricant) {
       return res.status(404).send({ status: "Lubricant not found" });
     }
-    const imagePath = lubricant.image;
-
-    fs.unlink(imagePath, (err) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send({ status: "Error deleting file" });
-      }
-
-      LubricantSchema.findByIdAndDelete(id)
+    LubricantSchema.findByIdAndDelete(id)
         .then(() => {
           res.status(200).send({ status: "Product deleted" });
         })
@@ -114,7 +110,6 @@ exports.deleteLubricants = async (req, res) => {
           console.log(err);
           res.status(500).send({ status: "Error with deleting product" });
         });
-    });
   } catch (err) {
     console.log(err);
     res.status(500).send({ status: "Internal server error" });

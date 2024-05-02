@@ -36,7 +36,7 @@ const Tireform = () => {
         isValid: false,
       },
       image: {
-        value: null,
+        value: "",
         isValid: false,
       },
     },
@@ -45,16 +45,22 @@ const Tireform = () => {
 
   const tireSubmitHandler = async (event) => {
     event.preventDefault();
+    const imgData = new FormData();
+    imgData.append("image", formState.inputs.image.value);
+    axios.post("http://localhost:5000/Product/imgupload", imgData)
+    .then((res) => {
+      const Url = res.data.downloadURL
+      console.log(Url)
     try {
-      const formData = new FormData();
-      formData.append("product_name", formState.inputs.product_name.value);
-      formData.append("product_brand", formState.inputs.product_brand.value);
-      formData.append("vehicle_Type", formState.inputs.vehicle_Type.value);
-      formData.append("quantity", formState.inputs.quantity.value);
-      formData.append("unit_price", formState.inputs.unit_price.value);
-      formData.append("image", formState.inputs.image.value);
-
-      const response = await axios.post(
+      const formData = {
+     product_name: formState.inputs.product_name.value,
+     product_brand: formState.inputs.product_brand.value,
+     vehicle_Type :formState.inputs.vehicle_Type.value,
+     quantity :formState.inputs.quantity.value,
+     unit_price: formState.inputs.unit_price.value,
+     image: Url
+      }
+      const response = axios.post(
         "http://localhost:5000/Product/addTires",
         formData
       );
@@ -64,7 +70,10 @@ const Tireform = () => {
       console.log(formState.inputs);
     } catch (err) {
       console.log(err);
-    }
+    }})
+    .catch((err) => {
+      alert("error");
+    });
   };
 
   useEffect(() => {

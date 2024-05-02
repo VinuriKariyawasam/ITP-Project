@@ -118,6 +118,7 @@ function CustomerApp({toggleLoading}) {
       >
         <Header />
         <Routes>
+
           <Route path="/" element={<Cushome  toggleLoading={toggleLoading}/>} />
           <Route path="/products/*" element={<Products />} />
           <Route path="/appointment/*" element={<CUSAppointment />} />

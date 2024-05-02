@@ -1,16 +1,18 @@
 import React from 'react'
-import { useState,useEffect } from 'react';
+import { useState,useEffect,useContext } from 'react';
 import axios from "axios";
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { CusAuthContext } from "../../../../context/cus-authcontext";
 import Badge from 'react-bootstrap/Badge'
 
 function Sptable2() {
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const cusauth = useContext(CusAuthContext); 
     const [showModal, setShowModal] = useState(false);
     const [approvedSpareParts,setapprovedSpareParts] = useState([]); 
-    
+    const email = cusauth.email;
     useEffect(() => {
         function getapprovedSpareparts() {
           axios
@@ -32,7 +34,7 @@ function Sptable2() {
       const handleCloseModal = () => {
         setShowModal(false);
       };
-
+      const filteredapprovedspareparts = approvedSpareParts.filter(Sparepart => Sparepart.email === email);
   return (
     <div>  
     <Table>
@@ -48,7 +50,7 @@ function Sptable2() {
       </tr>
     </thead>
     <tbody>
-    {approvedSpareParts.map((SpareParts) => (
+    {filteredapprovedspareparts.map((SpareParts) => (
       <tr key={SpareParts._id}>
         <td>{SpareParts.name}</td>
         <td>{SpareParts.vehicleNumber}</td>
@@ -80,6 +82,7 @@ function Sptable2() {
         <p>Total: Rs.{selectedOrder?.total}</p>
       </Modal.Body>
       <Modal.Footer>
+      <Button variant="primary">Pay</Button>
       </Modal.Footer>
     </Modal>
 </div>

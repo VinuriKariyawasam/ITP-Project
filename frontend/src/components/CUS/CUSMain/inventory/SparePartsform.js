@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useForm } from "../../../../data/IM/form-hook";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
@@ -6,11 +6,12 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import { useNavigate } from "react-router-dom";
-import { CusAuthContext } from "../../../../context/cus-authcontext"
+import { CusAuthContext } from "../../../../context/cus-authcontext";
 
 function SparePartsform() {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState("");
+  const [vNo, setvNo] = useState("");
   const [fileError, setFileError] = useState("");
   const cusauth = useContext(CusAuthContext);
   const [formState, inputHandler] = useForm(
@@ -21,7 +22,7 @@ function SparePartsform() {
       },
       vehicleNumber: {
         value: "",
-        isValid: false,
+        isValid:true,
       },
       brand: {
         value: "",
@@ -48,52 +49,74 @@ function SparePartsform() {
         isValid: false,
       },
       image: {
-        value: null,
+        value: "",
         isValid: false,
       },
-      status:{
-        value:"",
-        isValid:true
+      status: {
+        value: "",
+        isValid: true,
       },
-      email:{
-        value:"",
-        isValid:true
-      }
+      email: {
+        value: "",
+        isValid: true,
+      },
     },
     false
   );
 
   const spSubmitHandler = async (event) => {
     event.preventDefault();
-    try {
-      const formData = new FormData();
-      formData.append("name", cusauth.name);
-      formData.append("vehicleNumber", formState.inputs.vehicleNumber.value);
-      formData.append("brand", formState.inputs.brand.value);
-      formData.append("model", formState.inputs.model.value);
-      formData.append("year", formState.inputs.year.value);
-      formData.append("color", formState.inputs.color.value);
-      formData.append("contactNumber", formState.inputs.contactNumber.value);
-      formData.append("description", formState.inputs.description.value);
-      formData.append("image", formState.inputs.image.value);
-      formData.append("status", "pending");
-      formData.append("email", cusauth.email);
+    const imgData = new FormData();
+    imgData.append("image", formState.inputs.image.value);
+    axios
+      .post("http://localhost:5000/Product/imgupload", imgData)
+      .then((res) => {
+        const Url = res.data.downloadURL;
+        console.log(Url);
+        try {
+          const currentDateUTC = new Date();
+          currentDateUTC.setHours(currentDateUTC.getHours() + 5);
+          currentDateUTC.setMinutes(currentDateUTC.getMinutes() + 30);
+          const formattedDate = currentDateUTC.toISOString();
 
-    const currentDateUTC = new Date();
-    currentDateUTC.setHours(currentDateUTC.getHours() + 5); 
-    currentDateUTC.setMinutes(currentDateUTC.getMinutes() + 30); 
-    const formattedDate = currentDateUTC.toISOString(); 
+          const formData = {
+            name: cusauth.name,
+            vehicleNumber: vNo,
+            brand: formState.inputs.brand.value,
+            model: formState.inputs.model.value,
+            year: formState.inputs.year.value,
+            color: formState.inputs.color.value,
+            contactNumber: formState.inputs.contactNumber.value,
+            description: formState.inputs.description.value,
+            status: "pending",
+            email: cusauth.email,
+            image: Url,
+            orderdate: formattedDate,
+          };
 
-    formData.append("orderdate", formattedDate);
-      console.log(formState.inputs)
+          const response = axios.post(
+            "http://localhost:5000/Product//addsp",
+            formData
+          );
 
-      const response = await axios.post("http://localhost:5000/Product//addsp", formData);
-
-      navigate("/customer/products");
-      console.log(response);
-      console.log(formState.inputs);
-    } catch (err) {
-      console.log(err);
+          navigate("/customer/products");
+          console.log(response);
+          console.log(formData);
+        } catch (err) {
+          console.log(err);
+        }
+      })
+      .catch((err) => {
+        alert("error");
+      });
+  };
+  const handleAddSri = () => {
+    if (/^\d+/.test(vNo)) {
+      setvNo((prevVNo) => {
+        return prevVNo + "ශ්‍රී";
+      });
+    } else {
+      alert("Please enter a valid format of vehicle number.");
     }
   };
 
@@ -118,7 +141,7 @@ function SparePartsform() {
   }, [formState.inputs.image.value]);
 
   return (
-    <div style={{ marginTop: "2%", marginLeft: "3%",marginBottom:"3%"}}>
+    <div style={{ marginTop: "2%", marginLeft: "3%", marginBottom: "3%" }}>
       <div style={{ flex: "1", marginRight: "6%" }}>
         <div style={{ textAlign: "center" }}>
           <h1>Your Ultimate Destination for Quality Spare Parts</h1>
@@ -144,24 +167,24 @@ function SparePartsform() {
                     isValid="true"
                     type="text"
                     placeholder="Kamal"
-                    value={cusauth.name} 
-                   disabled
-                    
+                    value={cusauth.name}
+                    disabled
                   />
                 </Form.Group>
 
                 <Form.Group as={Col} md="5">
                   <Form.Label>Vehicle Number</Form.Label>
                   <Form.Control
-                    id="vehicleNumber"
                     type="text"
-                    maxLength={8}
-                    placeholder="XXX-XXXX"
-                    onInput={(event) =>
-                      inputHandler("vehicleNumber", event.target.value, true)
-                    }
+                    placeholder="Enter Vehicle Number"
+                    value={vNo}
+                    onChange={(event) => setvNo(event.target.value)}
+                    maxLength={10}
                     required
                   />
+                  <Button variant="secondary" onClick={handleAddSri}>
+                    Add ශ්‍රී
+                  </Button>
                 </Form.Group>
               </Row>
               <Row className="mb-3">
@@ -202,11 +225,15 @@ function SparePartsform() {
                     max="2099"
                     placeholder="Enter Year"
                     onChange={(event) => {
-                      let enteredValue = event.target.value.replace(/\D/g, ''); 
+                      let enteredValue = event.target.value.replace(/\D/g, "");
                       if (enteredValue.length > 4) {
                         enteredValue = enteredValue.slice(0, 4);
                       }
-                      inputHandler("year", enteredValue, enteredValue.length === 4);
+                      inputHandler(
+                        "year",
+                        enteredValue,
+                        enteredValue.length === 4
+                      );
                       if (enteredValue.length === 4) {
                         event.target.disabled = true;
                       } else {
@@ -275,7 +302,11 @@ function SparePartsform() {
                   )}
                 </Form.Group>
               </Row>
-              <Button variant="primary" type="submit" disabled={!formState.isValid}>
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={!formState.isValid}
+              >
                 Submit
               </Button>
             </Form>
