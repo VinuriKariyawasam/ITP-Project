@@ -1,20 +1,23 @@
 import React from 'react'
-import { useState,useEffect } from 'react';
+import { useState,useEffect, useContext } from 'react';
 import axios from "axios";
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Badge from 'react-bootstrap/Badge'
+import Badge from 'react-bootstrap/Badge';
+import { CusAuthContext } from "../../../../context/cus-authcontext";
+function Completedsp() {
 
-function Sptable2() {
+    const cusauth = useContext(CusAuthContext); 
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [approvedSpareParts,setapprovedSpareParts] = useState([]); 
-    
+    const email = cusauth.email;
+  
     useEffect(() => {
         function getapprovedSpareparts() {
           axios
-            .get("http://localhost:5000/Product/approvedsp")
+            .get("http://localhost:5000/Product/completedsp")
             .then((res) => {
               setapprovedSpareParts(res.data);
             })
@@ -33,6 +36,8 @@ function Sptable2() {
         setShowModal(false);
       };
 
+      const filteredCompletedOrders = approvedSpareParts.filter(order => order.email === email);
+
   return (
     <div>  
     <Table>
@@ -42,20 +47,22 @@ function Sptable2() {
         <th>Vehicle Number</th>
         <th>Contact Number</th>
         <th>Ordered date</th>
+        <th>Completed date</th>
         <th>Total</th>
         <th>Status</th>
         <th>Explore</th>
       </tr>
     </thead>
     <tbody>
-    {approvedSpareParts.map((SpareParts) => (
+    {filteredCompletedOrders.map((SpareParts) => (
       <tr key={SpareParts._id}>
         <td>{SpareParts.name}</td>
         <td>{SpareParts.vehicleNumber}</td>
         <td>{SpareParts.contactNumber}</td>
         <td>{SpareParts.orderdate.split('T')[0]}</td>
+        <td>{SpareParts.completeddate.split('T')[0]}</td>
         <td>{SpareParts.total}</td>
-        <td><Badge bg="primary">{SpareParts.status}</Badge></td>
+        <td><Badge bg="success">{SpareParts.status}</Badge></td>
         <td><Button variant="secondary" onClick={() => handleMoreButtonClick(SpareParts)}>more</Button>
 </td>
       </tr>
@@ -85,5 +92,4 @@ function Sptable2() {
 </div>
   )
 }
-
-export default Sptable2
+export default Completedsp

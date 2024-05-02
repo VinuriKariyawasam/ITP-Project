@@ -63,14 +63,23 @@ function NavAvatar() {
               <li>
                 <hr className="dropdown-divider" />
               </li>
-
-
               <li>
                 <a
                   className="cus-dropdown-item d-flex align-items-center"
                   href="http://localhost:3000/customer/appointment/myappointment"
                 >
                   <span>My Appointments</span>
+                </a>
+              </li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+              <li>
+                <a
+                  className="cus-dropdown-item d-flex align-items-center"
+                  href="http://localhost:3000/customer/products/myorders"
+                >
+                  <span>My Orders</span>
                 </a>
               </li>
               <li>

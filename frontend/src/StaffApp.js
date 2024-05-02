@@ -90,7 +90,7 @@ function StaffApp({ toggleLoading }) {
 
         {userPosition === "Inventory Manager" ||
         userPosition === "General Manager" ? (
-          <Route path="/im/*" element={<IM />} />
+          <Route path="/im/*" element={<IM toggleLoading={toggleLoading}/>} />
         ) : (
           <Route path="/im/*" element={<RestrictedPage />} />
         )}

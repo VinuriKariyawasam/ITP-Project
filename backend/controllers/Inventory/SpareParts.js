@@ -1,6 +1,7 @@
 const { config } = require("dotenv");
 const spSchema = require("../../models/inventory/SparePart");
 const fs = require("fs");
+const axios = require("axios")
 
 exports.addSP = async (req, res) => {
   try {
@@ -15,9 +16,9 @@ exports.addSP = async (req, res) => {
       description,
       status,
       email,
+      image,
       orderdate
     } = req.body;
-    const image = req.file ? req.file.path : null;
 
     if (
       !name ||
@@ -28,9 +29,9 @@ exports.addSP = async (req, res) => {
       !color ||
       !contactNumber ||
       !description ||
-      !image ||
       !status ||
       !email ||
+      !image ||
       !orderdate 
     ) {
       return res.status(400).json({ error: "All fields are required" });
@@ -79,9 +80,35 @@ exports.SPpendingorders = async (req, res) => {
 
 exports.deletependingsp = async (req, res) => {
   const { id } = req.params;
+  const Url = req.body.image;
+  await axios.delete("http://localhost:5000/Product/deleteimg", {
+    data: { Url: Url } // Pass the URL in the request body
+  });
 
   try {
-    const pendingsp = await spSchema.findById(id);
+    const pendingsp =spSchema.findById(id);
+
+    if (!pendingsp) {
+      return res.status(404).send({ status: "order not found" });
+    }
+      spSchema
+        .findByIdAndDelete(id)
+        .then(() => {
+          res.status(200).send({ status: "order deleted" });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).send({ status: "error with deleting" });
+        });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ status: "Internal server error" });
+  }
+};
+exports.removependingsp = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const pendingsp =spSchema.findById(id);
 
     if (!pendingsp) {
       return res.status(404).send({ status: "order not found" });
