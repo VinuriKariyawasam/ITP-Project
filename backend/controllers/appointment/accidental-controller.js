@@ -4,14 +4,15 @@ const multer = require("multer");
 const express = require("express");
 const router = express.Router();
 const path = require("path");
+const axios = require("axios");
 const fs = require("fs");
 
 exports.addaccidentalAppointment = async (req, res) => {
   try {
-    const {userId, name, vType, vNo, dateAccidentaOccured, damagedOccured, contactNo, appointmentdate, appointmenttime } = req.body;
-    const image = req.file ? req.file.path : null;
+    const {userId, name,email,cusType, vType, vNo, dateAccidentaOccured, damagedOccured, contactNo, appointmentdate, appointmenttime,image } = req.body;
+    
 
-    if (!userId||!name || !vType || !vNo || !dateAccidentaOccured || !damagedOccured || !contactNo || !appointmentdate || !appointmenttime || !image) {
+    if (!userId||!name||!email||!cusType || !vType || !vNo || !dateAccidentaOccured || !damagedOccured || !contactNo || !appointmentdate || !appointmenttime || !image) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -24,6 +25,8 @@ exports.addaccidentalAppointment = async (req, res) => {
     const newaccidentalAppointment = new accidentalSchema({
       userId,
       name,
+      email,
+      cusType,
       vType,
       vNo,
       dateAccidentaOccured,
@@ -55,12 +58,14 @@ exports.getaccidentalAppointment = async (req, res) => {
 exports.updateAccidentalAppointment= async (req, res) => {
   let accidentalAppId = req.params.id;
   //to get existing values
-  const {userId, name, vType, vNo, dateAccidentaOccured, damagedOccured, contactNo, appointmentdate, appointmenttime,image } = req.body
+  const {userId, name,email,cusType, vType, vNo, dateAccidentaOccured, damagedOccured, contactNo, appointmentdate, appointmenttime,image } = req.body
 
   //object to store new values
   const updateAccidentalAppointment = {
     userId,
     name,
+    email,
+    cusType,
     vType,
     vNo,
     dateAccidentaOccured,
@@ -79,6 +84,35 @@ exports.updateAccidentalAppointment= async (req, res) => {
   })
 
 }
+
+exports.deleteallwithimage= async (req, res) => {
+  const { id } = req.params;
+  const Url = req.body.image;
+  await axios.delete("http://localhost:5000/appointment/deleteImage", {
+    data: { Url: Url } // Pass the URL in the request body
+  });
+
+  try {
+    const pendingsp =accidentalSchema.findById(id);
+
+    if (!pendingsp) {
+      return res.status(404).send({ status: "Appointment not found" });
+    }
+      accidentalSchema
+        .findByIdAndDelete(id)
+        .then(() => {
+          res.status(200).send({ status: "Appointment deleted" });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).send({ status: "error with deleting" });
+        });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ status: "Internal server error" });
+  }
+};
+
 
 exports.deleteaccidentalAppointment = async (req, res) => {
   const { id } = req.params;

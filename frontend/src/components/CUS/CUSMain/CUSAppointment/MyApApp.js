@@ -21,7 +21,7 @@ function MyApApp() {
 
     try {
       const currentDate = new Date();
-      const response = await axios.get(`http://localhost:5000/appointment/get-acceptedappointmentbyuserId/${userId}`);
+      const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedappointmentbyuserId/${userId}`);
      // Filter appointments whose date is after the current date
      const filteredAppointments = response.data.data.filter(appointment => {
       const appointmentDate = new Date(appointment.appointmentdate);
@@ -50,7 +50,7 @@ function MyApApp() {
   };
   const Delete = (id) => {
 
-    axios.delete(`http://localhost:5000/appointment/delete-acceptedappointment/${id}`)
+    axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-acceptedappointment/${id}`)
       .then(response => {
         console.log(response);
         window.location.reload();
@@ -102,7 +102,7 @@ function MyApApp() {
 
         <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
-            <Modal.Title>Periodical Appointment</Modal.Title>
+            <Modal.Title>Accepted Appointment</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <img style={{ width: "50%", height: "50%" }} />

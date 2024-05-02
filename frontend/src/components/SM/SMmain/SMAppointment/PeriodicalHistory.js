@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import jsPDF from 'jspdf';
 import { Link } from 'react-router-dom';
-
+import logo from "../../../../images/logoblack_trans.png";
 
 const PeriodicalHistory = props => {
 
@@ -19,7 +19,7 @@ const PeriodicalHistory = props => {
   useEffect(() => {
     const getAcceptedPeriodicalAppointment = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/appointment/get-acceptedperiodicalAppointment");
+        const res = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedperiodicalAppointment`);
         const sortedAppointments = res.data.sort((a, b) => new Date(b.appointmentdate) - new Date(a.appointmentdate));
         setacceptedperiodicalAppointment(sortedAppointments);
         setFilteredAppointments(sortedAppointments);
@@ -54,17 +54,38 @@ const PeriodicalHistory = props => {
   function generatePDF() {
     const pdf = new jsPDF();
 
-    // Starting y position for the first appointment
-    let yPos = 10;
+    pdf.setFontSize(12);
+    // Add logo as header
+  const logoImg = new Image();
+  logoImg.src = logo;
+  pdf.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Adjust position and size as needed
+  // Add additional data after the logo
+   // Add additional data after the logo
+   const additionalData = `
+   323/1/A Main Street Battaramulla
+   info@neotech.com
+   0112887998
+   Authorized By: Service Manager
+   Generated Date: ${new Date().toLocaleDateString()}
+ `;
+ const additionalLines = pdf.splitTextToSize(additionalData, 180);
+ let yPos = 40; // Adjusted to start below the header
+ pdf.text(additionalLines, 10, yPos, { fontSize: 10 }); // Adjust the font size for additional data
 
-    // Function to add a new page if needed and return the updated y position
-    const checkPageBreak = (currentY, lineHeight, pageHeight) => {
-      if (currentY + lineHeight > pageHeight - 10) {
-        pdf.addPage();
-        return 10; // Starting position for new page
-      }
-      return currentY;
-    };
+ yPos += additionalLines.length * 4; // Adjusted to start below the additional data
+    pdf.line(10, yPos + 2, 200, yPos + 2); 
+ // Starting y position for the first appointment
+ yPos += additionalLines.length * 4; // Adjusted to start below the additional data
+
+// Function to add a new page if needed and return the updated y position
+const checkPageBreak = (currentY, lineHeight, pageHeight) => {
+  if (currentY + lineHeight > pageHeight - 10) {
+    pdf.addPage();
+    return 10; // Starting position for new page
+  }
+  return currentY;
+};
+
 
     // Iterate through filteredAppointments and add details to the PDF
     filteredAppointments.forEach(appointment => {
@@ -73,6 +94,7 @@ const PeriodicalHistory = props => {
         Vehicle No: ${appointment.vNo}
         Customer Name: ${appointment.name}
         Vehicle Type: ${appointment.vType}
+        Customer Type: ${appointment.cusType}
         Requesting service: ${appointment.sType}
         Last Service Year: ${appointment.lastServiceYear}
         Last Service Month: ${appointment.lastServiceMonth}
@@ -125,6 +147,11 @@ const PeriodicalHistory = props => {
                     <strong style={{ marginLeft: "40%", float: "right" }}>Customer Name: </strong>{selectedAppointment.name}<br />
                   </Card.Text>
                 </Row>
+                <Row>
+                <Card.Text>
+                    <strong>Customer Type: </strong>{selectedAppointment.cusType}<br />
+                  </Card.Text>
+                  </Row>
                 <Row>
                   <Card.Text>
                     <strong>Vehicle Type: </strong>{selectedAppointment.vType}<br />

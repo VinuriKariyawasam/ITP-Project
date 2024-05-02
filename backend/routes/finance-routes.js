@@ -30,7 +30,10 @@ const {getAllServiceReports,
   updateFinanceApproval,}=require("../controllers/finance/importservice")
 
 
-// router.use(checkAuth)
+const {addPaymentHistory,getPaymentByEmail} = require("../controllers/finance/paymenthistory")
+
+const {notifyIM,updateProductPaymentIdByOrderId,updateSPPaymentIdByOrderId}=require("../controllers/finance/notifyim")
+
 
 // Expense routes
 router.post("/expenses/add-expense", addExpense);
@@ -38,6 +41,8 @@ router.delete("/expenses/delete-expense/:id", deleteExpense);
 router.patch("/expenses/update-expense/:id", updateExpense);
 router.get("/expenses/get-expense/:id", getExpenseById);
 router.get("/expenses", getExpenses);
+
+//router.use(checkAuth)
 
 
 // Income routes
@@ -96,6 +101,18 @@ router.post("/empbenefits/updatebenefits",processSalaryList)
 router.get("/service-record/all",getAllServiceReports)
 router.get("/service-record/pending",getUnapprovedServiceReports)
 router.patch("/service-record/update/:id",updateFinanceApproval)
+
+
+//payment history routes
+
+router.post("/paymenthistory/add",addPaymentHistory)
+router.get("/paymenthistory/get/:email",getPaymentByEmail)
+
+
+//update inventory status
+router.patch("/updateinventory/:paymentId",notifyIM)
+router.patch("/addproductpaymentid/:orderId",updateProductPaymentIdByOrderId)
+router.patch("/addsppaymentid/:orderId",updateSPPaymentIdByOrderId)
 
 
 

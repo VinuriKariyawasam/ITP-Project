@@ -8,7 +8,7 @@ import Card from "react-bootstrap/Card";
 import { CusAuthContext } from "../../../context/cus-authcontext";
 import html2pdf from "html2pdf.js";
 
-const Incomes = () => {
+const Incomes = ({toggleLoading}) => {
   const navigate = useNavigate();
   const cusauth = useContext(CusAuthContext);
   const [incomes, setIncomes] = useState([]);
@@ -23,22 +23,23 @@ const Incomes = () => {
     fetchIncomes();
   }, []);
 
-  const fetchIncomes = () => {
-    fetch("http://localhost:5000/api/finance/incomes")
-      .then((response) => {
+  const fetchIncomes = async () => {
+    try {
+      toggleLoading(true)
+        const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes`);
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+            throw new Error("Network response was not ok");
         }
-        return response.json();
-      })
-      .then((data) => {
+        const data = await response.json();
         setIncomes(data);
         calculateTotalIncome(data);
-      })
-      .catch((error) => {
+    } catch (error) {
         console.error("Error fetching incomes:", error);
-      });
-  };
+    }finally {
+      toggleLoading(false)
+    }
+};
+
 
   const calculateTotalIncome = (incomes) => {
     const currentDate = new Date().toISOString().split("T")[0];
@@ -70,7 +71,7 @@ const Incomes = () => {
   };
 
   const confirmDeleteIncome = () => {
-    fetch(`http://localhost:5000/api/finance/incomes/delete-income/${incomeToDelete}`, {
+    fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes/delete-income/${incomeToDelete}`, {
       method: "DELETE",
     })
       .then((response) => response.json())

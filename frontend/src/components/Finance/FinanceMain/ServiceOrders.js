@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import PageTitle from "./PageTitle";
 import axios from "axios";
 import { Table, Container, Row, Col, Button, Modal } from "react-bootstrap";
+import { f } from "html2pdf.js";
 
-const ServiceOrders = () => {
+const ServiceOrders = ({toggleLoading}) => {
   const [allServiceOrders, setAllServiceOrders] = useState([]);
   const [pendingServiceOrders, setPendingServiceOrders] = useState([]);
   const [confirmationModal, setConfirmationModal] = useState(false);
@@ -11,22 +12,32 @@ const ServiceOrders = () => {
 
   useEffect(() => {
     const fetchAllServiceOrders = async () => {
-      const response = await axios.get(
-        "http://localhost:5000/api/finance/service-record/all"
-      );
-      setAllServiceOrders(response.data);
+        try {
+          toggleLoading(true)
+            const response = await axios.get(`${process.env.React_App_Backend_URL}/api/finance/service-record/all`);
+            setAllServiceOrders(response.data);
+        } catch (error) {
+            console.error("Error fetching all service orders:", error);
+        }finally{
+          toggleLoading(false)
+        }
     };
 
     const fetchPendingServiceOrders = async () => {
-      const response = await axios.get(
-        "http://localhost:5000/api/finance/service-record/pending"
-      );
-      setPendingServiceOrders(response.data);
+        try {
+          toggleLoading(true)
+            const response = await axios.get(`${process.env.React_App_Backend_URL}/api/finance/service-record/pending`);
+            setPendingServiceOrders(response.data);
+        } catch (error) {
+            console.error("Error fetching pending service orders:", error);
+        }finally{
+          toggleLoading(false)
+         }
     };
 
     fetchAllServiceOrders();
     fetchPendingServiceOrders();
-  }, []);
+}, []);
 
   const markAsCompleted = (orderId) => {
     setConfirmationModal(true);
@@ -36,7 +47,7 @@ const ServiceOrders = () => {
   const confirmMarkAsCompleted = async () => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/finance/service-record/update/${orderIdToDelete}`,
+        `${process.env.React_App_Backend_URL}/api/finance/service-record/update/${orderIdToDelete}`,
         { price: 'Rs. 2000.00' }
       );
 

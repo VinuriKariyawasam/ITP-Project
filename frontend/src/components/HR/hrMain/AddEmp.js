@@ -25,9 +25,6 @@ function AddEmp() {
   //for date picker
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const [isFirstNameValid, setIsFirstNameValid] = useState(false);
-  const [isLastNameValid, setIsLastNameValid] = useState(false);
-
   //get designations
   useEffect(() => {
     const fetchDesignations = async () => {
@@ -117,7 +114,8 @@ function AddEmp() {
               <p>Hope you have fun while working. Login Here<a href="http://localhost:3000/staff/login">Neo Tech Staff</a></p>
               <p>Thank You</p>
               <p>Warm regards,</p>
-              <p><b><i>HR Division- Neo Tech Motors</i></b></p>`,
+              <p><b><i>HR Division- Neo Tech Motors</i></b></p>
+              <a href="http://localhost:3000/customer"><img src="https://i.ibb.co/ySB2bhn/Logoblack.jpg" alt="Logoblack" border="0"></a>`,
         };
 
         // Send a fetch request to the backend controller for sending email
@@ -283,6 +281,53 @@ function AddEmp() {
     setIsConfirmPasswordValid(isValid);
   };
 
+  const handleKeyDownNames = (e) => {
+    const allowedCharacters = /^[A-Za-z]*$/;
+    if (!allowedCharacters.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleKeyDownNic = (e) => {
+    // Allow backspace key
+    if (e.key === "Backspace") {
+      return;
+    }
+
+    const allowedCharacters = /^[0-9vV]*$/;
+    if (!allowedCharacters.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+  const handleInputChangeNic = (e) => {
+    const value = e.target.value;
+    const regex = /^[0-9vV]*$/;
+    if (!regex.test(value)) {
+      e.preventDefault();
+    }
+    trigger("nic");
+  };
+
+  const handleInputChangeContact = (e) => {
+    const value = e.target.value;
+    const regex = /^[0-9]*$/;
+    if (!regex.test(value)) {
+      e.preventDefault();
+    }
+    trigger("contact");
+  };
+
+  // Function to get the current date
+  const getEighteenYearsAgoDate = () => {
+    const currentDate = new Date();
+    const eighteenYearsAgo = new Date(
+      currentDate.getFullYear() - 18,
+      currentDate.getMonth(),
+      currentDate.getDate()
+    );
+    return eighteenYearsAgo;
+  };
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <h3>
@@ -305,11 +350,16 @@ function AddEmp() {
             control={control}
             rules={{
               required: "First Name is required",
-              validate: validateName,
             }}
             render={({ field }) => (
               <>
-                <Form.Control placeholder="Sahan" {...field} />
+                <Form.Control
+                  placeholder="Sahan"
+                  {...field}
+                  pattern="[A-Za-z]+"
+                  title="Please enter only alphabetical characters"
+                  onKeyDown={handleKeyDownNames}
+                />
 
                 {!errors.firstName && field.value && (
                   <i className="bi bi-check-circle-fill text-success"></i>
@@ -334,7 +384,13 @@ function AddEmp() {
             }}
             render={({ field }) => (
               <>
-                <Form.Control placeholder="Siriwardana" {...field} />
+                <Form.Control
+                  placeholder="Siriwardana"
+                  {...field}
+                  pattern="[A-Za-z]+"
+                  title="Please enter only alphabetical characters"
+                  onKeyDown={handleKeyDownNames}
+                />
 
                 {!errors.lastName && field.value && (
                   <i className="bi bi-check-circle-fill text-success"></i>
@@ -370,6 +426,7 @@ function AddEmp() {
                       field.onChange(date); // Trigger onChange of react-hook-form
                       trigger("birthDate"); // Trigger validation for 'birthDate' field
                     }}
+                    maxDate={getEighteenYearsAgoDate()} // Disable future dates
                     className="form-control mx-2"
                   />
 
@@ -430,26 +487,31 @@ function AddEmp() {
             render={({ field }) => (
               <>
                 <Form.Control
-                  type="tel"
+                  type="text"
                   placeholder="0715897598"
                   {...field}
-                  maxLength="10"
-                  minLength="10"
                   onChange={(e) => {
-                    field.onChange(e);
-                    trigger("contact"); // Trigger validation for 'contact' field
+                    // Remove non-numeric characters and limit to maximum length
+                    const input = e.target.value
+                      .replace(/\D/g, "")
+                      .slice(0, 10);
+                    field.onChange(input);
                   }}
+                  maxLength="10" // Set maximum length
                 />
 
-                {!errors.contact && field.value && (
+                {field.value?.length === 10 && (
                   <i className="bi bi-check-circle-fill text-success"></i>
+                )}
+
+                {errors.contact && (
+                  <Form.Text className="text-danger">
+                    {errors.contact.message}
+                  </Form.Text>
                 )}
               </>
             )}
           />
-          <Form.Text className="text-danger">
-            {errors.contact?.message}
-          </Form.Text>
         </Form.Group>
       </Row>
 
@@ -612,7 +674,13 @@ function AddEmp() {
             rules={{ required: "Bank is required", validate: validateBank }}
             render={({ field }) => (
               <>
-                <Form.Control placeholder="Sampath Bank" {...field} />
+                <Form.Control
+                  placeholder="Sampath Bank"
+                  {...field}
+                  pattern="[A-Za-z]+"
+                  title="Please enter only alphabetical characters"
+                  onKeyDown={handleKeyDownNames}
+                />
                 {!errors.bank && field.value && (
                   <i className="bi bi-check-circle-fill text-success"></i>
                 )}
@@ -631,7 +699,13 @@ function AddEmp() {
             rules={{ required: "Branch is required", validate: validateBranch }}
             render={({ field }) => (
               <>
-                <Form.Control placeholder="Maharagama" {...field} />
+                <Form.Control
+                  placeholder="Maharagama"
+                  {...field}
+                  pattern="[A-Za-z]+"
+                  title="Please enter only alphabetical characters"
+                  onKeyDown={handleKeyDownNames}
+                />
 
                 {!errors.branch && field.value && (
                   <i className="bi bi-check-circle-fill text-success"></i>
@@ -659,11 +733,20 @@ function AddEmp() {
                 <Form.Control
                   type="number"
                   placeholder="200045879"
+                  min="0" // Set the minimum value to 0 to prevent entering negative numbers
                   {...field}
-                  maxLength={16}
+                  onChange={(e) => {
+                    // Prevent entering more than 15 numbers
+                    const input = e.target.value.slice(0, 15);
+                    field.onChange(input);
+                    validateAccount(input); // Call validateAccount on each change
+                  }}
                 />
 
-                {!errors.account && field.value && (
+                {errors.account && errors.account.type === "validate" && (
+                  <i className="bi bi-x-circle-fill text-danger"></i>
+                )}
+                {validateAccount(field.value) === true && (
                   <i className="bi bi-check-circle-fill text-success"></i>
                 )}
               </>
@@ -848,12 +931,14 @@ function AddEmp() {
                     />
                   )}
 
-                  {field.value && isPasswordValid(field.value) && (
-                    <i
-                      className="bi bi-check-circle-fill text-success"
-                      style={{ marginLeft: "10px" }}
-                    ></i>
-                  )}
+                  {field.value &&
+                    isPasswordValid(field.value) &&
+                    isConfirmPasswordValid && (
+                      <i
+                        className="bi bi-check-circle-fill text-success"
+                        style={{ marginLeft: "10px" }}
+                      ></i>
+                    )}
                 </div>
               )}
             />
@@ -864,6 +949,25 @@ function AddEmp() {
           </Form.Group>
         </Row>
       )}
+      {/* New Fiels */}
+      {/*<Form.Group className="mb-3" controlId="formGridAddress">
+        <Form.Label>New Field</Form.Label>
+        <Controller
+          name="newField"
+          control={control}
+          rules={{
+            required: "Address is required",
+          }}
+          render={({ field }) => (
+            <>
+              <Form.Control placeholder="Say something" {...field} />
+            </>
+          )}
+        />
+        <Form.Text className="text-danger">
+          {errors.newField?.message}
+        </Form.Text>
+        </Form.Group>*/}
 
       <Button variant="dark" type="submit">
         Submit

@@ -37,9 +37,10 @@ function StaffApp({ toggleLoading }) {
     <>
       <Header />
       <Routes>
-
-        <Route path="/" element={<NotFoundPage page="http://localhost:3000/"/>} />
-
+        <Route
+          path="/"
+          element={<NotFoundPage page="http://localhost:3000/" />}
+        />
 
         {isLoggedIn === false ? (
           <Route path="/login" element={<StaffLogin />} />
@@ -57,13 +58,13 @@ function StaffApp({ toggleLoading }) {
         )}
 
         {userPosition === "General Manager" ? (
-          <Route path="/gm/*" element={<GM />} />
+          <Route path="/gm/*" element={<GM toggleLoading={toggleLoading} />} />
         ) : (
           <Route path="/gm/*" element={<RestrictedPage />} />
         )}
 
         {userPosition === "HR Manager" || userPosition === "General Manager" ? (
-          <Route path="/hr/*" element={<HR />} />
+          <Route path="/hr/*" element={<HR toggleLoading={toggleLoading} />} />
         ) : (
           <Route path="/hr/*" element={<RestrictedPage />} />
         )}
@@ -76,7 +77,7 @@ function StaffApp({ toggleLoading }) {
 
         {userPosition === "Finance Manager" ||
         userPosition === "General Manager" ? (
-          <Route path="/finance/*" element={<Finance />} />
+          <Route path="/finance/*" element={<Finance toggleLoading={toggleLoading}/>} />
         ) : (
           <Route path="/finance/*" element={<RestrictedPage />} />
         )}

@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 
 import axios from "axios";
 
-const InvoiceComponent = () => {
+const InvoiceComponent = ({toggleLoading}) => {
   const location = useLocation();
   const {
     state: { paymentId },
@@ -21,8 +21,9 @@ const InvoiceComponent = () => {
   useEffect(() => {
     const fetchInvoiceData = async () => {
       try {
+        toggleLoading(true)
         const response = await fetch(
-          `http://localhost:5000/api/finance/billing/${paymentId}`
+          `${process.env.React_App_Backend_URL}/api/finance/billing/${paymentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch invoice data");
@@ -35,6 +36,8 @@ const InvoiceComponent = () => {
         handleUploadPDF();
       } catch (error) {
         console.error("Error fetching invoice data:", error.message);
+      }finally {
+        toggleLoading(false)
       }
     };
 
@@ -98,7 +101,7 @@ const InvoiceComponent = () => {
 
       // Send PDF file to the server
       const response = await axios.post(
-        "http://localhost:5000/api/finance/billing/uploadinvoice",
+        `${process.env.React_App_Backend_URL}/api/finance/billing/uploadinvoice`,
         formData,
         {
           headers: {
@@ -123,7 +126,7 @@ const InvoiceComponent = () => {
 
       // Send a POST request to the database
       const dbResponse = await axios.post(
-        "http://localhost:5000/api/finance/invoices/addinperson",
+        `${process.env.React_App_Backend_URL}/api/finance/invoices/addinperson`,
         postData,
         {
           headers: {
@@ -147,7 +150,7 @@ const InvoiceComponent = () => {
       console.log(incomeData)
       
       const incomeResponse = await axios.post(
-        "http://localhost:5000/api/finance/incomes/add-income",
+        `${process.env.React_App_Backend_URL}/api/finance/incomes/add-income`,
         incomeData,
         {
           headers: {
@@ -155,8 +158,37 @@ const InvoiceComponent = () => {
           },
         }
       );
+
+
+      // save in payment history
+
+      const paymentHistoryData = {
+        invoice_id:paymentId,
+        name: invoiceData.name,
+        email: email,
+        amount: total,
+        date: currentDate,
+        url: downloadURL,
+
+      }
+
+
+      const PHResponse = await axios.post(
+        `${process.env.React_App_Backend_URL}/api/finance/paymenthistory/add`,
+        paymentHistoryData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+
+
+
   
      console.log("Income data saved to database:", incomeResponse.data);
+     console.log("Payment History data saved to database:", PHResponse.data);
 
       // Send email with the PDF attachment and HTML content
       const emailOptions = {
@@ -173,7 +205,7 @@ const InvoiceComponent = () => {
       };
 
       // Send a fetch request to the backend controller for sending email
-      await fetch("http://localhost:5000/api/finance/email", {
+      await fetch(`${process.env.React_App_Backend_URL}/api/finance/email`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

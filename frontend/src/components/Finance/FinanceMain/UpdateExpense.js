@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import PageTitle from './PageTitle';
 
-const UpdateExpense = () => {
+const UpdateExpense = ({toggleLoading}) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const [backendError, setBackendError] = useState('');
@@ -25,7 +25,8 @@ const UpdateExpense = () => {
     useEffect(() => {
         const fetchExpense = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/finance/expenses/get-expense/${id}`);
+                toggleLoading(true)
+                const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses/get-expense/${id}`);
                 if (response.ok) {
                     const data = await response.json();
                     // Update formData state with existing expense data
@@ -36,6 +37,8 @@ const UpdateExpense = () => {
             } catch (error) {
                 console.error('Error fetching expense:', error);
                 setBackendError('Failed to fetch expense data');
+            }finally {
+              toggleLoading(false)
             }
         };
 
@@ -69,7 +72,7 @@ const UpdateExpense = () => {
         // Check if there are any validation errors
         if (Object.values(newErrors).every((error) => !error)) {
             try {
-                const response = await fetch(`http://localhost:5000/api/finance/expenses/update-expense/${id}`, {
+                const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses/update-expense/${id}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'

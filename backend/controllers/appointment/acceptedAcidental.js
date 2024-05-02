@@ -7,6 +7,7 @@ exports.addacceptedaccidentalAppointment= async (req, res) => {
     
     const userId = req.body.userId;
     const name = req.body.name;
+    const cusType  = req.body.cusType;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
     const dateAccidentaOccured =new Date(req.body.dateAccidentaOccured);
@@ -20,6 +21,7 @@ exports.addacceptedaccidentalAppointment= async (req, res) => {
     const newacceptedaccidentalAppointment= acceptedaccidentalSchema({
         userId,
         name,
+        cusType ,
         vType,
         vNo,
         dateAccidentaOccured,
@@ -31,7 +33,7 @@ exports.addacceptedaccidentalAppointment= async (req, res) => {
     });
 
     try {
-        if (!name || !vType || !vNo || !dateAccidentaOccured || !damagedOccured|| !contactNo || !appointmentdate || !appointmenttime ||!image) {
+        if (!name ||!cusType || !vType || !vNo || !dateAccidentaOccured || !damagedOccured|| !contactNo || !appointmentdate || !appointmenttime ||!image) {
             return res.status(400).json({ message: 'All Fields Required' })
         }
         await newacceptedaccidentalAppointment.save()

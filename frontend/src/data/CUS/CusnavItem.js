@@ -115,7 +115,7 @@ function CusnavItem() {
                   Feedback
                 </NavDropdown.Item>
               )}
-              <NavDropdown.Item href={CusAuth.isLoggedIn ? "http://localhost:3000/customer/payments/payonline" : "http://localhost:3000/customer/payments/payonline"}>
+              <NavDropdown.Item href={CusAuth.isLoggedIn ? `${process.env.React_App_Frontend_URL}/customer/payments/payonline` : `${process.env.React_App_Frontend_URL}/customer/payments/payonline`}>
                 {CusAuth.isLoggedIn ? "My Payments" : "Pay Online"}
               </NavDropdown.Item>
             </NavDropdown>

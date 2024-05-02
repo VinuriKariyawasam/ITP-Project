@@ -15,11 +15,18 @@ function MechanicalAppointment() { // Corrected function name
   const cusauth = useContext(CusAuthContext)
   const navigate = useNavigate();
 
-
-
+  const handleAddSri = () => {
+    if (/^\d+/.test(vNo)) {
+      setvNo(prevVNo => {
+        return prevVNo + "ශ්‍රී";
+      });
+    } else {
+      alert("Please enter a valid format of vehicle number.");
+    }
+  };
   const { } = useForm();
 
-  const [name, setname] = useState("");
+  const [cusType,setcusType]=useState("");
   const [vType, setvType] = useState("");
   const [vNo, setvNo] = useState("");
   const [issue, setissue] = useState("");
@@ -40,7 +47,9 @@ function MechanicalAppointment() { // Corrected function name
     //create javascript object
     const newmechanicalAppointment = {
       userId: cusauth.userId,
-      name,
+      name:cusauth.name,
+      email:cusauth.email,
+      cusType,
       vType,
       vNo,
       issue,
@@ -49,14 +58,14 @@ function MechanicalAppointment() { // Corrected function name
       appointmenttime,
     };
 
-    axios.post("http://localhost:5000/appointment/addmechanicalAppointment", {
+    axios.post(`${process.env.React_App_Backend_URL}/appointment/addmechanicalAppointment`, {
       ...newmechanicalAppointment,
       appointmentdate: new Date(appointmentdate.getTime() + (24 * 60 * 60 * 1000)) // Adding one day
     }).then(() => {
 
       alert("Your Appointment Success")
       navigate('/customer/appointment/myappointment');
-      setname(""); // Corrected assignment, use function instead of assignment
+      setcusType(""); // Corrected assignment, use function instead of assignment
       setvType("");
       setvNo("");
       setissue("");
@@ -94,7 +103,7 @@ function MechanicalAppointment() { // Corrected function name
   const fetchAvailableTimes = async (date) => {
     try {
       const formattedDate = changedatetoformet(date);
-      const response = await axios.get(`http://localhost:5000/appointment/get-acceptedmechanicalappointmentbyDate/${formattedDate}`);
+      const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedmechanicalappointmentbyDate/${formattedDate}`);
       const appointments = response.data.data;
       console.log(appointments);
       const allTimes = ["9.00am", "10.30am", "12.00pm", "1.30pm", "3.00pm", "4.30pm"]; // Define allTimes here
@@ -129,20 +138,15 @@ function MechanicalAppointment() { // Corrected function name
             <Form onSubmit={sendata}>
               <Row className="mb-3">
 
-                <Form.Group as={Col} controlId="formGridEmail" md='5'>
-                  <Form.Label>Customer Name</Form.Label>
-                  <Form.Control type="text" placeholder="Enter Your Name" value={name}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const filteredValue = value.replace(/[0-9]/g, ''); // Filter out numeric characters
-                      setname(filteredValue); // Update state with the filtered value
-                    }}
-                    maxLength={30}
-                    required />
-                  <div class="invalid-feedback">
-                    Please choose a username.
-                  </div>
+              <Form.Group as={Col} controlId="formGridEmail" md='5'>
+                  <Form.Label>Customer Type</Form.Label>
+                  <select class="form-select" id="validationCustom04" value={cusType} onChange={(e) => setcusType(e.target.value)} required>
+              <option value="">choose</option>
+              <option value="Government">Government</option>
+              <option value="Non-Government">Non-Government</option>
+              </select>
                 </Form.Group>
+
 
                 <Form.Group as={Col} controlId="formGridPassword" md='5'>
                   <Form.Label>Vehicle Type</Form.Label>
@@ -152,7 +156,8 @@ function MechanicalAppointment() { // Corrected function name
               <Row className="mb-3">
                 <Form.Group as={Col} md='5'>
                   <Form.Label>Vehicle Number</Form.Label>
-                  <Form.Control type='text' placeholder="Enter Vehicle Number" value={vNo} onChange={(e) => setvNo(e.target.value)} maxLength={10} required />
+                  <Form.Control type='text' placeholder="Enter Vehicle Number" value={vNo} onChange={(e) => setvNo(e.target.value)} maxLength={20} required />
+                  <Button variant="secondary" onClick={handleAddSri}>Add ශ්‍රී</Button>
                 </Form.Group>
 
                 <Form.Group as={Col} md='5'>

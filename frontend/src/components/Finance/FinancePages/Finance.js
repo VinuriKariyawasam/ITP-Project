@@ -14,7 +14,8 @@ import PaymentInvoiveList from "../FinanceMain/PaymentInvoiceList";
 import EmpFinance from "../FinanceMain/EmpFinance";
 import ProductSales from "../FinanceMain/ProductSales";
 import ServiceOrders from "../FinanceMain/ServiceOrders";
-
+import FinancialReports from "../FinanceMain/FinancialReports";
+import MonthlyReport from "../FinanceMain/MonthlyReport";
 
 
 // Import front end routes
@@ -26,31 +27,33 @@ import {
 } from "react-router-dom";
 import Expenses from "../FinanceMain/Expenses";
 
-function Finance() {
+function Finance({toggleLoading}) {
   return (
     <>
       <FinanceSideBar />
 
       <Routes>
-        <Route path="/" element={<FinanceMain />} />
+        <Route path="/" element={<FinanceMain toggleLoading={toggleLoading}/>} />
         
-        <Route path="incomes/" element={<Incomes/>} />
-        <Route path="incomes/add-income" element={<AddIncome/>}/>
-        <Route path="incomes/edit-income/:id" element={<UpdateIncome />} />
+        <Route path="incomes/" element={<Incomes toggleLoading={toggleLoading}/>} />
+        <Route path="incomes/add-income" element={<AddIncome toggleLoading={toggleLoading}/>}/>
+        <Route path="incomes/edit-income/:id" element={<UpdateIncome toggleLoading={toggleLoading}/>} />
 
-        <Route path="expenses/add-expense" element={<AddExpense/>}/>
-        <Route path="expenses/" element={<Expenses/>} />
+        <Route path="expenses/add-expense" element={<AddExpense toggleLoading={toggleLoading}/>}/>
+        <Route path="expenses/" element={<Expenses toggleLoading={toggleLoading}/>} />
       
-        <Route path="expenses/edit-expense/:id" element={<UpdateExpense/>}/>
+        <Route path="expenses/edit-expense/:id" element={<UpdateExpense toggleLoading={toggleLoading}/>}/>
 
-        <Route path="billing/new" element={<BillingForm/>}/>
-        <Route path="billing/all" element={<BillsList/>}/>
-        <Route path="invoices/all-invoices" element={<PaymentInvoiveList/>}/>
-        <Route path="billing/new-invoice" element={<NewInvoice/>}/>
+        <Route path="billing/new" element={<BillingForm toggleLoading={toggleLoading}/>}/>
+        <Route path="billing/all" element={<BillsList toggleLoading={toggleLoading}/>}/>
+        <Route path="invoices/all-invoices" element={<PaymentInvoiveList toggleLoading={toggleLoading}/>}/>
+        <Route path="billing/new-invoice" element={<NewInvoice toggleLoading={toggleLoading}/>}/>
 
-        <Route path="emp-finance" element={<EmpFinance/>}/>
-        <Route path="product-sales" element={<ProductSales/>}/>
-      <Route path="service-orders" element={<ServiceOrders/>}/>
+        <Route path="emp-finance" element={<EmpFinance toggleLoading={toggleLoading}/>}/>
+        <Route path="product-sales" element={<ProductSales toggleLoading={toggleLoading}/>}/>
+      <Route path="service-orders" element={<ServiceOrders toggleLoading={toggleLoading}/>}/>
+      <Route path="financial-reports" element={<FinancialReports toggleLoading={toggleLoading}/>}/>
+     
 
       
 

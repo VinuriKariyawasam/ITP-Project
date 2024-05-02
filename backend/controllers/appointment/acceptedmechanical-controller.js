@@ -6,6 +6,7 @@ exports.addacceptedmechanicalAppointment= async (req, res) => {
     // get data from fronend in request body to backend
     const userId = req.body.userId;
     const name = req.body.name;
+    const cusType = req.body.cusType;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
     const issue = req.body.issue;
@@ -17,6 +18,7 @@ exports.addacceptedmechanicalAppointment= async (req, res) => {
     const newacceptedmechanicalAppointment= acceptedmechanicalSchema({
         userId,
         name,
+        cusType,
         vType,
         vNo,
         issue,
@@ -26,7 +28,7 @@ exports.addacceptedmechanicalAppointment= async (req, res) => {
     });
 
     try {
-        if (!name || !vType || !vNo || !issue ||  !contactNo || !appointmentdate || !appointmenttime ) {
+        if (!name || !cusType || !vType || !vNo || !issue ||  !contactNo || !appointmentdate || !appointmenttime ) {
             return res.status(400).json({ message: 'All Fields Required' })
         }
         await newacceptedmechanicalAppointment.save()

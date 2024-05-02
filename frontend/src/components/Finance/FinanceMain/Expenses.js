@@ -5,18 +5,33 @@ import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
 
-const Expenses = () => {
+const Expenses = ({toggleLoading}) => {
   const navigate = useNavigate();
   const [expenses, setExpenses] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [expenseToDelete, setExpenseToDelete] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/finance/expenses")
-      .then((response) => response.json())
-      .then((data) => setExpenses(data))
-      .catch((error) => console.error("Error fetching expenses:", error));
-  }, []);
+    const fetchExpenses = async () => {
+        try {
+          toggleLoading(true)
+            const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setExpenses(data);
+        } catch (error) {
+            console.error("Error fetching expenses:", error);
+        }finally {
+          toggleLoading(false)
+        }
+    };
+
+    fetchExpenses();
+
+}, []);
+
 
   const handleAddExpenseClick = () => {
     navigate("/staff/finance/expenses/add-expense");
@@ -38,7 +53,7 @@ const Expenses = () => {
   };
 
   const confirmDeleteExpense = () => {
-    fetch(`http://localhost:5000/api/finance/expenses/delete-expense/${expenseToDelete}`, {
+    fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses/delete-expense/${expenseToDelete}`, {
       method: "DELETE",
     })
       .then((response) => response.json())
