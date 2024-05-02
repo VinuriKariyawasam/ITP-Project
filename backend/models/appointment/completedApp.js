@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 //Inside a schema we declare attributes
 const schema = mongoose.Schema;
-const acceptedappointmentSchema = new schema({
+const completedappointmentSchema = new schema({
     userId:{
         type :String,
     }, 
@@ -51,6 +51,6 @@ const acceptedappointmentSchema = new schema({
 });
 
 //To pass this schema to a cluster in Mongo DB
-const acceptedappointment = mongoose.model("acceptedappointment", acceptedappointmentSchema);
+const completedappointment = mongoose.model("completedappointment", completedappointmentSchema);
 
-module.exports = acceptedappointment;
+module.exports = completedappointment;

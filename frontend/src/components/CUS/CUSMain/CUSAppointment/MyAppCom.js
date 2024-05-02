@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import axios from "axios";
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 
-function MyApApp() {
+function MyAppCom() {
 
   const [appointments, setAppointments] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -17,11 +17,11 @@ function MyApApp() {
 
   let userId = cusauth.userId;
 
-  const getAcceptedAppData = async (userId) => {
+  const getcompletedData = async (userId) => {
 
     try {
       const currentDate = new Date();
-      const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedappointmentbyuserId/${userId}`);
+      const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-completedappointmentbyuserId/${userId}`);
      // Filter appointments whose date is after the current date
      const filteredAppointments = response.data.data.filter(appointment => {
       const appointmentDate = new Date(appointment.appointmentdate);
@@ -36,7 +36,7 @@ function MyApApp() {
   };
   useEffect(() => {
     if (cusauth.userId) {
-      getAcceptedAppData(cusauth.userId)
+      getcompletedData(cusauth.userId)
     }
 
   }, [cusauth.userId])
@@ -48,21 +48,7 @@ function MyApApp() {
     setShowModal(true);
 
   };
-  const Delete = (id) => {
-
-    axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-acceptedappointment/${id}`)
-      .then(response => {
-        console.log(response);
-        window.location.reload();
-        alert("Appointment Canceled")
-      })
-      .catch(error => {
-        // Handle errors here
-        console.error(error);
-      });
-
-  };
-
+ 
   return (
     <div>
        {loading ? (
@@ -102,7 +88,7 @@ function MyApApp() {
 
         <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
-            <Modal.Title>Accepted Appointment</Modal.Title>
+            <Modal.Title>Completed Appointment</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <img style={{ width: "50%", height: "50%" }} />
@@ -114,15 +100,10 @@ function MyApApp() {
             <p>Date and Time:{selectedAppointment.appointmentdate ? `${selectedAppointment.appointmentdate.split('T')[0]} ${selectedAppointment.appointmenttime}` : ''}</p>
             <p>Contact No:{selectedAppointment.contactNo} </p>
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="success" onClick={() => Delete(selectedAppointment._id)}>
-              cancle
-            </Button>
-          </Modal.Footer>
         </Modal>
       )}
     </div>
   )
 }
 
-export default MyApApp
+export default MyAppCom
