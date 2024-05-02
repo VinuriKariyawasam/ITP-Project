@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 
 import axios from "axios";
 
-const InvoiceComponent = () => {
+const InvoiceComponent = ({toggleLoading}) => {
   const location = useLocation();
   const {
     state: { paymentId },
@@ -21,6 +21,7 @@ const InvoiceComponent = () => {
   useEffect(() => {
     const fetchInvoiceData = async () => {
       try {
+        toggleLoading(true)
         const response = await fetch(
           `${process.env.React_App_Backend_URL}/api/finance/billing/${paymentId}`
         );
@@ -35,6 +36,8 @@ const InvoiceComponent = () => {
         handleUploadPDF();
       } catch (error) {
         console.error("Error fetching invoice data:", error.message);
+      }finally {
+        toggleLoading(false)
       }
     };
 

@@ -10,7 +10,7 @@ function formatDate(dateString) {
   return date.toLocaleDateString("en-US"); // Adjust locale as needed
 }
 
-function YearlyReport() {
+function YearlyReport({toggleLoading}) {
   const [creditData, setCreditData] = useState([]);
   const [debitData, setDebitData] = useState([]);
   const [totalCredit, setTotalCredit] = useState(0);
@@ -20,24 +20,31 @@ function YearlyReport() {
   const [years, setYears] = useState([]);
 
   useEffect(() => {
-    // Fetch credit and debit data
-    fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes`)
-      .then((response) => response.json())
-      .then((data) => {
-        setCreditData(data);
-        calculateTotalCredit(data);
-        extractYears(data);
-      })
-      .catch((error) => console.error("Error fetching credit data:", error));
+    const fetchData = async () => {
+        try {
+             toggleLoading(true)
+            const creditResponse = await fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes`);
+            const creditData = await creditResponse.json();
+            setCreditData(creditData);
+            calculateTotalCredit(creditData);
+            extractYears(creditData);
 
-    fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses`)
-      .then((response) => response.json())
-      .then((data) => {
-        setDebitData(data);
-        calculateTotalDebit(data);
-      })
-      .catch((error) => console.error("Error fetching debit data:", error));
-  }, []);
+            const debitResponse = await fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses`);
+            const debitData = await debitResponse.json();
+            setDebitData(debitData);
+            calculateTotalDebit(debitData);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+        finally{
+          toggleLoading(false)
+        }
+    };
+
+    fetchData();
+
+}, []);
+
 
   const calculateTotalCredit = (data) => {
     const total = data.reduce((acc, curr) => acc + curr.amount, 0);

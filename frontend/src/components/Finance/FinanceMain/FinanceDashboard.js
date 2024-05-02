@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, 
 import DbCard from "./hrdbCard";
 import PendingPayments from "./PendingPayments";
 
-function FinanceDashboard() {
+function FinanceDashboard({toggleLoading}) {
   // Dummy data for the charts
   const barChartData = [
     { month: "November", income: 1000, expenses: 600 },
@@ -23,7 +23,7 @@ function FinanceDashboard() {
 
   return (
     <>
-      <PendingPayments />
+      <PendingPayments toggleLoading={toggleLoading}/>
       <br></br>
 
       <h4>Financial Statistics</h4>

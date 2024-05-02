@@ -3,7 +3,7 @@ import PaymentSuccess from './PaymentSuccess';
 import PaymentFailure from './PaymentFailure';
 
 
-const PaymentVerification = () => {
+const PaymentVerification = ({toggleLoading}) => {
    
     const [paymentData, setPaymentData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -13,16 +13,21 @@ const PaymentVerification = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const orderIdParam = urlParams.get('order_id'); // Storing orderId in a variable
-                setOrderId(orderIdParam); // Setting orderId state
+                setOrderId(orderIdParam);
+                toggleLoading(true) // Setting orderId state
                 const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/payments/verifypayment/${orderIdParam}`);
                 const data = await response.json();
                 setPaymentData(data);
-                setLoading(false);
+                
             } catch (error) {
                 setError(error);
-                setLoading(false);
+                
+            }
+            finally{
+                toggleLoading(false)
             }
         };
 

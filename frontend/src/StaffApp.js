@@ -77,7 +77,7 @@ function StaffApp({ toggleLoading }) {
 
         {userPosition === "Finance Manager" ||
         userPosition === "General Manager" ? (
-          <Route path="/finance/*" element={<Finance />} />
+          <Route path="/finance/*" element={<Finance toggleLoading={toggleLoading}/>} />
         ) : (
           <Route path="/finance/*" element={<RestrictedPage />} />
         )}

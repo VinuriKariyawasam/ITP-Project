@@ -10,29 +10,43 @@ function formatDate(dateString) {
   return date.toLocaleDateString("en-US"); // Adjust locale as needed
 }
 
-function DailyReport() {
+function DailyReport({toggleLoading}) {
   const [creditData, setCreditData] = useState([]);
   const [debitData, setDebitData] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
-    // Fetch credit data
-    fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes`)
-      .then((response) => response.json())
-      .then((data) => {
-        setCreditData(data);
-      })
-      .catch((error) => console.error("Error fetching credit data:", error));
+    const fetchData = async () => {
+        try {
+          toggleLoading(true)
+            // Fetch credit data
+            const creditResponse = await fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes`);
+            if (!creditResponse.ok) {
+                throw new Error('Network response was not ok for credit data');
+            }
+            const creditData = await creditResponse.json();
+            setCreditData(creditData);
 
-    // Fetch debit data
-    fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses`)
-      .then((response) => response.json())
-      .then((data) => {
-        setDebitData(data);
-      })
-      .catch((error) => console.error("Error fetching debit data:", error));
-  }, []);
+            // Fetch debit data
+            const debitResponse = await fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses`);
+            if (!debitResponse.ok) {
+                throw new Error('Network response was not ok for debit data');
+            }
+            const debitData = await debitResponse.json();
+            setDebitData(debitData);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+        finally {
+          toggleLoading(false)
+        }
+    };
+
+    fetchData();
+
+}, []);
+
 
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
