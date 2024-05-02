@@ -22,7 +22,7 @@ function ConsultancySolution(){
 useEffect(() => {
   const fetchConsultationById = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/cam/consultation/get-consultid/${consultId}`);
+      const response = await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/get-consultid/${consultId}`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -47,7 +47,7 @@ if (!consultation) {
     event.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost:5000/cam/consultation/update-solutionbyid/${consultId}`, {
+      const response = await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/update-solutionbyid/${consultId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

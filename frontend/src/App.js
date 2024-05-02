@@ -17,7 +17,9 @@ import StaffApp from "./StaffApp";
 import CustomerApp from "./CustomerApp";
 import { StaffAuthProvider } from "./context/StaffAuthContext";
 import HomePage from "./components/util/HomePage";
+
 import Loader from "./components/util/Loader";
+
 
 function App() {
   const [loading, setLoading] = useState(false); // State to track loading status
@@ -42,12 +44,14 @@ function App() {
             }
           />
 
+
           <Route
             path="/customer/*"
             element={<CustomerApp toggleLoading={toggleLoading} />}
           />
 
           <Route path="/loader" element={<Loader />} />
+
         </Routes>
       </Router>
     </>

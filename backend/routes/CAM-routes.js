@@ -21,10 +21,10 @@ router.get('/consultation/get-consultid/:consultId',ConsultationController.getCo
 //Feedback Routes   
 router.post('/feedback/add-feedback',FeedbackController.createFeedback)
 router.get('/feedback/get-feedbacks',FeedbackController.getFeedback)
-router.patch('/feedback/update-feedback/:userId',FeedbackController.updateFeedbackByUserId)
-router.delete('/feedback/delete-feedback/:userId',FeedbackController.deleteFeedbackById)
+router.put('/feedback/update-feedback/:feedbackId',FeedbackController.updateFeedbackByfeedbackId)
+router.delete('/feedback/delete-feedback/:feedbackId',FeedbackController.deleteFeedbackById)
 router.get('/feedback/get-feedback/:userId',FeedbackController.getFeedbackById)
-
+router.get('/feedback/get-feedbackbyId/:feedbackId',FeedbackController.getFeedbackByfeedbackId)
     
 
 
