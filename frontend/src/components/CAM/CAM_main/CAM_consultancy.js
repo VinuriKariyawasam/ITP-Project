@@ -14,12 +14,12 @@ import {
   } from "react-router-dom";
 
 
-  function CAM_consultancy(){
+  function CAM_consultancy({ toggleLoading }){
     return (
       <main id="main" className="main">
       <CAM_pageTitle title="Consultancy Support" url="/staff/cam/con_support" />
        <Routes>
-         <Route path="/*" element={<ConsultancyPage/>} />
+         <Route path="/*" element={<ConsultancyPage toggleLoading={toggleLoading}/>} />
          <Route path="consultDetails/:consultId" element={<ConsultancySolution/>}></Route>
        </Routes>
     </main>

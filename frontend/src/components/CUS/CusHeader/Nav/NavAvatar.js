@@ -43,7 +43,7 @@ function NavAvatar() {
               <li>
                 <a
                   className="cus-dropdown-item d-flex align-items-center"
-                  href="http://localhost:3000/customer/cusprofile"
+                  href="${process.env.React_App_Frontend_URL}/customer/cusprofile"
                 >
                   <span>My Profile</span>
                 </a>

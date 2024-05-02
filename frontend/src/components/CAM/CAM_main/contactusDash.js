@@ -11,7 +11,7 @@ const Dashboard = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/mobile/contact-us-messages');
+            const response = await axios.get(`${process.env.React_App_Backend_URL}/api/mobile/contact-us-messages`);
             setContacts(response.data); // Assuming your API response is an array of objects
         } catch (error) {
             console.error(error);
