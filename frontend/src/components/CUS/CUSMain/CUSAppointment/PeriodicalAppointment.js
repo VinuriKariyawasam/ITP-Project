@@ -15,8 +15,7 @@ function PeriodicalAppointment() {
   const { } = useForm();
   const navigate = useNavigate();
 
-
-  const [name, setname] = useState("");
+  const [cusType,setcusType]=useState("");
   const [vType, setvType] = useState("");
   const [vNo, setvNo] = useState("");
   const [sType, setsType] = useState("");
@@ -28,19 +27,30 @@ function PeriodicalAppointment() {
   const [appointmenttime, setappointmenttime] = useState("");
   const [msg, setmsg] = useState("");
 
+  const handleAddSri = () => {
+    if (/^\d+/.test(vNo)) {
+      setvNo(prevVNo => {
+        return prevVNo + "ශ්‍රී";
+      });
+    } else {
+      alert("Please enter a valid format of vehicle number.");
+    }
+  };
   function sendata(e) {
     e.preventDefault();
 
     // Check if the phone number has exactly 9 digits
-  if (phone.length !== 9) {
-    alert("Please enter a valid phone number.");
-    return; // Exit the function if the phone number is not valid
-  }
+    if (phone.length !== 9) {
+      alert("Please enter a valid phone number.");
+      return; // Exit the function if the phone number is not valid
+    }
 
     //create javascript object
     const newPeriodicalAppointment = {
       userId: cusauth.userId,
-      name,
+      name:cusauth.name,
+      email:cusauth.email,
+      cusType,
       vType,
       vNo,
       sType,
@@ -53,14 +63,14 @@ function PeriodicalAppointment() {
       msg
     }
 
-    axios.post("http://localhost:5000/appointment/addperiodicalAppointment", {
+    axios.post(`${process.env.React_App_Backend_URL}/appointment/addperiodicalAppointment`, {
       ...newPeriodicalAppointment,
       appointmentdate: new Date(appointmentdate.getTime() + (24 * 60 * 60 * 1000)) // Adding one day
     }).then(() => {
       alert("Your Appointment Success")
       navigate('/customer/appointment/myappointment');
-      setname("");
       setvType("");
+      setcusType("")
       setvNo("");
       setsType("");
       setlastServiceYear("");
@@ -100,7 +110,7 @@ function PeriodicalAppointment() {
   const fetchAvailableTimes = async (date) => {
     try {
       const formattedDate = changedatetoformet(date);
-      const response = await axios.get(`http://localhost:5000/appointment/get-acceptedperiodicalappointmentbyDate/${formattedDate}`);
+      const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedperiodicalappointmentbyDate/${formattedDate}`);
       const appointments = response.data.data;
       console.log(appointments);
       const allTimes = ["9.00am", "10.30am", "12.00pm", "1.30pm", "3.00pm", "4.30pm"]; // Define allTimes here
@@ -135,18 +145,12 @@ function PeriodicalAppointment() {
               <Row className="mb-3">
 
                 <Form.Group as={Col} controlId="formGridEmail" md='5'>
-                  <Form.Label>Customer Name</Form.Label>
-                  <Form.Control type="text" placeholder="Enter Your Name" value={name}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const filteredValue = value.replace(/[0-9]/g, ''); // Filter out numeric characters
-                      setname(filteredValue); // Update state with the filtered value
-                    }}
-                    maxLength={30}
-                    required />
-                  <div class="invalid-feedback">
-                    Please choose a username.
-                  </div>
+                  <Form.Label>Customer Type</Form.Label>
+                  <select class="form-select" id="validationCustom04" value={cusType} onChange={(e) => setcusType(e.target.value)} required>
+              <option value="">choose</option>
+              <option value="Government">Government</option>
+              <option value="Non-Government">Non-Government</option>
+              </select>
                 </Form.Group>
 
                 <Form.Group as={Col} controlId="formGridPassword" md='5'>
@@ -157,7 +161,8 @@ function PeriodicalAppointment() {
               <Row className="mb-3">
                 <Form.Group as={Col} md='5'>
                   <Form.Label>Vehicle Number</Form.Label>
-                  <Form.Control type='text' placeholder="Enter Vehicle Number" value={vNo} onChange={(e) => setvNo(e.target.value)} maxLength={10} required />
+                  <Form.Control type='text' placeholder="Enter Vehicle Number" value={vNo} onChange={(e) => setvNo(e.target.value)} maxLength={16} required />
+                  <Button variant="secondary" onClick={handleAddSri}>Add ශ්‍රී</Button>
                 </Form.Group>
 
                 <Form.Group as={Col} md='5'>
@@ -207,8 +212,23 @@ function PeriodicalAppointment() {
               </Row>
               <Row className="mb-3">
                 <Form.Group as={Col} md='5'>
-                  <Form.Label>Enter Mileage</Form.Label>
-                  <Form.Control type="number" placeholder="Enter LMileage" value={mileage} onChange={(e) => setmileage(e.target.value)} maxLength={12} required />
+                  <Form.Label>Mileage</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Enter Mileage"
+                    value={mileage}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value < 0) {
+                        // If entered value is negative, set mileage to 0
+                        setmileage(0);
+                      } else {
+                        // Otherwise, update the mileage state with the entered value
+                        setmileage(value);
+                      }
+                    }}
+                    required
+                  />
                 </Form.Group>
 
                 <Form.Group as={Col} md='5'>

@@ -12,6 +12,14 @@ const mechanicalSchema = new Schema({
         type :String,
         required: true
     },
+    email: {
+        type: String,
+        required: true,
+      },
+    cusType:{
+        type :String,
+        required: true
+    },
     vType: {
         type :String,
         required: true

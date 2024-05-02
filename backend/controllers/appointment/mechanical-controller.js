@@ -6,6 +6,8 @@ exports.addmechanicalAppointment = async (req, res) => {
     // get data from fronend in request body to backend
     const userId = req.body.userId;
     const name = req.body.name;
+    const email=req.body.email;
+    const cusType = req.body.cusType;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
     const issue = req.body.issue;
@@ -17,6 +19,8 @@ exports.addmechanicalAppointment = async (req, res) => {
     const newmechanicalAppointment = mechanicalSchema({
         userId,
         name,
+        email,
+        cusType,
         vType,
         vNo,
         issue,
@@ -26,7 +30,7 @@ exports.addmechanicalAppointment = async (req, res) => {
     });
 
     try {
-        if (!userId||!name || !vType || !vNo || !issue ||  !contactNo || !appointmentdate || !appointmenttime ) {
+        if (!userId||!name ||!email||!cusType|| !vType || !vNo || !issue ||  !contactNo || !appointmentdate || !appointmenttime ) {
             return res.status(400).json({ message: 'All Fields Required' })
         }
         await newmechanicalAppointment.save()
@@ -57,12 +61,14 @@ exports.getmechanicalAppointment = async (req, res) => {
 exports.updatemechanicalAppointment= async (req, res) => {
     let mechanicalAppointmentId = req.params.id;
     //to get existing values
-    const {userId, name, vType, vNo,issue, contactNo, appointmentdate, appointmenttime } = req.body
+    const {userId, name,email, cusType, vType, vNo,issue, contactNo, appointmentdate, appointmenttime } = req.body
 
     //object to store new values
     const updatemechanicalAppointment = {
         userId,
         name,
+        email,
+        cusType,
         vType,
         vNo,
         issue,
