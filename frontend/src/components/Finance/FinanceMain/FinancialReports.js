@@ -5,7 +5,7 @@ import DailyReport from './DaillyReport';
 import YearlyReport from './YearlyReport';
 import MonthlyReport from './MonthlyReport';
 
-function FinancialReport() {
+function FinancialReport({toggleLoading}) {
   const [activeTab, setActiveTab] = useState('day-range'); // State to track the active tab
   const tabContentRef = useRef(null);
 
@@ -37,13 +37,13 @@ function FinancialReport() {
         </Nav>
         <Tab.Content>
           <Tab.Pane eventKey="day-range">
-            <DailyReport />
+            <DailyReport toggleLoading={toggleLoading} />
           </Tab.Pane>
           <Tab.Pane eventKey="monthly">
-            <MonthlyReport />
+            <MonthlyReport toggleLoading={toggleLoading} />
           </Tab.Pane>
           <Tab.Pane eventKey="yearly">
-            <YearlyReport />
+            <YearlyReport toggleLoading={toggleLoading}/>
           </Tab.Pane>
         </Tab.Content>
       </Tab.Container>
@@ -52,13 +52,13 @@ function FinancialReport() {
         <div ref={tabContentRef}>
           <Tab.Content>
             <Tab.Pane eventKey="day-range">
-              {activeTab === 'day-range' && <DailyReport />}
+              {activeTab === 'day-range' && <DailyReport toggleLoading={toggleLoading}/>}
             </Tab.Pane>
             <Tab.Pane eventKey="monthly">
-              {activeTab === 'monthly' && <MonthlyReport />}
+              {activeTab === 'monthly' && <MonthlyReport toggleLoading={toggleLoading}/>}
             </Tab.Pane>
             <Tab.Pane eventKey="yearly">
-              {activeTab === 'yearly' && <YearlyReport />}
+              {activeTab === 'yearly' && <YearlyReport toggleLoading={toggleLoading}/>}
             </Tab.Pane>
           </Tab.Content>
         </div>

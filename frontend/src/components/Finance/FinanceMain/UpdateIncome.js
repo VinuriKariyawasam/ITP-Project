@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import PageTitle from "./PageTitle";
 
-const UpdateIncome = () => {
+const UpdateIncome = ({toggleLoading}) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [formData, setFormData] = useState({
@@ -19,15 +19,27 @@ const UpdateIncome = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Fetch the income details based on the id from the URL
-    fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes/get-income/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        // Set the fetched income data into the form state
-        setFormData(data);
-      })
-      .catch((error) => console.error("Error fetching income:", error));
-  }, [id]);
+    const fetchData = async () => {
+        try {
+            toggleLoading(true)
+            const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/incomes/get-income/${id}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setFormData(data);
+        } catch (error) {
+            console.error("Error fetching income:", error);
+        }
+        finally{
+          toggleLoading(false)
+        }
+    };
+
+    fetchData();
+
+}, [id]);
+
 
   const validateForm = () => {
     let valid = true;

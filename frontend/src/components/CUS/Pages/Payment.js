@@ -12,16 +12,17 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import PaymentHistory from '../CUSMain/CustomerPayments/PaymentHistory';
 
-function Customer() {
+function Customer({toggleLoading}) {
   return (
     <>
     
     <Routes>
-    <Route path="/payonline" element={<PayHereIntegration/>} />
-    <Route path="/onlinepayment/verify/*" element={<PaymentVerification/>} />
-    <Route path="/onlinepayment/fail/*" element ={<PaymentFailure/>}/>
-    <Route path="/onlinepayment/invoice" element ={<OnlineInvoice/>}/>
+    <Route path="/payonline" element={<PayHereIntegration toggleLoading={toggleLoading}/>} />
+    <Route path="/onlinepayment/verify/*" element={<PaymentVerification toggleLoading={toggleLoading}/>} />
+    <Route path="/onlinepayment/fail/*" element ={<PaymentFailure toggleLoading={toggleLoading}/>}/>
+    <Route path="/onlinepayment/invoice" element ={<OnlineInvoice toggleLoading={toggleLoading}/>}/>
   
     </Routes>
     </>

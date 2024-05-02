@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container';
 
 import PageTitle from './PageTitle';
 
-const EmpFinance = () => {
+const EmpFinance = ({toggleLoading}) => {
   const [key, setKey] = useState('Salary-Lists');
   const [pendingSalaryListData, setPendingSalaryListData] = useState([]);
   const [allSalaryListData, setAllSalaryListData] = useState([]);
@@ -20,6 +20,7 @@ const EmpFinance = () => {
 
   const fetchData = async () => {
     try {
+      toggleLoading(true)
       const pendingResponse = await fetch(`${process.env.React_App_Backend_URL}/api/finance/salarylist/pending`);
       const allResponse = await fetch(`${process.env.React_App_Backend_URL}/api/finance/salarylist/all`);
       const benefitsResponse = await fetch(`${process.env.React_App_Backend_URL}/api/finance/empbenefits/all`);
@@ -39,6 +40,9 @@ const EmpFinance = () => {
       }
     } catch (error) {
       console.error('Error fetching data:', error);
+    }
+    finally {
+      toggleLoading(false)
     }
   };
 

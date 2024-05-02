@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Button, Form, Carousel, Card, Spinner } from "react-bootstrap";
 import neotechpay from "../../../../images/Payment/neotechpay.png";
 import payhere from "../../../../images/Payment/payhere.png";
 import payheremobile from "../../../../images/Payment/payhere_mobile.png";
+import PaymentHistory from "./PaymentHistory";
+import { CusAuthContext } from "../../../../context/cus-authcontext";
 
-const PayHereIntegration = () => {
+const PayHereIntegration = ({toggleLoading}) => {
+  const cusauth = useContext(CusAuthContext);
   const [isMobile, setIsMobile] = useState(false);
   const [paymentData, setPaymentData] = useState({
     first_name: "Neo",
@@ -26,9 +29,10 @@ const PayHereIntegration = () => {
   const [searchValid, setSearchValid] = useState(false);
 
   const handleSearch = async () => {
-    setLoading(true);
+    
     setError(null);
     try {
+      toggleLoading(true)
       const response = await fetch(
         `${process.env.React_App_Backend_URL}/api/finance/billing/pendingpayment/${paymentId}`
       );
@@ -56,7 +60,7 @@ const PayHereIntegration = () => {
       setError(error.message);
       setSearchValid(false); // Set search validity to false
     } finally {
-      setLoading(false);
+      toggleLoading(false)
     }
   };
 
@@ -166,7 +170,11 @@ const PayHereIntegration = () => {
                     className="d-block w-100"
                     src={neotechpay}
                     alt="First slide"
-                    style={{ maxHeight: "450px", objectFit: "cover" }}
+                    style={{
+                      height: "520px",
+                      maxHeight: "550px",
+                      objectFit: "cover",
+                    }}
                   />
                 </Carousel.Item>
                 <Carousel.Item>
@@ -174,91 +182,144 @@ const PayHereIntegration = () => {
                     className="d-block w-100"
                     src={payhere}
                     alt="Second slide"
-                    style={{ maxHeight: "450px", objectFit: "cover" }}
+                    style={{
+                      maxHeight: "550px",
+                      objectFit: "cover",
+                      height: "520px",
+                    }}
                   />
                 </Carousel.Item>
               </Carousel>
             )}
           </div>
           <div className="col-md-6">
-            <Form>
-              <Form.Control type="hidden" name="first_name" value={paymentData.first_name} />
-              <Form.Control type="hidden" name="last_name" value={paymentData.last_name} />
-              <Form.Control type="hidden" name="email" value={paymentData.email} />
-              <Form.Control type="hidden" name="phone" value={paymentData.phone} />
-              <Form.Control type="hidden" name="address" value={paymentData.address} />
-              <Form.Control type="hidden" name="city" value={paymentData.city} />
-              <Form.Control type="hidden" name="country" value={paymentData.country} />
-              <Form.Control type="hidden" name="order_id" value={paymentData.order_id} />
-              <Form.Control type="hidden" name="items" value={paymentData.items} />
-              <Form.Control type="hidden" name="currency" value={paymentData.currency} />
-              <Form.Control type="hidden" name="amount" value={paymentData.amount} />
-
-              <Form.Group controlId="paymentId">
-                <Form.Label>Enter Payment ID:</Form.Label>
+            <div>
+              <Form>
                 <Form.Control
-                  type="text"
-                  placeholder="Enter payment ID"
-                  value={paymentId}
-                  onChange={handleChange}
+                  type="hidden"
+                  name="first_name"
+                  value={paymentData.first_name}
                 />
-              </Form.Group>
-              <br />
-              <Button
-                variant="primary"
-                onClick={handleSearch}
-                disabled={loading || paymentId.trim() === ""}
-              >
-                {loading ? (
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
+                <Form.Control
+                  type="hidden"
+                  name="last_name"
+                  value={paymentData.last_name}
+                />
+                <Form.Control
+                  type="hidden"
+                  name="email"
+                  value={paymentData.email}
+                />
+                <Form.Control
+                  type="hidden"
+                  name="phone"
+                  value={paymentData.phone}
+                />
+                <Form.Control
+                  type="hidden"
+                  name="address"
+                  value={paymentData.address}
+                />
+                <Form.Control
+                  type="hidden"
+                  name="city"
+                  value={paymentData.city}
+                />
+                <Form.Control
+                  type="hidden"
+                  name="country"
+                  value={paymentData.country}
+                />
+                <Form.Control
+                  type="hidden"
+                  name="order_id"
+                  value={paymentData.order_id}
+                />
+                <Form.Control
+                  type="hidden"
+                  name="items"
+                  value={paymentData.items}
+                />
+                <Form.Control
+                  type="hidden"
+                  name="currency"
+                  value={paymentData.currency}
+                />
+                <Form.Control
+                  type="hidden"
+                  name="amount"
+                  value={paymentData.amount}
+                />
+
+                <Form.Group controlId="paymentId">
+                  <Form.Label>Enter Payment ID:</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter payment ID"
+                    value={paymentId}
+                    onChange={handleChange}
                   />
-                ) : (
-                  "Search"
+                </Form.Group>
+                <br />
+                <Button
+                  variant="primary"
+                  onClick={handleSearch}
+                  disabled={loading || paymentId.trim() === ""}
+                >
+                  {loading ? (
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    "Search"
+                  )}
+                </Button>
+                {` `}
+                <Button
+                  variant="secondary"
+                  onClick={handleClear}
+                  disabled={loading}
+                >
+                  Clear
+                </Button>
+                <br />
+
+                {paymentData.order_id && searchValid && (
+                  <Card style={{ width: "25rem", marginTop: "20px" }}>
+                    <Card.Body>
+                      <Card.Title>Payment Details</Card.Title>
+                      <Card.Text>
+                        <h5>
+                          Payment Invoice ID: <b>{paymentData.order_id}</b>
+                        </h5>
+                        <h5>
+                          Total to Pay: <b>Rs.{paymentData.amount}</b>
+                        </h5>
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
                 )}
-              </Button>{` `}
-              <Button
-                variant="secondary"
-                onClick={handleClear}
-                disabled={loading}
-              >
-                Clear
-              </Button>
-              <br />
+                {error && (
+                  <p style={{ color: "red", fontSize: "1.05em" }}>{error}</p>
+                )}
 
-              {paymentData.order_id && searchValid && (
-                <Card style={{ width: "25rem", marginTop: "20px" }}>
-                  <Card.Body>
-                    <Card.Title>Payment Details</Card.Title>
-                    <Card.Text>
-                      <h5>
-                        Payment Invoice ID: <b>{paymentData.order_id}</b>
-                      </h5>
-                      <h5>
-                        Total to Pay: <b>Rs.{paymentData.amount}</b>
-                      </h5>
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              )}
-              {error && (
-                <p style={{ color: "red", fontSize: "1.05em" }}>
-                  {error}
-                </p>
-              )}
-
-              <br />
-              <Button onClick={handlePayment} disabled={!searchValid}>
-                Pay with PayHere
-              </Button>
-            </Form>
+                <br />
+                <Button onClick={handlePayment} disabled={!searchValid}>
+                  Pay with PayHere
+                </Button>
+              </Form>
+            </div>
           </div>
         </div>
       </div>
+      <br></br>
+      <br></br>
+      <br></br>
+      {cusauth.isLoggedIn && <PaymentHistory toggleLoading={toggleLoading} style={{ marginTop: "4cm" }} />}
       <div style={{ marginBottom: "2cm" }}></div>
     </main>
   );
