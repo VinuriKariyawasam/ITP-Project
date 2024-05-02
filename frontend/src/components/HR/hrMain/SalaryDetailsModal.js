@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Modal, Button, Container, Row, Col, Toast } from "react-bootstrap";
 import UpdateSalaryModal from "./SalaryUpdateModal";
 import html2pdf from "html2pdf.js";
+import logo from "../../../images/logoblack_trans.png";
+import { StaffAuthContext } from "../../../context/StaffAuthContext";
 
 function SalaryDetailsModal({ show, handleClose, id }) {
   const [salaryDetails, setSalaryDetails] = useState(null);
@@ -12,6 +14,8 @@ function SalaryDetailsModal({ show, handleClose, id }) {
   const [toastHeader, setToastHeader] = useState("");
   const [toastBody, setToastBody] = useState("");
   const [toastType, setToastType] = useState("");
+
+  const { userId, userPosition } = useContext(StaffAuthContext);
 
   // Function to show toast notification
   const showToastNotification = (type, header, body) => {
@@ -65,9 +69,58 @@ function SalaryDetailsModal({ show, handleClose, id }) {
 
   const generatePDF = () => {
     const element = document.getElementById("salary-details-container");
+    if (!element) {
+      console.error("Container element not found");
+      return;
+    }
+
+    // Create a wrapper div
+    const wrapper = document.createElement("div");
+
+    // Add the header content
+    const headerContent = `
+      <div style="padding: 20px;">
+        <h4 class="float-end font-size-15">Human Resources</h4>
+        <div class="mb-4">
+          <img src="${logo}" alt="Invoice Logo" width="200px" />
+        </div>
+        <div class="text-muted">
+        <p class="mb-1"><i class="bi bi-geo-alt-fill"></i>323/1/A Main Street Battaramulla</p>
+        <p class="mb-1">
+        <i class="bi bi-envelope-fill me-1"></i> info@neotech.com
+        </p>
+        <p>
+        <i class="bi bi-telephone-fill me-1"></i> 0112887998
+        </p>
+
+        </div>
+        <hr/>
+      </div>
+    `;
+    wrapper.innerHTML = headerContent;
+
+    // Clone the salary details container element
+    const clonedElement = element.cloneNode(true);
+
+    // Append both the header and the main content to the wrapper
+    wrapper.appendChild(clonedElement);
+
+    // Add authorized by and generated date
+    const footerContent = `
+      <div style="margin-top: 20px; padding: 20px;">
+        <p>Authorized By: ${userPosition}</p>
+        <p>Generated Date: ${new Date().toLocaleDateString()}</p>
+      </div>
+    `;
+    wrapper.innerHTML += footerContent;
+
+    // Generate and save the PDF
     html2pdf()
-      .from(element)
-      .save(`Salary Information of ${salaryDetails.name}.pdf`);
+      .from(wrapper)
+      .save(`Salary Information of ${salaryDetails.name}.pdf`)
+      .catch((error) => {
+        console.error("Error generating PDF:", error);
+      });
   };
 
   useEffect(() => {

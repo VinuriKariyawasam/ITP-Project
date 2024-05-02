@@ -14,16 +14,22 @@ import {
   Navigate,
 } from "react-router-dom";
 
-function HrEmployee() {
+function HrEmployee({ toggleLoading }) {
   return (
     <main id="main" className="main">
       <HrPageTitle title="Employee" url="staff/hr/employee" />
 
       <Routes>
-        <Route path="/" element={<EmpDash />} />
-        <Route path="add" element={<AddEmp />} />
-        <Route path="empDetails/:employeeId" element={<EmployeeDetails />} />
-        <Route path="archived-employees" element={<ArchivedEmployeeList />} />
+        <Route path="/" element={<EmpDash toggleLoading={toggleLoading} />} />
+        <Route path="add" element={<AddEmp toggleLoading={toggleLoading} />} />
+        <Route
+          path="empDetails/:employeeId"
+          element={<EmployeeDetails toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="archived-employees"
+          element={<ArchivedEmployeeList toggleLoading={toggleLoading} />}
+        />
       </Routes>
     </main>
   );

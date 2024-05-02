@@ -25,8 +25,9 @@ function Sptable1() {
         getSpareparts();
       }, []);
 
-      const handleReject = (id, email) => {
+      const handleReject = (id, email,Image) => {
         const shouldDelete = window.confirm('Confirm Reject');
+        const image = Image;
         if (shouldDelete) {
           const emailData = {
             to: email ,
@@ -44,7 +45,7 @@ function Sptable1() {
               console.log(response.data);
               
               axios
-                .delete(`http://localhost:5000/Product/deletependingsp/${id}`)
+                .delete(`http://localhost:5000/Product/deletependingsp/${id}`,{ data: { image } })
                 .then((response) => {
                   console.log(response);
                   setShowModal(false); 
@@ -104,7 +105,7 @@ function Sptable1() {
               console.log(response.data);
 
               axios
-                .delete(`http://localhost:5000/Product/deletependingsp/${order._id}`)
+                .delete(`http://localhost:5000/Product/removependingsp/${order._id}`)
                 .then((response) => {
                   console.log(response);
                   setShowModal(false); 
@@ -161,7 +162,7 @@ function Sptable1() {
         <Modal.Title>Order Details</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <img style={{width:"50%",height:"50%"}} src={`http://localhost:5000/${selectedOrder?.image}`} alt="Product Image" />
+        <img style={{width:"50%",height:"50%"}} src={`${selectedOrder?.image}`} alt="Product Image" />
         <p>Customer Name: {selectedOrder?.name}</p>
         <p>Vehicle Number: {selectedOrder?.vehicleNumber}</p>
         <p>Vehicle Brand: {selectedOrder?.brand}</p>
@@ -172,7 +173,7 @@ function Sptable1() {
         <p>Description: {selectedOrder?.description}</p>
       </Modal.Body>
       <Modal.Footer>
-      <Button variant="danger" onClick={() => handleReject(selectedOrder?._id,selectedOrder?.email)}>
+      <Button variant="danger" onClick={() => handleReject(selectedOrder?._id,selectedOrder?.email,selectedOrder?.image)}>
       Reject
         </Button>
         <Button variant="success" onClick={() =>handleApprove(selectedOrder)}>

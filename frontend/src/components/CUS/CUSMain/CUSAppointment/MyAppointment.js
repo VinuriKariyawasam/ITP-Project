@@ -6,6 +6,7 @@ import  MyApPer from './MyApPer'
 import MyApMec from './MyApMec'
 import MyAppAccid from './MyAppAccid'
 import MyApApp from './MyApApp'
+import  MyAppCom from './MyAppCom'
 
 const MyAppointment = props => {
 
@@ -44,6 +45,8 @@ const MyAppointment = props => {
     <MyAppAccid/>
       </Tab>
      </Tabs>
+     <h3 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Completed Appointments</h3><br/><br/>
+     <MyAppCom/><br></br>
         </div>
 </div>
 </main>

@@ -6,6 +6,7 @@ exports.addaceptedperiodicalAppointment = async (req, res) => {
     // get data from frontend via request body to backend
     const userId = req.body.userId; 
     const name = req.body.name;
+    const cusType = req.body.cusType;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
     const sType = req.body.sType;
@@ -21,6 +22,7 @@ exports.addaceptedperiodicalAppointment = async (req, res) => {
     const newacceptedPeriodicalAppointment = acceptedperiodicalSchema({
         userId,
         name,
+        cusType,
         vType,
         vNo,
         sType,
@@ -34,7 +36,7 @@ exports.addaceptedperiodicalAppointment = async (req, res) => {
     });
 
     try {
-        if (!name || !vType || !vNo || !sType || !lastServiceYear || !lastServiceMonth || !mileage || !phone || !appointmentdate || !appointmenttime) {
+        if (!name ||!cusType|| !vType || !vNo || !sType || !lastServiceYear || !lastServiceMonth || !mileage || !phone || !appointmentdate || !appointmenttime) {
             return res.status(400).json({ message: 'Fill Required Fields' })
         }
         await newacceptedPeriodicalAppointment.save()

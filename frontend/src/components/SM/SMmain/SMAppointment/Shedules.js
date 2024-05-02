@@ -6,8 +6,6 @@ import Card from 'react-bootstrap/Card';
 import axios from 'axios';
 import Table from 'react-bootstrap/Table';
 
-
-
 const Shedules = () => {
   const [value, onChange] = useState(new Date());
 
@@ -16,11 +14,15 @@ const Shedules = () => {
   const [appointments, setAppointments] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null); // State to hold the details of the selected appointment
   const [name, setname] = useState("");
+  const[cusType,setcusType]=useState("");
   const [vNo, setvNo] = useState("");
   const [issue, setissue] = useState("");
   const [appointmentdate, setappointmentdate] = useState("");
-  const pdfRef = useRef(null);
-
+  const [userId, setuserId] = useState("");
+  const [vType, setvType] = useState("");
+  const [contactNo, setcontactNo] = useState("");
+  const [appointmenttime, setappointmenttime] = useState("");
+  const [serviceType, setserviceType] = useState("");
 
   function sendata(e) {
     const request = "pending"
@@ -42,9 +44,36 @@ const Shedules = () => {
 
     };
 
-    axios.post("http://localhost:5000/api/vehicle/add-serviceReq", newservicerequest)
+    axios.post(`${process.env.React_App_Backend_URL}/api/vehicle/add-serviceReq`, newservicerequest)
       .then(() => {
         alert("Service request added ")
+        sendataToCompletedHistort(selectedAppointment);
+      })
+      .catch((err) => {
+        alert(err)
+      });
+  }
+
+  function sendataToCompletedHistort() {
+   
+    const newcompletedAppointment = {
+      userId,
+      name,
+      cusType,
+      vType,
+      vNo,
+      serviceType,
+      issue,
+      contactNo,
+      appointmentdate,
+      appointmenttime,
+
+
+    };
+
+    axios.post(`${process.env.React_App_Backend_URL}/appointment/addcompletedappointment`, newcompletedAppointment)
+      .then(() => {
+        alert("Completed Appointment added ")
       })
       .catch((err) => {
         alert(err)
@@ -60,6 +89,12 @@ const Shedules = () => {
     setname(appointment.name);
     setissue(appointment.issue);
     setSelectedAppointment(appointment);
+    setuserId(appointment.userId);
+    setcusType(appointment.cusType)
+    setvType(appointment.vType);
+    setserviceType(appointment.serviceType);
+    setcontactNo(appointment.contactNo);
+    setappointmenttime(appointment.appointmenttime);
 
     // Update selectedDate based on the appointment date
     setSelectedDate(new Date(appointment.appointmentdate));
@@ -79,7 +114,7 @@ const Shedules = () => {
     try {
       setAppointments("");
       const formattedDate = changedatetoformet(date);
-      const response = await axios.get(`http://localhost:5000/appointment/get-acceptedappointmentbyDate/${formattedDate}`);
+      const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedappointmentbyDate/${formattedDate}`);
       setAppointments(response.data.data);
       setSelectedDate(date);
     } catch (error) {
@@ -150,6 +185,7 @@ const Shedules = () => {
             <Card.Text>
               <strong>Vehicle No: </strong>{selectedAppointment.vNo}<br />
               <strong>Customer Name: </strong>{selectedAppointment.name}<br />
+              <strong>Customer Type: </strong>{selectedAppointment.cusType}<br />
               <strong>Vehicle Type: </strong>{selectedAppointment.vType}<br />
               <strong>Service type: </strong>{selectedAppointment.serviceType}<br />
               <strong>Requesting service: </strong>{selectedAppointment.issue}<br />

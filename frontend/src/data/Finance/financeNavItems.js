@@ -8,7 +8,7 @@ const navList = [
 
     {
       _id: 2,
-      name: "Financial Reoprts",
+      name: "Financial Reports",
       icon: "bi bi-file-earmark-text-fill",
       href:"/staff/finance/financial-reports"
     },

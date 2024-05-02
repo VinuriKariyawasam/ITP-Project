@@ -14,24 +14,12 @@ const AccidentalAppointment = () => {
   const [previewUrl, setPreviewUrl] = useState("");
   const [fileError, setFileError] = useState("");
   const [availableTimes, setAvailableTimes] = useState([]);
-
-  const [name, setName] = useState('');
-  const [nameError, setNameError] = useState('');
   const cusauth = useContext(CusAuthContext)
-
-  const handleNameChange = (event) => {
-    const value = event.target.value;
-
-    // Filter out numeric characters from the input value
-    const filteredValue = value.replace(/[0-9]/g, '');
-
-    setName(filteredValue);
-  };
 
 
   const [formState, inputHandler] = useForm(
     {
-      name: {
+      cusType: {
         value: "",
         isValid: false,
       },
@@ -64,7 +52,7 @@ const AccidentalAppointment = () => {
         isValid: false,
       },
       image: {
-        value: null,
+        value: "",
         isValid: false,
       },
     },
@@ -77,7 +65,13 @@ const AccidentalAppointment = () => {
 
   const appointmentSubmitHandler = async (event) => {
     event.preventDefault();
-
+    const accidtentimage =new FormData();
+    accidtentimage.append("image", formState.inputs.image.value);
+    axios.post(`${process.env.React_App_Backend_URL}/appointment/accidentalImageupload`,accidtentimage)
+    .then((res) => {
+      const ImgUrl = res.data.downloadURL
+      console.log(ImgUrl)
+    
     // Check if the contact number has exactly 9 digits
   if (formState.inputs.contactNo.value.length !== 9) {
     alert("Please enter a valid  contact number.");
@@ -85,23 +79,25 @@ const AccidentalAppointment = () => {
   }
 
     try {
-      const formData = new FormData();
-      formData.append("userId", cusauth.userId);
-      formData.append("name", formState.inputs.name.value);
-      formData.append("vType", formState.inputs.vType.value);
-      formData.append("vNo", formState.inputs.vNo.value);
-      formData.append("dateAccidentaOccured", formatDateForBackend(formState.inputs.dateAccidentaOccured.value));
-      formData.append("damagedOccured", formState.inputs.damagedOccured.value);
-      formData.append("contactNo", formState.inputs.contactNo.value);
-      formData.append("appointmentdate", formatDateForBackend(formState.inputs.appointmentdate.value));
-      formData.append("appointmenttime", formState.inputs.appointmenttime.value);
-      formData.append("image", formState.inputs.image.value);
-      console.log(formData);
-      const response = await axios.post(
-        "http://localhost:5000/appointment/addaccidentalAppointment",
-        formData
-      );
-
+      const formData={
+      userId: cusauth.userId,
+      name:cusauth.name,
+      email:cusauth.email,
+      cusType:formState.inputs.cusType.value,
+      vType: formState.inputs.vType.value,
+      vNo: formState.inputs.vNo.value,
+      dateAccidentaOccured:formatDateForBackend(formState.inputs.dateAccidentaOccured.value),
+      damagedOccured: formState.inputs.damagedOccured.value,
+      contactNo: formState.inputs.contactNo.value,
+      appointmentdate:formatDateForBackend(formState.inputs.appointmentdate.value),
+      appointmenttime: formState.inputs.appointmenttime.value,
+      image:ImgUrl
+      }
+      console.log(formData)
+      const response = axios.post(
+        `${process.env.React_App_Backend_URL}/appointment/addaccidentalAppointment`,
+        formData)
+      
       alert('Appointment Submitted Succesfully');
       navigate('/customer/appointment/myappointment');
 
@@ -110,7 +106,9 @@ const AccidentalAppointment = () => {
       console.log(err);
       alert(err)
     }
-
+    }).catch((err) =>{
+      alert("error");
+    });
   };
   useEffect(() => {
     if (formState.inputs.image.value instanceof Blob) {
@@ -155,7 +153,7 @@ const AccidentalAppointment = () => {
   const fetchAvailableTimes = async (date) => {
     try {
       const formattedDate = changedatetoformet(date);
-      const response = await axios.get(`http://localhost:5000/appointment/get-acceptedaccidentalappointmentbyDate/${formattedDate}`);
+      const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedaccidentalappointmentbyDate/${formattedDate}`);
       const appointments = response.data.data;
       console.log(appointments);
       const allTimes = ["9.00am", "10.30am", "12.00pm", "1.30pm", "3.00pm", "4.30pm"]; // Define allTimes here
@@ -189,26 +187,20 @@ const AccidentalAppointment = () => {
             <Form onSubmit={appointmentSubmitHandler}>
               <Row className="mb-3">
                 <Form.Group as={Col} md="5" controlId="validationCustom01">
-                  <Form.Label>Customer Name</Form.Label>
-                  <Form.Control
-                    id="name"
-                    type="text"
-                    value={name}
-                    placeholder="Enter Customer  name"
-                    onChange={handleNameChange}
-                    onInput={(event) =>
-                      inputHandler("name", event.target.value, true)
-                    }
-                    maxLength={30}
-                    required
-                  />
+                  <Form.Label>Customer Type</Form.Label>
+                  <select class="form-select" id="validationCustom04" onChange={(event) => inputHandler("cusType",event.target.value,true)} required>
+              <option value="">choose</option>
+              <option value="Government">Government</option>
+              <option value="Non-Government">Non-Government</option>
+              </select>
                 </Form.Group>
+
                 <Form.Group as={Col} md="5" controlId="validationCustom01">
                   <Form.Label>Vehicle Type</Form.Label>
                   <Form.Control
                     id="vType"
                     type="text"
-                    placeholder="Enter product brand"
+                    placeholder="Enter Vehicle Type"
                     onInput={(event) =>
                       inputHandler("vType", event.target.value, true)
                     }

@@ -6,7 +6,7 @@ import { CSVLink } from 'react-csv';
 import { useNavigate } from 'react-router-dom';
 import PageTitle from './PageTitle';
 
-const BillsList = () => {
+const BillsList = ({toggleLoading}) => {
   const [bills, setBills] = useState([]);
   const [searchName, setSearchName] = useState('');
   const [searchPaymentID, setSearchPaymentID] = useState('');
@@ -36,6 +36,7 @@ const BillsList = () => {
 
   const fetchBills = async () => {
     try {
+      toggleLoading(true)
       const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/billing/all`);
       if (!response.ok) {
         throw new Error('Failed to fetch bills');
@@ -44,6 +45,9 @@ const BillsList = () => {
       setBills(data.data);
     } catch (error) {
       console.error('Error fetching bills:', error.message);
+    }
+    finally{
+      toggleLoading(false)
     }
   };
 
@@ -233,7 +237,7 @@ const BillsList = () => {
                 }
               }
             `}
-          </style>
+          </style>s
           <Table striped bordered hover>
             <thead>
               <tr>

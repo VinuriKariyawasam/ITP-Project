@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import PageTitle from './PageTitle';
 
-const UpdateExpense = () => {
+const UpdateExpense = ({toggleLoading}) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const [backendError, setBackendError] = useState('');
@@ -25,6 +25,7 @@ const UpdateExpense = () => {
     useEffect(() => {
         const fetchExpense = async () => {
             try {
+                toggleLoading(true)
                 const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/expenses/get-expense/${id}`);
                 if (response.ok) {
                     const data = await response.json();
@@ -36,6 +37,8 @@ const UpdateExpense = () => {
             } catch (error) {
                 console.error('Error fetching expense:', error);
                 setBackendError('Failed to fetch expense data');
+            }finally {
+              toggleLoading(false)
             }
         };
 

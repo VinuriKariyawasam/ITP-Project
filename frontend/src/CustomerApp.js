@@ -29,7 +29,9 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 let logoutTimer;
 // Main component
-function CustomerApp({ toggleLoading }) {
+
+function CustomerApp({toggleLoading}) {
+
   // Define state variables
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState(null);
@@ -118,11 +120,12 @@ function CustomerApp({ toggleLoading }) {
       >
         <Header />
         <Routes>
-          <Route path="/" element={<Cushome />} />
+
+          <Route path="/" element={<Cushome  toggleLoading={toggleLoading}/>} />
           <Route path="/products/*" element={<Products />} />
           <Route path="/appointment/*" element={<CUSAppointment />} />
-          <Route path="/payments/*" element={<Payment />} />
-          <Route path="/cusaffairs/*" element={<CUSAffairs toggleLoading={toggleLoading}/>} />
+          <Route path="/payments/*" element={<Payment  toggleLoading={toggleLoading }/>} />
+          <Route path="/cusaffairs/*" element={<CUSAffairs />} />
           <Route path="/cusprofile/*" element={<CusProfile />} />
           <Route path="/cusreg/*" element={<CusRegistration toggleLoading={toggleLoading}/>} />
           <Route path="/cuslogin/*" element={<CusLogin toggleLoading={toggleLoading}/>} />

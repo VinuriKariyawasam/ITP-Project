@@ -19,7 +19,6 @@ module.exports = router;
 router.get('/serviceReqs', ServiceReqController.getServiceReqs);
 router.get('/serviceReq/:id', ServiceReqController.getServiceReqById);
 router.post('/add-serviceReq', ServiceReqController.createServiceReq);
- 
 router.put('/update-serviceReq/:id', ServiceReqController.updateServiceReq);
 router.delete('/delete-serviceReq/:id', ServiceReqController.deleteServiceReq);
 

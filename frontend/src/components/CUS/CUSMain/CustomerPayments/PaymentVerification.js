@@ -3,7 +3,7 @@ import PaymentSuccess from './PaymentSuccess';
 import PaymentFailure from './PaymentFailure';
 
 
-const PaymentVerification = () => {
+const PaymentVerification = ({toggleLoading}) => {
    
     const [paymentData, setPaymentData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -13,16 +13,21 @@ const PaymentVerification = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const orderIdParam = urlParams.get('order_id'); // Storing orderId in a variable
-                setOrderId(orderIdParam); // Setting orderId state
+                setOrderId(orderIdParam);
+                toggleLoading(true) // Setting orderId state
                 const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/payments/verifypayment/${orderIdParam}`);
                 const data = await response.json();
                 setPaymentData(data);
-                setLoading(false);
+                
             } catch (error) {
                 setError(error);
-                setLoading(false);
+                
+            }
+            finally{
+                toggleLoading(false)
             }
         };
 
@@ -54,11 +59,31 @@ const PaymentVerification = () => {
         }
     };
 
+
+
+    const sendUpdatetoInventory = async (paymentId) => {
+        try {
+          
+            
+            // Send a PATCH request to update inventory
+            await fetch(`${process.env.React_App_Backend_URL}/api/finance/updateinventory/${paymentId}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+            });
+          } catch (error) {
+            console.error('Error:', error.message);
+          }
+
+    }
+
     if (error) {
         return <div>Error: {error.message}</div>;
     }
 
     if (paymentData && paymentData.status_code === 2 && paymentData.sv) {
+        sendUpdatetoInventory(orderId)
         markPaymentCompleted(orderId); // Using orderId from state
         return <PaymentSuccess paymentId={orderId}   />;
     } else {

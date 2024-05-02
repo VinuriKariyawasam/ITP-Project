@@ -41,6 +41,11 @@ function UpdateSalaryModal({ show, handleClose, salaryDetails, handleUpdate }) {
     }
   };
 
+  const isValidNumber = (value) => {
+    const regex = /^\d+(\.\d{1,2})?$/;
+    return regex.test(value);
+  };
+
   return (
     <Modal
       show={show}
@@ -53,15 +58,26 @@ function UpdateSalaryModal({ show, handleClose, salaryDetails, handleUpdate }) {
       <Modal.Body>
         <Form>
           <Form.Group controlId="formBasicBasicSalary">
-            <Form.Label>Basic Salary</Form.Label>
+            <Form.Label>Basic Salary(Rs.)</Form.Label>
             <Form.Control
-              type="text"
+              type="number"
+              step="0.01"
               placeholder="Enter basic salary"
               name="basicSalary"
               value={updatedData.basicSalary}
-              onChange={handleInputChange}
-              isInvalid={validationError && !updatedData.basicSalary}
-              isValid={updatedData.basicSalary && !validationError}
+              onChange={(e) => {
+                if (isValidNumber(e.target.value)) {
+                  handleInputChange(e);
+                }
+              }}
+              isInvalid={
+                validationError && !isValidNumber(updatedData.basicSalary)
+              }
+              isValid={
+                updatedData.basicSalary &&
+                !validationError &&
+                isValidNumber(updatedData.basicSalary)
+              }
             />
             {updatedData.basicSalary && !validationError && (
               <i className="bi bi-check-circle-fill text-success"></i>
@@ -71,19 +87,32 @@ function UpdateSalaryModal({ show, handleClose, salaryDetails, handleUpdate }) {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="formBasicAllowance">
-            <Form.Label>Allowance</Form.Label>
+            <Form.Label>Allowance(Rs.)</Form.Label>
             <Form.Control
-              type="text"
+              type="number"
+              step="0.01"
               placeholder="Enter allowance"
               name="allowance"
               value={updatedData.allowance}
-              onChange={handleInputChange}
-              isInvalid={validationError && !updatedData.allowance}
-              isValid={updatedData.allowance && !validationError}
+              onChange={(e) => {
+                if (isValidNumber(e.target.value)) {
+                  handleInputChange(e);
+                }
+              }}
+              isInvalid={
+                validationError && !isValidNumber(updatedData.allowance)
+              }
+              isValid={
+                updatedData.allowance &&
+                !validationError &&
+                isValidNumber(updatedData.allowance)
+              }
             />
-            {updatedData.allowance && !validationError && (
-              <i className="bi bi-check-circle-fill text-success"></i>
-            )}
+            {updatedData.basicSalary &&
+              !validationError &&
+              isValidNumber(updatedData.basicSalary) && (
+                <i className="bi bi-check-circle-fill text-success"></i>
+              )}
             <Form.Control.Feedback type="invalid">
               Enter a valid positive float number with up to two decimal places.
             </Form.Control.Feedback>
@@ -119,9 +148,11 @@ function UpdateSalaryModal({ show, handleClose, salaryDetails, handleUpdate }) {
               isInvalid={validationError && !updatedData.branch}
               isValid={updatedData.branch && !validationError}
             />
-            {updatedData.branch && !validationError && (
-              <i className="bi bi-check-circle-fill text-success"></i>
-            )}
+            {updatedData.allowance &&
+              !validationError &&
+              isValidNumber(updatedData.allowance) && (
+                <i className="bi bi-check-circle-fill text-success"></i>
+              )}
             <Form.Control.Feedback type="invalid">
               Enter a valid branch name with a minimum length of 3 characters
               and only letters.
@@ -134,9 +165,30 @@ function UpdateSalaryModal({ show, handleClose, salaryDetails, handleUpdate }) {
               placeholder="Enter account number"
               name="account"
               value={updatedData.account}
-              onChange={handleInputChange}
-              isInvalid={validationError && !updatedData.account}
+              onChange={(e) => {
+                const { value } = e.target;
+                // Truncate the input value if it exceeds the maximum length
+                const truncatedValue = value.slice(0, 15);
+                setUpdatedData({ ...updatedData, account: truncatedValue });
+              }}
+              isInvalid={
+                validationError &&
+                (!updatedData.account || updatedData.account.length < 6)
+              }
+              isValid={
+                updatedData.account &&
+                updatedData.account.length >= 6 &&
+                updatedData.account.length <= 15 &&
+                !validationError
+              }
             />
+            {/* Display green tick icon if the input is valid */}
+            {updatedData.account &&
+              updatedData.account.length >= 6 &&
+              updatedData.account.length <= 15 &&
+              !validationError && (
+                <i className="bi bi-check-circle-fill text-success"></i>
+              )}
           </Form.Group>
         </Form>
         {validationError && <Alert variant="danger">{validationError}</Alert>}

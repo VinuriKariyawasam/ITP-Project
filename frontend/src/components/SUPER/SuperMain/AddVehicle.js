@@ -3,58 +3,22 @@ import { Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { RiCalendarLine } from "react-icons/ri";
 import DatePicker from "react-datepicker";
-import FileUpload from "../SuperUtil/SuperFileUpload";
 import "./AddVehicle.css"; // Import CSS file for custom styles
-
-export function validate(name, value) {
-  if (name === "vehicleNo") {
-    if (!value.trim().length || value.trim().length > 10) {
-      return "Vehicle No. is required and must be at most 10 characters";
-    }
-  }
-  if (name === "date") {
-    if (!value) {
-      return "Date is required";
-    }
-  }
-  if (name === "name") {
-    if (!/^[a-zA-Z\s]*$/.test(value)) {
-      return "Name should contain only letters";
-    }
-  }
-  if (name === "issue") {
-    if (!/^[a-zA-Z\s]*$/.test(value)) {
-      return "Issue should contain only letters";
-    }
-  }
-  if (name === "request") {
-    if (!/^[a-zA-Z\s]*$/.test(value)) {
-      return "Request should contain only letters";
-    }
-  }
-  if (name === "year") {
-    if (!/^\d{4}$/.test(value)) {
-      return "Year should contain exactly 4 digits";
-    }
-  }
-  if (name === "contact") {
-    if (!/^\d{10}$/.test(value)) {
-      return "Contact No. should contain exactly 10 digits";
-    }
-  }
-  return "";
-}
 
 function AddVehicle() {
   const [formData, setFormData] = useState({
     vehicleNo: "",
-    brand: "",
-    model: "",
-    year: "",
-    name: "",
-    contact: "", // Adjusted field name to match backend
-    date: new Date(),
+  brand: "",
+  model: "",
+  year: "",
+  name: "",
+  contact: "",
+  email: "",
+  date: new Date(),
+  type: "", // Add type field
+  government: false,
     records: null, // Adjusted to set a default date
+  
   });
 
   const [errors, setErrors] = useState({});
@@ -64,7 +28,7 @@ function AddVehicle() {
   const datePickerRef = useRef(null);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, checked } = e.target;
     let errorMessage = "";
 
     // Validate each field as it's being typed
@@ -73,6 +37,8 @@ function AddVehicle() {
         errorMessage =
           value.trim().length === 0 || value.trim().length > 10
             ? "Vehicle No. is required and must be at most 10 characters"
+            : !/^[A-Z\u0DC1\u0DCA\u200D\u0DBB\u0DD3\d]+$/.test(value)
+            ? "Vehicle No. must contain only capital letters, Sinhala word 'ශ්‍රී', or numbers"
             : "";
         break;
       case "date":
@@ -103,13 +69,28 @@ function AddVehicle() {
           ? "Contact No. should contain exactly 10 digits"
           : "";
         break;
+      case "email":
+        errorMessage = !/\S+@\S+\.\S+/.test(value) ? "Invalid email address" : "";
+        break;
+
+        case "type":
+          setFormData({ ...formData, [name]: value });
+          break;
       default:
         break;
     }
 
     setErrors({ ...errors, [name]: errorMessage });
     setErrorField(null);
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: name === "government" ? checked : value });
+  };
+
+  const handleAddSri = () => {
+    const updatedVehicleNo = formData.vehicleNo + "ශ්‍රී"; // Add "ශ්‍රී" to the end of the vehicle number
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      vehicleNo: updatedVehicleNo
+    }));
   };
 
   const handleDateChange = (date) => {
@@ -124,7 +105,6 @@ function AddVehicle() {
     e.preventDefault();
     if (validateForm()) {
       try {
-
         const response = await fetch("http://localhost:5000/api/vehicle/add-vehicle", {
           method: "POST",
           headers: {
@@ -132,7 +112,6 @@ function AddVehicle() {
           },
           body: JSON.stringify(formData),
         });
-  
 
         if (response.ok) {
           const data = await response.json();
@@ -146,8 +125,7 @@ function AddVehicle() {
       }
     }
   };
-  
-  
+
   const handleCloseModal = () => {
     setShowModal(false);
     navigate("/staff/supervisor/vehicle");
@@ -156,6 +134,7 @@ function AddVehicle() {
   const handleCalendarIconClick = () => {
     datePickerRef.current.setFocus(true);
   };
+
   const validateForm = () => {
     let valid = true;
     const newErrors = {};
@@ -180,19 +159,28 @@ function AddVehicle() {
     }
 
     if (!formData.brand.trim().length) {
-      newErrors.issue = "Issue is required";
+      newErrors.brand = "Brand is required";
       valid = false;
     }
 
     if (!formData.model.trim().length) {
-      newErrors.request = "Request is required";
+      newErrors.model = "Model is required";
+      valid = false;
+    }
+
+    if (!formData.email.trim().length) {
+      newErrors.email = "Email is required";
+      valid = false;
+    }
+
+    if (!formData.type.trim().length) {
+      newErrors.type = "Type is required";
       valid = false;
     }
 
     setErrors(newErrors);
     return valid;
   };
-  //const navigate = useNavigate();
 
   const goBack = () => {
     navigate(-1);
@@ -223,6 +211,7 @@ function AddVehicle() {
               onChange={handleChange}
               className={`form-control ${errors.vehicleNo ? "is-invalid" : ""}`}
             />
+            <Button variant="secondary" onClick={handleAddSri}>Add ශ්‍රී</Button>
             {errors.vehicleNo && (
               <div className="invalid-feedback">{errors.vehicleNo}</div>
             )}
@@ -271,7 +260,8 @@ function AddVehicle() {
           </div>
 
           <div className="mb-2">
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">Name &nbsp;&nbsp; <span style={{ color: 'red' }}>**If the vehicle is a governemnt vehicle, 
+                                                                          enter ministry name</span></label>
             <input
               type="text"
               name="name"
@@ -285,18 +275,50 @@ function AddVehicle() {
           </div>
 
           <div className="mb-2">
-            <label htmlFor="contactNo">Contact No.</label>
+            <label htmlFor="contact">Contact No.</label>
             <input
               type="text"
-
               name="contact"
               value={formData.contact}
               onChange={handleChange}
-              className={`form-control ${errors.contac ? 'is-invalid' : ''}`}
+              className={`form-control ${errors.contact ? "is-invalid" : ""}`}
             />
-            {errors.contactNo && <div className="invalid-feedback">{errors.contactNo}</div>}
-
+            {errors.contact && (
+              <div className="invalid-feedback">{errors.contact}</div>
+            )}
           </div>
+
+          <div className="mb-2">
+          <label htmlFor="email">Email </label>
+
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className={`form-control ${errors.email ? "is-invalid" : ""}`}
+            />
+            {errors.email && (
+              <div className="invalid-feedback">{errors.email}</div>
+            )}
+          </div>
+
+          <div className="mb-2">
+  <label htmlFor="type">Type</label>
+  <select
+    name="type"
+    value={formData.type}
+    onChange={handleChange}
+    className={`form-control ${errors.type ? "is-invalid" : ""}`}
+  >
+    <option value="">Select Type</option>
+    <option value="government">Government</option>
+    <option value="nonGovernment">Non-Government</option>
+  </select>
+  {errors.type && (
+    <div className="invalid-feedback">{errors.type}</div>
+  )}
+</div>
 
           <div className="mb-2">
             <label htmlFor="date">Date</label>

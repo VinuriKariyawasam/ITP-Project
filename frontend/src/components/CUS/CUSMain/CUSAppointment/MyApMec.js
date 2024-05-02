@@ -27,7 +27,7 @@ function MyApMec() {
     try {
 
 
-      const response = await axios.get(`http://localhost:5000/appointment/get-mechanicalappointmentbyuserId/${userId}`);
+      const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-mechanicalappointmentbyuserId/${userId}`);
       setmechanicalAppointment(response.data.data);
 
     } catch (error) {
@@ -52,9 +52,10 @@ function MyApMec() {
     // Make sure selectedAppointment is not null
     if (selectedAppointment && appointmentdate) { // Ensure appointmentdate is not empty
       // Send a request to update the appointment with the new date and time
-      axios.put(`http://localhost:5000/appointment/update-mechanicalAppointment/${selectedAppointment._id}`, {
+      axios.put(`${process.env.React_App_Backend_URL}/appointment/update-mechanicalAppointment/${selectedAppointment._id}`, {
         userId: selectedAppointment.userId, // Use userId from selectedAppointment
         name: selectedAppointment.name,
+        cusType:selectedAppointment.cusType,
         vType: selectedAppointment.vType,
         vNo: selectedAppointment.vNo,
         Issue: selectedAppointment.issue,
@@ -83,7 +84,7 @@ function MyApMec() {
 
   const Delete = (id) => {
 
-    axios.delete(`http://localhost:5000/appointment/delete-mechanicalAppointment/${id}`)
+    axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-mechanicalAppointment/${id}`)
       .then(response => {
         console.log(response);
         window.location.reload();
@@ -135,7 +136,7 @@ function MyApMec() {
   const fetchAvailableTimes = async (date) => {
     try {
       const formattedDate = changedatetoformet(date);
-      const response = await axios.get(`http://localhost:5000/appointment/get-acceptedmechanicalappointmentbyDate/${formattedDate}`);
+      const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedmechanicalappointmentbyDate/${formattedDate}`);
       const appointments = response.data.data;
       console.log(appointments);
       const allTimes = ["9.00am", "10.30am", "12.00pm", "1.30pm", "3.00pm", "4.30pm"]; // Define allTimes here
@@ -206,8 +207,9 @@ function MyApMec() {
           </Modal.Header>
           <Modal.Body>
             <img style={{ width: "50%", height: "50%" }} />
-            <p>:Vehicle No:{selectedAppointment.vNo}</p>
+            <p>Vehicle No:{selectedAppointment.vNo}</p>
             <p>Customer Name:{selectedAppointment.name} </p>
+            <p>Customer Type:{selectedAppointment.cusType} </p>
             <p>Vehicle Type:{selectedAppointment.vType}  </p>
             <p>Requesting service:{selectedAppointment.issue} </p>
             <lable>Date:{selectedAppointment.appointmentdate.split('T')[0]} </lable><br /><br />

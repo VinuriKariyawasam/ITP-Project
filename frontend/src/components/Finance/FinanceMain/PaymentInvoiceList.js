@@ -1,29 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Tab, Tabs } from 'react-bootstrap';
 
-const PaymentRecordPage = () => {
+const PaymentRecordPage = ({toggleLoading}) => {
   const [key, setKey] = useState('onlinePayments'); // State to manage active tab
   const [onlinePayments, setOnlinePayments] = useState([]);
   const [inPersonPayments, setInPersonPayments] = useState([]);
 
   useEffect(() => {
+   
     const fetchOnlinePayments = async () => {
       try {
+        toggleLoading(true)
         const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/invoices/online/all`);
         const data = await response.json();
         setOnlinePayments(data);
       } catch (error) {
         console.error('Error fetching online payments:', error.message);
+      }finally {
+        toggleLoading(false)
       }
     };
 
     const fetchInPersonPayments = async () => {
       try {
+        toggleLoading(true)
         const response = await fetch(`${process.env.React_App_Backend_URL}/api/finance/invoices/inperson/all`);
         const data = await response.json();
         setInPersonPayments(data);
       } catch (error) {
         console.error('Error fetching in-person payments:', error.message);
+      }
+      finally { 
+        toggleLoading(false)
       }
     };
 
