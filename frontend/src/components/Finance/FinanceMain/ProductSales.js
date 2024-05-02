@@ -3,7 +3,7 @@ import { Table, Modal, Button, Badge } from "react-bootstrap";
 import axios from "axios";
 import PageTitle from "./PageTitle";
 
-const ProductSales = () => {
+const ProductSales = ({toggleLoading}) => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [approvedSpareParts, setApprovedSpareParts] = useState([]);
@@ -12,57 +12,64 @@ const ProductSales = () => {
   const [searchDate, setSearchDate] = useState("");
 
   useEffect(() => {
-    function getApprovedSpareParts() {
-      axios
-        .get(`${process.env.React_App_Backend_URL}/Product/approvedsp`)
-        .then((res) => {
-          setApprovedSpareParts(res.data);
-        })
-        .catch((err) => {
-          alert("error");
-        });
-    }
+    const getApprovedSpareParts = async () => {
+        try {
+            toggleLoading(true);
+            const res = await axios.get(`${process.env.React_App_Backend_URL}/Product/approvedsp`);
+            setApprovedSpareParts(res.data);
+        } catch (error) {
+            console.error("Error fetching approved spare parts:", error);
+            alert("Error fetching approved spare parts");
+        } finally {
+            toggleLoading(false);
+        }
+    };
     getApprovedSpareParts();
-  }, []);
+}, []);
 
-  useEffect(() => {
-    function getPendingOrder() {
-      axios
+useEffect(() => {
+    const getPendingOrder = async () => {
+        try {
+            toggleLoading(true);
+            const res = await axios.get(`${process.env.React_App_Backend_URL}/Product/getorderpending`);
+            setPendingOrder(res.data);
+        } catch (error) {
+            console.error("Error fetching pending orders:", error);
+            alert("Error fetching pending orders");
+        } finally {
+            toggleLoading(false);
+        }
+    };
+    getPendingOrder();
+}, []);
+
+useEffect(() => {
+    const getCompletedOrder = async () => {
+        try {
+            toggleLoading(true);
+            const res = await axios.get(`${process.env.React_App_Backend_URL}/Product/getordercompleted`);
+            setCompletedOrder(res.data);
+        } catch (error) {
+            console.error("Error fetching completed orders:", error);
+            alert("Error fetching completed orders");
+        } finally {
+            toggleLoading(false);
+        }
+    };
+    getCompletedOrder();
+}, []);
+
+const getPendingOrder = () => {
+    axios
         .get(`${process.env.React_App_Backend_URL}/Product/getorderpending`)
         .then((res) => {
-          setPendingOrder(res.data);
+            setPendingOrder(res.data);
         })
         .catch((err) => {
-          alert("error");
+            alert("error");
         });
-    }
-    getPendingOrder();
-  }, []);
+};
 
-  useEffect(() => {
-    function getCompletedOrder() {
-      axios
-        .get(`${process.env.React_App_Backend_URL}/Product/getordercompleted`)
-        .then((res) => {
-          setCompletedOrder(res.data);
-        })
-        .catch((err) => {
-          alert("error");
-        });
-    }
-    getCompletedOrder();
-  }, []);
-
-  const getPendingOrder = () => {
-    axios
-      .get(`${process.env.React_App_Backend_URL}/Product/getorderpending`)
-      .then((res) => {
-        setPendingOrder(res.data);
-      })
-      .catch((err) => {
-        alert("error");
-      });
-  };
 
   const handleMoreButtonClick = (order) => {
     setSelectedOrder(order);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Table, Button, Alert, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-const PendingPayments = () => {
+const PendingPayments = ({toggleLoading}) => {
   const navigate = useNavigate();
   const [payments, setPayments] = useState([]);
   const [alert, setAlert] = useState(null); // State for alert message
@@ -18,6 +18,7 @@ const PendingPayments = () => {
 
   const fetchPendingPayments = async () => {
     try {
+      toggleLoading(true)
       const response = await fetch(
         `${process.env.React_App_Backend_URL}/api/finance/billing/pendingpayments`
       );
@@ -28,6 +29,8 @@ const PendingPayments = () => {
       setPayments(data.data);
     } catch (error) {
       console.error("Error fetching pending payments:", error.message);
+    }finally{
+      toggleLoading(false)
     }
   };
 
