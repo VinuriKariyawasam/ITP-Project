@@ -3,7 +3,7 @@ import { Button, Form, Modal, Row, Stack } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import jsPDF from "jspdf";
 import logo from "../../../images/Payment/neotechlogo.jpg";
-import "./vehicledash.css";
+
 
 function VehicleDash() {
   const [vehicles, setVehicles] = useState([]);
