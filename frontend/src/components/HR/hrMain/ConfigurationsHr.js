@@ -15,7 +15,7 @@ import CreateDesignationModal from "./DesignationCreateModal";
 
 import UpdateDesignationModal from "./DesignationUpdateModal";
 
-function Designations() {
+function Designations({ toggleLoading }) {
   const navigate = useNavigate();
   const [designations, setDesignations] = useState([]);
   //crete modal state
@@ -39,8 +39,9 @@ function Designations() {
     // Fetch designation records from the backend when the component mounts
     const fetchDesignations = async () => {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const response = await fetch(
-          "http://localhost:5000/api/hr/designations"
+          `${process.env.React_App_Backend_URL}/api/hr/designations`
         );
 
         if (!response.ok) {
@@ -52,6 +53,8 @@ function Designations() {
         setReloadDesignations(false); // Reset reloadDesignations state
       } catch (error) {
         console.error("Error fetching designation records:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
     fetchDesignations();
@@ -60,8 +63,9 @@ function Designations() {
   // Function to delete a designation record
   const deleteDesignation = async (designationId) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        `http://localhost:5000/api/hr/delete-designation/${designationId}`,
+        `${process.env.React_App_Backend_URL}/api/hr/delete-designation/${designationId}`,
         {
           method: "DELETE",
           headers: {
@@ -88,8 +92,10 @@ function Designations() {
     } catch (error) {
       alert("Error deleting designation"); // Show error alert
       console.error("Error deleting designation:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
+      setShowDeleteConfirmationModal(false);
     }
-    setShowDeleteConfirmationModal(false);
   };
 
   // Update related functions
@@ -125,7 +131,10 @@ function Designations() {
 
   const fetchLogs = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/hr/allnopaylogs"); // Assuming this is the route you set up
+      toggleLoading(true); // Set loading to true before API call
+      const response = await fetch(
+        `${process.env.React_App_Backend_URL}/api/hr/allnopaylogs`
+      ); // Assuming this is the route you set up
       if (!response.ok) {
         throw new Error("Failed to fetch logs");
       }
@@ -133,6 +142,8 @@ function Designations() {
       setNopayLogs(data);
     } catch (error) {
       console.error("Error fetching logs:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -288,6 +299,7 @@ function Designations() {
                 setShowToast={setShowToast}
                 setReloadDesignations={setReloadDesignations}
                 setToastType={setToastType} // or "warning", "error", etc.
+                toggleLoading={toggleLoading}
               />
               {/* Update Desigantion content here */}
               {showUpdateModal && (
@@ -308,6 +320,7 @@ function Designations() {
                     designations.find((d) => d._id === selectedDesignationId)
                       ?.basicSalary
                   }
+                  toggleLoading={toggleLoading}
                 />
               )}
             </Tab>

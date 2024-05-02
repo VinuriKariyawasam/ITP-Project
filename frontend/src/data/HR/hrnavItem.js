@@ -35,6 +35,12 @@ const navList = [
     icon: "bi bi-person-gear",
     href: "/staff/hr/configs",
   },
+  {
+    _id: 7,
+    name: "Mails",
+    icon: "bi bi-envelope-at",
+    href: "https://mail.google.com/mail/u/0/?ogbl#inbox",
+  },
 ];
 
 export default navList;

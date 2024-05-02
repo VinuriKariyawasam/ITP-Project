@@ -8,6 +8,7 @@ const CreateReviewModal = ({
   empId,
   empDBId,
   name,
+  toggleLoading,
 }) => {
   const initialFormData = {
     empId: empId || "",
@@ -29,8 +30,9 @@ const CreateReviewModal = ({
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        "http://localhost:5000/api/hr/reviews/create",
+        `${process.env.React_App_Backend_URL}/api/hr/reviews/create`,
         {
           method: "POST",
           headers: {
@@ -48,6 +50,8 @@ const CreateReviewModal = ({
       handleSubmit();
     } catch (error) {
       console.error("Error creating review:", error.message);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 

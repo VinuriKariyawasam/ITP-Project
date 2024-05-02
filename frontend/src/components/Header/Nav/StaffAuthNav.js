@@ -11,7 +11,7 @@ function StaffAuthNav() {
         <li className="nav-item" style={{ margin: "0 5px" }}>
           <a
             className="nav-link"
-            href="/reset-password"
+            href="mailto:neotechmotorssl@gmail.com"
             styles={{ margin: "10px" }}
           >
             Reset Password

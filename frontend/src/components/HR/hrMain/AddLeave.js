@@ -6,7 +6,7 @@ import "react-date-range/dist/theme/default.css"; // Theme CSS file
 import { useNavigate } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
 
-const AddLeave = () => {
+const AddLeave = ({ toggleLoading }) => {
   //to redirect after success
   const navigate = useNavigate();
 
@@ -38,7 +38,10 @@ const AddLeave = () => {
     // Fetch employees from the backend when the component mounts
     const fetchEmployees = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/employees");
+        toggleLoading(true); // Set loading to true before API call
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/employees`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -49,6 +52,8 @@ const AddLeave = () => {
         setEmployees(data.employees);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
     fetchEmployees();
@@ -129,13 +134,17 @@ const AddLeave = () => {
 
     console.log(leaveData);
     try {
-      const response = await fetch("http://localhost:5000/api/hr/add-leave", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(leaveData),
-      });
+      toggleLoading(true); // Set loading to true before API call
+      const response = await fetch(
+        `${process.env.React_App_Backend_URL}/api/hr/add-leave`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(leaveData),
+        }
+      );
       console.log(response);
 
       if (response.status === 422) {
@@ -166,6 +175,8 @@ const AddLeave = () => {
       setToastHeader("Warning");
       setToastBody("Error creating leave request. Please try again later.");
       setShowToast(true);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 

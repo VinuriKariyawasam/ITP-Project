@@ -9,7 +9,12 @@ import { set } from "date-fns";
 import { StaffAuthContext } from "../../../context/StaffAuthContext";
 import logo from "../../../images/logoblack_trans.png";
 
-const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
+const AttendanceRecordsTable = ({
+  attendRecords,
+  dateFilter,
+  tableName,
+  toggleLoading,
+}) => {
   const { userId, userPosition } = useContext(StaffAuthContext);
   const [presentCount, setPresentCount] = useState(0);
   const [absentCount, setAbsentCount] = useState(0);
