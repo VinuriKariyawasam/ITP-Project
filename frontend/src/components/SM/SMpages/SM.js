@@ -28,7 +28,7 @@ import {
 
 
 
-function SM() {
+function SM({ toggleLoading }) {
   return (
     <>
       <Header />
@@ -45,13 +45,13 @@ function SM() {
         <Route path="/mechanicalhistory" exact element={<Mechanicalhistory/>} />
         <Route path="/accidentalappointment" exact element={<SMAccidentalRepairs />} />
         <Route path="/accidentalhistory" exact element={<AccidentalHistory />} />
-        <Route path="record/*" element={<Smrecords />} />
+        <Route path="record/*" element={<Smrecords toggleLoading={toggleLoading}/>} />
         <Route path="/mobilemain" element={<SMMobileMain/>} />
         <Route path="/mobilemechanical" exact element={<SMmMechanicalServices/>} />
         <Route path="/breakdownrequests" exact element={<SMmEmBreakdown/>} />
         <Route path="/vehiclecarriers" exact element={<SMmVehicleCarriers/>} />
-        <Route path="quotation/*" element={<Smquotation/>} />
-        <Route path="report/*" element={<Smreports/>} />
+        <Route path="quotation/*" element={<Smquotation toggleLoading={toggleLoading}/>} />
+        <Route path="report/*" element={<Smreports toggleLoading={toggleLoading}/>} />
         <Route path="serviceReq/*" element={<SmSrequest/>} />
       </Routes>
     </>

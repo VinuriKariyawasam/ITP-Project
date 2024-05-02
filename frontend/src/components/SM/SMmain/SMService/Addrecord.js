@@ -17,7 +17,7 @@ import ImageUpload from "../../SMUtil/ImageUpload";
 import FileUpload from "../../SMUtil/FileUpload";
 
 
-function Addrecord() {
+function Addrecord({toggleLoading}) {
 
   //to redirect after success
   const navigate = useNavigate();
@@ -59,9 +59,9 @@ function Addrecord() {
       for (const pair of formData.entries()) {
         console.log(pair[0], pair[1]);
       }
-
+      toggleLoading(true);
       const response = await fetch(
-        "http://localhost:5000/api/sm/records",
+        `${process.env.React_App_Backend_URL}/api/sm/records`,
         {
           method: "POST",
           body: formData,
@@ -94,6 +94,9 @@ function Addrecord() {
         console.error("Error:", error.message);
       
     }
+    finally{
+      toggleLoading(false);
+      }
   };
 
      /* if (!response.ok) {

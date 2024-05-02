@@ -5,7 +5,7 @@ import RecordDetailsModal from "./RecordDetailsModal";
 import Card from "react-bootstrap/Card";
 import { useNavigate } from "react-router-dom";
 
-function RecDash() {
+function RecDash({toggleLoading}) {
   const navigate = useNavigate();
 
   const [tableData, setTableData] = useState([]);
@@ -18,7 +18,8 @@ function RecDash() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/sm/records");
+        toggleLoading(true);
+        const response = await fetch(`${process.env.React_App_Backend_URL}/api/sm/records`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -29,6 +30,9 @@ function RecDash() {
         setFilteredData(data.records); // Initialize filtered data with all records
       } catch (error) {
         console.error("Error fetching data:", error);
+      }
+      finally{
+      toggleLoading(false);
       }
     };
 
@@ -74,8 +78,9 @@ function RecDash() {
 
   const fetchRecordById = async (recordId) => {
     try {
+      toggleLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/sm/record/${recordId}`
+        `${process.env.React_App_Backend_URL}/api/sm/record/${recordId}`
       );
 
       if (!response.ok) {
@@ -89,6 +94,9 @@ function RecDash() {
       // Handle error scenarios here
       return { error: error.message };
     }
+    finally{
+      toggleLoading(false);
+      }
   };
 
   // Generate auto-incremented record IDs like SMR01, SMR02, ...

@@ -18,7 +18,7 @@ import {
   Route,
 } from "react-router-dom";
 
-function SUPERVISOR() {
+function SUPERVISOR({ toggleLoading }) {
   return (
     <main>
 
@@ -27,7 +27,7 @@ function SUPERVISOR() {
         <Route path="/" element={<SuperMain />} />
         <Route path="vehicle/*" element={<SuperVehicle />} />
         <Route path="serviceReq/*" element={<SuperServiceReq />} />
-        <Route path="jobs/*" element={<Sujob/>} />
+        <Route path="jobs/*" element={<Sujob toggleLoading={toggleLoading}/>} />
         <Route path="products/*" element={<SuperProducts />} />
         <Route path="shedules/*" element={<Shedules />} />
         <Route path="records/*" element={<SuperRecords />} />

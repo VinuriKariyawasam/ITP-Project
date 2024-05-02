@@ -12,7 +12,7 @@ import {
 } from "react-router-dom";
 
 
-function Sujob() {
+function Sujob({ toggleLoading }) {
   return (
     <main id="main" className="main">
       
@@ -20,8 +20,8 @@ function Sujob() {
 
       <Routes>
        
-        <Route path="/" element={<JobDash/>} />
-        <Route path="/add" element={<JobSchedulerForm/>} />
+        <Route path="/" element={<JobDash toggleLoading={toggleLoading}/>} />
+        <Route path="/add" element={<JobSchedulerForm toggleLoading={toggleLoading}/>} />
       </Routes>
     </main>
   );

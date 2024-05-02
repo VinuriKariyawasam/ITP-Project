@@ -1,4 +1,5 @@
 const ServiceReport = require('../../models/sm/reportsModel');
+const PDFDocument = require('pdfkit');
 
 // Helper function to calculate total service price
 const calculateTotalServicePrice = (services) => {
@@ -12,9 +13,15 @@ const calculateTotalServicePrice = (services) => {
 };
 
 // Helper function to generate service report ID
-const generateServiceReportId = (counter) => {
-  const formattedId = `SM${counter.toString().padStart(2, '0')}`;
-  return formattedId;
+const generateServiceReportId = async () => {
+  try {
+    const serviceReportIdCounter = await ServiceReport.countDocuments({}) + 1;
+    const formattedId = `SM${serviceReportIdCounter.toString().padStart(2, '0')}`;
+    return formattedId;
+  } catch (error) {
+    console.error('Error generating service report ID:', error);
+    throw new Error('Failed to generate service report ID');
+  }
 };
 
 // Submit a new service report
@@ -44,8 +51,7 @@ exports.submitReport = async (req, res) => {
     const totalServicePrice = calculateTotalServicePrice(services);
 
     // Generate service report ID
-    const serviceReportIdCounter = await ServiceReport.countDocuments({}) + 1;
-    const serviceReportId = generateServiceReportId(serviceReportIdCounter);
+    const serviceReportId = await generateServiceReportId();
 
     // Create a new service report instance
     const newServiceReport = new ServiceReport({
@@ -77,7 +83,6 @@ exports.submitReport = async (req, res) => {
     res.status(500).json({ error: 'Failed to submit report' });
   }
 };
-
 
 // Get all service reports
 exports.getAllReports = async (req, res) => {
@@ -113,5 +118,31 @@ exports.getCountOfServiceReports = async (req, res) => {
   } catch (error) {
     console.error('Error counting service reports:', error);
     res.status(500).json({ error: 'Failed to count service reports' });
+  }
+};
+
+// Generate PDF for a service report by ID
+exports.generatePDF = async (req, res) => {
+  try {
+    const reportId = req.params.id;
+    // Fetch report data from the database
+    const report = await ServiceReport.findById(reportId);
+    if (!report) {
+      return res.status(404).json({ message: 'Report not found' });
+    }
+
+    // Generate PDF
+    const doc = new PDFDocument();
+    doc.fontSize(14).text(`Service Report ID: ${report.serviceReportId}`);
+    // Add more text and formatting as needed based on your report data
+
+    // Pipe the PDF content to the response
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${report.serviceReportId}.pdf`);
+    doc.pipe(res);
+    doc.end();
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    res.status(500).json({ error: 'Failed to generate PDF' });
   }
 };
