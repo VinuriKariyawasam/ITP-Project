@@ -260,7 +260,8 @@ function AddVehicle() {
           </div>
 
           <div className="mb-2">
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">Name &nbsp;&nbsp; <span style={{ color: 'red' }}>**If the vehicle is a governemnt vehicle, 
+                                                                          enter ministry name</span></label>
             <input
               type="text"
               name="name"
@@ -288,7 +289,7 @@ function AddVehicle() {
           </div>
 
           <div className="mb-2">
-          <label htmlFor="email">Email &nbsp;&nbsp; <span style={{ color: 'red' }}>**Please enter a valid email</span></label>
+          <label htmlFor="email">Email </label>
 
             <input
               type="email"
