@@ -477,6 +477,7 @@ function Lubricants() {
                       to: cusauth.email,
                       subject: `Your Cart Details : orderID :${orderId}`,
                       text: `Thank you for shopping with us !!!
+                      You will receive your bill number and the invoice shortly, From that you can easily make payment through online or physical
                     Here are your cart details: `,
                       html: null,
                       orderId: orderId,
@@ -542,7 +543,7 @@ function Lubricants() {
 
   if (filteredProducts.length === 0) {
     return (
-      <div style={{ marginTop: "2%", marginLeft: "3%" }}>
+      <div style={{ marginTop: "1%", marginLeft: "3%" }}>
       <h1 style={{ textAlign: "center" }}>HIGH QUALITY TIRES AT FAIR PRICE </h1>
       <div style={{ display: "flex", marginTop: "4%" }}>
         <Form.Label
@@ -599,7 +600,7 @@ function Lubricants() {
   
 
   return (
-    <div style={{ marginTop: "2%", marginLeft: "3%" }}>
+    <div style={{ marginTop: "1%", marginLeft: "3%" }}>
       <h1 style={{ textAlign: "center" }}>HIGH QUALITY TIRES AT FAIR PRICE </h1>
       <div style={{ display: "flex", marginTop: "4%" }}>
         <Form.Label
@@ -663,8 +664,10 @@ function Lubricants() {
             <center>
               <Card.Img
                 variant="top"
-                src={`http://localhost:5000/${product.image}`}
-                style={{ width: "70%", height: "80%", alignContent: "center" }}
+                src={`${product.image}`}
+                style={{  marginTop:"3%",
+                width: "200px", 
+                height: "250px", alignContent: "center" }}
               />
             </center>
             <Card.Body>
@@ -758,7 +761,7 @@ function Lubricants() {
                       }}
                     >
                       <img
-                        src={`http://localhost:5000/${cartItem.image}`}
+                        src={`${cartItem.image}`}
                         alt={cartItem.Product_name}
                         style={{ width: "40%", height: "40%" }}
                       />

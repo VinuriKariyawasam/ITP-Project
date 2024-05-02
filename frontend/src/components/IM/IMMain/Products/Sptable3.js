@@ -140,7 +140,7 @@ function Sptable3() {
         <Modal.Body>
           <img
             style={{ width: "50%", height: "50%" }}
-            src={`http://localhost:5000/${selectedOrder?.image}`}
+            src={`${selectedOrder?.image}`}
             alt="Product Image"
           />
         <p>Order Id: {selectedOrder?.orderId}</p>

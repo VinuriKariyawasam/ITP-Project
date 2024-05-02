@@ -20,11 +20,13 @@ function IMTireCard() {
     getProducts();
   }, []);
 
-  const Delete = (id) => {
+  const Delete = (id,Image) => {
     const shouldDelete = window.confirm("Confirm Delete");
+    const image = Image
+        console.log(image)
     if (shouldDelete) {
       axios
-        .delete(`http://localhost:5000/Product/deleteTires/${id}`)
+        .delete(`http://localhost:5000/Product/deleteTires/${id}`, { data: { image } })
         .then((response) => {
           console.log(response);
           window.location.reload();
@@ -76,12 +78,16 @@ function IMTireCard() {
         {Products.map((product) => (
           <div key={product._id} className="product-card-container">
             <div className="product-card">
-              <img
-              style={{marginLeft:"10%",width:"80%",height:"60%"}}
-                src={`http://localhost:5000/${product.image}`}
+              <center><img
+                src={`${product.image}`}
                 className="product-image"
                 alt={product.Product_name}
-              />
+                style={{
+                  marginTop:"3%",
+                  width: "200px", 
+                  height: "250px", 
+                }}
+              /></center>
               <h4 className="product-header">{product.Product_name}</h4>
               <span className="product-name">
                 Product Brand:{product.Product_Brand}
@@ -125,7 +131,7 @@ function IMTireCard() {
             </div>
               <Button
                 variant="danger"
-                onClick={() => Delete(product._id)}
+                onClick={() => Delete(product._id,product.image)}
                 className="btnproductdel"
               >
                 Delete Product

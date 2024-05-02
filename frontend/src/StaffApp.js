@@ -30,7 +30,7 @@ import AlreadyLogIn from "./components/util/AlreadyLogIn";
 import StaffMyProfile from "./components/Staff/staffMyProfile";
 import NotFoundPage from "./components/util/NotFoundPage";
 
-function StaffApp() {
+function StaffApp({ toggleLoading }) {
   const { userId, userPosition, isLoggedIn } = useContext(StaffAuthContext);
 
   return (
@@ -89,7 +89,7 @@ function StaffApp() {
 
         {userPosition === "Inventory Manager" ||
         userPosition === "General Manager" ? (
-          <Route path="/im/*" element={<IM />} />
+          <Route path="/im/*" element={<IM toggleLoading={toggleLoading}/>} />
         ) : (
           <Route path="/im/*" element={<RestrictedPage />} />
         )}

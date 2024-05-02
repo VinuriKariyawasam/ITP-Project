@@ -1,31 +1,52 @@
 import React from 'react'
-import { useState,useEffect } from 'react';
+import { useState,useEffect, useContext } from 'react';
 import axios from "axios";
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Badge from 'react-bootstrap/Badge'
+import { CusAuthContext } from "../../../../context/cus-authcontext";
+import Badge from 'react-bootstrap/Badge';
 
-function Sptable2() {
+function Notapproved() {
+  const cusauth = useContext(CusAuthContext); 
+  const [SpareParts, setSpareparts] = useState([]); 
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [approvedSpareParts,setapprovedSpareParts] = useState([]); 
-    
+  const email = cusauth.email;
     useEffect(() => {
-        function getapprovedSpareparts() {
+        function getSpareparts() {
           axios
-            .get("http://localhost:5000/Product/approvedsp")
+            .get("http://localhost:5000/Product/pendingsp")
             .then((res) => {
-              setapprovedSpareParts(res.data);
+              setSpareparts(res.data);
             })
             .catch((err) => {
               alert("error");
             });
         }
-        getapprovedSpareparts();
-    }, []);
-   
-    const handleMoreButtonClick = (order) => {
+        getSpareparts();
+      }, []);
+
+      const handleReject = (id,Image) => {
+        
+        const image = Image
+        console.log(image)
+        const shouldDelete = window.confirm('Confirm Remove');
+        if (shouldDelete) {
+              axios
+                .delete(`http://localhost:5000/Product/deletependingsp/${id}`, { data: { image } })
+                .then((response) => {
+                  console.log(response);
+                  setShowModal(false); 
+                  window.location.reload(); 
+                })
+                .catch((error) => {
+                  console.error(error);
+                })
+        }
+      }
+
+      const handleMoreButtonClick = (order) => {
         setSelectedOrder(order);
         setShowModal(true);
       };
@@ -33,8 +54,10 @@ function Sptable2() {
         setShowModal(false);
       };
 
-  return (
-    <div>  
+      const filteredPendingspareparts = SpareParts.filter(Sparepart => Sparepart.email === email);
+  
+
+  return (<div style={{margin:"3%"}}>   
     <Table>
     <thead>
       <tr>
@@ -42,20 +65,19 @@ function Sptable2() {
         <th>Vehicle Number</th>
         <th>Contact Number</th>
         <th>Ordered date</th>
-        <th>Total</th>
         <th>Status</th>
         <th>Explore</th>
       </tr>
     </thead>
     <tbody>
-    {approvedSpareParts.map((SpareParts) => (
+    {filteredPendingspareparts.map((SpareParts) => (
+      
       <tr key={SpareParts._id}>
         <td>{SpareParts.name}</td>
         <td>{SpareParts.vehicleNumber}</td>
         <td>{SpareParts.contactNumber}</td>
         <td>{SpareParts.orderdate.split('T')[0]}</td>
-        <td>{SpareParts.total}</td>
-        <td><Badge bg="primary">{SpareParts.status}</Badge></td>
+        <td><Badge bg="warning">{SpareParts.status}</Badge></td>
         <td><Button variant="secondary" onClick={() => handleMoreButtonClick(SpareParts)}>more</Button>
 </td>
       </tr>
@@ -68,7 +90,6 @@ function Sptable2() {
       </Modal.Header>
       <Modal.Body>
         <img style={{width:"50%",height:"50%"}} src={`${selectedOrder?.image}`} alt="Product Image" />
-        <p>Order Id: {selectedOrder?.orderId}</p>
         <p>Customer Name: {selectedOrder?.name}</p>
         <p>Vehicle Number: {selectedOrder?.vehicleNumber}</p>
         <p>Vehicle Brand: {selectedOrder?.brand}</p>
@@ -77,13 +98,14 @@ function Sptable2() {
         <p>Color: {selectedOrder?.color}</p>
         <p>Contact Number: {selectedOrder?.contactNumber}</p>
         <p>Description: {selectedOrder?.description}</p>
-        <p>Total: Rs.{selectedOrder?.total}</p>
       </Modal.Body>
       <Modal.Footer>
+      <Button variant="danger" onClick={() => handleReject(selectedOrder?._id,selectedOrder?.image)}>
+      Remove
+        </Button>
       </Modal.Footer>
-    </Modal>
-</div>
+    </Modal></div>
   )
 }
 
-export default Sptable2
+export default Notapproved
