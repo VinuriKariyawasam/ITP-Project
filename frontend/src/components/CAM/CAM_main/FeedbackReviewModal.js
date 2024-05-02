@@ -13,7 +13,7 @@ import {
 } from "react-bootstrap";
 
 
-function UpdateSolutionModal({show, onHide, consultation, onUpdate}) {
+function FeedbackReviewModal({show, onHide, consultation, onUpdate}) {
     const navigate = useNavigate();
     const [newsolution, setnewSolution] = useState("");
 
@@ -33,7 +33,7 @@ const handleSolutionChange = (e) => {
 
 const newhandleSubmit = async (consultId) => {
   try {
-    const response = await fetch(`http://localhost:5000/cam/consultation/update-newsolution/${consultId}`, {
+    const response = await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/update-newsolution/${consultId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +63,7 @@ const newhandleSubmit = async (consultId) => {
     >
     <Modal.Header closeButton>
         <Modal.Title style={{fontSize:"32px"}}>
-          New Solution{" "}
+          Review FeedBack{" "}
           </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -75,31 +75,28 @@ const newhandleSubmit = async (consultId) => {
       <Col>
       <Row className="cam-mb-3">
       <Form.Group as={Col} controlId="solutionToupdate" style={{marginTop:"5px"}}>
-                 <Form.Label><strong>Enter new Solution here</strong></Form.Label>
-                 <Form.Group as={Col} controlId="solutionToupdate" style={{marginTop:"5px"}}>
-                 <Form.Label><strong>Solution from the Expert</strong></Form.Label>
+                 <Form.Label><strong>Enter Reviews for the week</strong></Form.Label>
                     <Form.Control
-                    //placeholder="Solution..." 
-                    value={newsolution}
-                    onChange={handleSolutionChange}
+                    //style={{ height: '100px' }}
+                    //value={newsolution}
+                    //onChange={handleSolutionChange}
                     />
-                    <Button variant="success" type="submit">
-                      Update
-                    </Button>
-                    <Button variant="dark" onClick={onHide} className="mr-2">
-                      Cancel
-                    </Button>
-               </Form.Group>
-               </Form.Group>
+               </Form.Group>     
       </Row>
       </Col>
       </Row>
       </Form>
       </Modal.Body>
       <Modal.Footer>
+      <Button variant="success" type="submit">
+                      Post Review
+                    </Button>
+                    <Button variant="dark" onClick={onHide} className="mr-2">
+                      Cancel
+                    </Button>
       </Modal.Footer>
       </Modal>
   )
 }
 
-export default UpdateSolutionModal;
+export default FeedbackReviewModal;

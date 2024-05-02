@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 app.use("/uploads/hr", express.static(path.join(__dirname, "uploads", "hr")));
 app.use("/uploads/SM", express.static(path.join(__dirname, "uploads", "SM")));
 app.use("/uploads/im", express.static(path.join(__dirname, "uploads", "im")));
-
+app.use("/uploads/CAM", express.static(path.join(__dirname, "uploads", "CAM")));
 
 app.use(
   "/uploads/SM/Appointment",

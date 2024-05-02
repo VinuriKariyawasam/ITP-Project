@@ -58,7 +58,9 @@ function StaffApp({ toggleLoading }) {
         )}
 
         {userPosition === "General Manager" ? (
+
           <Route path="/gm/*" element={<GM toggleLoading={toggleLoading} />} />
+
         ) : (
           <Route path="/gm/*" element={<RestrictedPage />} />
         )}
@@ -97,7 +99,7 @@ function StaffApp({ toggleLoading }) {
 
         {userPosition === "Customer Service Agent" ||
         userPosition === "General Manager" ? (
-          <Route path="/cam/*" element={<CAM />} />
+          <Route path="/cam/*" element={<CAM toggleLoading={toggleLoading}/>} />
         ) : (
           <Route path="/cam/*" element={<RestrictedPage />} />
         )}

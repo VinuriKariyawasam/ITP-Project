@@ -9,7 +9,7 @@ function CAM_dashboard() {
   useEffect(() => {
     const fetchConsultations = async () => {
       try {
-        const response = await fetch("http://localhost:5000/cam/consultation/get-issues");
+        const response = await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/get-issues`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status:${response.status}`);
         }
@@ -26,7 +26,7 @@ function CAM_dashboard() {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const response = await fetch("http://localhost:5000/cam/feedback/get-feedbacks");
+        const response = await fetch(`${process.env.React_App_Backend_URL}/cam/feedback/get-feedbacks`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status:${response.status}`);
         }

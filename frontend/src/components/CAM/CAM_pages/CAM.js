@@ -16,17 +16,17 @@ import {
 } from "react-router-dom";
 
 
-function CAM() {
+function CAM({ toggleLoading }) {
   return (
     <>
       <CAM_sideBar/>
 
       <Routes>
         <Route path="/" element={<CAM_main />} />
-        <Route path="con_support/*" element={<CAM_consultancy/>} />
-        <Route path="contactDash" element={<ContactDash/>} />
-        <Route path="feedback_review/*" element={<CAM_feedbackReview/>}></Route>
-        <Route path="faq_review/*" element={<CAM_faqReview/>}></Route>
+        <Route path="con_support/*" element={<CAM_consultancy toggleLoading={toggleLoading}/>} />
+        <Route path="contactDash" element={<ContactDash toggleLoading={toggleLoading}/>} />
+        <Route path="feedback_review/*" element={<CAM_feedbackReview toggleLoading={toggleLoading}/>}></Route>
+        <Route path="faq_review/*" element={<CAM_faqReview toggleLoading={toggleLoading}/>}></Route>
         <Route path="reports/*" element={<CAM_Reports/>}></Route>
 
         

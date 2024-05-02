@@ -5,6 +5,10 @@ const consultationSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    name :{
+        type: String,
+        required: true,  
+    },
     consultId :{
         type: String,
         required: true,

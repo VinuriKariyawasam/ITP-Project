@@ -19,19 +19,19 @@ import feedbackimg2 from "../../../../../src/images/cam/feedbackimg2.jpeg";
 import feedbackimg3 from "../../../../../src/images/cam/feedbackimg3.jpeg";
 import cusimage3 from "../../../../../src/images/cam/cusimage3.jpg";
 import cusimage2 from "../../../../../src/images/cam/cusimage2.jpg";
+import feedbackimg6 from "../../../../../src/images/cam/feedbackimg6.jpg";
 
-function FAQ(){
+function FAQ({ toggleLoading }){
 
     const [Issues, setIssues] = useState([]);
     const [consultation, setFetchedConsultation] = useState([]);
-
-    
 
     //get all consultations
   useEffect(() => {
     const fetchConsultations = async() => {
       try{
-        const response = await fetch("http://localhost:5000/cam/consultation/get-issues");
+        toggleLoading(true);
+        const response = await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/get-issues`);
 
         if(!response.ok){
           throw new Error(`HTTP error! Status:${response.status}`);
@@ -40,6 +40,8 @@ function FAQ(){
         setIssues(data.consultations);
       }catch (error) {
         console.error("Error fetching data:", error);
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     }
     fetchConsultations();
@@ -56,53 +58,34 @@ const{
 
     return(
         <main>
+           <div
+      style={{
+        backgroundImage: `url(${feedbackimg6})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        minHeight: '100vh',
+        padding: '20px', // Adjust padding as needed
+        opacity:'1.5'
+      }}
+    >
             <div>
-            <Card style={{marginTop:"20px",marginLeft:"20px",marginRight:"20px"}}>  
-                    <Card.Body>
-                    <PageTitle_cam path="faq" title="Frequently Asked Questions!" />
-                    <Row>
-                    <Col>
-                    <div className="card-body">
-                      <h5 className="card-title"> 
-                      Issue :       {consultation.issue}<br></br>
-                      Solution: {consultation.solution}
+            <h2 style={{fontFamily:"sans-serif",color:"white",marginLeft:"20px",marginTop:"20px"}}>
+              <b>Frequently Asked Questions</b></h2>
+                    <div className="card mb-3" style={{marginLeft:"20px",marginRight:"20px",width:"96%"}}>
+                    {Issues.map((faq,index) =>(
+                      <div key={index}>
+                        {faq.fileUrls.map((fileUrl, i) => (
+                      <img key={i} src={fileUrl} style={{ height: "100px",marginLeft:"10px",marginTop:"10px" }} alt="Feedback Image" />
+                    ))}
+                     <p className="card-text" style={{marginLeft:"10px"}}><small class="text-muted"><b>{faq.name}</b></small></p>
+                      <h5 className="card-title" style={{marginTop:"-30px",marginLeft:"10px"}}> 
+                      Issue :       {faq.issue}<br></br>
+                      Solution: {faq.solution}
                       </h5>
-             </div>
-            </Col>
-            <Col>
-            <div className="card mb-3">
-                    <div id="carouselExampleInterval" className="carousel slide" data-bs-ride="carousel">
-  <div className="carousel-inner">
-    <div className="carousel-item active" data-bs-interval="10000">
-      <img src={cusimage2} className="d-block w-100" alt="..."/>
-    </div>
-    <div className="carousel-item" data-bs-interval="2000">
-      <img src={cusimage3} className="d-block w-100" alt="..."/>
-    </div>
-    <div className="carousel-item">
-      <img src={cusimage2} className="d-block w-100" alt="..."/>
-    </div>
-  </div>
-  <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
-    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span className="visually-hidden">Previous</span>
-  </button>
-  <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
-    <span className="carousel-control-next-icon" aria-hidden="true"></span>
-    <span className="visually-hidden">Next</span>
-  </button>
-  </div>
-                    <div className="card-body">
-                      <h5 className="card-title">
-                        1000+ Services Year Along<br></br>
-                        Over 50+ Mobile Services Monthly<br></br>
-                        </h5>
+                     </div>
+                    ))}
                     </div>
-                    </div>
-            </Col>
-            </Row>
-            </Card.Body>
-                </Card>
+          </div>
           </div>
         </main>
     );
