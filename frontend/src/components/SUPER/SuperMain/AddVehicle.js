@@ -5,7 +5,7 @@ import { RiCalendarLine } from "react-icons/ri";
 import DatePicker from "react-datepicker";
 import "./AddVehicle.css"; // Import CSS file for custom styles
 
-function AddVehicle() {
+function AddVehicle({ toggleLoading }) {
   const [formData, setFormData] = useState({
     vehicleNo: "",
   brand: "",
@@ -124,7 +124,8 @@ function AddVehicle() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await fetch("http://localhost:5000/api/vehicle/add-vehicle", {
+        toggleLoading(true); // Set loading to true before API call
+        const response = await fetch(`${process.env.React_App_Backend_URL}/api/vehicle/add-vehicle`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -141,6 +142,8 @@ function AddVehicle() {
         }
       } catch (error) {
         console.error("Error registering vehicle:", error);
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     }
   };

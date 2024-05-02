@@ -6,7 +6,7 @@ import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
 import FileUpload from "../SuperUtil/SuperFileUpload";
 
-function AddServiceReq() {
+function AddServiceReq({ toggleLoading }) {
   const [formData, setFormData] = useState({
     vehicleNo: "",
     date: null,
@@ -85,6 +85,7 @@ case "vehicleNo":
     e.preventDefault();
     if (validateForm()) {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const formDataToSend = new FormData();
         formDataToSend.append("vehicleNo", formData.vehicleNo);
         formDataToSend.append("date", formData.date.toISOString());
@@ -93,7 +94,7 @@ case "vehicleNo":
         formDataToSend.append("request", formData.request);
         formDataToSend.append("report", formData.report);
         formDataToSend.append("reportFileName", formData.report.name);
-        const response = await fetch("http://localhost:5000/api/vehicle/add-serviceReq", {
+        const response = await fetch(`${process.env.React_App_Backend_URL}/api/vehicle/add-serviceReq`, {
           method: "POST",
           body: formDataToSend,
         });
@@ -107,6 +108,8 @@ case "vehicleNo":
         }
       } catch (error) {
         console.error("Error creating service request:", error);
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     }
   };
