@@ -332,10 +332,12 @@ function ServiceReqDash() {
                     <td>
                     <Button
   variant="primary"
-  onClick={() => handleDownload(serviceReq.report, serviceReq.reportFileName)}
 >
-  Download
+  <a href={serviceReq.reportUrl} download={serviceReq.reportFileName}>
+    Download
+  </a>
 </Button>
+
 
 
 

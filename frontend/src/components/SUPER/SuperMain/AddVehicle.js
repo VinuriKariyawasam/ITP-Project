@@ -34,13 +34,17 @@ function AddVehicle() {
     // Validate each field as it's being typed
     switch (name) {
       case "vehicleNo":
-        errorMessage =
-          value.trim().length === 0 || value.trim().length > 10
-            ? "Vehicle No. is required and must be at most 10 characters"
-            : !/^[A-Z\u0DC1\u0DCA\u200D\u0DBB\u0DD3\d]+$/.test(value)
-            ? "Vehicle No. must contain only capital letters, Sinhala word 'ශ්‍රී', or numbers"
-            : "";
-        break;
+  errorMessage =
+    value.trim().length === 0 || value.trim().length > 10
+      ? "Vehicle No. is required and must be at most 10 characters"
+      : !/^[A-Z\u0DC1\u0DCA\u200D\u0DBB\u0DD3\d]+$/.test(value)
+      ? "Vehicle No. must contain only capital letters, Sinhala word 'ශ්‍රී', or numbers"
+      : value.trim().length > 1 && value.trim().startsWith("ශ්‍රී")
+      ? "ශ්‍රී can only be added after the first character"
+      : !/^\d*$/.test(value)
+      ? "Vehicle No. must contain only numbers"
+      : "";
+  break;
       case "date":
         errorMessage = !value ? "Date is required" : "";
         break;
@@ -86,10 +90,25 @@ function AddVehicle() {
   };
 
   const handleAddSri = () => {
-    const updatedVehicleNo = formData.vehicleNo + "ශ්‍රී"; // Add "ශ්‍රී" to the end of the vehicle number
-    setFormData(prevFormData => ({
+    const trimmedValue = formData.vehicleNo.trim();
+    // Check if the vehicle number is empty or starts with "ශ්‍රී"
+    if (trimmedValue.length === 0 || trimmedValue.startsWith("ශ්‍රී")) {
+      return; // Exit function if the conditions are met
+    }
+  
+    // Validate the vehicle number to ensure it starts with a number and contains only numbers
+    if (!/^\d+$/.test(trimmedValue)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        vehicleNo: "Vehicle No. must start with a number and contain only numbers",
+      }));
+      return; // Exit function if validation fails
+    }
+  
+    // If all conditions are met, add "ශ්‍රී" to the vehicle number
+    setFormData((prevFormData) => ({
       ...prevFormData,
-      vehicleNo: updatedVehicleNo
+      vehicleNo: trimmedValue + "ශ්‍රී",
     }));
   };
 
@@ -260,7 +279,7 @@ function AddVehicle() {
           </div>
 
           <div className="mb-2">
-            <label htmlFor="name">Name &nbsp;&nbsp; <span style={{ color: 'red' }}>**If the vehicle is a governemnt vehicle, 
+            <label htmlFor="name">Name &nbsp;&nbsp; <span style={{ color: 'blue' }}>**If the vehicle is a government vehicle, 
                                                                           enter ministry name</span></label>
             <input
               type="text"
