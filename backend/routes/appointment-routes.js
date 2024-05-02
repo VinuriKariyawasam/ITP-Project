@@ -1,11 +1,13 @@
 const { addperiodicalAppointment,getperiodicalAppointment,updateperiodicalAppointment, deleteperiodicalAppointment,getOneperiodicalAppointment,getOneperiodicalAppointmentbyVno,getperiodicalAppointmentbyuserId} = require('../controllers/appointment/periodical-controller');
 const { addmechanicalAppointment,getmechanicalAppointment,updatemechanicalAppointment, deletemechanicalAppointment,getOneMechanicalAppointment,getOneMechanicalAppointmentbyVno,getmechanicalappointmentbyDate,getmechanicalappointmentbyuserId} = require('../controllers/appointment/mechanical-controller');
-const {addaccidentalAppointment,getaccidentalAppointment,deleteaccidentalAppointment,getaccidentalappointmentbyuserId,updateAccidentalAppointment } = require('../controllers/appointment/accidental-controller');
+const {addaccidentalAppointment,getaccidentalAppointment,deleteaccidentalAppointment,deleteallwithimage,getaccidentalappointmentbyuserId,updateAccidentalAppointment } = require('../controllers/appointment/accidental-controller');
 const { addacceptedappointment,getacceptedappointment,updateacceptedappointment, deleteacceptedappointment,getOneacceptedappointment,getOneacceptedappointmentbyVno,getacceptedappointmentbyDate,getacceptedappointmentbyuserId} = require('../controllers/appointment/acceptedappointment-controller');
 const { addaceptedperiodicalAppointment,getacceptedperiodicalAppointment,getacceptedperiodicalappointmentbyDate} = require('../controllers/appointment/acceptedPeriodical-controller');
 const { addacceptedmechanicalAppointment,getacceptedmechanicalAppointment,getacceptedmechanicalappointmentbyDate} = require('../controllers/appointment/acceptedmechanical-controller');
 const {addacceptedaccidentalAppointment,getacceptedaccidentalAppointment,getacceptedaccidentalappointmentbyDate} = require('../controllers/appointment/acceptedAcidental');
-const ImageUpload = require('../controllers/appointment/ImageUpload')
+const {addcompletedappointment,getcompletedappointment,getcompletedappointmentbyuserId} = require('../controllers/appointment/completedAppointment');
+const {sendMail} = require('../config/nodemailer')
+const {ImageUpload,DeleteImage} = require('../controllers/appointment/ImageUpload')
 
 
 const router = require ('express').Router();
@@ -30,11 +32,16 @@ router.get('/get-mechanicalAppointmentbyDate/:appointmentdate',getmechanicalappo
 router.get('/get-mechanicalappointmentbyuserId/:userId',getmechanicalappointmentbyuserId)
 
 //Accidental Appointment Routes
-router.post('/addaccidentalAppointment',ImageUpload.single('image'),addaccidentalAppointment )
+router.post('/addaccidentalAppointment',addaccidentalAppointment )
 router.get('/get-accidentalAppointment',getaccidentalAppointment )
 router.delete('/delete-accidentalAppointment/:id',deleteaccidentalAppointment)
 router.get('/get-accidentalappointmentbyuserId/:userId',getaccidentalappointmentbyuserId)
 router.put('/update-accidentalAppointment/:id',updateAccidentalAppointment)
+router.delete('/delete-allwithimage/:id',deleteallwithimage)
+
+
+router.post('/accidentalImageupload',ImageUpload)
+router.delete("/deleteImage",DeleteImage)
 
 //Accepteed Appointment Routes
 router.post('/addacceptedappointment',addacceptedappointment )
@@ -60,5 +67,13 @@ router.get('/get-acceptedmechanicalappointmentbyDate/:appointmentdate',getaccept
 router.post('/addacceptedaccidentalAppointment',addacceptedaccidentalAppointment )
 router.get('/get-acceptedaccidentalAppointment',getacceptedaccidentalAppointment)
 router.get('/get-acceptedaccidentalappointmentbyDate/:appointmentdate',getacceptedaccidentalappointmentbyDate)
+
+
+//Completed Appointment Routes
+router.post('/addcompletedappointment',addcompletedappointment)
+router.get('/get-completedappointment',getcompletedappointment)
+router.get('/get-completedappointmentbyuserId/:userId',getcompletedappointmentbyuserId)
+
+router.post("/sendappointmentmail",sendMail)
 
 module.exports = router;

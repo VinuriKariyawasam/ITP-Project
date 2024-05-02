@@ -6,6 +6,7 @@ exports.addacceptedappointment = async (req, res) => {
     // get data from fronend in request body to backend
     const userId = req.body.userId;
     const name = req.body.name;
+    const cusType = req.body.cusType;
     const vType = req.body.vType;
     const vNo = req.body.vNo;
     const serviceType = req.body.serviceType;
@@ -18,6 +19,7 @@ exports.addacceptedappointment = async (req, res) => {
     const newacceptedappointment = acceptedappointmentSchema({
         userId,
         name,
+        cusType,
         vType,
         vNo,
         serviceType,
@@ -28,7 +30,7 @@ exports.addacceptedappointment = async (req, res) => {
     });
 
     try {
-        if (!name || !vType || !vNo || !serviceType || !issue ||  !contactNo || !appointmentdate || !appointmenttime ) {
+        if (!name ||!cusType|| !vType || !vNo || !serviceType || !issue ||  !contactNo || !appointmentdate || !appointmenttime ) {
             return res.status(400).json({ message: 'All Fields Required' })
         }
         await newacceptedappointment.save()
@@ -59,13 +61,14 @@ exports.getacceptedappointment = async (req, res) => {
 exports.updateacceptedappointment= async (req, res) => {
     let acceptedappointmentId = req.params.id;
     //to get existing values
-    const {userId, name, vType, vNo,serviceType,issue, contactNo, appointmentdate, appointmenttime } = req.body
+    const {userId, name,cusType , vType, vNo,serviceType,issue, contactNo, appointmentdate, appointmenttime } = req.body
 
     
     //object to store new values
     const updateacceptedappointment = {
         userId,
         name,
+        cusType,
         vType,
         vNo,
         serviceType,

@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import jsPDF from 'jspdf';
 import { Link } from 'react-router-dom';
-
+import logo from "../../../../images/logoblack_trans.png";
 const AccidentalHistory = props => {
 
   //create an empty array to store details
@@ -17,7 +17,7 @@ const AccidentalHistory = props => {
   useEffect(() => {
 
     function getaccidentalAppointment() {
-      axios.get("http://localhost:5000/appointment/get-acceptedaccidentalAppointment").then((res) => {
+      axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedaccidentalAppointment`).then((res) => {
         const sortedAppointments = res.data.sort((a, b) => {
           return new Date(a.appointmentdate) - new Date(b.appointmentdate);
         });
@@ -47,20 +47,40 @@ const AccidentalHistory = props => {
     const searchDateObj = new Date(searchDate);
     return searchDateObj.toDateString() === appointmentDate.toDateString();
   }) : accidentalAppointment;
+  
   function generatePDF() {
     const pdf = new jsPDF();
+    pdf.setFontSize(12);
+    // Add logo as header
+  const logoImg = new Image();
+  logoImg.src = logo;
+  pdf.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Adjust position and size as needed
+  // Add additional data after the logo
+   // Add additional data after the logo
+   const additionalData = `
+   323/1/A Main Street Battaramulla
+   info@neotech.com
+   0112887998
+   Authorized By: Service Manager
+   Generated Date: ${new Date().toLocaleDateString()}
+ `;
+ const additionalLines = pdf.splitTextToSize(additionalData, 180);
+ let yPos = 40; // Adjusted to start below the header
+ pdf.text(additionalLines, 10, yPos, { fontSize: 10 }); // Adjust the font size for additional data
 
-    // Starting y position for the first appointment
-    let yPos = 10;
+ yPos += additionalLines.length * 4; // Adjusted to start below the additional data
+    pdf.line(10, yPos + 2, 200, yPos + 2); 
+ // Starting y position for the first appointment
+ yPos += additionalLines.length * 4; // Adjusted to start below the additional data
 
-    // Function to add a new page if needed and return the updated y position
-    const checkPageBreak = (currentY, lineHeight, pageHeight) => {
-      if (currentY + lineHeight > pageHeight - 10) {
-        pdf.addPage();
-        return 10; // Starting position for new page
-      }
-      return currentY;
-    };
+// Function to add a new page if needed and return the updated y position
+const checkPageBreak = (currentY, lineHeight, pageHeight) => {
+  if (currentY + lineHeight > pageHeight - 10) {
+    pdf.addPage();
+    return 10; // Starting position for new page
+  }
+  return currentY;
+};
 
     // Iterate through filteredAppointments and add details to the PDF
     filteredAppointments.forEach(appointment => {
@@ -68,6 +88,7 @@ const AccidentalHistory = props => {
       const appointmentDetails = `
       Vehicle No: ${appointment.vNo}
       Customer Name: ${appointment.name}
+      Customer Type: ${appointment.cusType}
       Vehicle Type: ${appointment.vType}
       Accident occured on: ${appointment.dateAccidentaOccured}
       Damaged Occured: ${appointment.damagedOccured}
@@ -120,12 +141,13 @@ const AccidentalHistory = props => {
                 </Row>
                 <Row>
                   <Card.Text>
+                  <strong>Customer Type: </strong>{selectedAppointment.cusType}<br />
                     <strong>Vehicle Type: </strong>{selectedAppointment.vType}<br />
-                    <strong>Accident occured on: </strong>{selectedAppointment.dateAccidentaOccured}<br />
                   </Card.Text>
                 </Row>
                 <Row>
                   <Card.Text>
+                  <strong>Accident occured on: </strong>{selectedAppointment.dateAccidentaOccured.split('T')[0]}<br />
                     <strong>Damaged Occured: </strong>{selectedAppointment.damagedOccured}<br />
                   </Card.Text>
                 </Row>
@@ -139,7 +161,7 @@ const AccidentalHistory = props => {
                   <Card.Text>
                     <strong>Image</strong>
                   </Card.Text>
-                  <img src={`http://localhost:5000/${selectedAppointment.image}`} />
+                  <img src={`${selectedAppointment.image}`} style={{ maxWidth: '100%', maxHeight: '300px' }} />
                 </Row >
                 <Row style={{ marginTop: "4%", display: "flex" }}>
                 </Row>
