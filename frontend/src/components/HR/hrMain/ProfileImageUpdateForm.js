@@ -3,7 +3,13 @@ import { Modal, Button, Form, Col } from "react-bootstrap";
 import ImageUpload from "../HrUtil/ImageUpload";
 import { useForm, Controller } from "react-hook-form";
 
-const ProfileImageUpdateForm = ({ show, handleClose, empId, onUploadPic }) => {
+const ProfileImageUpdateForm = ({
+  show,
+  handleClose,
+  empId,
+  onUploadPic,
+  toggleLoading,
+}) => {
   const { control, handleSubmit, errors } = useForm();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null); // State to store the selected file
@@ -11,6 +17,7 @@ const ProfileImageUpdateForm = ({ show, handleClose, empId, onUploadPic }) => {
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
+      toggleLoading(true);
       const formData = new FormData(); // Create FormData object
 
       // Append form data
@@ -20,7 +27,7 @@ const ProfileImageUpdateForm = ({ show, handleClose, empId, onUploadPic }) => {
       console.log("Form data:", formData.get("photo"));
       // Perform fetch request to submit the form data
       const response = await fetch(
-        `http://localhost:5000/api/hr/updateemployeephoto/${empId}`,
+        `${process.env.React_App_Backend_URL}/api/hr/updateemployeephoto/${empId}`,
         {
           method: "POST",
           body: formData, // Send FormData instead of JSON.stringify(data)

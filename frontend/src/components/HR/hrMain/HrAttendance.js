@@ -12,14 +12,16 @@ import {
   Navigate,
 } from "react-router-dom";
 
-function HrAttendance() {
+function HrAttendance({ toggleLoading }) {
   return (
     <main id="main" className="main">
       <HrPageTitle title="Attendance" url="staff/hr/attendance" />
 
       <Routes>
-        <Route path="/" element={<Attendance />} />
-        <Route path="add" element={<AddEmp />} />
+        <Route
+          path="/"
+          element={<Attendance toggleLoading={toggleLoading} />}
+        />
       </Routes>
     </main>
   );

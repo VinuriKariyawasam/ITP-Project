@@ -9,11 +9,11 @@ import RecDash from "../../SM/SMmain/SMService/RecDash";
 
 import { Routes, Route, Navigate } from "react-router-dom";
 
-function SuperProducts() {
+function SuperProducts({ toggleLoading }) {
     return (
       <main id="main" className="main">
         <SuperPageTitle title="Service Records" url="staff/supervisor/records/" />
-        <RecDash />
+        <RecDash toggleLoading={toggleLoading}/>
       </main>
     );
   }

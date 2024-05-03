@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Table, OverlayTrigger, Tooltip } from "react-bootstrap";
 
-const MoreReviewsModal = ({ show, handleClose, reviews, employeeId }) => {
+const MoreReviewsModal = ({
+  show,
+  handleClose,
+  reviews,
+  employeeId,
+  toggleLoading,
+}) => {
   const [updatedReviews, setUpdatedReviews] = useState([]);
 
   useEffect(() => {
@@ -11,9 +17,10 @@ const MoreReviewsModal = ({ show, handleClose, reviews, employeeId }) => {
   // Function to delete a review
   const handleDelete = async (reviewId) => {
     try {
+      toggleLoading(true);
       // Make a DELETE request to delete the review
       const response = await fetch(
-        `http://localhost:5000/api/hr/reviews/delete/${reviewId}`,
+        `${process.env.React_App_Backend_URL}/api/hr/reviews/delete/${reviewId}`,
         {
           method: "DELETE",
         }
@@ -29,6 +36,8 @@ const MoreReviewsModal = ({ show, handleClose, reviews, employeeId }) => {
       );
     } catch (error) {
       console.error("Error deleting review:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 

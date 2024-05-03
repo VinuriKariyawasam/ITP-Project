@@ -3,7 +3,6 @@ import "./hrMain.css";
 import HrPageTitle from "./HRPageTitle";
 import Configs from "./ConfigurationsHr";
 
-
 // Import front end routes
 import {
   BrowserRouter as Router,
@@ -12,13 +11,13 @@ import {
   Navigate,
 } from "react-router-dom";
 
-function HrConfigs() {
+function HrConfigs({ toggleLoading }) {
   return (
     <main id="main" className="main">
       <HrPageTitle title="Configurations" url="staff/hr/configs" />
 
       <Routes>
-        <Route path="/" element={<Configs />} />
+        <Route path="/" element={<Configs toggleLoading={toggleLoading} />} />
       </Routes>
     </main>
   );

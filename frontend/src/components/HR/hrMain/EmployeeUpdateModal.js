@@ -18,7 +18,13 @@ import axios from "axios"; // Import axios for HTTP requests
 import { useNavigate } from "react-router-dom";
 import { StaffAuthContext } from "../../../context/StaffAuthContext";
 
-function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
+function EmployeeUpdateModal({
+  show,
+  onHide,
+  employee,
+  onUpdate,
+  toggleLoading,
+}) {
   //to redirect after success
   const navigate = useNavigate();
   const { userId, userPosition, isLoggedIn } = useContext(StaffAuthContext);
@@ -29,8 +35,9 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
   useEffect(() => {
     const fetchDesignations = async () => {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const response = await fetch(
-          "http://localhost:5000/api/hr/designations"
+          `${process.env.React_App_Backend_URL}/api/hr/designations`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch designations");
@@ -39,6 +46,8 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
         setDesignations(data); // Assuming the response data is an array of designations
       } catch (error) {
         console.error("Error fetching designations:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
 
@@ -70,6 +79,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
 
   const onSubmit = async (data) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const formData = new FormData();
 
       // Append regular form data
@@ -86,7 +96,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
       }
 
       const response = await axios.patch(
-        `http://localhost:5000/api/hr/update-employee/${employee.id}`,
+        `${process.env.React_App_Backend_URL}/api/hr/update-employee/${employee.id}`,
         Object.fromEntries(formData.entries())
       );
 
@@ -101,10 +111,13 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
       const email = result.employee.email;
 
       // Close the modal or redirect to another page after successful submission
-      onUpdate(response.data);
-      onHide(); // Close the modal
+      //onUpdate();
+      //onHide(); // Close the modal
     } catch (error) {
       console.error("Error updating data:", error.message);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
+      onUpdate();
     }
   };
 

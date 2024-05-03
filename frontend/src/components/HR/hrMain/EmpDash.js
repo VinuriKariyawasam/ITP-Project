@@ -27,7 +27,9 @@ function EmpDash({ toggleLoading }) {
     const fetchData = async () => {
       try {
         toggleLoading(true); // Set loading to true before API call
-        const response = await fetch("http://localhost:5000/api/hr/employees");
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/employees`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

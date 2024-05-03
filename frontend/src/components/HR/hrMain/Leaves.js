@@ -19,7 +19,7 @@ import TodayLeaves from "./TodayLeaves";
 import LeaveCancelling from "./LeaveCancelling";
 import HRConfirmModal from "./HRConfirmModal";
 
-function Leaves() {
+function Leaves({ toggleLoading }) {
   const navigate = useNavigate();
   const [leaveRecords, setLeaveRecords] = useState([]);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -51,7 +51,10 @@ function Leaves() {
     // Fetch leave records from the backend when the component mounts
     const fetchLeaveRecords = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/leaves");
+        toggleLoading(true); // Set loading to true before API call
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/leaves`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -64,6 +67,8 @@ function Leaves() {
         setReloadLeaves(false);
       } catch (error) {
         console.error("Error fetching leave records:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
     fetchLeaveRecords();
@@ -73,8 +78,9 @@ function Leaves() {
     // Fetch leave records from the backend when the component mounts
     const fetchArchiveLeaveRecords = async () => {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const response = await fetch(
-          "http://localhost:5000/api/hr/getall-archive-leaves"
+          `${process.env.React_App_Backend_URL}/api/hr/getall-archive-leaves`
         );
 
         if (!response.ok) {
@@ -87,6 +93,8 @@ function Leaves() {
         setarchiveLeaveRecords(data);
       } catch (error) {
         console.error("Error fetching leave records:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
     fetchArchiveLeaveRecords();
@@ -95,8 +103,9 @@ function Leaves() {
   // Function to delete a leave record
   const deleteLeaveRecord = async (recordId) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        `http://localhost:5000/api/hr/delete-leave/${recordId}`,
+        `${process.env.React_App_Backend_URL}/api/hr/delete-leave/${recordId}`,
         {
           method: "DELETE",
           headers: {
@@ -124,8 +133,10 @@ function Leaves() {
     } catch (error) {
       alert("Error deleting leave record"); // Show error alert
       console.error("Error deleting leave record:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
+      setShowDeleteConfirmationModal(false);
     }
-    setShowDeleteConfirmationModal(false);
   };
 
   //update related things
@@ -168,8 +179,9 @@ function Leaves() {
   const handleConfirmApprove = async () => {
     // Make API call to approve leave
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        `http://localhost:5000/api/hr/update-leave-status/${selectedLeaveId}`,
+        `${process.env.React_App_Backend_URL}/api/hr/update-leave-status/${selectedLeaveId}`,
         {
           method: "PATCH",
           headers: {
@@ -200,16 +212,19 @@ function Leaves() {
       setToastHeader("Error");
       setToastBody("Error approving leave record");
       setShowToast(true);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
+      setShowApproveConfirmationModal(false);
     }
-    setShowApproveConfirmationModal(false);
   };
 
   // Function to handle confirmation of rejection
   const handleConfirmReject = async () => {
     // Make API call to reject leave
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        `http://localhost:5000/api/hr/update-leave-status/${selectedLeaveId}`,
+        `${process.env.React_App_Backend_URL}/api/hr/update-leave-status/${selectedLeaveId}`,
         {
           method: "PATCH",
           headers: {
@@ -240,8 +255,10 @@ function Leaves() {
       setToastBody("Error rejecting leave record");
       setShowToast(true);
       console.error("Error rejecting leave record:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
+      setShowRejectConfirmationModal(false);
     }
-    setShowRejectConfirmationModal(false);
   };
 
   // Function to check if a date range falls within the current week
@@ -295,8 +312,9 @@ function Leaves() {
 
   const handleArchiveLeaves = async () => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        "http://localhost:5000/api/hr/archive-leaves",
+        `${process.env.React_App_Backend_URL}/api/hr/archive-leaves`,
         {
           method: "GET",
           headers: {
@@ -320,6 +338,8 @@ function Leaves() {
     } catch (error) {
       console.error("Error archiving leaves:", error.message);
       // Optionally, display an error message to the user
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -348,7 +368,10 @@ function Leaves() {
         <Card.Body style={{ backgroundColor: "white", padding: "25px" }}>
           <Row>
             <Col md={6}>
-              <TodayLeaves leaveRecords={leaveRecords} />
+              <TodayLeaves
+                leaveRecords={leaveRecords}
+                toggleLoading={toggleLoading}
+              />
             </Col>
           </Row>
           <hr></hr>
@@ -515,6 +538,7 @@ function Leaves() {
                   handleClose={handleCloseUpdateModal}
                   leaveId={selectedLeaveId}
                   showToast={showToastNotification}
+                  toggleLoading={toggleLoading}
                 />
                 {/* Delete confirmation modal */}
                 <HRConfirmModal
@@ -572,6 +596,7 @@ function Leaves() {
                       statusFilter="Approved"
                       dateFilter={() => true}
                       tableName={`All Approved Leave Records`}
+                      toggleLoading={toggleLoading}
                     />
                   </Tab>
                   {/* This Week Subtab */}
@@ -670,7 +695,7 @@ function Leaves() {
               </div>
             </Tab>
             <Tab eventKey="cancelling" title="Cancel Leave">
-              <LeaveCancelling />
+              <LeaveCancelling toggleLoading={toggleLoading} />
             </Tab>
             {showArchiveTab && (
               <Tab eventKey="archives" title="Archives">

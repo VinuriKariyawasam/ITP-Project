@@ -10,6 +10,7 @@ function CreateDesignationModal({
   setShowToast,
   setReloadDesignations,
   setToastType,
+  toggleLoading,
 }) {
   const [position, setPosition] = useState("");
   const [basicSalary, setBasicSalary] = useState("");
@@ -51,8 +52,9 @@ function CreateDesignationModal({
     } else {
       event.preventDefault();
       try {
+        toggleLoading(true); // Set loading to true before API call
         const response = await fetch(
-          "http://localhost:5000/api/hr/add-designation",
+          `${process.env.React_App_Backend_URL}/api/hr/add-designation`,
           {
             method: "POST",
             headers: {
@@ -92,6 +94,8 @@ function CreateDesignationModal({
         setToastBody(error.message);
         setShowToast(true);
         console.error("Error adding designation:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     }
     setValidated(true);
