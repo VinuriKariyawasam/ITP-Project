@@ -6,11 +6,12 @@ import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
 import { Form, Stack ,Container, Row ,Col} from "react-bootstrap";
 import jsPDF from 'jspdf';
+import logo from "../../../../images/Payment/neotechlogo.jpg";
 import html2canvas from 'html2canvas';
 import Modal from 'react-bootstrap/Modal';
 
 
-const SMmMechanicalService = props => {
+const SMmMechanicalService = ({toggleLoading}) => {
 
   const [mechanicalRequests, setMechanicalRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -28,8 +29,10 @@ const SMmMechanicalService = props => {
   const [technician, setTechnician] = useState("");
 
   const assignTechnician = () => {
+    try{
+      toggleLoading(true); // Set loading to true before API call
     // Send PUT request to update breakdown request with assigned technician
-    axios.put(`http://localhost:5000/api/mobile/update-mechanical/${selectedRequest._id}`, { 
+    axios.put(`${process.env.React_App_Backend_URL}/api/mobile/update-mechanical/${selectedRequest._id}`, { 
       technician: technician // Pass technician details to the backend
     })
     .then(response => {
@@ -37,9 +40,11 @@ const SMmMechanicalService = props => {
       handleCloseModal();
       getMechanicalRequests();
     })
-    .catch(error => {
+  }catch(error){
       console.error(error);
-    });
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
+    }
   };
 
   useEffect(() => {
@@ -47,13 +52,17 @@ const SMmMechanicalService = props => {
   }, []);
 
   const getMechanicalRequests = () => {
-    axios.get("http://localhost:5000/api/mobile/get-mechanical")
+    try{
+      toggleLoading(true);
+    axios.get(`${process.env.React_App_Backend_URL}/api/mobile/get-mechanical`)
       .then((res) => {
         setMechanicalRequests(res.data);
       })
-      .catch((err) => {
+    }catch(err){
         alert(err.message);
-      });
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
+      }
   };
 
   const handleTableRowClick = (request) => {
@@ -96,43 +105,91 @@ const SMmMechanicalService = props => {
   const deleteRequest = (id) => {
     const shouldDelete = window.confirm("Please confirm deletion!");
     if (shouldDelete) {
-      axios.delete(`http://localhost:5000/api/mobile/delete-mechanical/${id}`)
+      try{
+        toggleLoading(true); // Set loading to true before API call
+      axios.delete(`${process.env.React_App_Backend_URL}/api/mobile/delete-mechanical/${id}`)
         .then(response => {
           console.log(response);
           window.location.reload();
         })
-        .catch(error => {
+      }catch(error) {
           console.error(error);
-        });
+        };
     }
   };
 
   const handleDownloadReports = () => {
-    const container = document.getElementById("RequestC");
+    const doc = new jsPDF();
   
-    if (container) {
-      html2canvas(container).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        const imgWidth = 208;
-        const pageHeight = 295;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
-        let position = 0;
-  
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-  
-        while (heightLeft >= 0) {
-          position = heightLeft - imgHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-        }
-  
-        pdf.save("Mechanical_Requests.pdf");
+    // Create an Image object for the logo
+    const logoImg = new Image();
+    logoImg.src = logo;
+
+    logoImg.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = logoImg.width;
+      canvas.height = logoImg.height;
+
+      // Draw the logo onto the canvas
+      ctx.drawImage(logoImg, 0, 0);
+
+      // Convert canvas to data URL
+      const logoDataUrl = canvas.toDataURL("image/jpeg");
+
+      // Add the logo image and company details to the PDF
+      doc.addImage(logoDataUrl, "JPEG", 10, 10, 60, 30);
+      doc.setFontSize(12);
+      doc.setTextColor(128, 128, 128); // Set text color to black
+      doc.text("323/1/A Main Street Battaramulla", 10, 55); // Adjusted position
+      doc.text("info@neotech.com", 10, 59); // Adjusted position for email
+      doc.text("0112887998", 10, 63); // Adjusted position for phone number
+      doc.setLineWidth(0.5);//add a line
+      doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
+      doc.setFont("helvetica", "bold"); //add report header
+      doc.setTextColor(0, 0, 0);
+      doc.text("Mobile Mechanical Requests", 10, 76);
+
+       // Set font size for the table
+      doc.setFontSize(10);
+      // Add table
+      const tableColumns = [
+        "Customer Name",
+        //"Customer Email",
+        "Vehicle No",
+        "Date",
+        //"Time",
+        "Location",
+        "Issue",
+        "Contact No",
+        "Assigned Technician",
+      ];
+      const tableData = mechanicalRequests.map((request) => [
+        request.cusName,
+        //request.cusEmail,
+        request.vehicleNo,
+        request.reqDate,
+        //request.reqTime,
+        request.reqLocation,
+        request.issue,
+        request.contactNo,
+        request.technician,
+      ]) 
+      doc.autoTable({
+        startY: 80, // Adjusted startY to leave space for the logo
+        head: [tableColumns],
+        body: tableData,
+        theme: "plain",
+        didDrawPage: function (data) {
+          // Add table heading on each page
+          doc.setFontSize(16);
+          doc.setTextColor(0, 0, 255);
+        },
+        tableWidth: 'auto', 
       });
-    }
+      doc.save("Mechanical_Requests.pdf");
+    };
   };
 
   return (

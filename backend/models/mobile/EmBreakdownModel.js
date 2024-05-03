@@ -9,7 +9,7 @@ const breakdownrequestsSchema = new mongoose.Schema({
     type: String,
     required: true,
     match: [
-        /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/i,
         "Invalid email address",
       ],
   },
@@ -17,7 +17,7 @@ const breakdownrequestsSchema = new mongoose.Schema({
     type: String,
     required: true,
     match: [
-      /^[A-Za-z0-9]{1,10}$/i,
+      /^[A-Z0-9]+(-[0-9]+)*$/i,
       "Invalid Vehicle Number format",
     ],
   },
@@ -44,3 +44,9 @@ const breakdownrequestsSchema = new mongoose.Schema({
 },{timestamps:true});
 
 module.exports = mongoose.model("BreakdownRequests", breakdownrequestsSchema);
+
+/*
+match: [
+  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+  "Invalid email address",
+],*/
