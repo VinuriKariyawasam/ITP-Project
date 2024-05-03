@@ -8,7 +8,7 @@ import { Form, Col, Row, Button, InputGroup } from 'react-bootstrap';
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 import { useNavigate } from "react-router-dom";
 
-function PeriodicalAppointment() {
+function PeriodicalAppointment({ toggleLoading }) {
 
   const [availableTimes, setAvailableTimes] = useState([]);
   const cusauth = useContext(CusAuthContext)
@@ -62,7 +62,7 @@ function PeriodicalAppointment() {
       appointmenttime,
       msg
     }
-
+    toggleLoading(true);
     axios.post(`${process.env.React_App_Backend_URL}/appointment/addperiodicalAppointment`, {
       ...newPeriodicalAppointment,
       appointmentdate: new Date(appointmentdate.getTime() + (24 * 60 * 60 * 1000)) // Adding one day
@@ -83,7 +83,9 @@ function PeriodicalAppointment() {
 
     }).catch((err) => {
       alert(err)
-    })
+    }).finally(()=>{
+      toggleLoading(false); 
+    });
 
   }
   // Function to get tomorrow's date
@@ -98,7 +100,6 @@ function PeriodicalAppointment() {
     const formattedDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
     return formattedDate;
   };
-
 
   useEffect(() => {
     if (appointmentdate) {

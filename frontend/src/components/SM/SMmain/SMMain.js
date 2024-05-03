@@ -7,11 +7,11 @@ import SMPageTitle from "./SMPageTitle";
 import { Link } from 'react-router-dom';
 
 
-function SMMain() {
+function SMMain({ toggleLoading }) {
   return (
     <main id="main" className="main">
       <SMPageTitle />
-      <SMDashboard />
+      <SMDashboard toggleLoading={toggleLoading}/>
       <Card>
         <Card.Body>
           <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>Make a new service Quotation</Card.Text>

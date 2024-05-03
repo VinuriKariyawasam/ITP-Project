@@ -123,7 +123,7 @@ function CustomerApp({toggleLoading}) {
 
           <Route path="/" element={<Cushome  toggleLoading={toggleLoading}/>} />
           <Route path="/products/*" element={<Products />} />
-          <Route path="/appointment/*" element={<CUSAppointment />} />
+          <Route path="/appointment/*" element={<CUSAppointment toggleLoading={toggleLoading}/>} />
           <Route path="/payments/*" element={<Payment  toggleLoading={toggleLoading }/>} />
 
           <Route path="/cusaffairs/*" element={<CUSAffairs toggleLoading={toggleLoading }/>} />

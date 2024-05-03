@@ -31,7 +31,7 @@ exports.createServiceReq = async (req, res) => {
             const serviceReqData = req.body;
 
             // Check if file was uploaded successfully
-            const reportFile = req.file;
+            const reportFile = req.file ? req.file.path : null;
 
             // Upload the file to Firebase Storage
             const dateTime = giveCurrentDateTime();
