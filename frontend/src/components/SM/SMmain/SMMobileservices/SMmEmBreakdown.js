@@ -6,11 +6,10 @@ import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
 import { Form, Stack ,Container, Row, Col} from "react-bootstrap";
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import logo from "../../../../images/Payment/neotechlogo.jpg";
 import Modal from 'react-bootstrap/Modal';
 
-const SMmEmBreakdown = props => {
-
+const SMmEmBreakdown = ({toggleLoading}) => {
   const [breakdownRequests, setBreakdownRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [search, setSearch] = useState('');
@@ -25,8 +24,9 @@ const SMmEmBreakdown = props => {
   const [technician, setTechnician] = useState("");
 
 const assignTechnician = () => {
+  toggleLoading(true); // Set loading to true before API call
   // Send PUT request to update breakdown request with assigned technician
-  axios.put(`http://localhost:5000/api/mobile/update-breakdown/${selectedRequest._id}`, { 
+  axios.put(`${process.env.React_App_Backend_URL}/api/mobile/update-breakdown/${selectedRequest._id}`, { 
     technician: technician // Pass technician details to the backend
   })
   .then(response => {
@@ -36,6 +36,9 @@ const assignTechnician = () => {
   })
   .catch(error => {
     console.error(error);
+  })
+  .finally(() => {
+    toggleLoading(false); // Set loading to false after API call
   });
 };
 
@@ -44,12 +47,16 @@ const assignTechnician = () => {
   }, []);
 
   const getBreakdownRequests = () => {
-    axios.get("http://localhost:5000/api/mobile/get-breakdown")
+      toggleLoading(true); // Set loading to true before API call
+    axios.get(`${process.env.React_App_Backend_URL}/api/mobile/get-breakdown`)
       .then((res) => {
         setBreakdownRequests(res.data);
       })
-      .catch((err) => {
+      .catch(err => {
         alert(err.message);
+      })
+      .finally(() => {
+        toggleLoading(false); // Set loading to false after API call
       });
   };
 
@@ -91,43 +98,100 @@ const assignTechnician = () => {
   const deleteRequest = (id) => {
     const shouldDelete = window.confirm("Please confirm deletion!");
     if (shouldDelete) {
-      axios.delete(`http://localhost:5000/api/mobile/delete-breakdown/${id}`)
+        toggleLoading(true); // Set loading to true before API call
+      axios.delete(`${process.env.React_App_Backend_URL}/api/mobile/delete-breakdown/${id}`)
         .then(response => {
           console.log(response);
           window.location.reload();
         })
         .catch(error => {
           console.error(error);
+        })
+        .finally(() => {
+          toggleLoading(false); // Set loading to false after API call
         });
     }
   };
 
   const handleDownloadReports = () => {
-    const container = document.getElementById("RequestC");
+    const doc = new jsPDF();
   
-    if (container) {
-      html2canvas(container).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        const imgWidth = 208;
-        const pageHeight = 295;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
-        let position = 0;
-  
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-  
-        while (heightLeft >= 0) {
-          position = heightLeft - imgHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-        }
-  
-        pdf.save("Breakdown Requests.pdf");
+    // Create an Image object for the logo
+    const logoImg = new Image();
+    logoImg.src = logo;
+
+    logoImg.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = logoImg.width;
+      canvas.height = logoImg.height;
+
+      // Draw the logo onto the canvas
+      ctx.drawImage(logoImg, 0, 0);
+
+      // Convert canvas to data URL
+      const logoDataUrl = canvas.toDataURL("image/jpeg");
+
+      // Add the logo image and company details to the PDF
+      doc.addImage(logoDataUrl, "JPEG", 10, 10, 60, 30);
+      doc.setFontSize(12);
+      doc.setTextColor(128, 128, 128); // Set text color to black
+      doc.text("323/1/A Main Street Battaramulla", 10, 55); // Adjusted position
+      doc.text("info@neotech.com", 10, 59); // Adjusted position for email
+      doc.text("0112887998", 10, 63); // Adjusted position for phone number
+      doc.setLineWidth(0.5);//add a line
+      doc.line(10, 68, 200, 68); // Adjusted vertical position of the line
+      doc.setFont("helvetica", "bold"); //add report header
+      doc.setTextColor(0, 0, 0);
+      doc.text("Emergency Breakdown Requests", 10, 76);
+
+       // Set font size for the table
+      doc.setFontSize(10);
+      // Add table
+      const tableColumns = [
+        "Customer name",
+        "Customer email",
+        "Vehicle No",
+        //"Location",
+        "Issue",
+        "Contact No",
+        "Technician",
+      ];
+      const tableData = breakdownRequests.map((request) => [
+        request.cusName,
+        request.cusEmail,
+        request.vehicleNo,
+        //request.reqLocation,
+        request.issue,
+        request.contactNo,
+        request.technician,
+      ]);
+
+      doc.autoTable({
+        startY: 80, // Adjusted startY to leave space for the logo
+        head: [tableColumns],
+        body: tableData,
+        theme: "plain",
+        didDrawPage: function (data) {
+          // Add table heading on each page
+          doc.setFontSize(16);
+          doc.setTextColor(0, 0, 255);
+        },
+        tableWidth: 'auto', 
+        /*columnStyles: {
+          // Set column width for each column
+          0: { columnWidth: 'wrap' },
+          1: { columnWidth: 'wrap' },
+          2: { columnWidth: 'wrap' },
+          3: { columnWidth: 'wrap' },
+          4: { columnWidth: 'wrap' },
+          5: { columnWidth: 'wrap' },
+          6: { columnWidth: 'wrap' },
+        },*/
       });
-    }
+      doc.save("Breakdown_Requests.pdf");
+    };
   };
 
   return (
