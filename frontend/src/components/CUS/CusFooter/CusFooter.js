@@ -36,7 +36,11 @@ function CusFooter() {
               Your trusted automobile service and repair partner.
             </p>
             <div className="d-flex mt-4">
-              <a href="/" className="btn btn-primary d-flex align-items-center">
+              <a
+                href="https://www.facebook.com/profile.php?id=100065274439284&mibextid=ZbWKwL"
+                className="btn btn-primary d-flex align-items-center"
+                target="_blank"
+              >
                 <i className="bi bi-facebook fs-5 me-2"></i>{" "}
                 {/* Increase icon size with 'fs-3' class */}
                 Facebook
@@ -149,7 +153,14 @@ function CusFooter() {
             </h5>
             <br />
             <h5 className="mb-4 fw-bold d-flex align-items-center">
-              <i class="bi bi-geo-alt-fill me-2"></i>Main Street,Battaramulla
+              <i class="bi bi-geo-alt-fill me-2"></i>
+              <a
+                href="https://maps.app.goo.gl/5skNzVCstzyEs4PUA"
+                style={{ color: "white" }}
+                target="_blank"
+              >
+                Main Street,Battaramulla
+              </a>
             </h5>
           </Col>
         </Row>
