@@ -5,7 +5,7 @@ import CAM_consultancy from "../CAM_main/CAM_consultancy";
 import ContactDash from "../CAM_main/contactusDash";
 import CAM_feedbackReview from "../CAM_main/CAM_feedbackReview";
 import CAM_faqReview from "../CAM_main/CAM_faqReview";
-import CAM_Reports from "../CAM_main/CAM_Reports";
+
 
 // Import front end routes
 import {
@@ -22,12 +22,12 @@ function CAM({ toggleLoading }) {
       <CAM_sideBar/>
 
       <Routes>
-        <Route path="/" element={<CAM_main />} />
+        <Route path="/" element={<CAM_main toggleLoading={toggleLoading}/>} />
         <Route path="con_support/*" element={<CAM_consultancy toggleLoading={toggleLoading}/>} />
         <Route path="contactDash" element={<ContactDash toggleLoading={toggleLoading}/>} />
         <Route path="feedback_review/*" element={<CAM_feedbackReview toggleLoading={toggleLoading}/>}></Route>
         <Route path="faq_review/*" element={<CAM_faqReview toggleLoading={toggleLoading}/>}></Route>
-        <Route path="reports/*" element={<CAM_Reports/>}></Route>
+        
 
         
       </Routes>

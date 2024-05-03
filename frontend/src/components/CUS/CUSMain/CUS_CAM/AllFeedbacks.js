@@ -22,6 +22,8 @@ function AllFeedbacks({ toggleLoading }){
     const cusauth = useContext(CusAuthContext);
     const navigate = useNavigate();
     const [Feedback, setfeedback] = useState([]);
+    const myfeedback_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusaffairs/myfeedback`;
+    const feedback_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusaffairs/feedback`;
 
     useEffect(() => {
         const fetchFeedbacks = async() => {
@@ -71,7 +73,7 @@ function AllFeedbacks({ toggleLoading }){
       <div className="card" style={{width:"18rem",marginLeft:"100px"}}>
   <img src={cusimage2} className="card-img-top" alt="..."/>
   <div className="card-body">
-    <a href="http://localhost:3000/customer/cusaffairs/feedback" 
+    <a href={feedback_frontendurl} 
     class="btn btn-dark" style={{width:"200px",marginTop:"5px"}}>Give a FeedBack</a>
   </div>
 </div>
@@ -80,7 +82,7 @@ function AllFeedbacks({ toggleLoading }){
       <div className="card" style={{width:"18rem"}}>
   <img src={cusimage3} className="card-img-top" alt="..."/>
   <div className="card-body">
-    <a href="http://localhost:3000/customer/cusaffairs/myfeedback" 
+    <a href={myfeedback_frontendurl} 
     className="btn btn-dark" style={{width:"200px",marginTop:"5px"}}>My FeedBack</a>
   </div>
 </div>      
@@ -108,7 +110,7 @@ function AllFeedbacks({ toggleLoading }){
       <div className="card" style={{width:"18rem",marginLeft:"100px"}}>
   <img src={cusimage2} className="card-img-top" alt="..."/>
   <div className="card-body">
-    <a href="http://localhost:3000/customer/cusaffairs/feedback" 
+    <a href={feedback_frontendurl} 
     class="btn btn-dark" style={{width:"200px",marginTop:"5px"}}>Give a FeedBack</a>
   </div>
 </div>
@@ -117,7 +119,7 @@ function AllFeedbacks({ toggleLoading }){
       <div className="card" style={{width:"18rem"}}>
   <img src={cusimage3} className="card-img-top" alt="..."/>
   <div className="card-body">
-    <a href="http://localhost:3000/customer/cusaffairs/myfeedback" 
+    <a href={myfeedback_frontendurl} 
     className="btn btn-dark" style={{width:"200px",marginTop:"5px"}}>My FeedBack</a>
   </div>
 </div>      
@@ -145,7 +147,7 @@ function AllFeedbacks({ toggleLoading }){
       <div className="card" style={{width:"18rem",marginLeft:"100px"}}>
   <img src={cusimage2} className="card-img-top" alt="..."/>
   <div className="card-body">
-    <a href="${process.env.React_App_Frontend_URL}/customer/cusaffairs/feedback" 
+    <a href={feedback_frontendurl} 
     class="btn btn-dark" style={{width:"200px",marginTop:"5px"}}>Give a FeedBack</a>
   </div>
 </div>
@@ -154,7 +156,7 @@ function AllFeedbacks({ toggleLoading }){
       <div className="card" style={{width:"18rem"}}>
   <img src={cusimage3} className="card-img-top" alt="..."/>
   <div className="card-body">
-    <a href="${process.env.React_App_Frontend_URL}/customer/cusaffairs/myfeedback" 
+    <a href={myfeedback_frontendurl}
     className="btn btn-dark" style={{width:"200px",marginTop:"5px"}}>My FeedBack</a>
   </div>
 </div>      
