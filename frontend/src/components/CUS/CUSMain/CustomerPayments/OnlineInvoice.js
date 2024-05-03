@@ -13,6 +13,11 @@ const OnlineInvoice = ({toggleLoading}) => {
     state: { paymentId },
   } = location;
 
+
+  const handleBackToHome=()=>{
+    window.location.href = "/customer";
+  }
+
   const [invoiceData, setInvoiceData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
@@ -31,6 +36,9 @@ const OnlineInvoice = ({toggleLoading}) => {
         const data = await response.json();
         setInvoiceData(data.data);
         setLoading(false);
+
+
+        
 
         // Automatically trigger upload PDF after fetching invoice data
         handleUploadPDF();
@@ -451,15 +459,16 @@ const OnlineInvoice = ({toggleLoading}) => {
                             <Button
                               variant="primary"
                               onClick={handleDownloadPDF}
+                              className="me-1"
                             >
                               Download
                             </Button>
-                            {/* <Button
+                            <Button
                               variant="primary"
-                              onClick={handleUploadPDF}
+                              onClick={handleBackToHome}
                             >
-                             Upload
-                            </Button> */}
+                            Back to Home
+                            </Button>
                           </>
                         )}
                       </div>
