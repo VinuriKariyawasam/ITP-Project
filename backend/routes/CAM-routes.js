@@ -15,7 +15,7 @@ router.put('/consultation/delete-solutionbyid/:consultId',ConsultationController
 router.put('/consultation/update-newsolution/:consultId',ConsultationController.updateNewSolution)
 router.get('/consultation/get-issue/:userId',ConsultationController.getConsultationById)
 router.get('/consultation/get-consultid/:consultId',ConsultationController.getConsultationByconsultId)
-
+router.delete('/consultation/delete-consultation/:consultId',ConsultationController.deleteConsultationByConsultId)
 
 
 //Feedback Routes   

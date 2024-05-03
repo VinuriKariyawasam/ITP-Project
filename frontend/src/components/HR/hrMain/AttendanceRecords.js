@@ -35,11 +35,16 @@ function AttendanceRecords({ toggleLoading }) {
 
   // Function to check if a date is within the current week
   const isWithinThisWeek = (date) => {
+    date = new Date(date);
     const today = new Date();
     const clonedToday = new Date(today.getTime()); // Clone today's date
+
+    // First day of the week (Sunday)
     const firstDayOfWeek = new Date(
       clonedToday.setDate(clonedToday.getDate() - clonedToday.getDay())
     );
+
+    // Last day of the week (Saturday)
     const lastDayOfWeek = new Date(
       clonedToday.setDate(clonedToday.getDate() - clonedToday.getDay() + 6)
     );
@@ -57,6 +62,7 @@ function AttendanceRecords({ toggleLoading }) {
 
   // Function to check if a date is within the current month
   const isWithinThisMonth = (date) => {
+    date = new Date(date);
     const today = new Date();
     const targetDate = new Date(date);
     return (

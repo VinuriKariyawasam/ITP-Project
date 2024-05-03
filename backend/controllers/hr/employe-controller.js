@@ -276,13 +276,19 @@ class EmployeeController {
         newSalary.basicSalary = getDesignation.basicSalary;
         newSalary.allowance = 10000.0;
         newSalary.noPay = 0.0;
-        newSalary.EPFC = newSalary.basicSalary * 0.12;
-        newSalary.EPFE = newSalary.basicSalary * 0.08;
-        newSalary.EPFT = newSalary.EPFC + newSalary.EPFE;
-        newSalary.ETF = newSalary.basicSalary * 0.03;
-        newSalary.totalSal = newSalary.basicSalary + newSalary.allowance;
-        newSalary.netSal =
-          newSalary.totalSal - (newSalary.noPay + newSalary.EPFC);
+        newSalary.EPFC = (newSalary.basicSalary * 0.12).toFixed(2);
+        newSalary.EPFE = (newSalary.basicSalary * 0.08).toFixed(2);
+        newSalary.EPFT = (
+          parseFloat(newSalary.EPFC) + parseFloat(newSalary.EPFE)
+        ).toFixed(2);
+        newSalary.ETF = (newSalary.basicSalary * 0.03).toFixed(2);
+        newSalary.totalSal = (
+          parseFloat(newSalary.basicSalary) + parseFloat(newSalary.allowance)
+        ).toFixed(2);
+        newSalary.netSal = (
+          parseFloat(newSalary.totalSal) -
+          (parseFloat(newSalary.noPay) + parseFloat(newSalary.EPFC))
+        ).toFixed(2);
         newSalary.bank = bank;
         newSalary.branch = branch;
         newSalary.account = account;

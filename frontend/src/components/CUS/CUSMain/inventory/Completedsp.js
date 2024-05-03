@@ -17,7 +17,7 @@ function Completedsp() {
     useEffect(() => {
         function getapprovedSpareparts() {
           axios
-            .get("http://localhost:5000/Product/completedsp")
+            .get(`${process.env.React_App_Backend_URL}/Product/completedsp`)
             .then((res) => {
               setapprovedSpareParts(res.data);
             })

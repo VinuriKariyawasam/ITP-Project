@@ -81,6 +81,7 @@ function MyFeedback({ toggleLoading }) {
 
   const handleDelete = async (feedbackId) => {
     try {
+      toggleLoading(true);
       // Send DELETE request to backend API using fetch
       await fetch(`${process.env.React_App_Backend_URL}/cam/feedback/delete-feedback/${feedbackId}`, {
         method: "DELETE",
@@ -100,6 +101,8 @@ function MyFeedback({ toggleLoading }) {
     } catch (error) {
       console.error("Error deleting feedback:", error);
       // Handle error (e.g., display error message)
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -114,7 +117,7 @@ function MyFeedback({ toggleLoading }) {
          <h2 style={{fontFamily:"sans-serif",color:"darkslateblue",marginLeft:"20px"}}><b>My FeedBack</b></h2>
           <Row>
             <Col>
-              <div className="card mb-3" style={{height:"450px",marginLeft:"20px"}}>
+              <div className="card mb-3" style={{marginLeft:"20px"}}>
                 {Feedback.map((feedback, index) => (
                   <div key={index}>
                    {feedback.fileUrls.map((fileUrl, i) => (

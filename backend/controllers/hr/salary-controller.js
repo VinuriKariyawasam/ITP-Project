@@ -51,12 +51,12 @@ class SalaryController {
 
       // Calculations based on provided fields
 
-      const EPFC = basicSalary * 0.12;
-      const EPFE = basicSalary * 0.08;
-      const EPFT = EPFC + EPFE;
-      const ETF = basicSalary * 0.03;
-      const totalSal = basicSalary + allowance;
-      const netSal = totalSal - noPay - EPFE;
+      const EPFC = (basicSalary * 0.12).toFixed(2);
+      const EPFE = (basicSalary * 0.08).toFixed(2);
+      const EPFT = (parseFloat(EPFC) + parseFloat(EPFE)).toFixed(2);
+      const ETF = (basicSalary * 0.03).toFixed(2);
+      const totalSal = (basicSalary + allowance).toFixed(2);
+      const netSal = (totalSal - noPay - EPFE).toFixed(2);
 
       // Update the salary record with the new values
       const updatedSalary = await Salary.findByIdAndUpdate(

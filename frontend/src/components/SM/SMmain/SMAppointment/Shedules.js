@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
 import axios from 'axios';
 import Table from 'react-bootstrap/Table';
 
-const Shedules = () => {
+const Shedules = ({ toggleLoading }) => {
   const [value, onChange] = useState(new Date());
 
   // to handle card display after select a date
@@ -27,8 +27,7 @@ const Shedules = () => {
   function sendata(e) {
     const request = "pending"
     const quotation = "pending"
-    const status = "pending"
-    const report = "pending"
+   
 
     e.preventDefault();
 
@@ -38,19 +37,20 @@ const Shedules = () => {
       name: name,
       issue: issue,
       quotation,
-      request,
-      report,
-      status
+      request
+      
 
     };
-
-    axios.post(`${process.env.React_App_Backend_URL}/api/vehicle/add-serviceReq`, newservicerequest)
+    toggleLoading(true); 
+    axios.post(`${process.env.React_App_Backend_URL}/api/vehicle/add-serviceReqApp`, newservicerequest)
       .then(() => {
         alert("Service request added ")
         sendataToCompletedHistort(selectedAppointment);
       })
       .catch((err) => {
         alert(err)
+      }).finally(()=>{
+        toggleLoading(false); 
       });
   }
 
@@ -70,6 +70,7 @@ const Shedules = () => {
 
 
     };
+    toggleLoading(true); 
 
     axios.post(`${process.env.React_App_Backend_URL}/appointment/addcompletedappointment`, newcompletedAppointment)
       .then(() => {
@@ -77,6 +78,8 @@ const Shedules = () => {
       })
       .catch((err) => {
         alert(err)
+      }).finally(()=>{
+        toggleLoading(false); 
       });
   }
 
@@ -114,11 +117,14 @@ const Shedules = () => {
     try {
       setAppointments("");
       const formattedDate = changedatetoformet(date);
+      toggleLoading(true); 
       const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedappointmentbyDate/${formattedDate}`);
       setAppointments(response.data.data);
       setSelectedDate(date);
     } catch (error) {
       console.error('Error fetching appointments:', error);
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
   // Function to handle opening the card with appointment details
@@ -198,7 +204,7 @@ const Shedules = () => {
           </Card.Body>
         </Card>
       )}
-      <div style={{ marginLeft: '25%' }}>
+      <div style={{ marginLeft: '17%' }}>
         <h1 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Appointment Scheduling Calendar</h1>
         {/*<h3 style={{fontSize: '24px', color: 'darkblue',marginRight:'150px',marginLeft:'12px'}}>Here comes the schedule of Appointments in Upcoming days</h3>*/}
 

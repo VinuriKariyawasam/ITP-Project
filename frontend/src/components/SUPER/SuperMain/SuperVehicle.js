@@ -6,7 +6,7 @@ import VehicleDash from "./VehicleDash";
 import UpdateVehicle from "./UpdateVehicle";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-function SuperVehicle() {
+function SuperVehicle({ toggleLoading }) {
   return (
     <main id="main" className="main">
       <Routes>
@@ -15,7 +15,7 @@ function SuperVehicle() {
           element={
             <>
               <SuperPageTitle title="Vehicle" url="staff/supervisor/vehicle/" />
-              <VehicleDash />
+              <VehicleDash toggleLoading={toggleLoading}/>
             </>
           }
         />
@@ -24,19 +24,11 @@ function SuperVehicle() {
           element={
             <>
               <SuperPageTitle title="Vehicle" url="staff/supervisor/vehicle/" />
-              <AddVehicle />
+              <AddVehicle toggleLoading={toggleLoading}/>
             </>
           }
         />
-        <Route
-          path="/update/*"
-          element={
-            <>
-              <SuperPageTitle title="Update Records" url="staff/supervisor/vehicle/update" />
-              <UpdateVehicle />
-            </>
-          }
-        />
+        
         {/* Redirect to the vehicle page if an invalid route is provided */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

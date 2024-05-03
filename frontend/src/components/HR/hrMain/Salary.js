@@ -473,14 +473,22 @@ function Salary({ toggleLoading }) {
                 <td>{record.empId}</td>
                 <td>{record.name}</td>
                 <td>{record.position}</td>
-                <td>Rs.{record.basicSalary}</td>
-                <td>Rs.{record.allowance}</td>
-                <td>Rs.{record.totalSal}</td>
-                <td>
-                  Rs.
-                  {record.noPay + record.EPFE}
+                <td style={{ textAlign: "right" }}>
+                  Rs.{parseFloat(record.basicSalary).toFixed(2)}
                 </td>
-                <td>Rs.{record.netSal}</td>
+                <td style={{ textAlign: "right" }}>
+                  Rs.{parseFloat(record.allowance).toFixed(2)}
+                </td>
+                <td style={{ textAlign: "right" }}>
+                  Rs.{parseFloat(record.totalSal).toFixed(2)}
+                </td>
+                <td style={{ textAlign: "right" }}>
+                  Rs.
+                  {parseFloat(record.noPay + record.EPFE).toFixed(2)}
+                </td>
+                <td style={{ textAlign: "right" }}>
+                  Rs.{parseFloat(record.netSal).toFixed(2)}
+                </td>
                 <td>
                   {/* More button with onClick handler */}
                   <Button
