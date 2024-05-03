@@ -105,28 +105,34 @@ function CusFooter() {
               )}
             </ul>
           </Col>
-          {CusAuth.isLoggedIn && (
-            <Col md={2} className="mb-4 mb-md-0">
-              <h5 className="mb-4 fw-bold">Quick Links</h5>
-              <ul className="list-unstyled">
+
+          <Col md={2} className="mb-4 mb-md-0">
+            <h5 className="mb-4 fw-bold">Quick Links</h5>
+            <ul className="list-unstyled">
+              {!CusAuth.isLoggedIn && (
                 <li>
                   <a href={reg_frontendurl} className="text-white">
                     Sign Up
                   </a>
                 </li>
+              )}
+              {!CusAuth.isLoggedIn && (
                 <li>
                   <a href={login_frontendurl} className="text-white">
                     Log in
                   </a>
                 </li>
+              )}
+              {CusAuth.isLoggedIn && (
                 <li>
                   <a href={feedback_frontendurl} className="text-white">
                     Feedbacks
                   </a>
                 </li>
-              </ul>
-            </Col>
-          )}
+              )}
+            </ul>
+          </Col>
+
           <Col md={3} className="mb-4 mb-md-0">
             <h5 className="mb-4 fw-bold d-flex align-items-center">
               <i class="bi bi-envelope-at-fill me-2"></i>{" "}
