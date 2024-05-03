@@ -5,7 +5,8 @@ import jsPDF from "jspdf";
 import logo from "../../../images/Payment/neotechlogo.jpg";
 
 
-function VehicleDash() {
+function VehicleDash({ toggleLoading }) {
+
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -21,8 +22,9 @@ function VehicleDash() {
 
   const fetchData = async () => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        "http://localhost:5000/api/vehicle/vehicles"
+        `${process.env.React_App_Backend_URL}/api/vehicle/vehicles`
       );
       if (response.ok) {
         const data = await response.json();
@@ -36,6 +38,8 @@ function VehicleDash() {
     } catch (error) {
       console.error("Error fetching data:", error);
       setLoading(false);
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -53,8 +57,9 @@ function VehicleDash() {
     );
     if (shouldDelete) {
       try {
+        toggleLoading(true);
         const response = await fetch(
-          `http://localhost:5000/api/vehicle/delete-vehicle/${id}`,
+          `${process.env.React_App_Backend_URL}/api/vehicle/delete-vehicle/${id}`,
           {
             method: "DELETE",
             headers: {
@@ -72,6 +77,8 @@ function VehicleDash() {
         }
       } catch (error) {
         console.error("Error deleting vehicle:", error);
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     }
   };
@@ -226,8 +233,9 @@ function VehicleDash() {
 
   const handleSubmit = async () => {
     try {
+      toggleLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/vehicle/update-vehicle/${selectedVehicle._id}`,
+        `${process.env.React_App_Backend_URL}/api/vehicle/update-vehicle/${selectedVehicle._id}`,
         {
           method: "PUT",
           headers: {
@@ -250,6 +258,8 @@ function VehicleDash() {
       }
     } catch (error) {
       console.error("Error updating vehicle:", error);
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 

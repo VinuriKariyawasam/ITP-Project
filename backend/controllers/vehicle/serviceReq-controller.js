@@ -1,5 +1,5 @@
 const { initializeApp } = require("firebase/app");
-const { getStorage, ref, getDownloadURL, uploadBytesResumable } = require("firebase/storage");
+const { getStorage, ref, getDownloadURL, uploadBytesResumable, deleteObject } = require("firebase/storage");
 const multer = require("multer");
 const { firebaseConfig } = require("../../config/firebase-config");
 const ServiceRequestModel = require("../../models/vehicle/serviceRequestModel");
@@ -60,6 +60,32 @@ exports.createServiceReq = async (req, res) => {
     }
 };
 
+exports.createServiceReqfromApp = async (req, res) => {
+    const vehicleNo = req.body.vehicleNo;
+    const date = req.body.date;
+    const  name = req.body.name;
+    const issue = req.body.issue;
+    const quotation= req.body.issue;
+    const request= req.body.request;
+
+
+    const newServiceReqp = ServiceRequestModel({
+        vehicleNo,
+        date,
+        name,
+        issue,
+        quotation,
+        request
+       
+    });
+    try { await newServiceReqp.save();
+        res.status(200).json({ message: 'Service request added' })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+  
 // Retrieve all service requests
 exports.getServiceReqs = async (req, res) => {
     try {
@@ -132,12 +158,21 @@ exports.deleteServiceReq = async (req, res) => {
         // Extract ID from the request
         const { id } = req.params;
 
-        // Delete the service request from the database
+        // Find the service request by ID and delete it
         const deletedServiceReq = await ServiceRequestModel.findByIdAndDelete(id);
 
         // Check if the service request exists
         if (!deletedServiceReq) {
             return res.status(404).json({ error: "Service Request not found" });
+        }
+
+        // Extract the file path from the deleted service request
+        const reportFilePath = deletedServiceReq.report;
+
+        // Delete the file from Firebase Storage if a report file exists
+        if (reportFilePath) {
+            const storageRef = ref(storage, reportFilePath);
+            await deleteObject(storageRef);
         }
 
         // Respond with success message
@@ -147,6 +182,8 @@ exports.deleteServiceReq = async (req, res) => {
         res.status(500).json({ error: "Failed to delete service request" });
     }
 };
+
+
 
 // Function to get current date and time
 const giveCurrentDateTime = () => {

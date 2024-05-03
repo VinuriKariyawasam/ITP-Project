@@ -9,11 +9,11 @@ import Products from "../../CUS/CUSMain/inventory/Products";
 
 import { Routes, Route, Navigate } from "react-router-dom";
 
-function SuperProducts() {
+function SuperProducts({ toggleLoading }) {
     return (
       <main id="main" className="main">
         <SuperPageTitle title="Products" url="staff/supervisor/products/" />
-        <Products />
+        <Products toggleLoading={toggleLoading}/>
       </main>
     );
   }
