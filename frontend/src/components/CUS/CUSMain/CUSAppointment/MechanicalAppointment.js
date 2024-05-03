@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 import { useNavigate } from "react-router-dom";
 
-function MechanicalAppointment() { // Corrected function name
+function MechanicalAppointment({toggleLoading }) { // Corrected function name
 
 
   const [availableTimes, setAvailableTimes] = useState([]);
@@ -57,7 +57,7 @@ function MechanicalAppointment() { // Corrected function name
       appointmentdate,
       appointmenttime,
     };
-
+    toggleLoading(true);
     axios.post(`${process.env.React_App_Backend_URL}/appointment/addmechanicalAppointment`, {
       ...newmechanicalAppointment,
       appointmentdate: new Date(appointmentdate.getTime() + (24 * 60 * 60 * 1000)) // Adding one day
@@ -76,6 +76,8 @@ function MechanicalAppointment() { // Corrected function name
     })
       .catch((err) => {
         alert(err)
+      }).finally(()=>{
+        toggleLoading(false); 
       });
   }
 

@@ -6,7 +6,7 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 
-function MyApPer() {
+function MyApPer({ toggleLoading }) {
 
     const [showModal, setShowModal] = useState(false);
     const [periodicalAppointment, setperiodicalAppointment] = useState([]);
@@ -32,12 +32,15 @@ function MyApPer() {
     let userId = cusauth.userId;
     const getPeriodicalData = async (userId) => {
         try {
+            toggleLoading(true);
             const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-periodicalAppointmentbyuserId/${userId}`);
             setperiodicalAppointment(response.data.data);
 
         } catch (error) {
             console.error('Error fetching appointments:', error);
-        }
+        }finally {
+            toggleLoading(false); // Set loading to false after API call
+          }
     };
     // Function to handle the "Update" button click
     const handleUpdateClick = () => {
@@ -51,6 +54,7 @@ function MyApPer() {
         // Make sure selectedAppointment is not null
         if (selectedAppointment && appointmentdate) { // Ensure appointmentdate is not empty
             // Send a request to update the appointment with the new date and time
+            toggleLoading(true); 
             axios.put(`${process.env.React_App_Backend_URL}/appointment/update-periodicalAppointment/${selectedAppointment._id}`, {
                 userId: selectedAppointment.userId, // Use userId from selectedAppointment
                 name: selectedAppointment.name,
@@ -78,13 +82,15 @@ function MyApPer() {
                 .catch(error => {
                     console.error(error);
                     // Handle errors
-                });
+                }).finally(()=>{
+                    toggleLoading(false); 
+                  });
         }
     };
 
 
     const Delete = (id) => {
-
+        toggleLoading(true); 
         axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-periodicalAppointment/${id}`)
             .then(response => {
                 console.log(response);
@@ -94,7 +100,9 @@ function MyApPer() {
             .catch(error => {
                 // Handle errors here
                 console.error(error);
-            });
+            }).finally(()=>{
+                toggleLoading(false); 
+              });
 
     };
 

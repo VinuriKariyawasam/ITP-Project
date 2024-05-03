@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import axios from "axios";
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 
-function MyApApp() {
+function MyApApp ({ toggleLoading }) {
 
   const [appointments, setAppointments] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -20,6 +20,7 @@ function MyApApp() {
   const getAcceptedAppData = async (userId) => {
 
     try {
+      toggleLoading(true);
       const currentDate = new Date();
       const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedappointmentbyuserId/${userId}`);
      // Filter appointments whose date is after the current date
@@ -32,6 +33,8 @@ function MyApApp() {
 
     } catch (error) {
       console.error('Error fetching appointments:', error);
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
   useEffect(() => {
@@ -49,7 +52,7 @@ function MyApApp() {
 
   };
   const Delete = (id) => {
-
+    toggleLoading(true); 
     axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-acceptedappointment/${id}`)
       .then(response => {
         console.log(response);
@@ -59,6 +62,8 @@ function MyApApp() {
       .catch(error => {
         // Handle errors here
         console.error(error);
+      }).finally(()=>{
+        toggleLoading(false); 
       });
 
   };
@@ -106,7 +111,7 @@ function MyApApp() {
           </Modal.Header>
           <Modal.Body>
             <img style={{ width: "50%", height: "50%" }} />
-            <p>:Vehicle No:{selectedAppointment.vNo} </p>
+            <p>Vehicle No:{selectedAppointment.vNo} </p>
             <p>Customer Name:{selectedAppointment.name} </p>
             <p>Vehicle Type:{selectedAppointment.vType}  </p>
             <p>Service Type:{selectedAppointment.serviceType}  </p>

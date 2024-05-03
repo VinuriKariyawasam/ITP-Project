@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 
-const SMPeriodicalServices = props => {
+const SMPeriodicalServices = ({ toggleLoading }) => {
 
   //create an empty array to store details
   const [periodicalAppointment, setperiodicalAppointment] = useState([]);
@@ -32,6 +32,7 @@ const SMPeriodicalServices = props => {
   const [msg, setmsg] = useState("");
 
   function sendata(e) {
+
     e.preventDefault();
     const serviceType = "Periodical Services";
     const emailData = {
@@ -41,6 +42,7 @@ const SMPeriodicalServices = props => {
       html: null,
     };
 
+      toggleLoading(true); // Set loading to true before API call
     axios
       .post(
         `${process.env.React_App_Backend_URL}/appointment/sendappointmentmail`,
@@ -72,7 +74,9 @@ const SMPeriodicalServices = props => {
       alert(err)
     }).catch((error) => {
       console.error("Error sending email:", error);
-    });
+    }).finally(()=>{
+      toggleLoading(false); 
+    })
   })
 
   }
@@ -96,13 +100,16 @@ const SMPeriodicalServices = props => {
       appointmenttime,
       msg
     }
+    toggleLoading(true); 
     axios.post(`${process.env.React_App_Backend_URL}/appointment/addaceptedperiodicalAppointment`,newacceptedPeriodicalAppointment).then(() => {
        
       
 
     }).catch((err) => {
       alert(err)
-    })
+    }).finally(()=>{
+      toggleLoading(false); 
+    });
 
   }
 
@@ -131,6 +138,7 @@ const SMPeriodicalServices = props => {
   useEffect(() => {
 
     function getPeriodicalAppointment() {
+        toggleLoading(true); // Set loading to true before API call
       axios.get(`${process.env.React_App_Backend_URL}/appointment/get-periodicalAppointment`).then((res) => {
         const sortedAppointments = res.data.sort((a, b) => {
           return new Date(a.appointmentdate) - new Date(b.appointmentdate);
@@ -139,7 +147,9 @@ const SMPeriodicalServices = props => {
         console.log(res.data)
       }).catch((err) => {
         alert(err.message);
-      })
+      }).finally(()=>{
+        toggleLoading(false); 
+      });
     }
     getPeriodicalAppointment();
 
@@ -156,21 +166,30 @@ const SMPeriodicalServices = props => {
 
 
   const Delete = (id) => {
+      toggleLoading(true); // Set loading to true before API call
       axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-periodicalAppointment/${id}`)
         .then(response => {
           console.log(response);
           window.location.reload();
         })
-  
+        .catch(error => {
+          // Handle errors here
+          console.error(error);
+        }).finally(()=>{
+          toggleLoading(false); 
+        });
+    
   };
+
   const cancleAppointment = (id,email,name,date,time) => {
+    
     const emailData = {
       to:email,
       subject: `Appointment cancelled`,
       text:  `Hi ${name},\n We are sorry to inform you that Your Periodical Service Appintment with NeoTech Motors on ${date.split('T')[0]} at ${time} has been canceled due to unavilability of technicians at given time slots.We are kindly request you to make an new Appointment.`,
       html: null,
     };
-
+      toggleLoading(true); // Set loading to true before API call
     axios
       .post(
         `${process.env.React_App_Backend_URL}/appointment/sendappointmentmail`,
@@ -178,16 +197,18 @@ const SMPeriodicalServices = props => {
       )
       .then((response) => {
         console.log(response.data);
-
     axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-periodicalAppointment/${id}`)
       .then(response => {
         console.log(response);
         window.location.reload();
       })
-}).catch(error => {
-        // Handle errors here
-        console.error(error);
-      });
+    }).catch(error => {
+      // Handle errors here
+      console.error(error);
+    }).finally(()=>{
+      toggleLoading(false); 
+    });
+
   
 };
   

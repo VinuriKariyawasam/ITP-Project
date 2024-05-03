@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import axios from "axios";
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 
-function MyAppCom() {
+function MyAppCom({ toggleLoading }){
 
   const [appointments, setAppointments] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -20,7 +20,9 @@ function MyAppCom() {
   const getcompletedData = async (userId) => {
 
     try {
+
       const currentDate = new Date();
+      toggleLoading(true);
       const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-completedappointmentbyuserId/${userId}`);
      // Filter appointments whose date is after the current date
      const filteredAppointments = response.data.data.filter(appointment => {
@@ -32,6 +34,8 @@ function MyAppCom() {
 
     } catch (error) {
       console.error('Error fetching appointments:', error);
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
   useEffect(() => {
@@ -92,7 +96,7 @@ function MyAppCom() {
           </Modal.Header>
           <Modal.Body>
             <img style={{ width: "50%", height: "50%" }} />
-            <p>:Vehicle No:{selectedAppointment.vNo} </p>
+            <p>Vehicle No:{selectedAppointment.vNo} </p>
             <p>Customer Name:{selectedAppointment.name} </p>
             <p>Vehicle Type:{selectedAppointment.vType}  </p>
             <p>Service Type:{selectedAppointment.serviceType}  </p>
