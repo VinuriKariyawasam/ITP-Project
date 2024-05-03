@@ -10,11 +10,11 @@ import feedbackimg1 from "../../../images/cam/feedbackimg1.jpeg";
 import feedbackimg2 from "../../../images/cam/feedbackimg2.jpeg";
 import feedbackimg3 from "../../../images/cam/feedbackimg3.jpeg";
 
-function CAM_main() {
+function CAM_main({ toggleLoading }) {
   return (
     <main id="main" className="cam-main">
       <CAM_pageTitle title="Customer Affairs Management Dashboard" url="/cam" />
-      <CAM_dashboard />
+      <CAM_dashboard toggleLoading={toggleLoading}/>
       <Row>
         <Col>
       <div class="card mb-3">

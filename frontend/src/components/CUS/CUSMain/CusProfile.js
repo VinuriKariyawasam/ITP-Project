@@ -9,7 +9,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import customerlogo from "../../../images/customerlogo.png";
 
-const CusProfile = () => {
+const CusProfile = ({ toggleLoading }) => {
   const cusauth = useContext(CusAuthContext);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -28,16 +28,25 @@ const CusProfile = () => {
   }, [cusauth.userId]);
 
   const fetchCustomerData = () => {
+    try{
+      toggleLoading(true);
     fetch(
-      `http://localhost:5000/api/customer/signup/get-customer/${cusauth.userId}`
+      `${process.env.React_App_Backend_URL}/api/customer/signup/get-customer/${cusauth.userId}`
     )
       .then((response) => response.json())
       .then((data) => {
         setFormData(data);
       })
-      .catch((error) => {
+    .catch(error =>  {
         console.error("Error fetching customer:", error);
-      });
+      })
+    .finally (() => {
+      toggleLoading(false); // Set loading to false after API call completes
+    });
+  }catch (error) {
+      console.error("Error fetching customer:", error);
+      toggleLoading(false); // Set loading to false in case of an error
+    }
   };
 
   const handleFormSubmit = (e) => {
@@ -48,8 +57,10 @@ const CusProfile = () => {
   };
 
   const updateCustomerData = () => {
+    try{
+      toggleLoading(true);
     fetch(
-      `http://localhost:5000/api/customer/signup/update-customer/${cusauth.userId}`,
+      `${process.env.React_App_Backend_URL}/api/customer/signup/update-customer/${cusauth.userId}`,
       {
         method: "PATCH",
         headers: {
@@ -70,10 +81,12 @@ const CusProfile = () => {
         cusauth.logout();
         navigate("/customer/cuslogin");
       })
-      .catch((error) => {
+    }catch(error)  {
         console.error("Error updating details:", error);
         alert("Error updating details. Please try again later.");
-      });
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
+      };
   };
   
 
@@ -89,8 +102,10 @@ const CusProfile = () => {
   };
 
   const deleteCustomerData = () => {
+    try{
+      toggleLoading(true);
     fetch(
-      `http://localhost:5000/api/customer/signup/delete-customer/${cusauth.userId}`,
+      `${process.env.React_App_Backend_URL}/api/customer/signup/delete-customer/${cusauth.userId}`,
       {
         method: "DELETE",
       }
@@ -100,7 +115,11 @@ const CusProfile = () => {
         alert("Account deleted successfully");
         console.log("Account deleted successfully");
       })
-      .catch((error) => console.error("Error deleting Account:", error));
+    }catch(error) {
+       console.error("Error deleting Account:", error)
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
+      };
   };
 
   const handleChange = (e) => {

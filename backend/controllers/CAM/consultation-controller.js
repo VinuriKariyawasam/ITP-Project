@@ -296,6 +296,37 @@ static async deleteSolution(req, res)  {
   }
 };
 
+//delete a consultation
+static async deleteConsultationByConsultId(req, res) {
+  const consultId = req.params.consultId;
+
+  try {
+      // Find the consultation by consultId
+      const consultation = await consultationModel.findOne({ consultId });
+
+      if (!consultation) {
+          return res.status(404).json({ error: "Consultation not found" });
+      }
+
+      // Optionally, delete associated files from Firebase Storage
+      // const filesToDelete = consultation.files;
+      // Implement logic to delete files from Firebase Storage based on 'filesToDelete'
+      // Delete files from Firebase Storage
+    for (const file of consultation.files) {
+      const storageRef = ref(fb_storage, file); // Assuming 'fb_storage' is your Firebase Storage reference
+      await deleteObject(storageRef);
+    }
+
+      // Delete the consultation from the database
+      await consultationModel.deleteOne({ consultId });
+
+      res.status(200).json({ message: "Consultation deleted successfully" });
+  } catch (error) {
+      console.error("Error deleting consultation:", error);
+      res.status(500).json({ error: error.message });
+  }
+}
+
 //update new solution
 static async updateNewSolution(req, res) {
   const { consultId } = req.params;

@@ -9,6 +9,8 @@ function NavAvatar() {
   const cusauth = useContext(CusAuthContext);
   const navigate = useNavigate();
 
+  const cusprofile_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusprofile`;
+
   // Function to handle logout
   const handleLogout = () => {
     cusauth.logout(); // Call the logout function from the context
@@ -43,7 +45,7 @@ function NavAvatar() {
               <li>
                 <a
                   className="cus-dropdown-item d-flex align-items-center"
-                  href="${process.env.React_App_Frontend_URL}/customer/cusprofile"
+                  href= {cusprofile_frontendurl}
                 >
                   <span>My Profile</span>
                 </a>

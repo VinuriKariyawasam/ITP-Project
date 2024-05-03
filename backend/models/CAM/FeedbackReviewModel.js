@@ -19,6 +19,6 @@ const feedbackReviewSchema = new mongoose.Schema({
       },
 });
 
-const FeedbackReview = mongoose.model("FeedbackReview", feedbackReviewSchema);
+const FeedbackReview = mongoose.model("Review", feedbackReviewSchema);
 
 module.exports = FeedbackReview;
