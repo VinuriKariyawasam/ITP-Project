@@ -6,16 +6,17 @@ import { Row, Col, Button, Stack, Card, Badge } from "react-bootstrap";
 import AttendanceRecords from "./AttendanceRecords";
 import UpdateAttend from "./UpdateAttend";
 
-function Attendance() {
+function Attendance({ toggleLoading }) {
   const [attendanceData, setAttendanceData] = useState([]);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   //to button navigates
   const navigate = useNavigate();
   const fetchAttendance = async () => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const today = new Date().toISOString().split("T")[0];
       const response = await fetch(
-        `http://localhost:5000/api/hr/attendance/date/${today}`
+        `${process.env.React_App_Backend_URL}/api/hr/attendance/date/${today}`
       );
 
       if (!response.ok) {
@@ -29,6 +30,8 @@ function Attendance() {
       }
     } catch (error) {
       console.error("Error fetching attendance records:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
   useEffect(() => {
@@ -121,17 +124,20 @@ function Attendance() {
                       border: "1px solid black",
                     }}
                   >
-                    <AddAttend afterSubmit={handleAfterSubmit} />
+                    <AddAttend
+                      afterSubmit={handleAfterSubmit}
+                      toggleLoading={toggleLoading}
+                    />
                   </Card.Body>
                 </Card>
               )}
             </Col>
             <Col md={6}>
-              <TodayLeaves />
+              <TodayLeaves toggleLoading={toggleLoading} />
             </Col>
           </Row>
           <Row>
-            <AttendanceRecords />
+            <AttendanceRecords toggleLoading={toggleLoading} />
           </Row>
         </Card.Body>
       </Card>
@@ -141,6 +147,7 @@ function Attendance() {
           showModal={showUpdateModal}
           setShowModal={setShowUpdateModal}
           updatedHandler={updateHandler}
+          toggleLoading={toggleLoading}
         />
       )}
     </section>

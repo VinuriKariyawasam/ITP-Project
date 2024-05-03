@@ -12,6 +12,7 @@ function UpdateDesignationModal({
   selectedDesignationId,
   position,
   basicSalary,
+  toggleLoading,
 }) {
   const [designationData, setDesignationData] = useState({
     position: position || "",
@@ -38,8 +39,9 @@ function UpdateDesignationModal({
       return; // Exit function if form is not valid
     }
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        `http://localhost:5000/api/hr/update-designation/${selectedDesignationId}`,
+        `${process.env.React_App_Backend_URL}/api/hr/update-designation/${selectedDesignationId}`,
         {
           method: "PATCH",
           headers: {
@@ -70,6 +72,8 @@ function UpdateDesignationModal({
       setToastHeader("Warning");
       setToastBody(error.message);
       setShowToast(true);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 

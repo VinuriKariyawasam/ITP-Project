@@ -32,8 +32,9 @@ function StaffMyProfile(props) {
   //Function to fetch employee personal data by database
   const fetchEmployeeById = async (employeeId) => {
     try {
+      props.toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        `http://localhost:5000/api/hr/employee/${employeeId}`
+        `${process.env.React_App_Backend_URL}/api/hr/employee/${employeeId}`
       );
 
       if (!response.ok) {
@@ -46,6 +47,8 @@ function StaffMyProfile(props) {
     } catch (error) {
       console.error("Error fetching employee data:", error);
       return null;
+    } finally {
+      props.toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -290,6 +293,7 @@ function StaffMyProfile(props) {
           onHide={() => setShowUpdateModal(false)}
           employee={employee}
           onUpdate={handleUpdateEmployee}
+          toggleLoading={props.toggleLoading}
         />
       )}
 
@@ -298,6 +302,7 @@ function StaffMyProfile(props) {
         show={showCredentialsModal}
         onHide={hideCredentialsModalHandler}
         employee={employee}
+        toggleLoading={props.toggleLoading}
       />
       {/* Render the ProfilePicUpdateModal */}
       <ProfileImageUpdateForm
@@ -305,6 +310,7 @@ function StaffMyProfile(props) {
         handleClose={handlePPUModal}
         empId={_id}
         onUploadPic={handleImageUpdate}
+        toggleLoading={props.toggleLoading}
       />
     </Card>
   );

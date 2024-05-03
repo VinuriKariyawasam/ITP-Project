@@ -4,7 +4,7 @@ import { Row, Col, Button, Stack, Card, Badge } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import BarChart from "../HrUtil/BarChart";
 
-function HrDashboard() {
+function HrDashboard({ toggleLoading }) {
   const [employeesCount, setEmployeesCount] = useState(0);
   const [leaveRecords, setLeaveRecords] = useState([]);
   const [todayLeavesCount, setTodayLeavesCount] = useState(0);
@@ -17,7 +17,10 @@ function HrDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/employees");
+        toggleLoading(true); // Set loading to true before API call
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/employees`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -29,6 +32,8 @@ function HrDashboard() {
         setEmployeesCount(employees.length);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
 
@@ -45,7 +50,10 @@ function HrDashboard() {
     // Fetch leave records from the backend when the component mounts
     const fetchLeaveRecords = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/leaves");
+        toggleLoading(true); // Set loading to true before API call
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/leaves`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -55,6 +63,8 @@ function HrDashboard() {
         setLeaveRecords(data);
       } catch (error) {
         console.error("Error fetching leave records:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
 
@@ -86,7 +96,10 @@ function HrDashboard() {
     // Fetch salary records from the backend when the component mounts
     const fetchSalaryRecords = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/salaries");
+        toggleLoading(true); // Set loading to true before API call
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/salaries`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -97,6 +110,8 @@ function HrDashboard() {
         setSalaryReload(false);
       } catch (error) {
         console.error("Error fetching salary records:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
     fetchSalaryRecords();
@@ -114,9 +129,10 @@ function HrDashboard() {
   /*-----attendance data---*/
   const fetchAttendance = async () => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const today = new Date().toISOString().split("T")[0];
       const response = await fetch(
-        `http://localhost:5000/api/hr/attendance/date/${today}`
+        `${process.env.React_App_Backend_URL}/api/hr/attendance/date/${today}`
       );
 
       if (!response.ok) {
@@ -130,6 +146,8 @@ function HrDashboard() {
       }
     } catch (error) {
       console.error("Error fetching attendance records:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
   useEffect(() => {
@@ -140,7 +158,10 @@ function HrDashboard() {
   useEffect(() => {
     const fetchAttendanceRecords = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/attendance");
+        toggleLoading(true); // Set loading to true before API call
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/attendance`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -152,6 +173,8 @@ function HrDashboard() {
         setAttendanceRecords(data);
       } catch (error) {
         console.error("Error fetching attendance records:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
 

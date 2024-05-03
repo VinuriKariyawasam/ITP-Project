@@ -12,14 +12,17 @@ import {
 } from "react-router-dom";
 import AddLeave from "./AddLeave";
 
-function HrLeaves() {
+function HrLeaves({ toggleLoading }) {
   return (
     <main id="main" className="main">
       <HrPageTitle title="Leaves" url="staff/hr/leaves" />
 
       <Routes>
-        <Route path="/" element={<Leaves />} />
-        <Route path="/add" element={<AddLeave />} />
+        <Route path="/" element={<Leaves toggleLoading={toggleLoading} />} />
+        <Route
+          path="/add"
+          element={<AddLeave toggleLoading={toggleLoading} />}
+        />
       </Routes>
     </main>
   );

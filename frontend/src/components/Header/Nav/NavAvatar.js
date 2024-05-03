@@ -6,6 +6,7 @@ function NavAvatar() {
   const { logout } = useContext(StaffAuthContext);
   const { userId, userPosition } = useContext(StaffAuthContext);
   const [employeeData, setEmployeeData] = useState(null);
+  const [isLoading, setIsLoading] = useState(null);
 
   const handleLogout = () => {
     // Call logout function from authentication context
@@ -17,7 +18,7 @@ function NavAvatar() {
   const fetchEmployeeData = async (userId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/hr/employee/${userId}`
+        `${process.env.React_App_Backend_URL}/api/hr/employee/${userId}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch employee data");
