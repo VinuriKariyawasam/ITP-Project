@@ -557,11 +557,11 @@ function EmployeeDetails({ toggleLoading }) {
               </Row>
 
               <Row style={{ marginBottom: "10px" }}>
-                {points && (
+                {points ? (
                   <Col xs={12} md={6}>
                     <strong>Grading Points:</strong> {points}
                   </Col>
-                )}
+                ) : null}
                 {email != "undefined" && (
                   <Col xs={12} md={6}>
                     <strong>Email:</strong> {email}

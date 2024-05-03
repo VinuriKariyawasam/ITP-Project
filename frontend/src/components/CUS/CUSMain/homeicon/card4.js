@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext  } from 'react';
+import React, { useState, useEffect, useContext } from "react";
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 import Card from "react-bootstrap/Card";
 
@@ -9,7 +9,9 @@ function Card4() {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const response = await fetch("http://localhost:5000/cam/feedback/get-feedbacks");
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/cam/feedback/get-feedbacks`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status:${response.status}`);
@@ -26,14 +28,28 @@ function Card4() {
 
   return (
     <div style={{ marginTop: "3%", textAlign: "center" }}>
-      <h2 style={{ textAlign: "center", fontWeight: "bold" }}>What people say about us</h2>
-      <p className='cushomea' disabled>This will help you to find the perfection of our work.</p>
-      <div className='homecard4-holder'>
+      <h2 style={{ textAlign: "center", fontWeight: "bold" }}>
+        What people say about us
+      </h2>
+      <p className="cushomea" disabled>
+        This will help you to find the perfection of our work.
+      </p>
+      <div className="homecard4-holder">
         {feedback.slice(-3).map((item, index) => (
-          <Card key={index} style={{ width: "30%"}}>
-            <Card.Body >
-              <Card.Text style={{ marginTop: "6%", textAlign: "center" }}>{item.feedback}</Card.Text>
-              <Card.Title style={{ textAlign: "center", fontWeight: "bold", color: "black" }}>{item.name}</Card.Title>
+          <Card key={index} style={{ width: "30%" }}>
+            <Card.Body>
+              <Card.Text style={{ marginTop: "6%", textAlign: "center" }}>
+                {item.feedback}
+              </Card.Text>
+              <Card.Title
+                style={{
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  color: "black",
+                }}
+              >
+                {item.name}
+              </Card.Title>
             </Card.Body>
           </Card>
         ))}

@@ -110,6 +110,15 @@ function EmpDash({ toggleLoading }) {
       return;
     }
 
+    // Clone the element content to manipulate without affecting the original
+    const contentToInclude = element.cloneNode(true);
+
+    // Remove .hrmoreButton elements from the cloned content
+    const hrmoreButtons = contentToInclude.querySelectorAll(".hrmoreButton");
+    hrmoreButtons.forEach((button) => {
+      button.remove();
+    });
+
     // Add header content
     const headerContent = `
       <div >
@@ -280,7 +289,7 @@ function EmpDash({ toggleLoading }) {
                     <td>
                       <Button
                         variant="dark"
-                        className="d-flex mx-auto"
+                        className="d-flex mx-auto hrmoreButton"
                         onClick={() => handleMoreButtonClick(employee._id)}
                       >
                         More
