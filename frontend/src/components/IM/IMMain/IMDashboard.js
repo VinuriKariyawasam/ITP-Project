@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DbCard from "../IMMain/IMDbCard";
 
-function IMDashboard() {
+function IMDashboard({ toggleLoading }) {
 
   const [lubricantCount, setLubricantCount] = useState(0);
   const [TireCount, setTireCount] = useState(0);
@@ -12,14 +12,17 @@ function IMDashboard() {
   const [completedSparePartTotal, setCompletedSparePartTotal] = useState(0);
   useEffect(() => {
     function getLubricants() {
+      toggleLoading(true);
       axios
-        .get("http://localhost:5000/Product/lubricantstock")
+        .get(`${process.env.React_App_Backend_URL}/Product/lubricantstock`)
         .then((res) => {
           
           setLubricantCount(res.data.length); 
         })
         .catch((err) => {
           alert("error");
+        }).finally(() => {
+          toggleLoading(false);
         });
     }
     getLubricants();
@@ -27,13 +30,16 @@ function IMDashboard() {
 
   useEffect(() => {
     function getTires() {
+      toggleLoading(true);
       axios
-        .get("http://localhost:5000/Product/Tirestock")
+        .get(`${process.env.React_App_Backend_URL}/Product/Tirestock`)
         .then((res) => {
           setTireCount(res.data.length); 
         })
         .catch((err) => {
           alert("error");
+        }).finally(() => {
+          toggleLoading(false);
         });
     }
     getTires();
@@ -41,14 +47,17 @@ function IMDashboard() {
 
   useEffect(() => {
     function getCompletedOrders() {
+      toggleLoading(true);
       axios
-        .get("http://localhost:5000/Product/getordercompleted")
+        .get(`${process.env.React_App_Backend_URL}/Product/getordercompleted`)
         .then((res) => {
           const total = res.data.reduce((acc, order) => acc + order.total, 0);
           setCompletedOrderTotal(total);
         })
         .catch((err) => {
           alert("error");
+        }).finally(() => {
+          toggleLoading(false);
         });
     }
     getCompletedOrders();
@@ -56,14 +65,17 @@ function IMDashboard() {
 
   useEffect(() => {
     function getCompletedSpareParts() {
+      toggleLoading(true);
       axios
-        .get("http://localhost:5000/Product/completedsp")
+        .get(`${process.env.React_App_Backend_URL}/Product/completedsp`)
         .then((res) => {
           const total = res.data.reduce((acc, sparePart) => acc + sparePart.total, 0);
           setCompletedSparePartTotal(total);
         })
         .catch((err) => {
           alert("error");
+        }).finally(() => {
+          toggleLoading(false);
         });
     }
     getCompletedSpareParts();
@@ -72,13 +84,16 @@ function IMDashboard() {
   
   useEffect(() => {
     function getOrderCount() {
+      toggleLoading(true);
       axios
-        .get("http://localhost:5000/Product/pendingsp")
+        .get(`${process.env.React_App_Backend_URL}/Product/pendingsp`)
         .then((res) => {
           setOrderCount(res.data.length); 
         })
         .catch((err) => {
           alert("error");
+        }).finally(() => {
+          toggleLoading(false);
         });
     }
     getOrderCount();

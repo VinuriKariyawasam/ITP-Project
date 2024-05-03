@@ -3,18 +3,21 @@ import "./IMProductCard.css";
 
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-function IMTireCard() {
+function IMTireCard({ toggleLoading }) {
   const [Products, setProducts] = useState([]);
 
   useEffect(() => {
     function getProducts() {
+      toggleLoading(true);
       axios
-        .get("http://localhost:5000/Product/Tirestock")
+        .get(`${process.env.React_App_Backend_URL}/Product/Tirestock`)
         .then((res) => {
           setProducts(res.data);
         })
         .catch((err) => {
           alert("error");
+        }).finally(() => {
+          toggleLoading(false);
         });
     }
     getProducts();
@@ -25,8 +28,9 @@ function IMTireCard() {
     const image = Image
         console.log(image)
     if (shouldDelete) {
+      toggleLoading(true);
       axios
-        .delete(`http://localhost:5000/Product/deleteTires/${id}`, { data: { image } })
+        .delete(`${process.env.React_App_Backend_URL}/Product/deleteTires/${id}`, { data: { image } })
         .then((response) => {
           console.log(response);
           window.location.reload();
@@ -34,6 +38,8 @@ function IMTireCard() {
         .catch((error) => {
           // Handle errors here
           console.error(error);
+        }).finally(() => {
+          toggleLoading(false);
         });
     }
   };
@@ -60,14 +66,17 @@ function IMTireCard() {
 
   const update = (id) => {
     const productToUpdate = Products.find(product => product._id === id);
+    toggleLoading(true);
     axios
-      .put(`http://localhost:5000/Product/updateTire/${id}`, productToUpdate)
+      .put(`${process.env.React_App_Backend_URL}/Product/updateTire/${id}`, productToUpdate)
       .then((response) => {
         console.log(response);
         window.location.reload();
       })
       .catch((error) => {
         console.error(error);
+      }) .finally(() => {
+        toggleLoading(false);
       });
   };
 

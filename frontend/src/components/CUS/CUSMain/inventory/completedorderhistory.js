@@ -17,7 +17,7 @@ const [completedorder, setcompletedorder] = useState([]);
   useEffect(() => {
     function getcompletedorder() {
       axios
-        .get("http://localhost:5000/Product/getordercompleted")
+        .get(`${process.env.React_App_Backend_URL}/Product/getordercompleted`)
         .then((res) => {
           setcompletedorder(res.data);
         })

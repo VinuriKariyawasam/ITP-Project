@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import neo from "../../../images/neo-tech-high-resolution-logo-transparent.png";
 
+import { CusAuthContext } from "../../../context/cus-authcontext";
 function CusFooter() {
+  const CusAuth = useContext(CusAuthContext);
   return (
     <footer
       className="bg-dark text-white py-5"
@@ -53,11 +55,13 @@ function CusFooter() {
           <Col md={2} className="mb-4 mb-md-0">
             <h5 className="mb-4 fw-bold">Help</h5>
             <ul className="list-unstyled">
+            {CusAuth.isLoggedIn && (
               <li>
-                <a href="http://localhost:3000/customer/appointment/appointnmentMain" className="text-white">
+                <a href={`${process.env.React_App_Frontend_URL}/customer/appointment/appointnmentMain`} className="text-white">
                   Appointments
                 </a>
               </li>
+              )}
               <li>
                 <a href="/" className="text-white">
                   Breakdown
@@ -73,11 +77,13 @@ function CusFooter() {
                   Online Consultation
                 </a>
               </li>
+              {CusAuth.isLoggedIn && (
               <li>
-                <a href="http://localhost:3000/customer/products" className="text-white">
+                <a href={`${process.env.React_App_Frontend_URL}/customer/products`} className="text-white">
                   Products
                 </a>
               </li>
+              )}
             </ul>
           </Col>
           <Col md={2} className="mb-4 mb-md-0">

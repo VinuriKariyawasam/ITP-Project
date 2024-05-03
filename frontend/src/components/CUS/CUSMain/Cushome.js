@@ -35,12 +35,13 @@ function Cushome() {
       Explore our inventory to buy genuine products.
       <br /> shop woth us online today.
     </p>
-    <br />
-    <Link to='http://localhost:3000/customer/products'>
+    <br /> 
+    {cusauth.isLoggedIn && (
+    <Link to={`${process.env.React_App_Frontend_URL}/customer/products`}>
     <Button variant="light" className="exbtn">
       <b>Shop with us</b>
     </Button>
-    </Link>
+    </Link>)}
   </div>
 </div>
 
@@ -58,11 +59,13 @@ function Cushome() {
       <br /> Schedule your appointment online today.
     </p>
     <br />
-    <Link to='http://localhost:3000/customer/appointment/appointnmentMain'>
+    {cusauth.isLoggedIn && (
+    <Link to={`${process.env.React_App_Frontend_URL}/customer/appointment/appointnmentMain`}>
             <Button variant="light">
               <b>Book now</b>
             </Button>
           </Link>
+          )}
   </div>
 </div>
 

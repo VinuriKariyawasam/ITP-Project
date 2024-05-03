@@ -9,7 +9,7 @@ import ImPageTitle from "../ImPageTitle";
 import { useForm } from "../../../../data/IM/form-hook";
 import InputGroup from "react-bootstrap/InputGroup";
 
-const Tireform = () => {
+const Tireform = ({ toggleLoading }) => {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState("");
   const [fileError, setFileError] = useState("");
@@ -45,9 +45,10 @@ const Tireform = () => {
 
   const tireSubmitHandler = async (event) => {
     event.preventDefault();
+    toggleLoading(true);
     const imgData = new FormData();
     imgData.append("image", formState.inputs.image.value);
-    axios.post("http://localhost:5000/Product/imgupload", imgData)
+    axios.post(`${process.env.React_App_Backend_URL}/Product/imgupload`, imgData)
     .then((res) => {
       const Url = res.data.downloadURL
       console.log(Url)
@@ -61,7 +62,7 @@ const Tireform = () => {
      image: Url
       }
       const response = axios.post(
-        "http://localhost:5000/Product/addTires",
+        `${process.env.React_App_Backend_URL}/Product/addTires`,
         formData
       );
 
@@ -73,6 +74,8 @@ const Tireform = () => {
     }})
     .catch((err) => {
       alert("error");
+    }).finally(() => {
+      toggleLoading(false);
     });
   };
 
@@ -138,8 +141,11 @@ const Tireform = () => {
               maxLength={20}
               placeholder="Enter vehicle type"
               onInput={(event) =>
-                inputHandler("vehicle_Type", event.target.value, true)
-              }
+                {
+                  const input = event.target.value.replace(/[^A-Za-z\s]/g, ''); // Remove numbers and special characters
+                  event.target.value = input;
+                inputHandler("vehicle_Type", input, true)
+              }}
               required
             />
           </Form.Group>
@@ -150,9 +156,11 @@ const Tireform = () => {
               type="number"
               placeholder="Enter quantity"
               min="1"
-              onInput={(event) =>
-                inputHandler("quantity", event.target.value, true)
-              }
+              onInput={(event) =>{
+                let input = event.target.value.replace(/[^\d]/g, ''); // Remove non-digit characters
+               event.target.value = input;
+                inputHandler("quantity", input, true);
+              }}
               required
             />
           </Form.Group>
@@ -166,9 +174,11 @@ const Tireform = () => {
                 type="number"
                 placeholder="Enter unit price"
                 min="1"
-                onInput={(event) =>
-                  inputHandler("unit_price", event.target.value, true)
-                }
+                onInput={(event) =>{
+                  let input = event.target.value.replace(/[^\d]/g, ''); // Remove non-digit characters
+                event.target.value = input;
+                  inputHandler("unit_price", input, true)
+                }}
                 required
               />
             </InputGroup>

@@ -123,24 +123,16 @@ exports.generatePDF = async (req, res) => {
     const doc = new PDFDocument();
     const currentDate = new Date().toLocaleDateString('en-US');
     const carts = await cartSchema.find().sort({ createdAt: -1 });
-    
-    doc.text('Your Order Summary', { align: 'center', size: 20 });
+    doc.text('Neo Tech Motors',{align:'center'})
     doc.moveDown();
-    doc.image('C:\\personals\\SLIIT\\Y2S2\\ITP\\Sliit project Y2S2\\ITP-Project\\frontend\\src\\images\\logoblack.jpeg', {
-      fit: [170, 100], 
-      align: 'cleft',
-      valign: 'left'
-    });
-    doc.moveDown(); 
-    doc.moveDown();
-    doc.moveDown();  
-    doc.moveDown(); 
     doc.moveDown(); 
     doc.text(`323/1/A Main Street Battaramulla`, { align: 'left',color:'#31363F'});
     doc.text(`info@neotech.com`, { align: 'left',color:'#31363F'});
     doc.text(`0112887998`, { align: 'left',color:'#31363F'});
     doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
     doc.moveDown(); 
+    
+    doc.text('Your Order Summary', { align: 'center', size: 20 });
     doc.moveDown();  
     doc.text(`Order id : ${orderId}`, { align: 'left'});
     doc.text(`Date: ${currentDate}`, { align: 'left'});

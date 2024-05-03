@@ -5,7 +5,7 @@ import IMTireCard from "./IMTireCard";
 import {Link} from 'react-router-dom'
 
 
-function Tires() {
+function Tires({ toggleLoading }) {
   return (
     <main id="main" className="main">
       <ImPageTitle title="Tires Stock" url="/staff/im/Tires" />
@@ -16,7 +16,7 @@ function Tires() {
       <span class="bi bi-plus-circle"></span>
       </button>
       </Link>
-      <IMTireCard/>
+      <IMTireCard toggleLoading={toggleLoading}/>
     </main>
   );
 }
