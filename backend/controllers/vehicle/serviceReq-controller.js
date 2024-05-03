@@ -31,7 +31,7 @@ exports.createServiceReq = async (req, res) => {
             const serviceReqData = req.body;
 
             // Check if file was uploaded successfully
-            const reportFile = req.file;
+            const reportFile = req.file ? req.file.path : null;
 
             // Upload the file to Firebase Storage
             const dateTime = giveCurrentDateTime();
@@ -60,6 +60,32 @@ exports.createServiceReq = async (req, res) => {
     }
 };
 
+exports.createServiceReqfromApp = async (req, res) => {
+    const vehicleNo = req.body.vehicleNo;
+    const date = req.body.date;
+    const  name = req.body.name;
+    const issue = req.body.issue;
+    const quotation= req.body.issue;
+    const request= req.body.request;
+
+
+    const newServiceReqp = ServiceRequestModel({
+        vehicleNo,
+        date,
+        name,
+        issue,
+        quotation,
+        request
+       
+    });
+    try { await newServiceReqp.save();
+        res.status(200).json({ message: 'Service request added' })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+  
 // Retrieve all service requests
 exports.getServiceReqs = async (req, res) => {
     try {

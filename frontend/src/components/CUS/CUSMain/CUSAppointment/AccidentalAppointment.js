@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Form, Col, Row, Button, InputGroup } from 'react-bootstrap';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -9,8 +9,9 @@ import './AccidentalAppointment.css'
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 
 
-const AccidentalAppointment = () => {
+const AccidentalAppointment = ({ toggleLoading }) => {
   const navigate = useNavigate();
+  const [vno, setvNo] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
   const [fileError, setFileError] = useState("");
   const [availableTimes, setAvailableTimes] = useState([]);
@@ -29,7 +30,7 @@ const AccidentalAppointment = () => {
       },
       vNo: {
         value: "",
-        isValid: false,
+        isValid: true,
       },
       dateAccidentaOccured: {
         value: "",
@@ -65,51 +66,65 @@ const AccidentalAppointment = () => {
 
   const appointmentSubmitHandler = async (event) => {
     event.preventDefault();
-    const accidtentimage =new FormData();
+    const accidtentimage = new FormData();
     accidtentimage.append("image", formState.inputs.image.value);
-    axios.post(`${process.env.React_App_Backend_URL}/appointment/accidentalImageupload`,accidtentimage)
-    .then((res) => {
-      const ImgUrl = res.data.downloadURL
-      console.log(ImgUrl)
-    
-    // Check if the contact number has exactly 9 digits
-  if (formState.inputs.contactNo.value.length !== 9) {
-    alert("Please enter a valid  contact number.");
-    return; // Exit the function if the contact number is not valid
-  }
+    toggleLoading(true);
+    axios.post(`${process.env.React_App_Backend_URL}/appointment/accidentalImageupload`, accidtentimage)
+      .then((res) => {
+        const ImgUrl = res.data.downloadURL
+        console.log(ImgUrl)
 
-    try {
-      const formData={
-      userId: cusauth.userId,
-      name:cusauth.name,
-      email:cusauth.email,
-      cusType:formState.inputs.cusType.value,
-      vType: formState.inputs.vType.value,
-      vNo: formState.inputs.vNo.value,
-      dateAccidentaOccured:formatDateForBackend(formState.inputs.dateAccidentaOccured.value),
-      damagedOccured: formState.inputs.damagedOccured.value,
-      contactNo: formState.inputs.contactNo.value,
-      appointmentdate:formatDateForBackend(formState.inputs.appointmentdate.value),
-      appointmenttime: formState.inputs.appointmenttime.value,
-      image:ImgUrl
-      }
-      console.log(formData)
-      const response = axios.post(
-        `${process.env.React_App_Backend_URL}/appointment/addaccidentalAppointment`,
-        formData)
-      
-      alert('Appointment Submitted Succesfully');
-      navigate('/customer/appointment/myappointment');
+        // Check if the contact number has exactly 9 digits
+        if (formState.inputs.contactNo.value.length !== 9) {
+          alert("Please enter a valid  contact number.");
+          return; // Exit the function if the contact number is not valid
+        }
+
+        try {
+          const formData = {
+            userId: cusauth.userId,
+            name: cusauth.name,
+            email: cusauth.email,
+            cusType: formState.inputs.cusType.value,
+            vType: formState.inputs.vType.value,
+            vNo: vno,
+            dateAccidentaOccured: formatDateForBackend(formState.inputs.dateAccidentaOccured.value),
+            damagedOccured: formState.inputs.damagedOccured.value,
+            contactNo: formState.inputs.contactNo.value,
+            appointmentdate: formatDateForBackend(formState.inputs.appointmentdate.value),
+            appointmenttime: formState.inputs.appointmenttime.value,
+            image: ImgUrl
+          }
+          console.log(formData)
+          const response = axios.post(
+            `${process.env.React_App_Backend_URL}/appointment/addaccidentalAppointment`,
+            formData)
+
+          alert('Appointment Submitted Succesfully');
+          navigate('/customer/appointment/myappointment');
 
 
-    } catch (err) {
-      console.log(err);
-      alert(err)
-    }
-    }).catch((err) =>{
-      alert("error");
-    });
+        } catch (err) {
+          console.log(err);
+          alert(err)
+        }
+      }).catch((err) => {
+        alert("error");
+      }).finally(() => {
+        toggleLoading(false);
+      });
+
   };
+  const handleAddSri = () => {
+    if (/^\d+/.test(vno)) {
+      setvNo((prevVNo) => {
+        return prevVNo + "ශ්‍රී";
+      });
+    } else {
+      alert("Please enter a valid format of vehicle number.");
+    }
+  };
+
   useEffect(() => {
     if (formState.inputs.image.value instanceof Blob) {
       const fileReader = new FileReader();
@@ -188,11 +203,11 @@ const AccidentalAppointment = () => {
               <Row className="mb-3">
                 <Form.Group as={Col} md="5" controlId="validationCustom01">
                   <Form.Label>Customer Type</Form.Label>
-                  <select class="form-select" id="validationCustom04" onChange={(event) => inputHandler("cusType",event.target.value,true)} required>
-              <option value="">choose</option>
-              <option value="Government">Government</option>
-              <option value="Non-Government">Non-Government</option>
-              </select>
+                  <select class="form-select" id="validationCustom04" onChange={(event) => inputHandler("cusType", event.target.value, true)} required>
+                    <option value="">choose</option>
+                    <option value="Government">Government</option>
+                    <option value="Non-Government">Non-Government</option>
+                  </select>
                 </Form.Group>
 
                 <Form.Group as={Col} md="5" controlId="validationCustom01">
@@ -215,14 +230,15 @@ const AccidentalAppointment = () => {
                   <Form.Control
                     id="vNo"
                     type="text"
+                    value={vno}
                     placeholder="Enter vNo"
-                    onInput={(event) =>
-                      inputHandler("vNo", event.target.value, true)
-                    }
+                    onChange={(event) => setvNo(event.target.value)}
                     maxLength={10}
                     required
                   />
-
+                  <Button variant="secondary" onClick={handleAddSri}>
+                    Add ශ්‍රී
+                  </Button>
                 </Form.Group>
 
 
