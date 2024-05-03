@@ -12,6 +12,10 @@ const acceptedappointmentSchema = new schema({
         required: true,
         
     },
+    cusType:{
+        type :String,
+        required: true
+    },
     vType: {
         type: String,
         required: true,

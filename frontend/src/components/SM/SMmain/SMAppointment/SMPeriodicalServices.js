@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 
-const SMPeriodicalServices = props => {
+const SMPeriodicalServices = ({ toggleLoading }) => {
 
   //create an empty array to store details
   const [periodicalAppointment, setperiodicalAppointment] = useState([]);
@@ -16,9 +16,10 @@ const SMPeriodicalServices = props => {
 
   const [userId, setuserId] = useState("");
   const [name, setname] = useState("");
+  const[cusType,setcusType]=useState("")
   const [vType, setvType] = useState("");
   const [vNo, setvNo] = useState("");
-  const [serviceType, setserviceType,] = useState("");
+  const [serviceType, setserviceType] = useState("");
   const [issue,setissue]=useState("");
   const [contactNo, setcontactNo] = useState("");
   const [appointmentdate, setappointmentdate] = useState("");
@@ -31,12 +32,29 @@ const SMPeriodicalServices = props => {
   const [msg, setmsg] = useState("");
 
   function sendata(e) {
+
     e.preventDefault();
     const serviceType = "Periodical Services";
-    //create javascript object
+    const emailData = {
+      to: selectedAppointment.email,
+      subject: `Appointment Confirmed`,
+      text: `Hi ${selectedAppointment.name},\n Your PeriodicalService Appintment with NeoTech Motors on ${selectedAppointment.appointmentdate.split('T')[0]} at ${selectedAppointment.appointmenttime} has been confirmed.`,
+      html: null,
+    };
+
+      toggleLoading(true); // Set loading to true before API call
+    axios
+      .post(
+        `${process.env.React_App_Backend_URL}/appointment/sendappointmentmail`,
+        emailData
+      )
+      .then((response) => {
+        console.log(response.data);
+         //create javascript object
     const newacceptedappointment = {
       userId,
       name,
+      cusType,
       vType,
       vNo,
       serviceType,
@@ -47,14 +65,19 @@ const SMPeriodicalServices = props => {
       
     }
 
-    axios.post("http://localhost:5000/appointment/addacceptedappointment", newacceptedappointment).then(() => {
-      alert("Your Appointment Success") 
+    axios.post(`${process.env.React_App_Backend_URL}/appointment/addacceptedappointment`, newacceptedappointment).then(() => {
+      alert("Appointment added to the calender") 
       senddataperiodicalAppointmentHistory(selectedAppointment); // Call sendataperiodicalAppointmentHistory function
       Delete(selectedAppointment._id);
 
     }).catch((err) => {
       alert(err)
+    }).catch((error) => {
+      console.error("Error sending email:", error);
+    }).finally(()=>{
+      toggleLoading(false); 
     })
+  })
 
   }
 
@@ -65,6 +88,7 @@ const SMPeriodicalServices = props => {
     const newacceptedPeriodicalAppointment = {
       userId,
       name,
+      cusType,
       vType,
       vNo,
       sType,
@@ -76,13 +100,16 @@ const SMPeriodicalServices = props => {
       appointmenttime,
       msg
     }
-    axios.post("http://localhost:5000/appointment/addaceptedperiodicalAppointment",newacceptedPeriodicalAppointment).then(() => {
-      alert("Appointment added to history")  
+    toggleLoading(true); 
+    axios.post(`${process.env.React_App_Backend_URL}/appointment/addaceptedperiodicalAppointment`,newacceptedPeriodicalAppointment).then(() => {
+       
       
 
     }).catch((err) => {
       alert(err)
-    })
+    }).finally(()=>{
+      toggleLoading(false); 
+    });
 
   }
 
@@ -91,6 +118,7 @@ const SMPeriodicalServices = props => {
        const handleTableRowClick = (appointment) => {
         setuserId(appointment.userId);
         setname(appointment.name);
+        setcusType(appointment.cusType)
         setvType(appointment.vType);
         setvNo(appointment.vNo);
         setserviceType(appointment.serviceType);
@@ -110,7 +138,8 @@ const SMPeriodicalServices = props => {
   useEffect(() => {
 
     function getPeriodicalAppointment() {
-      axios.get("http://localhost:5000/appointment/get-periodicalAppointment").then((res) => {
+        toggleLoading(true); // Set loading to true before API call
+      axios.get(`${process.env.React_App_Backend_URL}/appointment/get-periodicalAppointment`).then((res) => {
         const sortedAppointments = res.data.sort((a, b) => {
           return new Date(a.appointmentdate) - new Date(b.appointmentdate);
         });
@@ -118,7 +147,9 @@ const SMPeriodicalServices = props => {
         console.log(res.data)
       }).catch((err) => {
         alert(err.message);
-      })
+      }).finally(()=>{
+        toggleLoading(false); 
+      });
     }
     getPeriodicalAppointment();
 
@@ -135,8 +166,8 @@ const SMPeriodicalServices = props => {
 
 
   const Delete = (id) => {
-   
-      axios.delete(`http://localhost:5000/appointment/delete-periodicalAppointment/${id}`)
+      toggleLoading(true); // Set loading to true before API call
+      axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-periodicalAppointment/${id}`)
         .then(response => {
           console.log(response);
           window.location.reload();
@@ -144,9 +175,42 @@ const SMPeriodicalServices = props => {
         .catch(error => {
           // Handle errors here
           console.error(error);
+        }).finally(()=>{
+          toggleLoading(false); 
         });
     
   };
+
+  const cancleAppointment = (id,email,name,date,time) => {
+    
+    const emailData = {
+      to:email,
+      subject: `Appointment cancelled`,
+      text:  `Hi ${name},\n We are sorry to inform you that Your Periodical Service Appintment with NeoTech Motors on ${date.split('T')[0]} at ${time} has been canceled due to unavilability of technicians at given time slots.We are kindly request you to make an new Appointment.`,
+      html: null,
+    };
+      toggleLoading(true); // Set loading to true before API call
+    axios
+      .post(
+        `${process.env.React_App_Backend_URL}/appointment/sendappointmentmail`,
+        emailData
+      )
+      .then((response) => {
+        console.log(response.data);
+    axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-periodicalAppointment/${id}`)
+      .then(response => {
+        console.log(response);
+        window.location.reload();
+      })
+    }).catch(error => {
+      // Handle errors here
+      console.error(error);
+    }).finally(()=>{
+      toggleLoading(false); 
+    });
+
+  
+};
   
   return (
     <main id="main" className="main">
@@ -174,6 +238,11 @@ const SMPeriodicalServices = props => {
             </Card.Text>
           </Row>
           <Row>
+          <Row>
+                <Card.Text>
+                    <strong>Customer Type: </strong>{selectedAppointment.cusType}<br />
+                  </Card.Text>
+                  </Row>
             <Card.Text>
               <strong>Vehicle Type: </strong>{selectedAppointment.vType}<br />
               <strong>Requesting service: </strong>{selectedAppointment.sType}<br />
@@ -198,7 +267,7 @@ const SMPeriodicalServices = props => {
             </Card.Text>
           </Row>
           <Row style={{ marginTop: '4%', display: 'flex' }}>
-            <Button variant="danger" onClick={() => Delete(selectedAppointment._id)} style={{ marginLeft: '20%', width: '100px' }}>Cancel</Button>
+            <Button variant="danger" onClick={() => cancleAppointment(selectedAppointment._id,selectedAppointment.email,selectedAppointment.name,selectedAppointment.appointmentdate,selectedAppointment.appointmenttime)} style={{ marginLeft: '20%', width: '100px' }}>Cancel</Button>
             <Button variant="primary" onClick={sendata} style={{ marginLeft: '20%', width: '100px' }}>Approve</Button>
           </Row>
         </Card.Body>

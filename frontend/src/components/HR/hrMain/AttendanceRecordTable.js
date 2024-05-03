@@ -1,13 +1,21 @@
 // LeaveRecordsTable.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Badge, Button, Modal } from "react-bootstrap";
 import { CSVLink } from "react-csv";
 import html2pdf from "html2pdf.js";
 import DatePicker from "react-datepicker"; // Import the date picker component
 import "react-datepicker/dist/react-datepicker.css"; // Date picker styles
 import { set } from "date-fns";
+import { StaffAuthContext } from "../../../context/StaffAuthContext";
+import logo from "../../../images/logoblack_trans.png";
 
-const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
+const AttendanceRecordsTable = ({
+  attendRecords,
+  dateFilter,
+  tableName,
+  toggleLoading,
+}) => {
+  const { userId, userPosition } = useContext(StaffAuthContext);
   const [presentCount, setPresentCount] = useState(0);
   const [absentCount, setAbsentCount] = useState(0);
   const [selectedAttendance, setSelectedAttendance] = useState([]);
@@ -48,32 +56,34 @@ const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
 
   //render table rows with data
   const renderTableRows = () => {
-    return filteredTableData.map((record) => {
-      return (
-        <tr key={record._id}>
-          <td>
-            <div>Date: {new Date(record.date).toLocaleDateString()}</div>
-            <div>Time: {new Date(record.date).toLocaleTimeString()}</div>
-          </td>
-          <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-            {record.employeeAttendance.filter((emp) => emp.value).length}
-          </td>
-          <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-            {record.employeeAttendance.filter((emp) => !emp.value).length}
-          </td>
-          <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-            <Button
-              onClick={() => handleShowAttendance(record.employeeAttendance)}
-            >
-              View
-            </Button>
-          </td>
-          <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-            {calculateAttendancePercentage(record.employeeAttendance)}
-          </td>
-        </tr>
-      );
-    });
+    return filteredTableData
+      .filter((record) => dateFilter(record.date))
+      .map((record) => {
+        return (
+          <tr key={record._id}>
+            <td>
+              <div>Date: {new Date(record.date).toLocaleDateString()}</div>
+              <div>Time: {new Date(record.date).toLocaleTimeString()}</div>
+            </td>
+            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+              {record.employeeAttendance.filter((emp) => emp.value).length}
+            </td>
+            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+              {record.employeeAttendance.filter((emp) => !emp.value).length}
+            </td>
+            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+              <Button
+                onClick={() => handleShowAttendance(record.employeeAttendance)}
+              >
+                View
+              </Button>
+            </td>
+            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+              {calculateAttendancePercentage(record.employeeAttendance)}
+            </td>
+          </tr>
+        );
+      });
   };
   const calculateAttendancePercentage = (employeeAttendance) => {
     const totalCount = employeeAttendance.length;
@@ -142,54 +152,28 @@ const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
       filename: `attendance_records_${currentDate}.pdf`,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+      jsPDF: { unit: "in", format: "letter", orientation: "landscape" }, // Set orientation to landscape
     };
-
-    // Generate table rows dynamically based on the current state of table data
-    const tableRows = filteredTableData
-      .filter((record) => dateFilter(record.date))
-      .map((record) => {
-        const attendanceRows = record.employeeAttendance
-          .map((emp) => {
-            return `
-          <tr>
-            <td>${emp.empId}</td>
-            <td>${emp.name}</td>
-            <td>${emp.value ? "Present" : "Absent"}</td>
-          </tr>
-        `;
-          })
-          .join("");
-
-        return `
-        <tr>
-          <td>${new Date(record.date).toLocaleDateString()}</td>
-          <td>${new Date(record.date).toLocaleTimeString()}</td>
-          <td>${presentCount}</td>
-          <td>${absentCount}</td>
-          <td>${calculateAttendancePercentage(record.employeeAttendance)}</td>
-          <td>
-            <table>
-              <thead>
-                <tr>
-                  <th>EmpId</th>
-                  <th>Name</th>
-                  <th>Attendance</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${attendanceRows}
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      `;
-      })
-      .join("");
 
     // Generate PDF content with table rows and other details
     const content = `
-    <div style="margin: 20px;">
+    <div style="margin: 5px;">
+    <div >
+      <h4 class="float-end font-size-15">Human Resources</h4>
+      <div class="mb-4">
+        <img src="${logo}" alt="Invoice Logo" width="200px" />
+      </div>
+      <div class="text-muted">
+        <p class="mb-1"><i class="bi bi-geo-alt-fill"></i>323/1/A Main Street Battaramulla</p>
+        <p class="mb-1">
+        <i class="bi bi-envelope-fill me-1"></i> info@neotech.com
+        </p>
+        <p>
+        <i class="bi bi-telephone-fill me-1"></i> 0112887998
+        </p>
+      </div>
+      <hr/>
+    </div>
       <h3 style="background-color: black; color: white; padding: 10px;">${tableName}</h3>
       <table style="width: 100%; border-collapse: collapse;">
         <thead>
@@ -203,20 +187,18 @@ const AttendanceRecordsTable = ({ attendRecords, dateFilter, tableName }) => {
           </tr>
         </thead>
         <tbody>
-          ${tableRows}
+          ${renderTableRows}
         </tbody>
       </table>
+      <p style="text-align: right; margin-top: 20px;">Authorized By: ${userPosition}</p>
+        
       <p style="text-align: right; margin-top: 20px;">Generated Date: ${currentDate}</p>
       <p style="text-align: right; margin-top: 20px;">Neo Tech Motors & Services</p>
     </div>
   `;
 
     // Generate PDF from the content
-    html2pdf()
-      .from(content)
-      .toPdf()
-      .output("dataurlnewwindow")
-      .save(`${tableName}_generated_${currentDate}.pdf`);
+    html2pdf().from(content).set(opt).save();
   };
 
   return (

@@ -17,14 +17,16 @@ import Card from "react-bootstrap/Card";
 import FileUpload from "../CUS_CAM/CUS_CAM_util/FileUpload";
 
 import "./StarRating.css";
+import feedbackimg7 from "../../../../../src/images/cam/feedbackimg7.jpg";
 
-
-function Feedback() {
+function Feedback({ toggleLoading }) {
   const cusAuth = useContext(CusAuthContext);
   let id = cusAuth.userId;
   const navigate = useNavigate();
   const [validated, setValidated] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const feedback_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusaffairs/allfeedback`;
+  const myfeedback_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusaffairs/myfeedback`;
 
   //validation and submit
   const {
@@ -37,6 +39,7 @@ function Feedback() {
 
   const onSubmit = async (data) => {
     try {
+      toggleLoading(true);
       const formData = new FormData();
 
        // Append regular form data
@@ -45,10 +48,13 @@ function Feedback() {
       });
 
       formData.append("userId",cusAuth.userId);
+      formData.append("name",cusAuth.name);
 
-      if (uploadedFile) {
-        formData.append("files", uploadedFile);
+
+      if (uploadedFiles) {
+        formData.append("files", uploadedFiles);
       }
+      
       // Log FormData object
       console.log("FormData:", formData);
 
@@ -57,8 +63,9 @@ function Feedback() {
         console.log(pair[0], pair[1]);
       }
 
+      
       const response = await fetch(
-        "http://localhost:5000/cam/feedback/add-feedback",
+        `${process.env.React_App_Backend_URL}/cam/feedback/add-feedback`,
         {
           method: "POST",
           body: formData,
@@ -73,6 +80,7 @@ function Feedback() {
         alert("Feedback created Successfully!");
         // Redirect to the specified URL after successful submission
         navigate("/customer/cusaffairs/allfeedback");
+        
       }else {
         // Handle other error cases
         throw new Error("Failed to submit data");
@@ -90,13 +98,14 @@ function Feedback() {
       } else {
         console.error("Error:", error.message);
       }
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
   //file uplood functions
   // State to store the uploaded files
-  // State to store the uploaded files
-  const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploadedFiles, setUploadedFile] = useState(null);
 
   // File input handler for SingleFileUpload component
   const fileInputHandler = (id, file, isValid) => {
@@ -108,17 +117,16 @@ function Feedback() {
       console.log("Invalid file:", file);
     }
   };
-
   
 
   return (
     <div>
-      <Card style={{marginTop:"20px",marginLeft:"20px",marginRight:"20px"}}><Card.Body>
+      <Card style={{marginLeft:"20px",marginRight:"20px",opacity:"1"}}><Card.Body>
     <Form
       style={{marginTop:"5px",marginLeft:"20px",marginRight:"20px"}}
       onSubmit={handleSubmit(onSubmit)}
     >
-    <PageTitle_cam path="feedback / addfeedback" title="Tell us Anything!!" />
+     <h2 style={{fontFamily:"sans-serif",color:"darkslateblue"}}><b>Tell us Anything!</b></h2>
     <Row>
       <Col>
       <Row className="cam-mb-3" style={{marginTop:"10px"}}>
@@ -182,6 +190,8 @@ function Feedback() {
           <Form.Label>Attach Files</Form.Label>
           <FileUpload
             id="files"
+            name="files"
+            //multiple
             onInput={fileInputHandler}
             errorText={errors.files?.message}
           />
@@ -214,24 +224,24 @@ function Feedback() {
       </Button>{" "}
       </Col>
       <Col>
-     
       <Row className="cam-mb-3">
-      <Col>
       <div className="card" style={{width:"18rem"}}>
-  <img src={cusimage2} className="card-img-top" alt="..."/>
-  <div className="card-body">
-    <a href="http://localhost:3000/customer/cusaffairs/allfeedback" class="btn btn-dark" style={{width:"200px",marginTop:"5px"}}>FeedBack</a>
+  <img src={cusimage2} className="card-img-top" alt="..." style={{height:"200px"}}/>
+  <div className="card-body" style={{height:"180px"}}>
+    <a href={feedback_frontendurl} class="btn btn-dark" 
+    style={{width:"200px",marginTop:"5px"}}>FeedBack</a>
+    <p>Your feedback is the compass guiding us towards excellence. Together, let's pave the road to exceptional service.
+      Explore more thoughts on us.!</p>
   </div>
 </div>
-</Col>
-        <Col>
-      <div className="card" style={{width:"18rem"}}>
-  <img src={cusimage3} className="card-img-top" alt="..."/>
+<div className="card" style={{width:"18rem"}}>
+  <img src={cusimage3} className="card-img-top" alt="..." style={{height:"200px"}}/>
   <div className="card-body">
-    <a href="http://localhost:3000/customer/cusaffairs/myfeedback" className="btn btn-dark" style={{width:"200px",marginTop:"5px"}}>My FeedBack</a>
+    <a href={myfeedback_frontendurl} className="btn btn-dark" 
+    style={{width:"200px",marginTop:"5px"}}>My FeedBack</a>
+    <p>Your voice shapes our journey.Refine your feedback as we evolve together towards perfection.!</p>
   </div>
-</div>
-</Col>
+</div>    
       </Row>
       </Col>
     </Row>

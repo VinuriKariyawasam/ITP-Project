@@ -15,7 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import { toPng } from "html-to-image"; // Import toPng function from html-to-image
 
-function AddQuotation() {
+function AddQuotation({toggleLoading}) {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [items, setItems] = useState([
@@ -44,6 +44,21 @@ function AddQuotation() {
     control,
     formState: { errors },
   } = useForm();
+
+  // Custom validation rule for Sri Lankan vehicle number format
+  const validateVehicleNumber = (value) => {
+    // Define regular expressions for standard alphanumeric and Sinhala word formats
+    const alphanumericPattern = /^[A-Z]{2}\s\d{4}$/; // LL NNNN format
+    const sinhalaWordPattern = /^[\u0D81\u0DCA\u0DBB\u0DD3]$/; // Sinhala word sri format
+
+    // Validate against both patterns
+    return (
+      alphanumericPattern.test(value) ||
+      sinhalaWordPattern.test(value) ||
+      "Invalid Sri Lankan vehicle number"
+    );
+  };
+
 
   const handleCheckboxChange = (itemId) => {
     const updatedItems = items.map((item) =>
@@ -80,8 +95,8 @@ function AddQuotation() {
         price: item.price !== "" ? parseFloat(item.price) : 0,
         selected: item.selected,
       }));
-
-      const response = await fetch("http://localhost:5000/api/sm/quotations", {
+      toggleLoading(true);
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/sm/quotations`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -105,6 +120,9 @@ function AddQuotation() {
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Failed to submit form. Please try again.");
+    }
+    finally{
+      toggleLoading(false);
     }
   };
 
@@ -138,7 +156,9 @@ function AddQuotation() {
             <Controller
               name="vnumber"
               control={control}
-              rules={{ required: "Vehicle number is required" }}
+              rules={{ required: "Vehicle number is required",
+                       validate: validateVehicleNumber,
+            }}
               render={({ field }) => (
                 <FormControl placeholder="Enter vehicle number" {...field} />
               )}

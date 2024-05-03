@@ -12,12 +12,12 @@ import {
     Navigate,
   } from "react-router-dom";
 
-  function CAM_faqReview(){
+  function CAM_faqReview({ toggleLoading }){
     return (
       <main id="main" className="main">
       <CAM_pageTitle title="FAQ Review" url="/staff/cam/faq_review" />
        <Routes>
-       <Route path="/*" element={<FAQReview/>} />
+       <Route path="/*" element={<FAQReview toggleLoading={toggleLoading}/>} />
        </Routes>
     </main>
     

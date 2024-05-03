@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Button, Form, Row, Stack, Card, Col } from "react-bootstrap";
 import "./empdash.css";
 import { CSVLink } from "react-csv";
 import html2pdf from "html2pdf.js";
 import { useNavigate } from "react-router-dom";
+import { StaffAuthContext } from "../../../context/StaffAuthContext";
+import logo from "../../../images/logoblack_trans.png";
 
-function EmpDash() {
+function EmpDash({ toggleLoading }) {
+  const { userId, userPosition } = useContext(StaffAuthContext);
+
   //to add employee button part
   const navigate = useNavigate();
 
@@ -22,7 +26,10 @@ function EmpDash() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/employees");
+        toggleLoading(true); // Set loading to true before API call
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/employees`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -33,6 +40,8 @@ function EmpDash() {
         setTableData(data.employees);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
 
@@ -96,7 +105,41 @@ function EmpDash() {
   /*----Parts regarding generate pdf from employee list-------*/
   const generatePDF = () => {
     const element = document.querySelector(".empList"); // Select the container to convert to PDF
-    const opt = {
+    if (!element) {
+      console.error("Container element not found");
+      return;
+    }
+
+    // Add header content
+    const headerContent = `
+      <div >
+        <h4 class="float-end font-size-15">Human Resources</h4>
+        <div class="mb-4">
+          <img src="${logo}" alt="Invoice Logo" width="200px" />
+        </div>
+        <div class="text-muted">
+        <p class="mb-1"><i class="bi bi-geo-alt-fill"></i>323/1/A Main Street Battaramulla</p>
+        <p class="mb-1">
+        <i class="bi bi-envelope-fill me-1"></i> info@neotech.com
+        </p>
+        <p>
+        <i class="bi bi-telephone-fill me-1"></i> 0112887998
+        </p>
+
+          <p>Authorized By: ${userPosition}</p>
+      <p>Generated Date: ${new Date().toLocaleDateString()}</p>
+        </div>
+        <hr/>
+      </div>
+    `;
+
+    // Create wrapper div to contain both header, employee list, and footer
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = headerContent;
+    wrapper.appendChild(element.cloneNode(true));
+
+    // Define PDF generation options
+    const options = {
       margin: 0.5,
       filename: "Employee_List.pdf",
       image: { type: "jpeg", quality: 0.98 },
@@ -104,7 +147,14 @@ function EmpDash() {
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
 
-    html2pdf().from(element).set(opt).save(); // Generate and save the PDF
+    // Generate and save the PDF
+    html2pdf()
+      .from(wrapper)
+      .set(options)
+      .save()
+      .catch((error) => {
+        console.error("Error generating PDF:", error);
+      });
   };
 
   return (

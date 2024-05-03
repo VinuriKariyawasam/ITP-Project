@@ -7,12 +7,13 @@ import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
 
 
-const SMAccidentalRepairs = props => {
+const SMAccidentalRepairs = ({ toggleLoading }) => {
   const [accidentalAppointment, setaccidentalAppointment] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   const [userId, setuserId] = useState("");
   const [name, setname] = useState("");
+  const[cusType,setcusType]=useState("")
   const [vType, setvType] = useState("");
   const [vNo, setvNo] = useState("");
   const [serviceType, setserviceType] = useState("");
@@ -27,10 +28,26 @@ const SMAccidentalRepairs = props => {
   function sendata(e) {
     e.preventDefault();
     const serviceType = "Accidental Repairs";
+    const emailData = {
+      to: selectedAppointment.email,
+      subject: `Appointment Confirmed`,
+      text: `Hi ${selectedAppointment.name},\n Your Accidental Repair Appintment with NeoTech Motors on ${selectedAppointment.appointmentdate.split('T')[0]} at ${selectedAppointment.appointmenttime} has been confirmed.`,
+      html: null,
+    };
+    toggleLoading(true); 
+    axios
+      .post(
+        `${process.env.React_App_Backend_URL}/appointment/sendappointmentmail`,
+        emailData
+      )
+      .then((response) => {
+        console.log(response.data);
+
     //create javascript object
     const newacceptedappointment = {
       userId,
       name,
+      cusType,
       vType,
       vNo,
       serviceType,
@@ -41,14 +58,19 @@ const SMAccidentalRepairs = props => {
 
     }
 
-    axios.post("http://localhost:5000/appointment/addacceptedappointment", newacceptedappointment).then(() => {
-      alert("Your Appointment Success")
+    axios.post(`${process.env.React_App_Backend_URL}/appointment/addacceptedappointment`,newacceptedappointment).then(() => {
+      alert("Appointment Added to calendar")
       senddataAccidentalAppointmentHistory(selectedAppointment);
       Delete(selectedAppointment._id);
 
     }).catch((err) => {
       alert(err)
-    })
+    }).catch((error) => {
+      console.error("Error sending email:", error);
+    }).finally(()=>{
+      toggleLoading(false); 
+    });
+  })
 
   }
   function senddataAccidentalAppointmentHistory() {
@@ -57,6 +79,7 @@ const SMAccidentalRepairs = props => {
     const newacceptedaccidentalAppointment = {
       userId,
       name,
+      cusType,
       vType,
       vNo,
       dateAccidentaOccured,
@@ -67,13 +90,15 @@ const SMAccidentalRepairs = props => {
       image
     
     }
-    axios.post("http://localhost:5000/appointment/addacceptedaccidentalAppointment",newacceptedaccidentalAppointment).then(() => {
-      alert("Appointment added to history")  
-      
+    toggleLoading(true); 
 
+    axios.post(`${process.env.React_App_Backend_URL}/appointment/addacceptedaccidentalAppointment`,newacceptedaccidentalAppointment).then(() => {
+      
     }).catch((err) => {
       alert(err)
-    })
+    }).finally(()=>{
+      toggleLoading(false); 
+    });
 
   }
 
@@ -81,6 +106,7 @@ const SMAccidentalRepairs = props => {
   const handleTableRowClick = (appointment) => {
     setuserId(appointment.userId);
     setname(appointment.name);
+    setcusType(appointment.cusType);
     setvType(appointment.vType);
     setvNo(appointment.vNo);
     setserviceType(appointment.serviceType);
@@ -95,9 +121,10 @@ const SMAccidentalRepairs = props => {
   };
 
   useEffect(() => {
-
+    
     function getaccidentalAppointment() {
-      axios.get("http://localhost:5000/appointment/get-accidentalAppointment").then((res) => {
+      toggleLoading(true); 
+      axios.get(`${process.env.React_App_Backend_URL}/appointment/get-accidentalAppointment`).then((res) => {
         const sortedAppointments = res.data.sort((a, b) => {
           return new Date(a.appointmentdate) - new Date(b.appointmentdate);
         });
@@ -105,7 +132,9 @@ const SMAccidentalRepairs = props => {
         console.log(res.data)
       }).catch((err) => {
         alert(err.message);
-      })
+      }).finally(()=>{
+        toggleLoading(false); 
+      });
     }
     getaccidentalAppointment();
 
@@ -119,8 +148,8 @@ const SMAccidentalRepairs = props => {
     setSelectedAppointment(null);
   };
   const Delete = (id) => {
-    
-      axios.delete(`http://localhost:5000/appointment/delete-accidentalAppointment/${id}`)
+    toggleLoading(true);
+      axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-accidentalAppointment/${id}`)
         .then(response => {
           console.log(response);
           window.location.reload();
@@ -128,9 +157,43 @@ const SMAccidentalRepairs = props => {
         .catch(error => {
           // Handle errors here
           console.error(error);
+        }).finally(()=>{
+          toggleLoading(false); 
         });
     
+    
   };
+  const cancleAppointment = (id,email,name,date,time,Image) => {
+    const image = Image;
+    const emailData = {
+      to:email,
+      subject: `Appointment cancelled`,
+      text:  `Hi ${name},\n We are sorry to inform you that Your Accidental Repair Appintment with NeoTech Motors on ${date.split('T')[0]} at ${time} has been canceled due to unavilability of technicians at given time slots.We are kindly request you to make an new Appointment.`,
+      html: null,
+    };
+    toggleLoading(true); 
+    axios
+      .post(
+        `${process.env.React_App_Backend_URL}/appointment/sendappointmentmail`,
+        emailData
+      )
+      .then((response) => {
+        console.log(response.data);
+
+    axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-allwithimage/${id}`,{data:{image}})
+      .then(response => {
+        console.log(response);
+        window.location.reload();
+      })
+}).catch(error => {
+        // Handle errors here
+        console.error(error);
+      }).finally(()=>{
+        toggleLoading(false); 
+      });
+  
+  
+};
 
   return (
     <main id="main" className="main">
@@ -148,6 +211,11 @@ const SMAccidentalRepairs = props => {
                     <strong >Customer Name: </strong>{selectedAppointment.name}<br />
                   </Card.Text>
                 </Row>
+                <Row>
+                <Card.Text>
+                    <strong>Customer Type: </strong>{selectedAppointment.cusType}<br />
+                  </Card.Text>
+                  </Row>
                 <Row>
                   <Card.Text>
                     <strong>Vehicle Type: </strong>{selectedAppointment.vType}<br />
@@ -169,12 +237,12 @@ const SMAccidentalRepairs = props => {
                   <Card.Text>
                     <strong>Image</strong>
                   </Card.Text>
-                  <img src={`http://localhost:5000/${selectedAppointment.image}`} />
+                  <img src={`${selectedAppointment.image}`} style={{ maxWidth: '100%', maxHeight: '300px' }} />
                 </Row >
                 <Row style={{ marginTop: "4%", display: "flex" }}>
                 </Row>
                 <Row style={{ marginTop: "4%", display: "flex" }}>
-                  <Button variant="danger" onClick={() => Delete(selectedAppointment._id)} style={{ marginLeft: "20%", width: "100px" }}>Cancel</Button>
+                  <Button variant="danger" onClick={() => cancleAppointment(selectedAppointment._id,selectedAppointment.email,selectedAppointment.name,selectedAppointment.appointmentdate,selectedAppointment.appointmenttime,selectedAppointment.image)} style={{ marginLeft: '20%', width: '100px' }}>Cancel</Button>
                   <Button variant="primary" onClick={sendata} style={{ marginLeft: "20%", width: "100px" }}>Approve</Button>
                 </Row>
               </Card.Body>

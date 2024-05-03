@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Button,
   Row,
@@ -12,8 +12,13 @@ import {
 import SalaryDetailsModal from "./SalaryDetailsModal";
 import html2pdf from "html2pdf.js";
 import { CSVLink } from "react-csv";
+import HRConfirmModal from "./HRConfirmModal";
+import { StaffAuthContext } from "../../../context/StaffAuthContext";
+import logo from "../../../images/logoblack_trans.png";
 
-function Salary() {
+function Salary({ toggleLoading }) {
+  const { userId, userPosition } = useContext(StaffAuthContext);
+
   //const navigate = useNavigate();
   const [salaryRecords, setSalaryRecords] = useState([]);
   const [showSalaryModal, setShowSalaryModal] = useState(false);
@@ -26,11 +31,17 @@ function Salary() {
   const [searchEmployeeID, setSearchEmployeeID] = useState("");
   const [searchPosition, setSearchPosition] = useState("");
 
+  const [noPayLog, setNoPayLog] = useState(false);
+  const [showNoPayConfirm, setShowNopayConfirm] = useState(false);
+
   useEffect(() => {
     // Fetch salary records from the backend when the component mounts
     const fetchSalaryRecords = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/salaries");
+        toggleLoading(true);
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/salaries`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -43,9 +54,12 @@ function Salary() {
         setSalaryReload(false);
       } catch (error) {
         console.error("Error fetching salary records:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
     fetchSalaryRecords();
+    fetchLogsForToday();
   }, [salaryReload]);
 
   const handleMoreButtonClick = (id) => {
@@ -140,9 +154,26 @@ function Salary() {
     // Generate PDF content with table rows and other details
     const content = `
       <div style="margin: 20px;">
+      <div >
+      <h4 class="float-end font-size-15">Human Resources</h4>
+      <div class="mb-4">
+        <img src="${logo}" alt="Invoice Logo" width="200px" />
+      </div>
+      <div class="text-muted">
+      <p class="mb-1"><i class="bi bi-geo-alt-fill"></i>323/1/A Main Street Battaramulla</p>
+      <p class="mb-1">
+      <i class="bi bi-envelope-fill me-1"></i> info@neotech.com
+      </p>
+      <p>
+      <i class="bi bi-telephone-fill me-1"></i> 0112887998
+      </p>
+
+      </div>
+      <hr/>
+    </div>
         <h3 style="background-color: black; color: white; padding: 10px;">Salary Records of Employees</h3>
         <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
-
+  
           <thead>
             <tr style="background-color: black; color: white;">
               <th style="border: 1px solid white; padding: 10px;">Id</th>
@@ -162,17 +193,23 @@ function Salary() {
             ${tableRows}
           </tbody>
         </table>
+        <p style="text-align: right; margin-top: 20px;">Authorized By: ${userPosition}</p>
+        
         <p style="text-align: right; margin-top: 20px;">Generated Date: ${currentDate}</p>
         <p style="text-align: right; margin-top: 20px;">Neo Tech Motors & Services</p>
       </div>
     `;
 
     // Generate PDF from the content
-    html2pdf()
-      .from(content)
-      .toPdf()
-      .output("dataurlnewwindow")
-      .save(`Salary_Records_generated_${currentDate}.pdf`);
+    const options = {
+      margin: 0.5,
+      filename: `Salary_Records_generated_${currentDate}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "letter", orientation: "landscape" }, // Set orientation to landscape
+    };
+
+    html2pdf().from(content).set(options).save();
   };
 
   //pass salary to finance
@@ -203,13 +240,17 @@ function Salary() {
     console.log("Selected Month:", monthToSet);
 
     try {
-      const response = await fetch("http://localhost:5000/api/hr/pass-salary", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ month: monthToSet }), // Send the selected month in the request body
-      });
+      toggleLoading(true);
+      const response = await fetch(
+        `${process.env.React_App_Backend_URL}/api/hr/pass-salary`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ month: monthToSet }), // Send the selected month in the request body
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to set month");
@@ -223,6 +264,67 @@ function Salary() {
     } catch (error) {
       console.error("Error:", error);
       alert("Salary records sent to finance unsuccessfull.Try Again.");
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
+    }
+  };
+
+  //no pay operations
+  /* useEffect(() => {
+    fetchLogsForToday();
+  }, []);*/
+
+  const fetchLogsForToday = async () => {
+    try {
+      toggleLoading(true); // Set loading to true before API call
+      const response = await fetch(
+        `${process.env.React_App_Backend_URL}/api/hr//nopaylogs/today`
+      ); // Assuming this is the route you set up
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const data = await response.json();
+      console.log(data);
+      if (data.length > 0) {
+        setNoPayLog(true);
+      }
+    } catch (error) {
+      console.error("Error fetching logs:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
+    }
+  };
+
+  const handleNoPayClick = async () => {
+    setShowNopayConfirm(true);
+  };
+
+  const handleNoPayOp = async () => {
+    try {
+      toggleLoading(true); // Set loading to true before API call
+
+      const response = await fetch(
+        `${process.env.React_App_Backend_URL}/api/hr/nopay`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to trigger function");
+      }
+      const data = await response.json();
+      console.log("Function triggered successfully:", data);
+      setShowNopayConfirm(false);
+      if (data) {
+        alert("No Pay deducts successfully");
+      }
+    } catch (error) {
+      console.error("Error triggering function:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -263,6 +365,16 @@ function Salary() {
             >
               Send to Finance
             </Button>
+            {!noPayLog ? (
+              <Button
+                variant="dark"
+                size="md"
+                onClick={handleNoPayClick}
+                style={{ margin: "10px" }}
+              >
+                Deduct Yesterday Nopay
+              </Button>
+            ) : null}
           </div>
           <OverlayTrigger
             placement="right"
@@ -361,14 +473,22 @@ function Salary() {
                 <td>{record.empId}</td>
                 <td>{record.name}</td>
                 <td>{record.position}</td>
-                <td>Rs.{record.basicSalary}</td>
-                <td>Rs.{record.allowance}</td>
-                <td>Rs.{record.totalSal}</td>
-                <td>
-                  Rs.
-                  {record.noPay + record.EPFE}
+                <td style={{ textAlign: "right" }}>
+                  Rs.{parseFloat(record.basicSalary).toFixed(2)}
                 </td>
-                <td>Rs.{record.netSal}</td>
+                <td style={{ textAlign: "right" }}>
+                  Rs.{parseFloat(record.allowance).toFixed(2)}
+                </td>
+                <td style={{ textAlign: "right" }}>
+                  Rs.{parseFloat(record.totalSal).toFixed(2)}
+                </td>
+                <td style={{ textAlign: "right" }}>
+                  Rs.
+                  {parseFloat(record.noPay + record.EPFE).toFixed(2)}
+                </td>
+                <td style={{ textAlign: "right" }}>
+                  Rs.{parseFloat(record.netSal).toFixed(2)}
+                </td>
                 <td>
                   {/* More button with onClick handler */}
                   <Button
@@ -389,6 +509,18 @@ function Salary() {
         show={showSalaryModal}
         handleClose={handleCloseModal}
         id={selectedRecordId}
+        toggleLoading={toggleLoading}
+      />
+
+      {/* No Pay confirmation modal */}
+      <HRConfirmModal
+        show={showNoPayConfirm}
+        onHide={() => setShowNopayConfirm(false)}
+        title="No Pay Deduct Confirmation"
+        message="Are you sure you want to update no pay deductions for yesterday? This process cannot be undone."
+        onConfirm={handleNoPayOp}
+        btnColor={"warning"}
+        btnName={"Deduct No Pay"}
       />
     </section>
   );

@@ -9,15 +9,17 @@ import Button from "react-bootstrap/Button";
 import { Form, Col, Alert ,InputGroup} from 'react-bootstrap';
 import { BsExclamationTriangleFill } from 'react-icons/bs';
 import { BsFillEyeFill } from 'react-icons/bs';
-
+import {BsFillEyeSlashFill} from 'react-icons/bs';
+import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import cusimage1 from '../../../../src/images/CUS/CustomerImg/cusimage1.png';
 import cusimage2 from '../../../../src/images/CUS/CustomerImg/cusimage2.jpg';
 import cusimage3 from '../../../../src/images/CUS/CustomerImg/cusimage3.jpg';
 
 
-function CusRegistration(){
+function CusRegistration({ toggleLoading }){
   const navigate = useNavigate();
   const cusauth = useContext(CusAuthContext);
+  const cuslogin_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cuslogin`;
 
   const [formData, setFormData] = useState({
     Name: "",
@@ -44,6 +46,8 @@ function CusRegistration(){
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [address, setaddress] = useState("");
+  const [showPassword, setShowPassword] = useState('');
+  const [showConfirmPassword, setConfirmShowPassword] = useState('');
 
   //validations
   const handleChangeName = (e) => {
@@ -127,6 +131,8 @@ const handleConfirmPasswordChange = (e) => {
 
   function sendCusDetails(e){
     e.preventDefault();
+    try{
+      toggleLoading(true);
 
     // Check if the phone number has exactly 9 digits
   if (contact.length !== 10) {
@@ -148,7 +154,8 @@ const handleConfirmPasswordChange = (e) => {
       body: JSON.stringify(newCustomer)
     };
     
-    fetch('http://localhost:5000/api/customer/signup/add-customer', requestOptions)
+   
+    fetch(`${process.env.React_App_Backend_URL}/api/customer/signup/add-customer`, requestOptions)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -158,12 +165,19 @@ const handleConfirmPasswordChange = (e) => {
       .then(data => {
         alert("Registration Successfull");
         cusauth.login(data.userId,data.email,data.name,data.token);
-        console.log(data);
+      
         navigate("/customer");
       })
-      .catch(error => {
+    .catch(error => {
         alert('Error:', error.message);
-      });
+    })
+    .finally (() => {
+      toggleLoading(false); // Set loading to false after API call completes
+    });
+  }catch (error) {
+    alert('Error:', error.message);
+    toggleLoading(false); // Set loading to false in case of an error
+  }
   }
     return(
         <div>
@@ -206,9 +220,8 @@ const handleConfirmPasswordChange = (e) => {
                <Form.Group as={Col} controlId="formGridExtra2">
                 <Form.Label>Contact No*</Form.Label>
                 <Form.Control
-                    as="textarea"
                     required
-                    type="tel"
+                    type="text"
                     placeholder="xxx xx xx xxx"
                     rows={1}
                     value={contact}
@@ -264,16 +277,16 @@ const handleConfirmPasswordChange = (e) => {
                         {warnings.number && "Password must contain at least one number."}<br />
                         {warnings.minLength && "Password must be at least 8 characters long."}
                     </Form.Control.Feedback>
-                    {/* Display eye icon if password is provided */}
-                    {password && (
-                        <InputGroup.Text>
-                            <BsFillEyeFill color="green" />
-                        </InputGroup.Text>
-                    )}
-                </InputGroup>
+                      {/* Toggle password visibility */}
+        <InputGroup.Text onClick={() => setShowPassword(!showPassword)} style={{ cursor: 'pointer' }}>
+            {showPassword ? <BsFillEyeSlashFill color="green" /> : <BsFillEyeFill color="green" />}
+        </InputGroup.Text>
+    </InputGroup>
             </Form.Group>
+
             <Form.Group as={Col} controlId="formGridConfirmPassword">
                 <Form.Label>Confirm Password *</Form.Label>
+                <div className="d-flex align-items-center"> {/* Wrap label and input with flex */}
                 <Form.Control 
                     type="password" 
                     placeholder="Confirm Password"
@@ -281,6 +294,11 @@ const handleConfirmPasswordChange = (e) => {
                     onChange={handleChangeConfirmPassword}
                     isInvalid={passwordMismatch}
                 />
+                 {/* Toggle button for password visibility */}
+        <Button variant="light" onClick={() => setConfirmShowPassword(!showConfirmPassword)} className="toggle-password-button">
+            {showConfirmPassword ? <BsEyeSlash /> : <BsEye />}
+        </Button>
+        </div>
                 {/* Display password mismatch error */}
                 <Form.Control.Feedback type="invalid">
                     Passwords do not match.
@@ -292,6 +310,8 @@ const handleConfirmPasswordChange = (e) => {
                   placeholder="1234 Main St"
                   value={address}
                   onChange={(e) => setaddress(e.target.value)}
+                  pattern="^[a-zA-Z\s]+$"  // Regex to allow only letters and spaces
+                  title="Please enter a valid address without special characters or numbers"
                   /><br></br>
 
                 <div class="form-check">
@@ -306,7 +326,7 @@ const handleConfirmPasswordChange = (e) => {
                   Sign Up
             </Button>
             <p style={{marginTop:"20px"}}><center>Already have an account? 
-            <a href="http://localhost:3000/customer/cuslogin" class="link-info"> Sign in</a></center></p>
+            <a href={cuslogin_frontendurl} class="link-info"> Sign in</a></center></p>
             </Card.Body>
              </Card>
               </Form>

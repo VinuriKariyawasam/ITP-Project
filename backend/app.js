@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 app.use("/uploads/hr", express.static(path.join(__dirname, "uploads", "hr")));
 app.use("/uploads/SM", express.static(path.join(__dirname, "uploads", "SM")));
 app.use("/uploads/im", express.static(path.join(__dirname, "uploads", "im")));
-
+app.use("/uploads/CAM", express.static(path.join(__dirname, "uploads", "CAM")));
 
 app.use(
   "/uploads/SM/Appointment",
@@ -35,50 +35,88 @@ app.use(
 );
 
 
+// // Load finance routes
+// readdirSync("./routes").map((route) =>
+//   app.use("/api/finance", require("./routes/" + route))
+// );
+
+// //Load employee routes
+// readdirSync("./routes").map((route) =>
+//   app.use("/api/hr", require("./routes/" + route))
+// );
+
+// //Appointment
+// const periodicalroute = require("./routes/appointment-routes");
+// app.use("/appointment", periodicalroute);
+
+// //Load Inventory
+// readdirSync("./routes/").map((route) =>
+//   app.use("/Product", require("./routes/" + route))
+// );
+
+// //CAS
+// readdirSync("./routes").map((route) =>
+//   app.use("/cam", require("./routes/" + route))
+// );
+
+// //Vehicle
+// readdirSync("./routes").map((route) =>
+//   app.use("/api/vehicle", require("./routes/" + route))
+// );
+
+// //Mobile
+// readdirSync("./routes").map((route) =>
+//   app.use("/api/mobile", require("./routes/" + route))
+// );
+
+// //services
+// readdirSync("./routes").map((route) =>
+//   app.use("/api/sm", require("./routes/" + route))
+// );
+
+// //Load customer routes
+
+// readdirSync("./routes").map((route) =>
+//   app.use("/api/customer", require("./routes/" + route))
+// );
+
+
+
+
 // Load finance routes
-readdirSync("./routes").map((route) =>
-  app.use("/api/finance", require("./routes/" + route))
-);
+app.use("/api/finance", require("./routes/finance-routes"));
 
-//Load employee routes
-readdirSync("./routes").map((route) =>
-  app.use("/api/hr", require("./routes/" + route))
-);
+// Load employee routes
+app.use("/api/hr", require("./routes/hr-routes"));
 
-//Appointment
-const periodicalroute = require("./routes/appointment-routes");
-app.use("/appointment", periodicalroute);
+// Appointment
+app.use("/appointment", require("./routes/appointment-routes"));
 
-//Load Inventory
-readdirSync("./routes/").map((route) =>
-  app.use("/Product", require("./routes/" + route))
-);
+// Load Inventory
+app.use("/Product", require("./routes/Inventory-routes"));
 
-//CAS
-readdirSync("./routes").map((route) =>
-  app.use("/cam", require("./routes/" + route))
-);
+// CAS
+app.use("/cam", require("./routes/CAM-routes"));
 
-//Vehicle
-readdirSync("./routes").map((route) =>
-  app.use("/api/vehicle", require("./routes/" + route))
-);
+// Vehicle
+app.use("/api/vehicle", require("./routes/vehicle-routes"));
 
-//Mobile
-readdirSync("./routes").map((route) =>
-  app.use("/api/mobile", require("./routes/" + route))
-);
+// Mobile
+app.use("/api/mobile", require("./routes/mobile-routes"));
 
-//services
-readdirSync("./routes").map((route) =>
-  app.use("/api/sm", require("./routes/" + route))
-);
+// Services
+app.use("/api/sm", require("./routes/sm-routes"));
 
-//Load customer routes
+// Load customer routes
+app.use("/api/customer", require("./routes/customer-routes"));
 
-readdirSync("./routes").map((route) =>
-  app.use("/api/customer", require("./routes/" + route))
-);
+
+
+
+
+
+
+
 
 
 //handle 404 errors

@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import CAM_dbCard from "./CAM_dbcard";
 import ConsultancyPage from "./ConsultancyPage";
 
-function CAM_dashboard() {
+function CAM_dashboard({ toggleLoading }) {
   const [consultationCount, setConsultationCount] = useState(0);
   const [feedbackCount, setFeedbackCount] = useState(0);
 
   useEffect(() => {
     const fetchConsultations = async () => {
       try {
-        const response = await fetch("http://localhost:5000/cam/consultation/get-issues");
+        toggleLoading(true);
+        const response = await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/get-issues`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status:${response.status}`);
         }
@@ -18,6 +19,8 @@ function CAM_dashboard() {
         setConsultationCount(count);
       } catch (error) {
         console.error("Error fetching data:", error);
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
     fetchConsultations();
@@ -26,7 +29,8 @@ function CAM_dashboard() {
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const response = await fetch("http://localhost:5000/cam/feedback/get-feedbacks");
+        toggleLoading(true);
+        const response = await fetch(`${process.env.React_App_Backend_URL}/cam/feedback/get-feedbacks`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status:${response.status}`);
         }
@@ -35,6 +39,8 @@ function CAM_dashboard() {
         setFeedbackCount(count);
       } catch (error) {
         console.error("Error fetching data:", error);
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
     fetchFeedbacks();

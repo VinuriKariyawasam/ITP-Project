@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
@@ -7,9 +7,11 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
-import { CusAuthContext } from "../../../../context/cus-authcontext"
+import { useNavigate } from "react-router-dom";
+import { CusAuthContext } from "../../../../context/cus-authcontext";
 
-function Lubricants() {
+function Lubricants({ toggleLoading }) {
+  const navigate = useNavigate();
   const [Products, setProducts] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [quantities, setQuantities] = useState({});
@@ -20,8 +22,9 @@ function Lubricants() {
 
   useEffect(() => {
     function getProducts() {
+      toggleLoading(true);
       axios
-        .get("http://localhost:5000/Product/Tirestock")
+        .get(`${process.env.React_App_Backend_URL}/Product/Tirestock`)
         .then((res) => {
           const initialQuantities = {};
           res.data.forEach((product) => {
@@ -33,6 +36,9 @@ function Lubricants() {
         })
         .catch((err) => {
           alert("error");
+        })
+        .finally(() => {
+          toggleLoading(false);
         });
     }
     getProducts();
@@ -92,7 +98,7 @@ function Lubricants() {
     brand
   ) => {
     const newquantity = pquantity - quantity;
-
+    toggleLoading(true);
     const updateLub = {
       Product_name: productName,
       Product_brand: brand,
@@ -102,7 +108,10 @@ function Lubricants() {
     };
 
     axios
-      .put(`http://localhost:5000/Product/updateTire/${productId}`, updateLub)
+      .put(
+        `${process.env.React_App_Backend_URL}/Product/updateTire/${productId}`,
+        updateLub
+      )
       .then((response) => {
         console.log(response);
         window.location.reload();
@@ -112,7 +121,7 @@ function Lubricants() {
       });
 
     axios
-      .get("http://localhost:5000/Product/getcart")
+      .get(`${process.env.React_App_Backend_URL}/Product/getcart`)
       .then((res) => {
         const cartData = res.data;
         console.log(cartData);
@@ -125,15 +134,21 @@ function Lubricants() {
           const updatedQuantity = productToUpdate.Quantity + quantity;
           console.log(productToUpdate.Product_name);
           axios
-            .put(`http://localhost:5000/Product/updatecart/${pastItemId}`, {
-              Quantity: updatedQuantity,
-            })
+            .put(
+              `${process.env.React_App_Backend_URL}/Product/updatecart/${pastItemId}`,
+              {
+                Quantity: updatedQuantity,
+              }
+            )
             .then((response) => {
               console.log(response.data);
               window.location.reload();
             })
             .catch((error) => {
               console.error(error);
+            })
+            .finally(() => {
+              toggleLoading(false);
             });
         } else {
           const cartItem = {
@@ -143,7 +158,10 @@ function Lubricants() {
             image: image,
           };
           axios
-            .post("http://localhost:5000/Product/addcart", cartItem)
+            .post(
+              `${process.env.React_App_Backend_URL}/Product/addcart`,
+              cartItem
+            )
             .then((response) => {
               console.log(response.data);
               window.location.reload();
@@ -151,6 +169,9 @@ function Lubricants() {
             })
             .catch((error) => {
               console.error(error);
+            })
+            .finally(() => {
+              toggleLoading(false);
             });
         }
       })
@@ -160,16 +181,17 @@ function Lubricants() {
   };
 
   const emptycart = () => {
+    toggleLoading(true);
     axios
-      .get("http://localhost:5000/Product/getcart")
+      .get(`${process.env.React_App_Backend_URL}/Product/getcart`)
       .then((cartRes) => {
         const cartItems = cartRes.data;
         axios
-          .get("http://localhost:5000/Product/lubricantstock")
+          .get(`${process.env.React_App_Backend_URL}/Product/lubricantstock`)
           .then((lubStockRes) => {
             const lubStockItems = lubStockRes.data;
             axios
-              .get("http://localhost:5000/Product/Tirestock")
+              .get(`${process.env.React_App_Backend_URL}/Product/Tirestock`)
               .then((tireStockRes) => {
                 const tireStockItems = tireStockRes.data;
 
@@ -192,7 +214,7 @@ function Lubricants() {
 
                     axios
                       .put(
-                        `http://localhost:5000/Product/updatelubricant/${matchingLubStockItem._id}`,
+                        `${process.env.React_App_Backend_URL}/Product/updatelubricant/${matchingLubStockItem._id}`,
                         updateLub
                       )
                       .then((response) => {
@@ -226,7 +248,7 @@ function Lubricants() {
 
                     axios
                       .put(
-                        `http://localhost:5000/Product/updateTire/${matchingTireStockItem._id}`,
+                        `${process.env.React_App_Backend_URL}/Product/updateTire/${matchingTireStockItem._id}`,
                         updateTire
                       )
                       .then((response) => {
@@ -244,13 +266,18 @@ function Lubricants() {
                 });
 
                 axios
-                  .delete("http://localhost:5000/Product/emptycart")
+                  .delete(
+                    `${process.env.React_App_Backend_URL}/Product/emptycart`
+                  )
                   .then(() => {
                     console.log("Cart emptied successfully.");
                     window.location.reload();
                   })
                   .catch((error) => {
                     console.error("Error emptying cart:", error);
+                  })
+                  .finally(() => {
+                    toggleLoading(false);
                   });
               })
               .catch((tireStockErr) => {
@@ -268,26 +295,31 @@ function Lubricants() {
 
   useEffect(() => {
     function getcart() {
+      toggleLoading(true);
       axios
-        .get("http://localhost:5000/Product/getcart")
+        .get(`${process.env.React_App_Backend_URL}/Product/getcart`)
         .then((res) => {
           setcart(res.data);
         })
         .catch((err) => {
           alert("error");
+        })
+        .finally(() => {
+          toggleLoading(false);
         });
     }
     getcart();
   }, []);
 
   const Delete = (id, pname, quantity) => {
+    toggleLoading(true);
     axios
-      .get("http://localhost:5000/Product/lubricantstock")
+      .get(`${process.env.React_App_Backend_URL}/Product/lubricantstock`)
       .then((lubStockRes) => {
         const lubStockItems = lubStockRes.data;
 
         axios
-          .get("http://localhost:5000/Product/Tirestock")
+          .get(`${process.env.React_App_Backend_URL}/Product/Tirestock`)
           .then((tireStockRes) => {
             const tireStockItems = tireStockRes.data;
             const matchingLubStockItem = lubStockItems.find(
@@ -306,7 +338,7 @@ function Lubricants() {
 
               axios
                 .put(
-                  `http://localhost:5000/Product/updatelubricant/${matchingLubStockItem._id}`,
+                  `${process.env.React_App_Backend_URL}/Product/updatelubricant/${matchingLubStockItem._id}`,
                   updateLub
                 )
                 .then((response) => {
@@ -338,7 +370,7 @@ function Lubricants() {
 
               axios
                 .put(
-                  `http://localhost:5000/Product/updateTire/${matchingTireStockItem._id}`,
+                  `${process.env.React_App_Backend_URL}/Product/updateTire/${matchingTireStockItem._id}`,
                   updateTire
                 )
                 .then((response) => {
@@ -355,13 +387,18 @@ function Lubricants() {
             }
 
             axios
-              .delete(`http://localhost:5000/Product/deletecart/${id}`)
+              .delete(
+                `${process.env.React_App_Backend_URL}/Product/deletecart/${id}`
+              )
               .then((response) => {
                 console.log(response);
                 window.location.reload();
               })
               .catch((error) => {
                 console.error(error);
+              })
+              .finally(() => {
+                toggleLoading(false);
               });
           })
           .catch((tireStockErr) => {
@@ -374,13 +411,14 @@ function Lubricants() {
   };
 
   const checkout = () => {
+    toggleLoading(true);
     axios
-      .get("http://localhost:5000/Product/lubricantstock")
+      .get(`${process.env.React_App_Backend_URL}/Product/lubricantstock`)
       .then((lubStockRes) => {
         const lubStockItems = lubStockRes.data;
         console.log(lubStockItems);
         axios
-          .get("http://localhost:5000/Product/Tirestock")
+          .get(`${process.env.React_App_Backend_URL}/Product/Tirestock`)
           .then((tireStockRes) => {
             const tireStockItems = tireStockRes.data;
             console.log(tireStockItems);
@@ -404,27 +442,33 @@ function Lubricants() {
               }
             });
             axios
-              .get("http://localhost:5000/Product/getquantity")
+              .get(`${process.env.React_App_Backend_URL}/Product/getquantity`)
               .then((quantityRes) => {
                 const quantityCollection = quantityRes.data;
                 console.log(quantityCollection);
 
                 itemsToUpdate.forEach((item) => {
                   const existingProduct = quantityCollection.find(
-                    (product) => product. Product_name === item.product_name
+                    (product) => product.Product_name === item.product_name
                   );
-                  console.log(existingProduct)
+                  console.log(existingProduct);
                   if (!existingProduct) {
                     axios
-                      .post("http://localhost:5000/Product/addquantity", {
-                        product_name: item.product_name,
-                        product_type: item.product_type,
-                      })
+                      .post(
+                        `${process.env.React_App_Backend_URL}/Product/addquantity`,
+                        {
+                          product_name: item.product_name,
+                          product_type: item.product_type,
+                        }
+                      )
                       .then((response) => {
                         console.log(response.data);
                       });
                   } else {
-                    console.log("Product already in collection:", item.product_name);
+                    console.log(
+                      "Product already in collection:",
+                      item.product_name
+                    );
                   }
                 });
               })
@@ -435,7 +479,7 @@ function Lubricants() {
             const allProducts = [];
             let total = 0;
             axios
-              .get("http://localhost:5000/Product/getcart")
+              .get(`${process.env.React_App_Backend_URL}/Product/getcart`)
               .then((res) => {
                 const cart = res.data;
                 total = cart.reduce(
@@ -468,7 +512,10 @@ function Lubricants() {
 
                 console.log(order);
                 axios
-                  .post("http://localhost:5000/Product/addorder", order)
+                  .post(
+                    `${process.env.React_App_Backend_URL}/Product/addorder`,
+                    order
+                  )
                   .then((response) => {
                     const orderId = response.data.orderId;
                     console.log(orderId);
@@ -477,6 +524,7 @@ function Lubricants() {
                       to: cusauth.email,
                       subject: `Your Cart Details : orderID :${orderId}`,
                       text: `Thank you for shopping with us !!!
+                      You will receive your bill number and the invoice shortly, From that you can easily make payment through online or physical
                     Here are your cart details: `,
                       html: null,
                       orderId: orderId,
@@ -484,20 +532,25 @@ function Lubricants() {
 
                     axios
                       .post(
-                        "http://localhost:5000/Product/sendinventoryemail",
+                        `${process.env.React_App_Backend_URL}/Product/sendinventoryemail`,
                         emailData
                       )
                       .then((response) => {
                         console.log(response.data);
 
                         axios
-                          .delete("http://localhost:5000/Product/clear-cart")
+                          .delete(
+                            `${process.env.React_App_Backend_URL}/Product/clear-cart`
+                          )
                           .then((response) => {
                             console.log("Cart cleared successfully");
-                            window.location.reload();
+                            navigate("/customer/products/myorders");
                           })
                           .catch((error) => {
                             console.error("Error clearing cart:", error);
+                          })
+                          .finally(() => {
+                            toggleLoading(false);
                           });
                       })
                       .catch((error) => {
@@ -522,7 +575,6 @@ function Lubricants() {
       });
   };
 
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -542,64 +594,69 @@ function Lubricants() {
 
   if (filteredProducts.length === 0) {
     return (
-      <div style={{ marginTop: "2%", marginLeft: "3%" }}>
-      <h1 style={{ textAlign: "center" }}>HIGH QUALITY TIRES AT FAIR PRICE </h1>
-      <div style={{ display: "flex", marginTop: "4%" }}>
-        <Form.Label
-          style={{ marginLeft: "8%", fontWeight: "bold", fontSize: "20px" }}
+      <div style={{ marginTop: "1%", marginLeft: "3%" }}>
+        <h1 style={{ textAlign: "center" }}>
+          HIGH QUALITY TIRES AT FAIR PRICE 
+        </h1>
+        <div style={{ display: "flex", marginTop: "4%" }}>
+          <Form.Label
+            style={{ marginLeft: "8%", fontWeight: "bold", fontSize: "20px" }}
+          >
+            Brand
+          </Form.Label>
+          <Form.Select
+            aria-label="Default select example"
+            style={{ marginLeft: "2%", height: "20%", width: "10%" }}
+            onChange={handleBrandChange}
+            value={selectedBrand}
+          >
+            <option value="">All</option>
+            <option value="Bridgestone">Bridgestone</option>
+            <option value="Michelin">Michelin</option>
+            <option value="Maxxis">Maxxis</option>
+            <option value="Pirelli">Pirelli</option>
+            <option value="Goodyear">Goodyear</option>
+            <option value="DSI">DSI</option>
+          </Form.Select>
+          <Form.Label
+            style={{ marginLeft: "7%", fontWeight: "bold", fontSize: "20px" }}
+          >
+            Vehicle Type
+          </Form.Label>
+          <Form.Select
+            aria-label="Default select example"
+            style={{ marginLeft: "2%", height: "20%", width: "10%" }}
+            onChange={handletypeChange}
+            value={selectedvehicle}
+          >
+            <option value="">All</option>
+            <option value="bike">Motor bike</option>
+            <option value="car">Car</option>
+            <option value="van">Van</option>
+            <option value="suv">SUV</option>
+            <option value="bus">Bus</option>
+            <option value="lorry">Lorry</option>
+          </Form.Select>
+          <Button
+            variant="outline-dark"
+            style={{ marginLeft: "25%" }}
+            size="lg"
+            onClick={handleShow}
+          >
+            Cart <i class="bi bi-cart"></i>
+          </Button>
+        </div>
+        <h1
+          style={{ marginTop: "2%", textAlign: "center", marginBottom: "3%" }}
         >
-          Brand
-        </Form.Label>
-        <Form.Select
-          aria-label="Default select example"
-          style={{  marginLeft: "2%",height:"20%",width:"10%"}}
-          onChange={handleBrandChange}
-          value={selectedBrand}
-        >
-          <option value="">All</option>
-          <option value="Bridgestone">Bridgestone</option>
-          <option value="Michelin">Michelin</option>
-          <option value="Maxxis">Maxxis</option>
-          <option value="Pirelli">Pirelli</option>
-          <option value="Goodyear">Goodyear</option>
-          <option value="DSI">DSI</option>
-
-        </Form.Select>
-        <Form.Label
-          style={{ marginLeft: "7%", fontWeight: "bold", fontSize: "20px" }}
-        >
-          Vehicle Type
-        </Form.Label>
-        <Form.Select
-          aria-label="Default select example"
-          style={{ marginLeft: "2%",height:"20%",width:"10%"}}
-          onChange={ handletypeChange}
-          value={selectedvehicle}
-        >
-          <option value="">All</option>
-          <option value="bike">Motor bike</option>
-          <option value="car">Car</option>
-          <option value="van">Van</option>
-          <option value="suv">SUV</option>
-          <option value="bus">Bus</option>
-          <option value="lorry">Lorry</option>
-        </Form.Select>
-        <Button
-          variant="outline-dark"
-          style={{ marginLeft: "25%" }}
-          size="lg"
-          onClick={handleShow}
-        >
-          Cart <i class="bi bi-cart"></i>
-        </Button>
+          No any products available
+        </h1>
       </div>
-    <h1 style={{ marginTop: "2%", textAlign:"center",marginBottom:"3%"}}>No any products available</h1>
-    </div>
-  )}
-  
+    );
+  }
 
   return (
-    <div style={{ marginTop: "2%", marginLeft: "3%" }}>
+    <div style={{ marginTop: "1%", marginLeft: "3%" }}>
       <h1 style={{ textAlign: "center" }}>HIGH QUALITY TIRES AT FAIR PRICE </h1>
       <div style={{ display: "flex", marginTop: "4%" }}>
         <Form.Label
@@ -609,7 +666,7 @@ function Lubricants() {
         </Form.Label>
         <Form.Select
           aria-label="Default select example"
-          style={{  marginLeft: "2%",height:"20%",width:"10%"}}
+          style={{ marginLeft: "2%", height: "20%", width: "10%" }}
           onChange={handleBrandChange}
           value={selectedBrand}
         >
@@ -628,8 +685,8 @@ function Lubricants() {
         </Form.Label>
         <Form.Select
           aria-label="Default select example"
-          style={{ marginLeft: "2%",height:"20%",width:"10%"}}
-          onChange={ handletypeChange}
+          style={{ marginLeft: "2%", height: "20%", width: "10%" }}
+          onChange={handletypeChange}
           value={selectedvehicle}
         >
           <option value="">All</option>
@@ -663,8 +720,13 @@ function Lubricants() {
             <center>
               <Card.Img
                 variant="top"
-                src={`http://localhost:5000/${product.image}`}
-                style={{ width: "70%", height: "80%", alignContent: "center" }}
+                src={`${product.image}`}
+                style={{
+                  marginTop: "3%",
+                  width: "200px",
+                  height: "250px",
+                  alignContent: "center",
+                }}
               />
             </center>
             <Card.Body>
@@ -758,7 +820,7 @@ function Lubricants() {
                       }}
                     >
                       <img
-                        src={`http://localhost:5000/${cartItem.image}`}
+                        src={`${cartItem.image}`}
                         alt={cartItem.Product_name}
                         style={{ width: "40%", height: "40%" }}
                       />
@@ -773,13 +835,14 @@ function Lubricants() {
                     <td>
                       <Button
                         variant="danger"
-                        onClick={() =>
+                        onClick={() => {
                           Delete(
                             cartItem._id,
                             cartItem.Product_name,
                             cartItem.Quantity
-                          )
-                        }
+                          );
+                          handleClose();
+                        }}
                       >
                         remove
                       </Button>
@@ -802,10 +865,22 @@ function Lubricants() {
             </Table>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={emptycart}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                emptycart();
+                handleClose();
+              }}
+            >
               Empty cart
             </Button>
-            <Button variant="success" onClick={checkout}>
+            <Button
+              variant="success"
+              onClick={() => {
+                checkout();
+                handleClose();
+              }}
+            >
               Check out
             </Button>
           </Modal.Footer>

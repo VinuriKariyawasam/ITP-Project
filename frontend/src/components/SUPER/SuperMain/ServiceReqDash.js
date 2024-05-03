@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import Badge from "react-bootstrap/Badge";
 
-function ServiceReqDash() {
+function ServiceReqDash({ toggleLoading }) {
   const [serviceReqs, setServiceReqs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -27,7 +27,8 @@ function ServiceReqDash() {
   useEffect(() => {
     const fetchDataAndReportUrl = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/vehicle/serviceReqs");
+        toggleLoading(true); // Set loading to true before API call
+        const response = await fetch(`${process.env.React_App_Backend_URL}/api/vehicle/serviceReqs`);
         if (response.ok) {
           const data = await response.json();
           const serviceReqs = data.serviceReqs || [];
@@ -49,6 +50,8 @@ function ServiceReqDash() {
         console.error("Error fetching data:", error);
         setError("Failed to fetch data. Please try again later.");
         setLoading(false);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
   
@@ -62,8 +65,9 @@ function ServiceReqDash() {
     );
     if (shouldDelete) {
       try {
+        toggleLoading(true);
         const response = await fetch(
-          `http://localhost:5000/api/vehicle/delete-serviceReq/${id}`,
+          `${process.env.React_App_Backend_URL}/api/vehicle/delete-serviceReq/${id}`,
           {
             method: "DELETE",
             headers: {
@@ -86,6 +90,8 @@ function ServiceReqDash() {
       } catch (error) {
         console.error("Error deleting serviceReq:", error);
         setError("Failed to delete service request. Please try again later.");
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     }
   };
@@ -177,8 +183,9 @@ function ServiceReqDash() {
 
   const handleSubmit = async () => {
     try {
+      toggleLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/vehicle/update-serviceReq/${selectedServiceReq._id}`,
+        `${process.env.React_App_Backend_URL}/api/vehicle/update-serviceReq/${selectedServiceReq._id}`,
         {
           method: "PUT",
           headers: {
@@ -203,14 +210,17 @@ function ServiceReqDash() {
     } catch (error) {
       console.error("Error updating serviceReq:", error);
       setError("Failed to update service request. Please try again later.");
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
 
   const handleDownload = async (reportFilePath, reportFileName) => {
     try {
+      toggleLoading(true);
       // Make an HTTP GET request to download the file
-      const response = await fetch(`http://localhost:5000/api/vehicle/download-report/${reportFilePath}`, {
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/vehicle/download-report/${reportFilePath}`, {
         method: 'GET',
       });
   
@@ -232,6 +242,8 @@ function ServiceReqDash() {
     } catch (error) {
       console.error('Error downloading report:', error);
       // Handle error
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
   
@@ -332,10 +344,12 @@ function ServiceReqDash() {
                     <td>
                     <Button
   variant="primary"
-  onClick={() => handleDownload(serviceReq.report, serviceReq.reportFileName)}
 >
-  Download
+  <a href={serviceReq.reportUrl} download={serviceReq.reportFileName}>
+    Download
+  </a>
 </Button>
+
 
 
 
@@ -470,15 +484,7 @@ function ServiceReqDash() {
                     {errors.request}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="formReport">
-                  <Form.Label>Diagnosis Report</Form.Label>
-                  <Form.Control
-                    type="file"
-                    name="report"
-                    accept=".pdf"
-                    onChange={handleFileChange}
-                  />
-                </Form.Group>
+                
                 
               </Form>
             </Modal.Body>

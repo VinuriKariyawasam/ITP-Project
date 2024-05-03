@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DbCard from "./SMDbCard";
 
-function SMDashboard() {
+function SMDashboard({ toggleLoading }) {
   const [reportCount, setReportCount] = useState(null);
 
   useEffect(() => {

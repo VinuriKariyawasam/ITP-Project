@@ -35,8 +35,8 @@ const PaymentSuccess = (props) => {
                         <p>Your Payment Successfully Verified.</p>
                         <p>You will be redirected to the Payment Invoice in {countdown} seconds</p>
                         <div className="mt-4">
-                            <Link to="/customer/payments/payonline">
-                                <Button variant="primary">Go to My Payments</Button>
+                            <Link to="/customer/payments/onlinepayment/invoice">
+                                <Button variant="primary">View Invoice</Button>
                             </Link>
                         </div>
                     </Col>

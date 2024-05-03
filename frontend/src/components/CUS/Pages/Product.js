@@ -4,6 +4,7 @@ import Products from '../CUSMain/inventory/Products'
 import SparePartsform from '../CUSMain/inventory/SparePartsform';
 import Lubricants from '../CUSMain/inventory/Lubricants';
 import Tire from '../CUSMain/inventory/Tire'
+import Order from '../CUSMain/inventory/orderHistory'
 import {
   BrowserRouter as Router,
   Route,
@@ -13,13 +14,14 @@ import {
 
 
 
-function Product() {
+function Product({ toggleLoading }) {
   return (
     <Routes>
-        <Route path="/*" element={<Products/>} />
-        <Route path="/lubricants" element={<Lubricants/>} />
-        <Route path="/tires" element={<Tire/>}/>
-        <Route path="/Sparepartsform" element={<SparePartsform/>} />
+        <Route path="/*" element={<Products toggleLoading={toggleLoading}/>} />
+        <Route path="/lubricants" element={<Lubricants toggleLoading={toggleLoading}/>} />
+        <Route path="/tires" element={<Tire toggleLoading={toggleLoading}/>}/>
+        <Route path="/Sparepartsform" element={<SparePartsform toggleLoading={toggleLoading}/>} />
+        <Route path='/myorders' element={<Order toggleLoading={toggleLoading}/>}/>
       </Routes>
   )
 }

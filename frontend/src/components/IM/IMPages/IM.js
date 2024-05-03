@@ -21,19 +21,19 @@ import {
 
 
 
-function IM() {
+function IM({ toggleLoading }) {
   return (
     <>
       <Header/>
       <IMSideBar />
       <Routes>
-        <Route path="/*" element={<IMMain />} />
-        <Route path="/lubricants/*" element={<Lubricants/>} />
-        <Route path="lubricants/addproduct/" element={<Addlubricant />} />
-        <Route path="/Tires/*" element={<Tires/>} />
-        <Route path="Tires/addproduct/" element={<Tireform />} />
-        <Route path="sp/*" element={<SpareParts/>} />
-        <Route path="sales/*" element={<Sales/>} />
+        <Route path="/*" element={<IMMain toggleLoading={toggleLoading}/>} />
+        <Route path="/lubricants/*" element={<Lubricants toggleLoading={toggleLoading}/>} />
+        <Route path="lubricants/addproduct/" element={<Addlubricant toggleLoading={toggleLoading}/>} />
+        <Route path="/Tires/*" element={<Tires toggleLoading={toggleLoading}/>} />
+        <Route path="Tires/addproduct/" element={<Tireform toggleLoading={toggleLoading}/>} />
+        <Route path="sp/*" element={<SpareParts toggleLoading={toggleLoading}/>} />
+        <Route path="sales/*" element={<Sales toggleLoading={toggleLoading}/>} />
       </Routes>
     </>
   );

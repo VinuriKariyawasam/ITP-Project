@@ -3,7 +3,7 @@ import { Table, Modal, Button, Badge } from "react-bootstrap";
 import axios from "axios";
 import PageTitle from "./PageTitle";
 
-const ProductSales = () => {
+const ProductSales = ({toggleLoading}) => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [approvedSpareParts, setApprovedSpareParts] = useState([]);
@@ -12,57 +12,64 @@ const ProductSales = () => {
   const [searchDate, setSearchDate] = useState("");
 
   useEffect(() => {
-    function getApprovedSpareParts() {
-      axios
-        .get("http://localhost:5000/Product/approvedsp")
-        .then((res) => {
-          setApprovedSpareParts(res.data);
-        })
-        .catch((err) => {
-          alert("error");
-        });
-    }
+    const getApprovedSpareParts = async () => {
+        try {
+            toggleLoading(true);
+            const res = await axios.get(`${process.env.React_App_Backend_URL}/Product/approvedsp`);
+            setApprovedSpareParts(res.data);
+        } catch (error) {
+            console.error("Error fetching approved spare parts:", error);
+            alert("Error fetching approved spare parts");
+        } finally {
+            toggleLoading(false);
+        }
+    };
     getApprovedSpareParts();
-  }, []);
+}, []);
 
-  useEffect(() => {
-    function getPendingOrder() {
-      axios
-        .get("http://localhost:5000/Product/getorderpending")
-        .then((res) => {
-          setPendingOrder(res.data);
-        })
-        .catch((err) => {
-          alert("error");
-        });
-    }
+useEffect(() => {
+    const getPendingOrder = async () => {
+        try {
+            toggleLoading(true);
+            const res = await axios.get(`${process.env.React_App_Backend_URL}/Product/getorderpending`);
+            setPendingOrder(res.data);
+        } catch (error) {
+            console.error("Error fetching pending orders:", error);
+            alert("Error fetching pending orders");
+        } finally {
+            toggleLoading(false);
+        }
+    };
     getPendingOrder();
-  }, []);
+}, []);
 
-  useEffect(() => {
-    function getCompletedOrder() {
-      axios
-        .get("http://localhost:5000/Product/getordercompleted")
+useEffect(() => {
+    const getCompletedOrder = async () => {
+        try {
+            toggleLoading(true);
+            const res = await axios.get(`${process.env.React_App_Backend_URL}/Product/getordercompleted`);
+            setCompletedOrder(res.data);
+        } catch (error) {
+            console.error("Error fetching completed orders:", error);
+            alert("Error fetching completed orders");
+        } finally {
+            toggleLoading(false);
+        }
+    };
+    getCompletedOrder();
+}, []);
+
+const getPendingOrder = () => {
+    axios
+        .get(`${process.env.React_App_Backend_URL}/Product/getorderpending`)
         .then((res) => {
-          setCompletedOrder(res.data);
+            setPendingOrder(res.data);
         })
         .catch((err) => {
-          alert("error");
+            alert("error");
         });
-    }
-    getCompletedOrder();
-  }, []);
+};
 
-  const getPendingOrder = () => {
-    axios
-      .get("http://localhost:5000/Product/getorderpending")
-      .then((res) => {
-        setPendingOrder(res.data);
-      })
-      .catch((err) => {
-        alert("error");
-      });
-  };
 
   const handleMoreButtonClick = (order) => {
     setSelectedOrder(order);
@@ -74,7 +81,7 @@ const ProductSales = () => {
   };
 
   const handleApprove = (order) => {
-    axios.put(`http://localhost:5000/Product/updatetoongoing/${order._id}`, { status: "ongoing" })
+    axios.put(`${process.env.React_App_Backend_URL}/Product/updatetoongoing/${order._id}`, { status: "ongoing" })
       .then((res) => {
         console.log("Order Approved:", order);
         getPendingOrder(); // Refresh pending orders
@@ -86,7 +93,7 @@ const ProductSales = () => {
   };
   
   const productApprove = (order) => {
-    axios.put(`http://localhost:5000/Product/updatetocompletedorder/${order._id}`, { status: "completed" })
+    axios.put(`${process.env.React_App_Backend_URL}/Product/updatetocompletedorder/${order._id}`, { status: "completed" })
       .then((res) => {
         console.log("Product Order Approved:", order);
         getPendingOrder(); // Refresh pending orders
@@ -112,9 +119,11 @@ const ProductSales = () => {
         <Table striped bordered hover>
           <thead>
             <tr>
+              <th>Order Id</th>
               <th>Customer Name</th>
-              <th>Vehicle Number</th>
+              <th>Email</th>
               <th>Contact Number</th>
+              <th>Date</th>
               <th>Total</th>
               <th>Status</th>
               <th>Explore</th>
@@ -124,9 +133,11 @@ const ProductSales = () => {
           <tbody>
             {approvedSpareParts.map((SpareParts) => (
               <tr key={SpareParts._id}>
+                <td>{SpareParts.orderId}</td>
                 <td>{SpareParts.name}</td>
-                <td>{SpareParts.vehicleNumber}</td>
+                <td>{SpareParts.email}</td>
                 <td>{SpareParts.contactNumber}</td>
+                <td>{SpareParts.orderdate.split('T')[0]}</td>
                 <td>{SpareParts.total}</td>
                 <td>
                   <Badge bg="primary">In Finance</Badge>
@@ -142,24 +153,25 @@ const ProductSales = () => {
           </tbody>
         </Table>
         <Modal show={showModal} onHide={handleCloseModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>Order Details</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <img style={{ width: "50%", height: "50%" }} src={`http://localhost:5000/${selectedOrder?.image}`} alt="Product Image" />
-            <p>Customer Name: {selectedOrder?.name}</p>
-            <p>Vehicle Number: {selectedOrder?.vehicleNumber}</p>
-            <p>Vehicle Brand: {selectedOrder?.brand}</p>
-            <p>Model: {selectedOrder?.model}</p>
-            <p>Year: {selectedOrder?.year}</p>
-            <p>Color: {selectedOrder?.color}</p>
-            <p>Contact Number: {selectedOrder?.contactNumber}</p>
-            <p>Description: {selectedOrder?.description}</p>
-            <p>Total: Rs.{selectedOrder?.total}</p>
-          </Modal.Body>
-          <Modal.Footer>
-          </Modal.Footer>
-        </Modal>
+      <Modal.Header closeButton>
+        <Modal.Title>Order Details</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <img style={{width:"50%",height:"50%"}} src={`http://localhost:5000/${selectedOrder?.image}`} alt="Product Image" />
+        <p>Order Id: {selectedOrder?.orderId}</p>
+        <p>Customer Name: {selectedOrder?.name}</p>
+        <p>Vehicle Number: {selectedOrder?.vehicleNumber}</p>
+        <p>Vehicle Brand: {selectedOrder?.brand}</p>
+        <p>Model: {selectedOrder?.model}</p>
+        <p>Year: {selectedOrder?.year}</p>
+        <p>Color: {selectedOrder?.color}</p>
+        <p>Contact Number: {selectedOrder?.contactNumber}</p>
+        <p>Description: {selectedOrder?.description}</p>
+        <p>Total: Rs.{selectedOrder?.total}</p>
+      </Modal.Body>
+      <Modal.Footer>
+      </Modal.Footer>
+    </Modal>
       </div>
 
       <h3>Pending Product Orders</h3>
@@ -167,10 +179,11 @@ const ProductSales = () => {
         <thead>
           <tr>
             <th>OrderID</th>
-            <th>Date</th>
+            <th>Email</th>
+            <th>Date</th> 
             <th>Total</th>
             <th>Status</th>
-            <th>Details</th>
+            
             <th>Action</th> {/* New action column */}
           </tr>
         </thead>
@@ -178,14 +191,13 @@ const ProductSales = () => {
           {filteredPendingOrders.map((pendingorder) => (
             <tr key={pendingorder._id}>
               <td>{pendingorder.orderId}</td>
+              <td>{pendingorder.email}</td>
               <td>{pendingorder.date.split('T')[0]}</td>
               <td>{pendingorder.total}</td>
               <td>
                 <Badge bg="warning">{pendingorder.status}</Badge>
               </td>
-              <td>
-                <Button variant="secondary" onClick={() => handleMoreButtonClick(pendingorder)}>more</Button>
-              </td>
+        
               <td>
                 <Button variant="success" onClick={() => productApprove(pendingorder)}>Approve</Button> {/* Approve button */}
               </td>
@@ -193,34 +205,7 @@ const ProductSales = () => {
           ))}
         </tbody>
       </Table>
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Order Details</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Order Details:</p>
-          {selectedOrder?.products && (
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Product Name</th>
-                  <th>Unit Price</th>
-                  <th>Quantity</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.keys(selectedOrder.products).map(productId => (
-                  <tr key={productId}>
-                    <td>{selectedOrder.products[productId].product_name}</td>
-                    <td>{selectedOrder.products[productId].unit_price}</td>
-                    <td>{selectedOrder.products[productId].quantity}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
-        </Modal.Body>
-      </Modal>
+      
     </main>
   );
 };

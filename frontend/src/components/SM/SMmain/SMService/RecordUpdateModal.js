@@ -73,7 +73,7 @@ function RecordUpdateModal({ show, onHide, record, onUpdate })  {
       }
 
       const response = await axios.patch(
-        `http://localhost:5000/api/sm/update-record/${record.id}`,
+        `${process.env.React_App_Backend_URL}/api/sm/update-record/${record.id}`,
         Object.fromEntries(formData.entries())
       );
 

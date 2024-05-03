@@ -5,6 +5,14 @@ const feedbackSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    name :{
+        type: String,
+        required: true,  
+    },
+    feedbackId :{
+        type: String,
+        required: true,
+    },
     serviceType: {
         type: String,
         enum: [

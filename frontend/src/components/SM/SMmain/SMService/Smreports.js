@@ -13,15 +13,15 @@ import {
 } from "react-router-dom";
 import RecDash from "./RecDash";
 
-function Smreports() {
+function Smreports({ toggleLoading }) {
   return (
     <main id="main" className="main">
       
       
 
       <Routes>
-        <Route path="/" element ={<ReportDash/>}/>
-        <Route path="/add" element={<Addreport/>} />
+        <Route path="/" element ={<ReportDash toggleLoading={toggleLoading}/>}/>
+        <Route path="/add" element={<Addreport toggleLoading={toggleLoading}/>} />
       </Routes>
     </main>
   );

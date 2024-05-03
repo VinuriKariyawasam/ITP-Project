@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useState, useEffect, useContext } from "react";
+import { useForm, Controller, useFormContext } from "react-hook-form";
 import {
   Button,
   Form,
@@ -16,10 +16,18 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios"; // Import axios for HTTP requests
 import { useNavigate } from "react-router-dom";
+import { StaffAuthContext } from "../../../context/StaffAuthContext";
 
-function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
+function EmployeeUpdateModal({
+  show,
+  onHide,
+  employee,
+  onUpdate,
+  toggleLoading,
+}) {
   //to redirect after success
   const navigate = useNavigate();
+  const { userId, userPosition, isLoggedIn } = useContext(StaffAuthContext);
 
   const [designations, setDesignations] = useState([]);
 
@@ -27,8 +35,9 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
   useEffect(() => {
     const fetchDesignations = async () => {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const response = await fetch(
-          "http://localhost:5000/api/hr/designations"
+          `${process.env.React_App_Backend_URL}/api/hr/designations`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch designations");
@@ -37,6 +46,8 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
         setDesignations(data); // Assuming the response data is an array of designations
       } catch (error) {
         console.error("Error fetching designations:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
 
@@ -68,6 +79,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
 
   const onSubmit = async (data) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const formData = new FormData();
 
       // Append regular form data
@@ -84,7 +96,7 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
       }
 
       const response = await axios.patch(
-        `http://localhost:5000/api/hr/update-employee/${employee.id}`,
+        `${process.env.React_App_Backend_URL}/api/hr/update-employee/${employee.id}`,
         Object.fromEntries(formData.entries())
       );
 
@@ -93,13 +105,28 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
       }
 
       // Optionally update the UI or perform any other actions after successful submission
-      onUpdate(response.data); // Assuming onUpdate is a function to update the UI with the updated data
+      // Assuming onUpdate is a function to update the UI with the updated data
+      console.log("Data updated successfully:", response.data);
+      const result = response.data;
+      const email = result.employee.email;
 
       // Close the modal or redirect to another page after successful submission
-      onHide(); // Close the modal
+      //onUpdate();
+      //onHide(); // Close the modal
     } catch (error) {
       console.error("Error updating data:", error.message);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
+      onUpdate();
     }
+  };
+
+  const [isCnomValid, setIsCnomValid] = useState(false);
+
+  const handleContactChange = (e) => {
+    const inputValue = e.target.value;
+    const isValidInput = /^[0-9]{10}$/.test(inputValue);
+    setIsCnomValid(isValidInput);
   };
 
   return (
@@ -205,7 +232,17 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
               control={control}
               rules={{ required: "Address is required" }}
               render={({ field }) => (
-                <Form.Control placeholder="1234 Main St" {...field} />
+                <>
+                  <Form.Control
+                    placeholder="1234 Main St"
+                    {...field}
+                    isInvalid={!!errors.address}
+                    isValid={field.value && !errors.address}
+                  />
+                  {field.value && !errors.address && (
+                    <i className="bi bi-check-circle-fill text-success"></i>
+                  )}
+                </>
               )}
             />
             <Form.Text className="text-danger">
@@ -236,26 +273,45 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
 
             {/* Contact No. */}
             <Form.Group as={Col} controlId="formGridContact">
-              <Form.Label>
-                Contact No. <i className="bi bi-pencil-square"></i>
-              </Form.Label>
+              <Form.Label>Contact No.</Form.Label>
               <Controller
                 name="contact"
                 control={control}
-                rules={{ required: "Contact No. is required" }}
+                rules={{
+                  required: "Contact No. is required",
+                  pattern: {
+                    value: /^[0-9]{10}$/, // Regex pattern for 10-digit numbers
+                    message: "Contact No. must be a 10-digit number",
+                  },
+                }}
                 render={({ field }) => (
-                  <Form.Control
-                    type="tel"
-                    placeholder="0715897598"
-                    {...field}
-                    pattern="[0-9]{10}"
-                    length="10"
-                  />
+                  <>
+                    <Form.Control
+                      type="text"
+                      placeholder="0715897598"
+                      {...field}
+                      onChange={(e) => {
+                        // Remove non-numeric characters and limit to maximum length
+                        const input = e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 10);
+                        field.onChange(input);
+                      }}
+                      maxLength="10" // Set maximum length
+                    />
+
+                    {field.value?.length === 10 && (
+                      <i className="bi bi-check-circle-fill text-success"></i>
+                    )}
+
+                    {errors.contact && (
+                      <Form.Text className="text-danger">
+                        {errors.contact.message}
+                      </Form.Text>
+                    )}
+                  </>
                 )}
               />
-              <Form.Text className="text-danger">
-                {errors.contact?.message}
-              </Form.Text>
             </Form.Group>
           </Row>
 
@@ -300,6 +356,10 @@ function EmployeeUpdateModal({ show, onHide, employee, onUpdate }) {
                       field.onChange(e);
                       handlePositionChange(e); // Call function to update selected position
                     }}
+                    disabled={
+                      userPosition !== "HR Manager" &&
+                      userPosition !== "General Manager"
+                    }
                   >
                     <option value="">Choose...</option>
                     {designations.map((designation) => (

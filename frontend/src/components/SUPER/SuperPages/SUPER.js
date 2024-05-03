@@ -18,20 +18,21 @@ import {
   Route,
 } from "react-router-dom";
 
-function SUPERVISOR() {
+function SUPERVISOR({ toggleLoading }) {
   return (
     <main>
 
       <SuperSideBar />
       <Routes>
-        <Route path="/" element={<SuperMain />} />
-        <Route path="vehicle/*" element={<SuperVehicle />} />
-        <Route path="serviceReq/*" element={<SuperServiceReq />} />
-        <Route path="jobs/*" element={<Sujob/>} />
-        <Route path="products/*" element={<SuperProducts />} />
-        <Route path="shedules/*" element={<Shedules />} />
-        <Route path="records/*" element={<SuperRecords />} />
-        <Route path="quotation/*" element={<SuperQuotation />} />
+        <Route path="/" element={<SuperMain toggleLoading={toggleLoading}/>} />
+        <Route path="vehicle/*" element={<SuperVehicle toggleLoading={toggleLoading}/>} />
+        <Route path="serviceReq/*" element={<SuperServiceReq toggleLoading={toggleLoading}/>} />
+        <Route path="jobs/*" element={<Sujob toggleLoading={toggleLoading}/>} />
+        <Route path="products/*" element={<SuperProducts toggleLoading={toggleLoading}/>} />
+        <Route path="shedules/*" element={<Shedules toggleLoading={toggleLoading}/>} />
+        <Route path="records/*" element={<SuperRecords toggleLoading={toggleLoading}/>} />
+        <Route path="quotation/*" element={<SuperQuotation toggleLoading={toggleLoading}/>} />
+
 
       </Routes>
    

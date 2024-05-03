@@ -12,7 +12,7 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form'
 
-function ConsultancySolution(){
+function ConsultancySolution({ toggleLoading }){
     const navigate = useNavigate();
     const { consultId } = useParams();
     const [consultation, setConsultation] = useState(null);
@@ -22,7 +22,8 @@ function ConsultancySolution(){
 useEffect(() => {
   const fetchConsultationById = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/cam/consultation/get-consultid/${consultId}`);
+      toggleLoading(true);
+      const response = await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/get-consultid/${consultId}`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -30,6 +31,8 @@ useEffect(() => {
       setConsultation(data);
     } catch (error) {
       console.error("Error fetching consultation:", error);
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
   fetchConsultationById();
@@ -47,7 +50,8 @@ if (!consultation) {
     event.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost:5000/cam/consultation/update-solutionbyid/${consultId}`, {
+      toggleLoading(true);
+      const response = await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/update-solutionbyid/${consultId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -67,6 +71,8 @@ if (!consultation) {
     } catch (error) {
       console.error("Error updating solution:", error);
       // Handle error (e.g., display error message)
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 

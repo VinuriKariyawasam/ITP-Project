@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Row, Col, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import ReportPDFGenerator from "./ReportGenerator"; // Import the new component
 
-const ReportDash = () => {
+const ReportDash = ({toggleLoading}) => {
   const [reports, setReports] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -10,7 +11,8 @@ const ReportDash = () => {
 
   const fetchReports = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/sm/reports");
+      toggleLoading(true);
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/sm/reports`);
       if (response.ok) {
         const data = await response.json();
         setReports(data);
@@ -21,6 +23,9 @@ const ReportDash = () => {
     } catch (error) {
       console.error("Error fetching reports:", error);
     }
+    finally{
+      toggleLoading(false);
+      }
   };
 
   useEffect(() => {
@@ -140,6 +145,7 @@ const ReportDash = () => {
           ))}
         </tbody>
       </Table>
+      <ReportPDFGenerator reports={filteredReports} /> {/* Add the ReportPDFGenerator component */}
     </div>
   );
 };

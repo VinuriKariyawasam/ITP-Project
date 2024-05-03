@@ -13,15 +13,15 @@ import {
   Navigate,
 } from "react-router-dom";
 
-function Smrecords() {
+function Smrecords({ toggleLoading }) {
   return (
     <main id="main" className="main">
       
       
 
       <Routes>
-        <Route path="/" element={<RecDash />} />
-        <Route path="/add" element={<Addrecord />} />
+        <Route path="/" element={<RecDash toggleLoading={toggleLoading} />} />
+        <Route path="/add" element={<Addrecord toggleLoading={toggleLoading}/>} />
       </Routes>
     </main>
   );

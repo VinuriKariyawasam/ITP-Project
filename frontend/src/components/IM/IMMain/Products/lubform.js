@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "../../../../data/IM/form-hook";
 import InputGroup from 'react-bootstrap/InputGroup';
 
-const LubForm = () => {
+const LubForm = ({ toggleLoading }) => {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState("");
   const [fileError, setFileError] = useState("");
@@ -32,7 +32,7 @@ const LubForm = () => {
         isValid: false,
       },
       image: {
-        value: null,
+        value: "",
         isValid: false,
       },
     },
@@ -41,16 +41,23 @@ const LubForm = () => {
 
   const lubSubmitHandler = async (event) => {
     event.preventDefault();
+    toggleLoading(true);
+    const imgData = new FormData();
+    imgData.append("image", formState.inputs.image.value);
+    axios.post(`${process.env.React_App_Backend_URL}/Product/imgupload`, imgData)
+    .then((res) => {
+      const Url = res.data.downloadURL
+      console.log(Url)
     try {
-      const formData = new FormData();
-      formData.append("product_name", formState.inputs.product_name.value);
-      formData.append("product_brand", formState.inputs.product_brand.value);
-      formData.append("quantity", formState.inputs.quantity.value);
-      formData.append("unit_price", formState.inputs.unit_price.value);
-      formData.append("image", formState.inputs.image.value);
-
-      const response = await axios.post(
-        "http://localhost:5000/Product/addlubricant",
+      const formData = {
+     product_name: formState.inputs.product_name.value,
+     product_brand: formState.inputs.product_brand.value,
+     quantity: formState.inputs.quantity.value,
+     unit_price: formState.inputs.unit_price.value,
+     image: Url
+      }
+      const response = axios.post(
+        `${process.env.React_App_Backend_URL}/Product/addlubricant`,
         formData
       );
 
@@ -59,7 +66,12 @@ const LubForm = () => {
       console.log(formState.inputs);
     } catch (err) {
       console.log(err);
-    }
+    }})
+    .catch((err) => {
+      alert("error");
+    }).finally(() => {
+      toggleLoading(false);
+    });
   };
   useEffect(() => {
     if (formState.inputs.image.value instanceof Blob) {
@@ -125,9 +137,11 @@ const LubForm = () => {
               type="number"
               placeholder="Enter quantity"
               min="1"
-              onInput={(event) =>
-                inputHandler("quantity", event.target.value, true)
-              }
+              onInput={(event) =>{
+                let input = event.target.value.replace(/[^\d]/g, ''); // Remove non-digit characters
+                event.target.value = input;
+                inputHandler("quantity", input, true);
+              }}
               required
             />
           </Form.Group>
@@ -141,9 +155,11 @@ const LubForm = () => {
               type="number"
               placeholder="Enter unit price"
               min="1"
-              onInput={(event) =>
-                inputHandler("unit_price", event.target.value, true)
-              }
+              onInput={(event) =>{
+                let input = event.target.value.replace(/[^\d]/g, ''); // Remove non-digit characters
+              event.target.value = input;
+                inputHandler("unit_price", input, true)
+              }}
               required
             />
             </InputGroup>

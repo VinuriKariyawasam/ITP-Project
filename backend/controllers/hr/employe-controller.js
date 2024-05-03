@@ -11,14 +11,35 @@ const jwt = require("jsonwebtoken");
 const AttendanceModel = require("../../models/hr/attendanceModel");
 const defaultMaleAvatar = "/uploads/hr/DefaultMaleAvatar.jpg";
 const defaultFemaleAvatar = "/uploads/hr/DefaultFemaleAvatar.png";
-const empBenefitsSchema=require('../../models/finance/empbenefitsModel')
+const empBenefitsSchema = require("../../models/finance/empbenefitsModel");
 
-// Specify the new upload directory
+//firebase config
+const { initializeApp } = require("firebase/app");
+const {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+  deleteObject,
+} = require("firebase/storage");
+const { firebaseConfig } = require("../../config/firebase-config");
+
+// Initialize a firebase application
+const firebaseApp = initializeApp(firebaseConfig);
+
+// Initialize Cloud Storage and get a reference to the service
+const storage = getStorage(firebaseApp);
+
+const upload = multer().fields([
+  { name: "photo", maxCount: 1 },
+  { name: "documents", maxCount: 10 },
+]);
+
 // Specify the relative upload directory
-const uploadDirectory = path.join(__dirname, "..", "..", "uploads", "hr");
+//const uploadDirectory = path.join(__dirname, "..", "..", "uploads", "hr");
 
 // Create a multer storage instance with the destination set to the new directory
-const storage = multer.diskStorage({
+/*const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDirectory);
   },
@@ -26,15 +47,15 @@ const storage = multer.diskStorage({
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(null, uniqueSuffix + "-" + file.originalname);
   },
-});
+});*/
 
-const upload = multer({
+/*const upload = multer({
   storage: storage,
   limits: { fileSize: 1024 * 1024 * 5 },
 }).fields([
   { name: "photo", maxCount: 1 },
   { name: "documents", maxCount: 10 },
-]);
+]);*/
 
 class EmployeeController {
   // Create employee controller function
@@ -50,7 +71,7 @@ class EmployeeController {
       }
 
       //image and document upload logic
-      upload(req, res, async function (err) {
+      /*upload(req, res, async function (err) {
         if (err instanceof multer.MulterError) {
           // A Multer error occurred when uploading.
           console.error("File upload error:", err.message);
@@ -59,6 +80,61 @@ class EmployeeController {
           // An unknown error occurred when uploading.
           console.error("File upload error:", err.message);
           return res.status(500).json({ error: err.message });
+        }*/
+
+      // Handle photo and document upload using Firebase Storage
+      upload(req, res, async function (err) {
+        if (err instanceof multer.MulterError) {
+          console.error("File upload error:", err.message);
+          return res.status(400).json({ error: err.message });
+        } else if (err) {
+          console.error("File upload error:", err.message);
+          return res.status(500).json({ error: err.message });
+        }
+
+        let photoURL = ""; // Firebase photo download URL
+        let documentURLs = []; // Firebase document download URLs
+
+        // Handle photo upload if not null
+        const photoFile = req.files["photo"] ? req.files["photo"][0] : null;
+        if (photoFile) {
+          const photoRef = ref(
+            storage,
+            `hr/uploads/photos/${photoFile.originalname}`
+          );
+          await uploadBytesResumable(photoRef, photoFile.buffer)
+            .then(async (snapshot) => {
+              console.log("Uploaded photo successfully");
+              photoURL = await getDownloadURL(photoRef);
+            })
+            .catch((error) => {
+              console.error("Error uploading photo:", error.message);
+            });
+        }
+
+        // Handle document upload if not null
+        const documentFiles = req.files["documents"]
+          ? req.files["documents"]
+          : [];
+        if (documentFiles.length > 0) {
+          for (const file of documentFiles) {
+            const documentRef = ref(
+              storage,
+              `hr/uploads/documents/${file.originalname}`
+            );
+            await uploadBytesResumable(documentRef, file.buffer)
+              .then(async (snapshot) => {
+                console.log(
+                  "Uploaded document successfully:",
+                  file.originalname
+                );
+                const downloadURL = await getDownloadURL(documentRef);
+                documentURLs.push(downloadURL);
+              })
+              .catch((error) => {
+                console.error("Error uploading document:", error.message);
+              });
+          }
         }
 
         // Log the request body to see the uploaded data after file upload
@@ -71,6 +147,8 @@ class EmployeeController {
         const branch = req.body["branch"];
         const account = req.body["account"];
         const password = req.body["password"];
+        //const newFiels = req.body["newFields"];
+        //console.log("New Fields:", newFiels);
 
         //check if employee alredy in db with nic or contact or email
         let existingEmployee;
@@ -128,7 +206,7 @@ class EmployeeController {
         const employeeId = `EMP${year}${month}${nextNumberString}`;
 
         // Use the correct URLs when constructing file paths
-        const photoPath = req.files["photo"]
+        /* const photoPath = req.files["photo"]
           ? `/uploads/hr/${path.basename(req.files["photo"][0].path)}`
           : req.body.gender === "Male"
           ? defaultMaleAvatar
@@ -137,13 +215,13 @@ class EmployeeController {
           ? req.files["documents"].map(
               (file) => `/uploads/hr/${path.basename(file.path)}`
             )
-          : [];
+          : [];*/
 
         // Assign properties one by one to the new employee object
         const newEmployee = new EmployeeModel();
         newEmployee.empId = employeeId;
-        newEmployee.photo = photoPath;
-        newEmployee.documents = documentPaths;
+        newEmployee.photo = photoURL;
+        newEmployee.documents = documentURLs;
         newEmployee.firstName = req.body.firstName;
         newEmployee.lastName = req.body.lastName;
         newEmployee.birthDate = req.body.birthDate;
@@ -161,14 +239,12 @@ class EmployeeController {
         const savedEmployee = await newEmployee.save();
 
         //create an Employee Benefits profile for the new employee (For Finance Module)
-            const BenefitProfile = new empBenefitsSchema();
-            BenefitProfile.employeeid = employeeId;
-            BenefitProfile.employeeName = `${savedEmployee.firstName} ${savedEmployee.lastName}`;
-            BenefitProfile.updatedDate = new Date().toISOString().split("T")[0];
+        const BenefitProfile = new empBenefitsSchema();
+        BenefitProfile.employeeid = employeeId;
+        BenefitProfile.employeeName = `${savedEmployee.firstName} ${savedEmployee.lastName}`;
+        BenefitProfile.updatedDate = new Date().toISOString().split("T")[0];
 
-            await BenefitProfile.save();
-            
-
+        await BenefitProfile.save();
 
         // Create a new salary record
         const position = newEmployee.position;
@@ -200,22 +276,24 @@ class EmployeeController {
         newSalary.basicSalary = getDesignation.basicSalary;
         newSalary.allowance = 10000.0;
         newSalary.noPay = 0.0;
-        newSalary.EPFC = newSalary.basicSalary * 0.12;
-        newSalary.EPFE = newSalary.basicSalary * 0.08;
-        newSalary.EPFT = newSalary.EPFC + newSalary.EPFE;
-        newSalary.ETF = newSalary.basicSalary * 0.03;
-        newSalary.totalSal = newSalary.basicSalary + newSalary.allowance;
-        newSalary.netSal =
-          newSalary.totalSal - (newSalary.noPay + newSalary.EPFC);
+        newSalary.EPFC = (newSalary.basicSalary * 0.12).toFixed(2);
+        newSalary.EPFE = (newSalary.basicSalary * 0.08).toFixed(2);
+        newSalary.EPFT = (
+          parseFloat(newSalary.EPFC) + parseFloat(newSalary.EPFE)
+        ).toFixed(2);
+        newSalary.ETF = (newSalary.basicSalary * 0.03).toFixed(2);
+        newSalary.totalSal = (
+          parseFloat(newSalary.basicSalary) + parseFloat(newSalary.allowance)
+        ).toFixed(2);
+        newSalary.netSal = (
+          parseFloat(newSalary.totalSal) -
+          (parseFloat(newSalary.noPay) + parseFloat(newSalary.EPFC))
+        ).toFixed(2);
         newSalary.bank = bank;
         newSalary.branch = branch;
         newSalary.account = account;
         // Save the new salary record
         await newSalary.save();
-
-
-
-        
 
         res.status(201).json(savedEmployee);
       });
@@ -267,12 +345,11 @@ class EmployeeController {
       // Construct the response object with file URLs
       const employeeData = {
         ...employee.toObject({ getters: true }),
-        photoUrl: employee.photo
-          ? `${req.protocol}://${req.get("host")}${employee.photo}`
-          : null,
-        documentUrls: employee.documents.map(
+        photoUrl: employee.photo,
+        /*? `${req.protocol}://${req.get("host")}${employee.photo}`
+          : null*/ documentUrls: employee.documents /*.map(
           (doc) => `${req.protocol}://${req.get("host")}${doc}`
-        ),
+        )*/,
       };
 
       res.status(200).json(employeeData);
@@ -306,6 +383,52 @@ class EmployeeController {
     if (!emp) {
       const error = new HttpError("Employee not found", 404);
       return next(error);
+    }
+
+    if (emp.position != position) {
+      //get the basic salary from desigantion
+      let getDesignation;
+      try {
+        getDesignation = await Designation.findOne({ position: position });
+      } catch (err) {
+        const error = new HttpError(
+          "Error in finding designation. Try Again",
+          500
+        );
+        return next(error);
+      }
+
+      if (!getDesignation) {
+        const error = new HttpError("There is no such designation.", 422);
+        return next(error);
+      }
+
+      try {
+        // Find the salary document based on specific conditions (e.g., empId)
+        const salary = await Salary.findOne({ empDBId: emp._id });
+
+        if (!salary) {
+          return res.status(404).json({ message: "Salary not found" });
+        }
+
+        // Update the fields of the retrieved salary document with new values
+        salary.position = position;
+        salary.basicSalary = getDesignation.basicSalary;
+        salary.EPFC = salary.basicSalary * 0.12;
+        salary.EPFE = salary.basicSalary * 0.08;
+        salary.EPFT = salary.EPFC + salary.EPFE;
+        salary.ETF = salary.basicSalary * 0.03;
+        salary.totalSal = salary.basicSalary + salary.allowance;
+        salary.netSal = salary.totalSal - (salary.noPay + salary.EPFC);
+        // Update other fields as needed...
+
+        // Save the updated salary document
+        const updatedSalary = await salary.save();
+
+        res.status(200).json(updatedSalary); // Return the updated salary document
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
     }
 
     // Update employee fields with values from req.body
@@ -530,9 +653,9 @@ class EmployeeController {
         return res.status(400).json({ message: "Password is required." });
       }
 
-      await user.save();
+      const employee = await user.save();
 
-      return res.status(200).json({ message: "Password reset successfully." });
+      return res.status(200).json(employee);
     } catch (error) {
       console.error("Error resetting password:", error);
       return res.status(500).json({ message: "Internal server error." });
@@ -550,6 +673,136 @@ class EmployeeController {
       res.status(500).json({ error: "Failed to fetch archived employees" });
     }
   }
+
+  //update profile photo
+  static async updateEmployeePhoto(req, res, next) {
+    try {
+      console.log("Request Body:", req.body);
+      const { employeeId } = req.params;
+      console.log("Photo:", req.file);
+      const photo = req.file; // Access the file from req.file
+
+      // Check if employeeId and photo are provided
+      if (!employeeId) {
+        throw new HttpError("Employee ID is required.", 400);
+      }
+      if (!photo) {
+        throw new HttpError("No photo file provided.", 400);
+      }
+
+      // Fetch the existing employee from the database
+      const existingEmployee = await EmployeeModel.findById(employeeId);
+      if (!existingEmployee) {
+        throw new HttpError("Employee not found.", 404);
+      }
+
+      // Delete the existing photo from Firebase Storage if it exists
+      if (existingEmployee.photo) {
+        const photoRef = ref(storage, existingEmployee.photo);
+        await deleteObject(photoRef);
+      }
+
+      // Upload new photo to Firebase Storage
+      const newPhotoRef = ref(
+        storage,
+        `hr/uploads/photos/${photo.originalname}`
+      );
+      await uploadBytesResumable(newPhotoRef, photo.buffer);
+
+      // Get the download URL of the uploaded photo
+      const photoURL = await getDownloadURL(newPhotoRef);
+
+      console.log("Photo URL:", photoURL);
+      // Update employee's photo URL in the database
+      const updatedEmployee = await EmployeeModel.findByIdAndUpdate(
+        employeeId,
+        { $set: { photo: photoURL } },
+        { new: true }
+      );
+
+      res.status(200).json({
+        message: "Employee photo updated successfully.",
+        employee: updatedEmployee,
+      });
+    } catch (error) {
+      console.error("Error updating employee photo:", error.message);
+      const err = new HttpError(
+        "Failed to update employee photo. Please try again.",
+        500
+      );
+      return next(err);
+    }
+  }
+
+  //addding more documnenst to employee in case of need
+  /*static async addEmployeeDocuments(req, res, next) {
+    try {
+      // Check if employeeId is provided
+      const { employeeId } = req.params;
+      if (!employeeId) {
+        const error = new HttpError("Employee ID is required.", 400);
+        return next(error);
+      }
+
+      // Check if documents are provided
+      if (!req.files || !req.files["documents"]) {
+        const error = new HttpError("No document files provided.", 400);
+        return next(error);
+      }
+
+      const documentFiles = req.files["documents"];
+
+      // Fetch the existing employee from the database
+      const existingEmployee = await EmployeeModel.findById(employeeId);
+      if (!existingEmployee) {
+        const error = new HttpError("Employee not found.", 404);
+        return next(error);
+      }
+
+      // Extract existing document URLs
+      const existingDocuments = existingEmployee.documents || [];
+
+      // Handle document upload using Firebase Storage
+      const documentURLs = [];
+      for (const file of documentFiles) {
+        const documentRef = ref(
+          storage,
+          `hr/uploads/documents/${file.originalname}`
+        );
+        await uploadBytesResumable(documentRef, file.buffer)
+          .then(async (snapshot) => {
+            console.log("Uploaded document successfully:", file.originalname);
+            const downloadURL = await getDownloadURL(documentRef);
+            documentURLs.push(downloadURL);
+          })
+          .catch((error) => {
+            console.error("Error uploading document:", error.message);
+          });
+      }
+
+      // Combine existing and new document URLs
+      const updatedDocuments = [...existingDocuments, ...documentURLs];
+
+      // Update employee's documents in the database
+      const updatedEmployee = await EmployeeModel.findByIdAndUpdate(
+        employeeId,
+        { $set: { documents: updatedDocuments } },
+        { new: true }
+      );
+
+      res.status(200).json({
+        message: "Employee documents updated successfully.",
+        employee: updatedEmployee,
+      });
+    } catch (error) {
+      console.error("Error adding employee documents:", error.message);
+      const err = new HttpError(
+        "Failed to add employee documents. Please try again.",
+        500
+      );
+      return next(err);
+    }
+  }*/
 }
 
 module.exports = EmployeeController;

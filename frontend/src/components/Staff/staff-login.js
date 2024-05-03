@@ -12,7 +12,7 @@ import logo from "../../images/logoblack_trans.png";
 import { useNavigate } from "react-router-dom";
 import { StaffAuthContext } from "../../context/StaffAuthContext"; // Import AuthContext
 
-const StaffLogin = () => {
+const StaffLogin = ({ toggleLoading }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -32,13 +32,17 @@ const StaffLogin = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/api/hr/emp-login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      toggleLoading(true); // Set loading to true before API call
+      const response = await fetch(
+        `${process.env.React_App_Backend_URL}/api/hr/emp-login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Login failed");
@@ -76,6 +80,9 @@ const StaffLogin = () => {
     } catch (error) {
       console.error("Login error:", error.message);
       // Handle login error, display error message, etc.
+      alert("Login failed. Please check your username and password.");
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -129,7 +136,9 @@ const StaffLogin = () => {
             </Card.Body>
             <Card.Footer>
               <p className="forgot-password text-right">
-                <a href="#">Forgot password?</a>
+                <a href="mailto:hr.neotechmotorssl@gmail.com">
+                  Forgot password?
+                </a>
               </p>
             </Card.Footer>
           </Card>

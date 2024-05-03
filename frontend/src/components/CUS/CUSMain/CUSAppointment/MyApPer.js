@@ -6,7 +6,7 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 
-function MyApPer() {
+function MyApPer({ toggleLoading }) {
 
     const [showModal, setShowModal] = useState(false);
     const [periodicalAppointment, setperiodicalAppointment] = useState([]);
@@ -32,12 +32,15 @@ function MyApPer() {
     let userId = cusauth.userId;
     const getPeriodicalData = async (userId) => {
         try {
-            const response = await axios.get(`http://localhost:5000/appointment/get-periodicalAppointmentbyuserId/${userId}`);
+            toggleLoading(true);
+            const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-periodicalAppointmentbyuserId/${userId}`);
             setperiodicalAppointment(response.data.data);
 
         } catch (error) {
             console.error('Error fetching appointments:', error);
-        }
+        }finally {
+            toggleLoading(false); // Set loading to false after API call
+          }
     };
     // Function to handle the "Update" button click
     const handleUpdateClick = () => {
@@ -51,9 +54,11 @@ function MyApPer() {
         // Make sure selectedAppointment is not null
         if (selectedAppointment && appointmentdate) { // Ensure appointmentdate is not empty
             // Send a request to update the appointment with the new date and time
-            axios.put(`http://localhost:5000/appointment/update-periodicalAppointment/${selectedAppointment._id}`, {
+            toggleLoading(true); 
+            axios.put(`${process.env.React_App_Backend_URL}/appointment/update-periodicalAppointment/${selectedAppointment._id}`, {
                 userId: selectedAppointment.userId, // Use userId from selectedAppointment
                 name: selectedAppointment.name,
+                cusType:selectedAppointment.cusType,
                 vType: selectedAppointment.vType,
                 vNo: selectedAppointment.vNo,
                 sType: selectedAppointment.sType,
@@ -77,14 +82,16 @@ function MyApPer() {
                 .catch(error => {
                     console.error(error);
                     // Handle errors
-                });
+                }).finally(()=>{
+                    toggleLoading(false); 
+                  });
         }
     };
 
 
     const Delete = (id) => {
-
-        axios.delete(`http://localhost:5000/appointment/delete-periodicalAppointment/${id}`)
+        toggleLoading(true); 
+        axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-periodicalAppointment/${id}`)
             .then(response => {
                 console.log(response);
                 window.location.reload();
@@ -93,7 +100,9 @@ function MyApPer() {
             .catch(error => {
                 // Handle errors here
                 console.error(error);
-            });
+            }).finally(()=>{
+                toggleLoading(false); 
+              });
 
     };
 
@@ -136,7 +145,7 @@ function MyApPer() {
     const fetchAvailableTimes = async (date) => {
         try {
             const formattedDate = changedatetoformet(date);
-            const response = await axios.get(`http://localhost:5000/appointment/get-acceptedperiodicalappointmentbyDate/${formattedDate}`);
+            const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedperiodicalappointmentbyDate/${formattedDate}`);
             const appointments = response.data.data;
             console.log(appointments);
             const allTimes = ["9.00am", "10.30am", "12.00pm", "1.30pm", "3.00pm", "4.30pm"]; // Define allTimes here
@@ -201,6 +210,7 @@ function MyApPer() {
                         <img style={{ width: "50%", height: "50%" }} />
                         <p>Vehicle No: {selectedAppointment.vNo}</p>
                         <p>Customer Name: {selectedAppointment.name}</p>
+                        <p>Customer Type: {selectedAppointment.cusType}</p>
                         <p>Vehicle Type: {selectedAppointment.vType}</p>
                         <p>Requesting service:{selectedAppointment.sType} </p>
                         <p>Last Service Year: {selectedAppointment.lastServiceYear} </p>

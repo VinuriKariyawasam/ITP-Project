@@ -9,6 +9,10 @@ function NavAvatar() {
   const cusauth = useContext(CusAuthContext);
   const navigate = useNavigate();
 
+  const cusprofile_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusprofile`;
+  const myappointment_frontendurl = `${process.env.React_App_Frontend_URL}/customer/appointment/myappointment`;
+  const myorders_frontendurl = `${process.env.React_App_Frontend_URL}/customer/products/myorders`;
+
   // Function to handle logout
   const handleLogout = () => {
     cusauth.logout(); // Call the logout function from the context
@@ -34,7 +38,9 @@ function NavAvatar() {
           {cusauth.isLoggedIn && (
             <>
               <li className="cus-dropdown-header">
-                <h6 style={{ textAlign: "center",marginBottom:"5%" }}>{cusauth.name}</h6>
+                <h6 style={{ textAlign: "center", marginBottom: "5%" }}>
+                  {cusauth.name}
+                </h6>
               </li>
               <li>
                 <hr className="dropdown-divider" />
@@ -43,7 +49,7 @@ function NavAvatar() {
               <li>
                 <a
                   className="cus-dropdown-item d-flex align-items-center"
-                  href="http://localhost:3000/customer/cusprofile"
+                  href={cusprofile_frontendurl}
                 >
                   <span>My Profile</span>
                 </a>
@@ -63,14 +69,23 @@ function NavAvatar() {
               <li>
                 <hr className="dropdown-divider" />
               </li>
-
-
               <li>
                 <a
                   className="cus-dropdown-item d-flex align-items-center"
-                  href="http://localhost:3000/customer/appointment/myappointment"
+                  href={myappointment_frontendurl}
                 >
                   <span>My Appointments</span>
+                </a>
+              </li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+              <li>
+                <a
+                  className="cus-dropdown-item d-flex align-items-center"
+                  href={myorders_frontendurl}
+                >
+                  <span>My Orders</span>
                 </a>
               </li>
               <li>

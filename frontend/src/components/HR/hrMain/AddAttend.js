@@ -10,7 +10,7 @@ import {
   Card,
 } from "react-bootstrap";
 
-function AddAttend() {
+function AddAttend({ afterSubmit, toggleLoading }) {
   //to all emplyees
   const [tableData, setTableData] = useState([]);
 
@@ -22,7 +22,10 @@ function AddAttend() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/employees");
+        toggleLoading(true); // Set loading to true before API call
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/employees`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -33,6 +36,8 @@ function AddAttend() {
         setTableData(data.employees);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
 
@@ -78,8 +83,10 @@ function AddAttend() {
     };
     console.log("Form data:", formData);
     try {
+      toggleLoading(true); // Set loading to true before API call
+
       const response = await fetch(
-        "http://localhost:5000/api/hr/add-attendance",
+        `${process.env.React_App_Backend_URL}/api/hr/add-attendance`,
         {
           method: "POST",
           headers: {
@@ -92,11 +99,13 @@ function AddAttend() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
+      afterSubmit();
       alert("Attendance recorded successfully!");
     } catch (error) {
       console.error("Error recording attendance:", error);
       alert("Failed to record attendance. Please try again.");
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 

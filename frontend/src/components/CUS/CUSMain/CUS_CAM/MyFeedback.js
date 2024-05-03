@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 import { useContext } from "react";
+import { useParams } from "react-router-dom";
 
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
@@ -16,10 +17,11 @@ import PageTitle_cam from "./PageTitle_cam";
 
 import FeedbackUpdateModal from "./FeedbackUpdateModal";
 
-function MyFeedback() {
+function MyFeedback({ toggleLoading }) {
   const navigate = useNavigate();
   const cusAuth = useContext(CusAuthContext);
   const id = cusAuth.userId;
+  
 
   // State to store the selected feedback for update
   const [selectedFeedback, setSelectedFeedback] = useState(null);
@@ -33,11 +35,14 @@ function MyFeedback() {
     }
   }, [cusAuth.userId]);
 
+
+
   // Function to fetch feedback from the database
-  const fetchFeedbackById = async (id) => {
+  const fetchFeedbackById = async () => {
     try {
+      toggleLoading(true);
       const response = await fetch(
-        `http://localhost:5000/cam/feedback/get-feedback/${id}`
+        `${process.env.React_App_Backend_URL}/cam/feedback/get-feedback/${id}`
       );
 
       if (!response.ok) {
@@ -48,11 +53,14 @@ function MyFeedback() {
       setFetchedFeedback(data);
     } catch (error) {
       console.error("Error fetching feedback:", error);
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
   // Function to handle update click
   const handleUpdateClick = (feedback) => {
+    console.log("Selected Feedback:", feedback);
     setSelectedFeedback(feedback);
     setShowUpdateModal(true);
   };
@@ -61,21 +69,21 @@ function MyFeedback() {
   const handleUpdateFeedback = async (updatedData) => {
     // Logic to update feedback data
     console.log("Updated feedback data:", updatedData);
-    fetchFeedbackById(id);
+    fetchFeedbackById(Feedback.feedbackId);
     setShowUpdateModal(false); // Close the update modal
   };
 
   //Deletion of feedback
-  
   const handleDeleteClick = () => {
     // Show confirmation dialog box
     setShowConfirmDelete(true);
   };
 
-  const handleDelete = async (userId) => {
+  const handleDelete = async (feedbackId) => {
     try {
+      toggleLoading(true);
       // Send DELETE request to backend API using fetch
-      await fetch(`http://localhost:5000/cam/feedback/delete-feedback/${userId}`, {
+      await fetch(`${process.env.React_App_Backend_URL}/cam/feedback/delete-feedback/${feedbackId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json", 
@@ -93,6 +101,8 @@ function MyFeedback() {
     } catch (error) {
       console.error("Error deleting feedback:", error);
       // Handle error (e.g., display error message)
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -103,25 +113,26 @@ function MyFeedback() {
 
   return (
     <main>
-      <Card style={{ marginTop: "20px", marginLeft: "20px", marginRight: "20px" }}>
-        <Card.Body>
-          <PageTitle_cam path="feedback / Myfeedback" title="My Feedback" />
+     
+         <h2 style={{fontFamily:"sans-serif",color:"darkslateblue",marginLeft:"20px"}}><b>My FeedBack</b></h2>
           <Row>
             <Col>
-              <div className="card mb-3">
+              <div className="card mb-3" style={{marginLeft:"20px"}}>
                 {Feedback.map((feedback, index) => (
                   <div key={index}>
-                    <img src={feedbackimg1} style={{ height: "200px" }} alt="..." />
+                   {feedback.fileUrls.map((fileUrl, i) => (
+                      <img key={i} src={fileUrl} style={{ height: "150px",marginLeft:"10px",marginTop:"10px" }} alt="Feedback Image" />
+                    ))}
                     <div className="card-body">
                       <h5 className="card-title">
-                        Service Type: {feedback.serviceType} <br />
-                        Specific Employee mentioned: {feedback.employee} <br/>
-                        Feedback: {feedback.feedback} <br />
+                        Service Type: {feedback.serviceType}<br></br>
+                        Specific Employee mentioned: {feedback.employee} <br></br><br></br>
+                        Feedback: {feedback.feedback} <br></br>
                       </h5>
-                      <p className="card-text">
-                        <small className="text-muted">You can only delete your FeedBack</small>
-                      </p>
-                      <Button variant="dark" size="md" onClick={() => handleDelete(feedback.userId)}>
+                      <Button variant="dark" size="md" style={{marginRight:"10px"}} onClick={() => handleUpdateClick(feedback)}>
+                    Update
+                    </Button>
+                      <Button variant="dark" size="md" onClick={() => handleDelete(feedback.feedbackId)}>
                     Delete
                     </Button>
                     </div>
@@ -135,13 +146,13 @@ function MyFeedback() {
                 <div id="carouselExampleInterval" className="carousel slide" data-bs-ride="carousel">
                   <div className="carousel-inner">
                     <div className="carousel-item active" data-bs-interval="10000">
-                      <img src={cusimage3} className="d-block w-100" alt="..." />
+                      <img src={cusimage3} className="d-block w-100" alt="..." style={{height:"450px"}}/>
                     </div>
                     <div className="carousel-item" data-bs-interval="2000">
-                      <img src={cusimage2} className="d-block w-100" alt="..." />
+                      <img src={cusimage2} className="d-block w-100" alt="..." style={{height:"450px"}}/>
                     </div>
                     <div className="carousel-item">
-                      <img src={cusimage3} className="d-block w-100" alt="..." />
+                      <img src={cusimage3} className="d-block w-100" alt="..." style={{height:"450px"}}/>
                     </div>
                   </div>
                   <button
@@ -166,7 +177,7 @@ function MyFeedback() {
               </div>
             </Col>
           </Row>
-        </Card.Body>
+        
         {/* Render the FeedbackUpdateModal when showUpdateModal is true */}
         {showUpdateModal && (
           <FeedbackUpdateModal
@@ -189,7 +200,7 @@ function MyFeedback() {
             <Button variant="danger">Delete</Button>
           </Modal.Footer>
         </Modal>
-      </Card>
+     
     </main>
   );
 }

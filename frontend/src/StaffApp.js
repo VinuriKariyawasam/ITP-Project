@@ -30,19 +30,20 @@ import AlreadyLogIn from "./components/util/AlreadyLogIn";
 import StaffMyProfile from "./components/Staff/staffMyProfile";
 import NotFoundPage from "./components/util/NotFoundPage";
 
-function StaffApp() {
+function StaffApp({ toggleLoading }) {
   const { userId, userPosition, isLoggedIn } = useContext(StaffAuthContext);
-
+  const frontendurl = `${process.env.React_App_Frontend_URL}/`;
   return (
     <>
       <Header />
       <Routes>
-
-        <Route path="/" element={<NotFoundPage page="http://localhost:3000/"/>} />
-
+        <Route path="/" element={<NotFoundPage page={frontendurl} />} />
 
         {isLoggedIn === false ? (
-          <Route path="/login" element={<StaffLogin />} />
+          <Route
+            path="/login"
+            element={<StaffLogin toggleLoading={toggleLoading} />}
+          />
         ) : (
           <Route path="/login" element={<AlreadyLogIn />} />
         )}
@@ -50,55 +51,60 @@ function StaffApp() {
         {isLoggedIn === true ? (
           <Route
             path="/staffprofile"
-            element={<StaffMyProfile userId={userId} />}
+            element={
+              <StaffMyProfile userId={userId} toggleLoading={toggleLoading} />
+            }
           />
         ) : (
           <Route path="/staffprofile" element={<AlreadyLogIn />} />
         )}
 
         {userPosition === "General Manager" ? (
-          <Route path="/gm/*" element={<GM />} />
+
+          <Route path="/gm/*" element={<GM toggleLoading={toggleLoading} />} />
+
         ) : (
           <Route path="/gm/*" element={<RestrictedPage />} />
         )}
 
-        <Route path="/gm/*" element={<GM />} />
-
         {userPosition === "HR Manager" || userPosition === "General Manager" ? (
-          <Route path="/hr/*" element={<HR />} />
+          <Route path="/hr/*" element={<HR toggleLoading={toggleLoading} />} />
         ) : (
           <Route path="/hr/*" element={<RestrictedPage />} />
         )}
         {userPosition === "Service Manager" ||
         userPosition === "General Manager" ? (
-          <Route path="/sm/*" element={<SM />} />
+
+          <Route path="/sm/*" element={<SM toggleLoading={toggleLoading}/>} />
+
+
         ) : (
           <Route path="/sm/*" element={<RestrictedPage />} />
         )}
 
         {userPosition === "Finance Manager" ||
         userPosition === "General Manager" ? (
-          <Route path="/finance/*" element={<Finance />} />
+          <Route path="/finance/*" element={<Finance toggleLoading={toggleLoading}/>} />
         ) : (
           <Route path="/finance/*" element={<RestrictedPage />} />
         )}
 
         {userPosition === "Supervisor" || userPosition === "General Manager" ? (
-          <Route path="/supervisor/*" element={<SUPER />} />
+          <Route path="/supervisor/*" element={<SUPER toggleLoading={toggleLoading}/>} />
         ) : (
           <Route path="/supervisor/*" element={<RestrictedPage />} />
         )}
 
         {userPosition === "Inventory Manager" ||
         userPosition === "General Manager" ? (
-          <Route path="/im/*" element={<IM />} />
+          <Route path="/im/*" element={<IM toggleLoading={toggleLoading}/>} />
         ) : (
           <Route path="/im/*" element={<RestrictedPage />} />
         )}
 
         {userPosition === "Customer Service Agent" ||
         userPosition === "General Manager" ? (
-          <Route path="/cam/*" element={<CAM />} />
+          <Route path="/cam/*" element={<CAM toggleLoading={toggleLoading}/>} />
         ) : (
           <Route path="/cam/*" element={<RestrictedPage />} />
         )}

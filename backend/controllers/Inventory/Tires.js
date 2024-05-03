@@ -1,12 +1,12 @@
 const { config } = require("dotenv");
 const TiresSchema = require("../../models/inventory/Tires");
 const fs = require("fs");
+const axios = require("axios")
 
 exports.addTires = async (req, res) => {
   try {
-    const { product_name, product_brand, vehicle_Type, quantity, unit_price } =
+    const { product_name, product_brand, vehicle_Type, quantity, unit_price,image } =
       req.body;
-    const image = req.file ? req.file.path : null;
 
     if (
       !product_name ||
@@ -99,22 +99,16 @@ exports.TireStock = async (req, res) => {
 
 exports.deleteTires = async (req, res) => {
   const { id } = req.params;
-
+  const Url = req.body.image;
+  await axios.delete("http://localhost:5000/Product/deleteimg", {
+    data: { Url: Url }
+  });
   try {
     const tire = await TiresSchema.findById(id);
 
     if (!tire) {
       return res.status(404).send({ status: "Tire not found" });
     }
-
-    const imagePath = tire.image;
-
-    fs.unlink(imagePath, (err) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send({ status: "Error deleting file" });
-      }
-
       TiresSchema.findByIdAndDelete(id)
         .then(() => {
           res.status(200).send({ status: "product deleted" });
@@ -123,7 +117,6 @@ exports.deleteTires = async (req, res) => {
           console.log(err);
           res.status(500).send({ status: "error with deleting" });
         });
-    });
   } catch (err) {
     console.log(err);
     res.status(500).send({ status: "Internal server error" });

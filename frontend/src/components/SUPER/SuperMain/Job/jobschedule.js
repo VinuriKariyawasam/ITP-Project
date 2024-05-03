@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
-const JobSchedulerForm = () => {
+const JobSchedulerForm = ({ toggleLoading }) => {
   const navigate = useNavigate();
   const [technicians, setTechnicians] = useState([]);
   const [formData, setFormData] = useState({
@@ -13,7 +13,8 @@ const JobSchedulerForm = () => {
   useEffect(() => {
     const fetchTechnicians = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/today-emp");
+        toggleLoading(true);
+        const response = await fetch(`${process.env.React_App_Backend_URL}/api/hr/today-emp`);
         if (response.ok) {
           const data = await response.json();
           // Filter employees to get only technicians
@@ -25,6 +26,9 @@ const JobSchedulerForm = () => {
       } catch (error) {
         console.error('Error fetching technicians:', error);
       }
+      finally{
+        toggleLoading(false);
+      }
     };
   
     fetchTechnicians();
@@ -35,7 +39,8 @@ const JobSchedulerForm = () => {
     console.log('Form Data:', formData); // Check formData before sending the request
 
     try {
-      const response = await fetch("http://localhost:5000/api/sm/assign-job", {
+      toggleLoading(true);
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/sm/assign-job`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -59,6 +64,9 @@ const JobSchedulerForm = () => {
     } catch (error) {
       console.error('Error submitting assigning job:', error);
       // Handle error (e.g., show error message to user)
+    }
+    finally{
+      toggleLoading(false);
     }
   };
 

@@ -1,40 +1,29 @@
-const express = require('express');
-const router = express.Router();
+const { initializeApp } = require("firebase/app");
+const {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+  deleteObject,
+} = require("firebase/storage");
+const multer = require("multer");
+const { firebaseConfig } = require("../../config/firebase-config");
 const ServiceRequestModel = require("../../models/vehicle/serviceRequestModel");
 const HttpError = require("../../models/http-error");
-const multer = require("multer");
-const fs = require('fs');
-const path = require('path');
+const path = require("path");
 
+// Initialize a firebase application
+const firebaseApp = initializeApp(firebaseConfig);
 
-// Define your upload directory
-const uploadDirectory = path.join(__dirname, "..", "..", "uploads", "super");
+// Initialize Cloud Storage and get a reference to the service
+const storage = getStorage(firebaseApp);
 
-// Create the directory if it does not exist
-if (!fs.existsSync(uploadDirectory)) {
-  fs.mkdirSync(uploadDirectory, { recursive: true });
-}
-
-// Multer storage configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDirectory);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + "-" + file.originalname);
-  },
-});
-
-// Multer upload middleware
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 1024 * 1024 * 5 }, // Adjust the file size limit as needed
-}).single("report"); // Use single() for a single file upload
+// Setting up multer as a middleware to grab file uploads
+const upload = multer({ storage: multer.memoryStorage() }).single("report"); // Specify the file field name
 
 // Create a new service request
-// Modify the createServiceReq function to include the file saving location in the response
 exports.createServiceReq = async (req, res) => {
+  console.log("createServiceReq", req.body);
   try {
     // Handle file upload
     upload(req, res, async function (err) {
@@ -49,7 +38,23 @@ exports.createServiceReq = async (req, res) => {
       const serviceReqData = req.body;
 
       // Check if file was uploaded successfully
-      const reportFilePath = req.file ? req.file.path : null;
+      const reportFile = req.file;
+
+      // Upload the file to Firebase Storage
+      const dateTime = giveCurrentDateTime();
+      const storageRef = ref(
+        storage,
+        `supervisor/${dateTime}_${reportFile.originalname}`
+      );
+      const metadata = {
+        contentType: reportFile.mimetype,
+      };
+      const snapshot = await uploadBytesResumable(
+        storageRef,
+        reportFile.buffer,
+        metadata
+      );
+      const reportFilePath = await getDownloadURL(snapshot.ref);
 
       // Create a new service request instance
       const newServiceReq = new ServiceRequestModel({
@@ -60,8 +65,8 @@ exports.createServiceReq = async (req, res) => {
       // Save the new service request to the database
       await newServiceReq.save();
 
-      // Respond with the created service request, including the file saving location
-      res.status(201).json({ serviceReq: newServiceReq, reportFilePath }); // Include reportFilePath in the response
+      // Respond with the created service request and file saving location
+      res.status(201).json({ serviceReq: newServiceReq, reportFilePath });
     });
   } catch (error) {
     console.error("Error saving service request:", error);
@@ -69,20 +74,30 @@ exports.createServiceReq = async (req, res) => {
   }
 };
 
-// Download report route
-router.get('http://localhost:5000/api/vehicle/download-report/:filename', async (req, res) => {
+exports.createServiceReqfromApp = async (req, res) => {
+  const vehicleNo = req.body.vehicleNo;
+  const date = req.body.date;
+  const name = req.body.name;
+  const issue = req.body.issue;
+  const quotation = req.body.issue;
+  const request = req.body.request;
+
+  const newServiceReqp = ServiceRequestModel({
+    vehicleNo,
+    date,
+    name,
+    issue,
+    quotation,
+    request,
+  });
   try {
-    const filename = req.params.filename;
-    const filePath = path.join(uploadDirectory, filename);
-    res.download(filePath);
+    await newServiceReqp.save();
+    res.status(200).json({ message: "Service request added" });
   } catch (error) {
-    console.error("Error downloading report:", error);
-    res.status(500).json({ error: "Failed to download report" });
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-});
-
-
-// Retrieve all service requests
+};
 
 // Retrieve all service requests
 exports.getServiceReqs = async (req, res) => {
@@ -93,7 +108,7 @@ exports.getServiceReqs = async (req, res) => {
     // Construct the response object with file URLs
     const serviceReqData = serviceReqs.map((serviceReq) => ({
       ...serviceReq.toObject({ getters: true }),
-      reportUrl: serviceReq.report ? `${req.protocol}://${req.get("host")}/${serviceReq.report}` : null,
+      reportUrl: serviceReq.report ? serviceReq.report : null,
     }));
 
     // Respond with the retrieved service requests
@@ -103,8 +118,6 @@ exports.getServiceReqs = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch service requests" });
   }
 };
-
-
 
 // Retrieve a service request by ID
 exports.getServiceReqById = async (req, res) => {
@@ -117,17 +130,8 @@ exports.getServiceReqById = async (req, res) => {
       throw new HttpError("Service Request not found", 404);
     }
 
-    // Construct the response object with file URLs
-    const serviceReqData = {
-      ...serviceReq.toObject({ getters: true }),
-
-      documentUrls: serviceReq.documents.map(
-        (report) => `${req.protocol}://${req.get("host")}${report}`
-      ),
-    };
-
     // Respond with the retrieved service request
-    res.status(200).json(serviceReqData);
+    res.status(200).json(serviceReq);
   } catch (error) {
     console.error("Error fetching service request:", error);
     res.status(error.code || 500).json({ error: error.message });
@@ -167,12 +171,21 @@ exports.deleteServiceReq = async (req, res) => {
     // Extract ID from the request
     const { id } = req.params;
 
-    // Delete the service request from the database
+    // Find the service request by ID and delete it
     const deletedServiceReq = await ServiceRequestModel.findByIdAndDelete(id);
 
     // Check if the service request exists
     if (!deletedServiceReq) {
       return res.status(404).json({ error: "Service Request not found" });
+    }
+
+    // Extract the file path from the deleted service request
+    const reportFilePath = deletedServiceReq.report;
+
+    // Delete the file from Firebase Storage if a report file exists
+    if (reportFilePath) {
+      const storageRef = ref(storage, reportFilePath);
+      await deleteObject(storageRef);
     }
 
     // Respond with success message
@@ -183,19 +196,13 @@ exports.deleteServiceReq = async (req, res) => {
   }
 };
 
-/*// Download report route
-router.get('/download-report/:id', async (req, res) => {
-  try {
-    const serviceReq = await ServiceRequestModel.findById(req.params.id);
-    if (!serviceReq || !serviceReq.report) {
-      return res.status(404).json({ error: "Report not found" });
-    }
-    const reportFilePath = serviceReq.report;
-    res.download(reportFilePath);
-  } catch (error) {
-    console.error("Error downloading report:", error);
-    res.status(500).json({ error: "Failed to download report" });
-  }
-});*/
-
-//module.exports = router;
+// Function to get current date and time
+const giveCurrentDateTime = () => {
+  const today = new Date();
+  const date =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+  const time =
+    today.getHours() + "-" + today.getMinutes() + "-" + today.getSeconds();
+  const dateTime = date + "_" + time;
+  return dateTime;
+};

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import ImPageTitle from '../ImPageTitle';
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import ImPageTitle from "../ImPageTitle";
 import { useForm } from "../../../../data/IM/form-hook";
-import InputGroup from 'react-bootstrap/InputGroup';
+import InputGroup from "react-bootstrap/InputGroup";
 
-const Tireform = () => {
+const Tireform = ({ toggleLoading }) => {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState("");
   const [fileError, setFileError] = useState("");
@@ -23,7 +23,7 @@ const Tireform = () => {
         value: "",
         isValid: false,
       },
-      vehicle_Type:{
+      vehicle_Type: {
         value: "",
         isValid: false,
       },
@@ -36,7 +36,7 @@ const Tireform = () => {
         isValid: false,
       },
       image: {
-        value: null,
+        value: "",
         isValid: false,
       },
     },
@@ -45,17 +45,24 @@ const Tireform = () => {
 
   const tireSubmitHandler = async (event) => {
     event.preventDefault();
+    toggleLoading(true);
+    const imgData = new FormData();
+    imgData.append("image", formState.inputs.image.value);
+    axios.post(`${process.env.React_App_Backend_URL}/Product/imgupload`, imgData)
+    .then((res) => {
+      const Url = res.data.downloadURL
+      console.log(Url)
     try {
-      const formData = new FormData();
-      formData.append("product_name", formState.inputs.product_name.value);
-      formData.append("product_brand", formState.inputs.product_brand.value);
-      formData.append("vehicle_Type",formState.inputs.vehicle_Type.value);
-      formData.append("quantity", formState.inputs.quantity.value);
-      formData.append("unit_price", formState.inputs.unit_price.value);
-      formData.append("image", formState.inputs.image.value);
-
-      const response = await axios.post(
-        "http://localhost:5000/Product/addTires",
+      const formData = {
+     product_name: formState.inputs.product_name.value,
+     product_brand: formState.inputs.product_brand.value,
+     vehicle_Type :formState.inputs.vehicle_Type.value,
+     quantity :formState.inputs.quantity.value,
+     unit_price: formState.inputs.unit_price.value,
+     image: Url
+      }
+      const response = axios.post(
+        `${process.env.React_App_Backend_URL}/Product/addTires`,
         formData
       );
 
@@ -64,7 +71,12 @@ const Tireform = () => {
       console.log(formState.inputs);
     } catch (err) {
       console.log(err);
-    }
+    }})
+    .catch((err) => {
+      alert("error");
+    }).finally(() => {
+      toggleLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -89,10 +101,7 @@ const Tireform = () => {
 
   return (
     <main id="main" className="main">
-      <ImPageTitle
-        title="Add Lubricants"
-        url="/staff/im/lubricants/addproduct/"
-      />
+      <ImPageTitle title="Add Tires" url="/staff/im/tires/addproduct/" />
 
       <Form onSubmit={tireSubmitHandler}>
         <Row className="mb-3">
@@ -124,47 +133,54 @@ const Tireform = () => {
           </Form.Group>
         </Row>
         <Row className="mb-3">
-        <Form.Group as={Col} md="5" controlId="validationCustom01">
-        <Form.Label>Vehicle type</Form.Label>
-        <Form.Control
-          id="vehicle_Type"
-          type="text"
-          maxLength={20}
-          placeholder="Enter vehicle type"
-          onInput={(event) =>
-            inputHandler("vehicle_Type", event.target.value, true)
-          }
-          required
-        />
-      </Form.Group>
+          <Form.Group as={Col} md="5" controlId="validationCustom01">
+            <Form.Label>Vehicle type</Form.Label>
+            <Form.Control
+              id="vehicle_Type"
+              type="text"
+              maxLength={20}
+              placeholder="Enter vehicle type"
+              onInput={(event) =>
+                {
+                  const input = event.target.value.replace(/[^A-Za-z\s]/g, ''); // Remove numbers and special characters
+                  event.target.value = input;
+                inputHandler("vehicle_Type", input, true)
+              }}
+              required
+            />
+          </Form.Group>
           <Form.Group as={Col} md="5" controlId="validationCustom01">
             <Form.Label>Quantity</Form.Label>
             <Form.Control
               id="quantity"
               type="number"
               placeholder="Enter quantity"
-              min="1" 
-              onInput={(event) =>
-                inputHandler("quantity", event.target.value, true)
-              }
+              min="1"
+              onInput={(event) =>{
+                let input = event.target.value.replace(/[^\d]/g, ''); // Remove non-digit characters
+               event.target.value = input;
+                inputHandler("quantity", input, true);
+              }}
               required
             />
           </Form.Group>
           <Form.Group as={Col} md="5" controlId="validationCustom01">
             <Form.Label>Unit Price</Form.Label>
             <InputGroup>
-            <InputGroup.Text>Rs.</InputGroup.Text>
-            <Form.Control
-             className="remove-spinner" 
-              id="unit_price"
-              type="number"
-              placeholder="Enter unit price"
-              min="1" 
-              onInput={(event) =>
-                inputHandler("unit_price", event.target.value, true)
-              }
-              required
-            />
+              <InputGroup.Text>Rs.</InputGroup.Text>
+              <Form.Control
+                className="remove-spinner"
+                id="unit_price"
+                type="number"
+                placeholder="Enter unit price"
+                min="1"
+                onInput={(event) =>{
+                  let input = event.target.value.replace(/[^\d]/g, ''); // Remove non-digit characters
+                event.target.value = input;
+                  inputHandler("unit_price", input, true)
+                }}
+                required
+              />
             </InputGroup>
           </Form.Group>
         </Row>
@@ -181,18 +197,18 @@ const Tireform = () => {
               }
               required
             />
-             {fileError && (
-                <Form.Text className="text-danger">{fileError}</Form.Text>
-              )}
+            {fileError && (
+              <Form.Text className="text-danger">{fileError}</Form.Text>
+            )}
           </Form.Group>
-        
-        {previewUrl && (
-              <img
-                src={previewUrl}
-                alt="product image"
-                style={{ marginTop: "3%", width: "20%", height: "20%" }}
-              />
-             )}
+
+          {previewUrl && (
+            <img
+              src={previewUrl}
+              alt="product image"
+              style={{ marginTop: "3%", width: "20%", height: "20%" }}
+            />
+          )}
         </Row>
         <Button variant="primary" type="submit" disabled={!formState.isValid}>
           Submit
@@ -200,6 +216,6 @@ const Tireform = () => {
       </Form>
     </main>
   );
-}
+};
 
 export default Tireform;

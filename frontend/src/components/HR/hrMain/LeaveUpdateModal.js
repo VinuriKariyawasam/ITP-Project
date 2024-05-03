@@ -5,7 +5,13 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { useNavigate } from "react-router-dom";
 
-const UpdateLeaveModal = ({ show, handleClose, leaveId, showToast }) => {
+const UpdateLeaveModal = ({
+  show,
+  handleClose,
+  leaveId,
+  showToast,
+  toggleLoading,
+}) => {
   const navigate = useNavigate();
 
   const [leaveData, setLeaveData] = useState({
@@ -21,8 +27,9 @@ const UpdateLeaveModal = ({ show, handleClose, leaveId, showToast }) => {
   useEffect(() => {
     const fetchLeaveData = async () => {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const response = await fetch(
-          `http://localhost:5000/api/hr/leaves/${leaveId}`
+          `${process.env.React_App_Backend_URL}/api/hr/leaves/${leaveId}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -36,6 +43,8 @@ const UpdateLeaveModal = ({ show, handleClose, leaveId, showToast }) => {
         });
       } catch (error) {
         console.error("Error fetching leave data:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
 
@@ -89,8 +98,9 @@ const UpdateLeaveModal = ({ show, handleClose, leaveId, showToast }) => {
     console.log(leaveData);
     if (Object.keys(errors).length === 0) {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const response = await fetch(
-          `http://localhost:5000/api/hr/update-leave/${leaveId}`,
+          `${process.env.React_App_Backend_URL}/api/hr/update-leave/${leaveId}`,
           {
             method: "PATCH",
             headers: {
@@ -108,6 +118,8 @@ const UpdateLeaveModal = ({ show, handleClose, leaveId, showToast }) => {
         handleClose();
       } catch (error) {
         console.error("Error updating leave:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     }
   };

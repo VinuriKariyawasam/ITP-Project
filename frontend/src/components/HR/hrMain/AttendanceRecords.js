@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Tab, Tabs, Modal } from "react-bootstrap";
 import AttendanceRecordsTable from "./AttendanceRecordTable";
 
-function AttendanceRecords() {
+function AttendanceRecords({ toggleLoading }) {
   const [attendanceRecords, setAttendanceRecords] = useState([]);
 
   // Assume attendanceRecords is fetched from the database
@@ -11,7 +11,10 @@ function AttendanceRecords() {
     // Fetch attendance records from the backend when the component mounts
     const fetchAttendanceRecords = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/hr/attendance");
+        toggleLoading(true); // Set loading to true before API call
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/hr/attendance`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -23,6 +26,8 @@ function AttendanceRecords() {
         setAttendanceRecords(data);
       } catch (error) {
         console.error("Error fetching attendance records:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
     fetchAttendanceRecords();
@@ -30,11 +35,16 @@ function AttendanceRecords() {
 
   // Function to check if a date is within the current week
   const isWithinThisWeek = (date) => {
+    date = new Date(date);
     const today = new Date();
     const clonedToday = new Date(today.getTime()); // Clone today's date
+
+    // First day of the week (Sunday)
     const firstDayOfWeek = new Date(
       clonedToday.setDate(clonedToday.getDate() - clonedToday.getDay())
     );
+
+    // Last day of the week (Saturday)
     const lastDayOfWeek = new Date(
       clonedToday.setDate(clonedToday.getDate() - clonedToday.getDay() + 6)
     );
@@ -52,6 +62,7 @@ function AttendanceRecords() {
 
   // Function to check if a date is within the current month
   const isWithinThisMonth = (date) => {
+    date = new Date(date);
     const today = new Date();
     const targetDate = new Date(date);
     return (
@@ -91,6 +102,7 @@ function AttendanceRecords() {
                 attendRecords={attendanceRecords}
                 dateFilter={() => true}
                 tableName={`All Attendance Records`}
+                toggleLoading={toggleLoading}
               />
             </Tab>
             {/* This Week Subtab */}
@@ -100,6 +112,7 @@ function AttendanceRecords() {
                 attendRecords={attendanceRecords}
                 dateFilter={isWithinThisWeek}
                 tableName={`Attendance Records for ${getWeekRange()}`}
+                toggleLoading={toggleLoading}
               />
             </Tab>
             {/* This Month Subtab */}
@@ -109,6 +122,7 @@ function AttendanceRecords() {
                 attendRecords={attendanceRecords}
                 dateFilter={isWithinThisMonth}
                 tableName={`Attendance Records for ${getMonthYear()}`}
+                toggleLoading={toggleLoading}
               />
             </Tab>
           </Tabs>

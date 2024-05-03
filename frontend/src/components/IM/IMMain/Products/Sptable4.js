@@ -13,7 +13,7 @@ function Sptable4() {
     useEffect(() => {
         function getapprovedSpareparts() {
           axios
-            .get("http://localhost:5000/Product/completedsp")
+            .get(`${process.env.React_App_Backend_URL}/Product/completedsp`)
             .then((res) => {
               setapprovedSpareParts(res.data);
             })
@@ -68,7 +68,7 @@ function Sptable4() {
         <Modal.Title>Order Details</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <img style={{width:"50%",height:"50%"}} src={`http://localhost:5000/${selectedOrder?.image}`} alt="Product Image" />
+        <img style={{width:"50%",height:"50%"}} src={`${selectedOrder?.image}`} alt="Product Image" />
         <p>Order Id: {selectedOrder?.orderId}</p>
         <p>Customer Name: {selectedOrder?.name}</p>
         <p>Vehicle Number: {selectedOrder?.vehicleNumber}</p>

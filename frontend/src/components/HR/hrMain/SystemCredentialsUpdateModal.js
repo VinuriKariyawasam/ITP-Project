@@ -6,7 +6,11 @@ function SystemCredentialsUpdateModal({
   onHide,
   employee,
   submitHandler,
+  toggleLoading,
 }) {
+  // State to manage password visibility
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   // State to manage form data
   const [formData, setFormData] = useState({
     email: employee.email,
@@ -89,6 +93,11 @@ function SystemCredentialsUpdateModal({
     }
   };
 
+  // Function to toggle password visibility
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
+  };
+
   // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -123,8 +132,9 @@ function SystemCredentialsUpdateModal({
     }
     // Handle form submission
     try {
+      toggleLoading(true); // Set loading to true before API call
       // Dummy URL for handling form submission
-      const url = `http://localhost:5000/api/hr/update-credentials/${employee._id}`;
+      const url = `${process.env.React_App_Backend_URL}/api/hr/update-credentials/${employee._id}`;
       const response = await fetch(url, {
         method: "PATCH",
         body: JSON.stringify(formData),
@@ -139,6 +149,8 @@ function SystemCredentialsUpdateModal({
       submitHandler();
     } catch (error) {
       console.error("Error updating system credentials:", error.message);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -187,6 +199,7 @@ function SystemCredentialsUpdateModal({
               isInvalid={!!errors.password}
               isValid={valid.password}
             />
+
             <Form.Text className="text-danger">{errors.password}</Form.Text>
             {valid.password && (
               <Form.Text className="text-success">

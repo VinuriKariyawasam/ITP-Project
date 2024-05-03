@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useParams } from "react-router-dom";
 import {
   Row,
@@ -19,9 +19,17 @@ import EmpEvaluateModal from "./EmpEvaluateModal";
 import SalaryDetailsModal from "./SalaryDetailsModal";
 import MoreReviewsModal from "./MoreReviewModal";
 import SystemCredentialsUpdateModal from "./SystemCredentialsUpdateModal";
-//import { StaffAuthContext } from "../../../Context/Staff/StaffAuthContext";
+import ProfileImageUpdateForm from "./ProfileImageUpdateForm";
+import logo from "../../../images/logoblack_trans.png";
+import { StaffAuthContext } from "../../../context/StaffAuthContext";
+import ReactToPrint from "react-to-print";
+import CompanyHeader from "./CompanyHeader";
 
-function EmployeeDetails() {
+function EmployeeDetails({ toggleLoading }) {
+  const cusfrontendurl = `${process.env.React_App_Frontend_URL}/customer`;
+  const stafffrontendurl = `${process.env.React_App_Frontend_URL}/staff/login`;
+  const componentRef = useRef();
+  const { userId, userPosition } = useContext(StaffAuthContext);
   const { employeeId } = useParams();
   //to redirect after success
   const navigate = useNavigate();
@@ -52,6 +60,7 @@ function EmployeeDetails() {
   const [toastBody, setToastBody] = useState("");
   const [toastType, setToastType] = useState("");
 
+  const [showProfilePicModal, setShowProfilePicModal] = useState(false);
   // Function to show toast notification
   const showToastNotification = (type, header, body) => {
     setToastType(type);
@@ -63,8 +72,9 @@ function EmployeeDetails() {
   //Function to fetch employee personal data by database
   const fetchEmployeeById = async (employeeId) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        `http://localhost:5000/api/hr/employee/${employeeId}`
+        `${process.env.React_App_Backend_URL}/api/hr/employee/${employeeId}`
       );
 
       if (!response.ok) {
@@ -77,14 +87,17 @@ function EmployeeDetails() {
     } catch (error) {
       console.error("Error fetching employee data:", error);
       return null;
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
   // Function to fetch bank details from the bank database
   const fetchSalaryDetails = async (employeeId) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const salaryResponse = await fetch(
-        `http://localhost:5000/api/hr/salary/${employeeId}`
+        `${process.env.React_App_Backend_URL}/api/hr/salary/${employeeId}`
       );
       if (!salaryResponse.ok) {
         throw new Error(`HTTP error! Status: ${salaryResponse.status}`);
@@ -93,14 +106,17 @@ function EmployeeDetails() {
       setSalaryDetails(salData);
     } catch (error) {
       console.error("Error fetching bank details:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
   // Function to fetch reviews from the reviews database
   const fetchReviews = async (employeeId) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const reviewsResponse = await fetch(
-        "http://localhost:5000/api/hr/emp-reviews"
+        `${process.env.React_App_Backend_URL}/api/hr/emp-reviews`
       );
       if (!reviewsResponse.ok) {
         throw new Error(`HTTP error! Status: ${reviewsResponse.status}`);
@@ -129,14 +145,17 @@ function EmployeeDetails() {
       setNegativeReviews(negativeReviews);
     } catch (error) {
       console.error("Error fetching reviews:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
   // Function to fetch leaves from the database
   const fetchLeaves = async (employeeId) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const leavesResponse = await fetch(
-        `http://localhost:5000/api/hr/emp-leaves/${employeeId}`
+        `${process.env.React_App_Backend_URL}/api/hr/emp-leaves/${employeeId}`
       );
       if (!leavesResponse.ok) {
         throw new Error(`HTTP error! Status: ${leavesResponse.status}`);
@@ -162,6 +181,8 @@ function EmployeeDetails() {
       setRejectedLeaves(rejectedLeaves);
     } catch (error) {
       console.error("Error fetching leaves:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -206,17 +227,61 @@ function EmployeeDetails() {
   };
 
   /*----Parts regarding generate pdf from employee personal details-------*/
+
   const generatePDF = () => {
     const element = document.querySelector(".personalDetails"); // Select the container to convert to PDF
-    const opt = {
+    if (!element) {
+      console.error("Container element not found");
+      return;
+    }
+
+    // Remove the "Update Profile Picture" button before generating PDF
+    const profilePictureButtons = element.querySelectorAll("Button");
+    profilePictureButtons.forEach((button) => button.remove());
+
+    // Create a wrapper div
+    const wrapper = document.createElement("div");
+
+    // Add the header content
+    const headerContent = `
+      <div>
+        <h4 class="float-end font-size-15">Human Resources</h4>
+        <div class="mb-4">
+          <img src="${logo}" alt="Invoice Logo" width="200px" />
+        </div>
+        <div class="text-muted">
+          <p class="mb-1">323/1/A Main Street Battaramulla</p>
+          <p class="mb-1">
+            <i class="uil uil-envelope-alt me-1"></i> info@neotech.com
+          </p>
+          <p>
+            <i class="uil uil-phone me-1"></i> 0112887998
+          </p>
+        </div>
+        <hr/>
+      </div>
+    `;
+    wrapper.innerHTML = headerContent;
+
+    // Append the main content
+    wrapper.appendChild(element.cloneNode(true));
+
+    // Generate and save the PDF
+    const options = {
       margin: 0.5,
-      filename: "personal_details.pdf",
+      filename: `Personal_Details_${firstName}.pdf`,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
 
-    html2pdf().from(element).set(opt).save(); // Generate and save the PDF
+    html2pdf()
+      .from(wrapper)
+      .set(options)
+      .save()
+      .catch((error) => {
+        console.error("Error generating PDF:", error);
+      });
   };
 
   /*----Parts regarding updating employee personal details-------*/
@@ -225,10 +290,11 @@ function EmployeeDetails() {
     setShowUpdateModal(true);
   };
   // Handle update employee data
-  const handleUpdateEmployee = async (updatedData) => {
+  const handleUpdateEmployee = async () => {
     // Logic to update employee data
-    console.log("Updated employee data:", updatedData);
+    console.log("Updated employee data:");
     fetchEmployeeById(employeeId); //this used because of error
+    fetchSalaryDetails(employeeId);
     //setEmployee(updatedData); // Update the employee data in the state
     setShowUpdateModal(false); // Close the update modal
     setToastType("success");
@@ -267,16 +333,21 @@ function EmployeeDetails() {
 
   const handleConfirmDelete = async () => {
     try {
+      toggleLoading(true); // Set loading to true before API call
+
       // Send DELETE request to backend API using fetch
-      await fetch(`http://localhost:5000/api/hr/archive-employee/${_id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          // Add any additional headers if required
-        },
-        // Optionally, include credentials if necessary
-        // credentials: 'include',
-      });
+      await fetch(
+        `${process.env.React_App_Backend_URL}/api/hr/archive-employee/${_id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any additional headers if required
+          },
+          // Optionally, include credentials if necessary
+          // credentials: 'include',
+        }
+      );
 
       // Close the modal
       setShowConfirmDelete(false);
@@ -286,6 +357,8 @@ function EmployeeDetails() {
     } catch (error) {
       console.error("Error deleting employee:", error);
       // Handle error (e.g., display error message)
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -337,6 +410,51 @@ function EmployeeDetails() {
     setToastHeader("Success");
     setToastBody("Credentials Updated Successfully");
     setShowToast(true);
+
+    // Send email with the PDF attachment and HTML content
+    const emailOptions = {
+      to: `${email}`, // Replace with recipient email address
+      subject: `Login Credentials Update- Neo Tech Motors`,
+
+      html: `<p><b>Dear Trusted Partner</b></p>
+          <p>Your staff credential for Neo Tech organizations management system has been reset.</p>
+          <p>With your designation you will have the access to our management system with this email and your given password.If any issue please contact HR Division.</p>
+          <p>Hope you have fun while working. Login Here<a href=${stafffrontendurl}>Neo Tech Staff</a></p>
+          <p>Thank You</p>
+          <p>Warm regards,</p>
+          <p><b><i>HR Division- Neo Tech Motors</i></b></p>
+          <a href=${cusfrontendurl}><img src="https://i.ibb.co/ySB2bhn/Logoblack.jpg" alt="Logoblack" border="0"></a>`,
+    };
+
+    // Send a fetch request to the backend controller for sending email
+    toggleLoading(true);
+    await fetch(`${process.env.React_App_Backend_URL}/api/hr/email`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: emailOptions.to,
+        subject: emailOptions.subject,
+        text: emailOptions.text,
+        html: emailOptions.html,
+      }),
+    });
+    toggleLoading(false); // Set loading to false after API call
+  };
+
+  // Function to handle opening and closing of the profile pic update modal
+  const handlePPUModal = () => {
+    setShowProfilePicModal(!showProfilePicModal);
+  };
+
+  const handleImageUpdate = async () => {
+    setShowProfilePicModal(false);
+    fetchEmployeeById(employeeId);
+    setToastType("success");
+    setToastHeader("Success");
+    setToastBody("Profile Picture Updated Successfully");
+    setShowToast(true);
   };
 
   return (
@@ -369,21 +487,24 @@ function EmployeeDetails() {
         >
           <BsArrowLeft /> Employee
         </Button>
-        Employee Details of {firstName} {lastName}
+        Employee Details
       </h2>
       <hr />
       <Card.Body style={{ padding: "10px" }}>
         <Row>
           <Col md={6}>
             {/* Display Personal Details*/}
-            <Container className="personalDetails">
-              <h4>Personal Details</h4>
+            <Container className="personalDetails" ref={componentRef}>
+              <CompanyHeader />
+              <h4>
+                Personal Details of {firstName} {lastName}
+              </h4>
               <Row style={{ marginBottom: "10px" }}>
                 <Col xs={12} md={8}>
                   <Image
                     src={photoUrl}
                     rounded
-                    style={{ width: "200px", height: "150px" }}
+                    style={{ width: "200px", height: "200px" }}
                   />
                 </Col>
               </Row>
@@ -471,7 +592,7 @@ function EmployeeDetails() {
                         return (
                           <li key={docUrl}>
                             <a href={docUrl} target="_blank">
-                              {fileName}
+                              CV-{firstName}
                             </a>
                           </li>
                         );
@@ -482,13 +603,14 @@ function EmployeeDetails() {
               </Row>
             </Container>
             <hr />
-            <Button
-              variant="primary"
-              onClick={generatePDF}
-              style={{ margin: "10px" }}
-            >
-              Generate PDF
-            </Button>
+            <ReactToPrint
+              trigger={() => (
+                <Button variant="primary" style={{ margin: "10px" }}>
+                  Generate PDF
+                </Button>
+              )}
+              content={() => componentRef.current}
+            />
             {/* Personal Details Update Button */}
             <Button
               variant="dark"
@@ -506,6 +628,13 @@ function EmployeeDetails() {
                 Update Credentials
               </Button>
             )}
+            <Button
+              variant="dark"
+              onClick={handlePPUModal}
+              style={{ margin: "3%" }}
+            >
+              Update Profile Picture
+            </Button>
             <Button
               variant="danger"
               onClick={handleDeleteClick}
@@ -770,6 +899,7 @@ function EmployeeDetails() {
           onHide={() => setShowUpdateModal(false)}
           employee={employee}
           onUpdate={handleUpdateEmployee}
+          toggleLoading={toggleLoading}
         />
       )}
 
@@ -800,6 +930,7 @@ function EmployeeDetails() {
         empId={empId} // Example empId passed as prop
         empDBId={_id} // Example empDBId passed as prop
         name={{ firstName, lastName }} // Example name passed as prop
+        toggleLoading={toggleLoading}
       />
 
       {/* Render the SalaryDetailsModal with appropriate props */}
@@ -807,6 +938,7 @@ function EmployeeDetails() {
         show={showSalaryModal}
         handleClose={handleCloseModal}
         id={selectedRecordId}
+        toggleLoading={toggleLoading}
       />
 
       {/* Render the MoreReviewsModal with appropriate props */}
@@ -815,6 +947,7 @@ function EmployeeDetails() {
         handleClose={handleCloseReviewModal}
         reviews={reviews}
         employeeId={employeeId}
+        toggleLoading={toggleLoading}
       />
 
       {/* Render the SystemCredentialsUpdateModal */}
@@ -823,6 +956,16 @@ function EmployeeDetails() {
         onHide={hideCredentialsModalHandler}
         employee={employee}
         submitHandler={handleCredUpdate}
+        toggleLoading={toggleLoading}
+      />
+
+      {/* Render the ProfilePicUpdateModal */}
+      <ProfileImageUpdateForm
+        show={showProfilePicModal}
+        handleClose={handlePPUModal}
+        empId={_id}
+        onUploadPic={handleImageUpdate}
+        toggleLoading={toggleLoading}
       />
     </Card>
   );

@@ -1,0 +1,52 @@
+/* Loader.css */
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255, 255, 255); /* semi-transparent white overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loader-bars {
+  width: 79.2px;
+  height: 105.6px;
+  --c: linear-gradient(#000000 0 0);
+  background: var(--c) 0% 100%, var(--c) 50% 100%, var(--c) 100% 100%;
+  background-size: 15.8px 65%;
+  background-repeat: no-repeat;
+  animation: bars-1hcj36 0.8s infinite linear;
+  margin-bottom: 20px; /* Add margin at the bottom of the bars */
+}
+
+.company-logo {
+  width: 200px; /* Adjust the size of the company logo */
+}
+
+@keyframes bars-1hcj36 {
+  20% {
+    background-position: 0% 50%, 50% 100%, 100% 100%;
+  }
+
+  40% {
+    background-position: 0% 0%, 50% 50%, 100% 100%;
+  }
+
+  60% {
+    background-position: 0% 100%, 50% 0%, 100% 50%;
+  }
+
+  80% {
+    background-position: 0% 100%, 50% 100%, 100% 0%;
+  }
+}

@@ -15,16 +15,16 @@ router.put('/consultation/delete-solutionbyid/:consultId',ConsultationController
 router.put('/consultation/update-newsolution/:consultId',ConsultationController.updateNewSolution)
 router.get('/consultation/get-issue/:userId',ConsultationController.getConsultationById)
 router.get('/consultation/get-consultid/:consultId',ConsultationController.getConsultationByconsultId)
-
+router.delete('/consultation/delete-consultation/:consultId',ConsultationController.deleteConsultationByConsultId)
 
 
 //Feedback Routes   
 router.post('/feedback/add-feedback',FeedbackController.createFeedback)
 router.get('/feedback/get-feedbacks',FeedbackController.getFeedback)
-router.patch('/feedback/update-feedback/:userId',FeedbackController.updateFeedbackByUserId)
-router.delete('/feedback/delete-feedback/:userId',FeedbackController.deleteFeedbackById)
+router.put('/feedback/update-feedback/:feedbackId',FeedbackController.updateFeedbackByfeedbackId)
+router.delete('/feedback/delete-feedback/:feedbackId',FeedbackController.deleteFeedbackById)
 router.get('/feedback/get-feedback/:userId',FeedbackController.getFeedbackById)
-
+router.get('/feedback/get-feedbackbyId/:feedbackId',FeedbackController.getFeedbackByfeedbackId)
     
 
 

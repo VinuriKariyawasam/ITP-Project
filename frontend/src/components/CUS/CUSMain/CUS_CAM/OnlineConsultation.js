@@ -16,7 +16,7 @@ import axios from 'axios';
 import PageTitle_cam from './PageTitle_cam';
 import FileUpload from "../CUS_CAM/CUS_CAM_util/FileUpload";
 
-function OnlineConsultation(){
+function OnlineConsultation({ toggleLoading }){
 
   const cusAuth = useContext(CusAuthContext);
   let id = cusAuth.userId;
@@ -25,6 +25,7 @@ function OnlineConsultation(){
   const [Issues, setIssues] = useState([]);
   const [consultation, setFetchedConsultation] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [VehicleType, setVehicleType] = useState("");
 
   //validation and submit
   const {
@@ -35,6 +36,16 @@ function OnlineConsultation(){
     formState: { errors },
   } = useForm();
 
+  //validations
+  const handleChangeVehicleType = (e) => {
+    const enteredValue = e.target.value;
+    // Regular expression to check if the entered value contains any numbers
+    const containsNumbers = /\d/.test(enteredValue);
+    if (!containsNumbers) {
+        // If the entered value does not contain numbers, update the state
+        setVehicleType(enteredValue);
+    }
+};
 
   const onSubmit = async (data) => {
     try {
@@ -46,6 +57,7 @@ function OnlineConsultation(){
       });
 
       formData.append("userId",cusAuth.userId);
+      formData.append("name",cusAuth.name);
 
       if (uploadedFile) {
         formData.append("files", uploadedFile);
@@ -57,9 +69,9 @@ function OnlineConsultation(){
       for (const pair of formData.entries()) {
         console.log(pair[0], pair[1]);
       }
-
+      toggleLoading(true)
       const response = await fetch(
-        "http://localhost:5000/cam/consultation/add-issue",
+        `${process.env.React_App_Backend_URL}/cam/consultation/add-issue`,
         {
           method: "POST",
           body: formData,
@@ -92,6 +104,8 @@ function OnlineConsultation(){
       } else {
         console.error("Error:", error.message);
       }
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -115,7 +129,8 @@ function OnlineConsultation(){
   useEffect(() => {
     const fetchConsultations = async() => {
       try{
-        const response = await fetch("http://localhost:5000/cam/consultation/get-issues");
+        toggleLoading(true);
+        const response = await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/get-issues`);
 
         if(!response.ok){
           throw new Error(`HTTP error! Status:${response.status}`);
@@ -124,6 +139,8 @@ function OnlineConsultation(){
         setIssues(data.consultations);
       }catch (error) {
         console.error("Error fetching data:", error);
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     }
     fetchConsultations();
@@ -139,7 +156,7 @@ useEffect(() => {
     const fetchConsultationById = async (id) => {
       try{
         const response = await fetch(
-          `http://localhost:5000/cam/consultation/get-issue/${id}`
+          `${process.env.React_App_Backend_URL}/cam/consultation/get-issue/${id}`
         );
 
         if(!response.ok) {
@@ -169,12 +186,34 @@ useEffect(() => {
     _v,
   } = consultation
 
+  //delete consultation
+  const handleDelete = async (consultId) => {
+    try {
+      toggleLoading(true);
+      // Send DELETE request to backend API using fetch
+      await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/delete-consultation/${consultId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json", 
+        },
+      },
+      alert("Consultation Deleted successfully!"),
+      navigate("/customer/cusaffairs/consultation")
+    );
+  } catch (error) {
+    console.error("Error deleting consultation:", error);
+    // Handle error (e.g., display error message)
+  }finally {
+    toggleLoading(false); // Set loading to false after API call
+  }
+};
+
     return(
     <div>
      <main style={{marginLeft:"50px",marginTop:"20px"}}>
-      <Card style={{height:"100%",width:"96%"}}>
+      <Card style={{width:"96%"}}>
         <Card.Body>
-        <PageTitle_cam path="consultation" title="Have a Question? Ask Us!" />
+        <h1 style={{fontFamily:"sans-serif",color:"darkslateblue"}}><b>Have a Question? Ask Us!</b></h1>
         <Container>
          <Row>
           <Col>
@@ -185,7 +224,15 @@ useEffect(() => {
                   <Controller
                   name="vehicleType"
                   control={control}
-                  rules={{required: "Vehicle type is required"}}
+                  isInvalid={/\d/.test(VehicleType)} // Check if the value contains numbers
+                  onChange={handleChangeVehicleType}
+                  rules={{
+                    required: "Vehicle type is required",
+                    pattern: {
+                      value: /^[a-zA-Z\s]*$/, // Regex to allow only letters and spaces
+                      message: "Only letters and spaces are allowed"
+                  }
+                  }}
                   render={({field}) => (
                     <Form.Control
                     placeholder="Model/Type" {...field}/>
@@ -197,12 +244,18 @@ useEffect(() => {
                </Form.Group>
              </Row>
              <Row className="mb-3">
-               <Form.Group as={Col} controlId="formGridExtra">
+               <Form.Group as={Col}  controlId="formGridExtra">
                   <Form.Label>Component where the issue is occuring</Form.Label>
                   <Controller
                   name="component"
                   control={control}
-                  rules={{required: "Component type is required"}}
+                  rules={{
+                    required: "Component type is required",
+                    pattern: {
+                      value: /^[a-zA-Z\s]*$/, // Regex to allow only letters and spaces
+                      message: "Only letters and spaces are allowed"
+                  }
+                  }}
                   render={({field}) => (
                     <Form.Control
                     placeholder="Engine / Breaks / GearBox" {...field}/>
@@ -214,7 +267,7 @@ useEffect(() => {
                </Form.Group>
              </Row>
              <Row className="mb-3">
-               <Form.Group as={Col} controlId="formGridExtra">
+               <Form.Group as={Col}  controlId="formGridExtra">
                   <Form.Label>Description of the issue</Form.Label>
                   <Controller
                   name="issue"
@@ -242,24 +295,29 @@ useEffect(() => {
              </Row>
              <Row className="mb-3">
                <Button variant="success" type="submit" 
-               style={{marginTop:"10px",marginLeft:"30px", width:"90%"}}>
+               style={{marginTop:"1px",marginLeft:"30px", width:"90%"}}>
                Ask from the Expert
                </Button>
              </Row>
            </Form>
          </Col>
          <Col> 
-         <Form>
-         <Accordion defaultActiveKey="0">
+         <Form style={{marginBottom:"10px"}}>
+         <Accordion defaultActiveKey="0" >
           {consultation.map((consultation,index) =>(
                       <Accordion.Item key={index} eventKey={index.toString()} style={{marginTop:"5px"}}>
                         <Accordion.Header style={{fontWeight:"bold"}}>
-                          Vehicle Type : {consultation.vehicleType}<br></br>
-                          Component :   {consultation.component}<br></br>
-                          Issue :       {consultation.issue}<br></br>
+                        {consultation.fileUrls.map((fileUrl, i) => (
+                      <img key={i} src={fileUrl} style={{ height: "200px" }} alt="Feedback Image" />
+                    ))}<br></br>
                         </Accordion.Header>
                         <Accordion.Body>
                         <Row className="mb-3">
+                          Vehicle Type : {consultation.vehicleType}<br></br>
+                          Component :   {consultation.component}<br></br>
+                          Issue :       {consultation.issue}<br></br>
+                          </Row>
+                          <Row className="mb-3"> 
                <Form.Group as={Col} controlId="formGridExtra" style={{marginTop:"5px"}}>
                  <Form.Label>Solution from our Experts</Form.Label>
                  <Form.Control
@@ -271,6 +329,11 @@ useEffect(() => {
                    readOnly
                 />
                </Form.Group>
+               <Button variant="danger" type="submit" 
+               style={{marginTop:"1px",marginLeft:"25px",marginTop:"10px", width:"90%"}}
+               onClick={() => handleDelete(consultation.consultId)}>
+               Delete my consultation
+               </Button>
           </Row>
           </Accordion.Body>
           </Accordion.Item>

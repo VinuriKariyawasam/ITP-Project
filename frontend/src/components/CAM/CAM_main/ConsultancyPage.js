@@ -10,9 +10,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from "react-bootstrap/Modal";
-import UpdateSolutionModal from './UpdateSolutionModal';
+import FeedbackReviewModal from './FeedbackReviewModal';
 
-const ConsultancyPage = () => {
+const ConsultancyPage = ({ toggleLoading }) => {
   const navigate = useNavigate();
 
   const cusAuth = useContext(CusAuthContext);
@@ -30,7 +30,8 @@ const ConsultancyPage = () => {
   useEffect(() => {
     const fetchConsultations = async() => {
       try{
-        const response = await fetch("http://localhost:5000/cam/consultation/get-issues");
+        toggleLoading(true);
+        const response = await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/get-issues`);
 
         if(!response.ok){
           throw new Error(`HTTP error! Status:${response.status}`);
@@ -43,6 +44,8 @@ const ConsultancyPage = () => {
         console.log("Feedback count:", consultationCount);
       }catch (error) {
         console.error("Error fetching data:", error);
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     }
     fetchConsultations();
@@ -53,8 +56,9 @@ const ConsultancyPage = () => {
 
 const fetchConsultationById = async () => {
   try{
+    toggleLoading(true);
     const response = await fetch(
-      `http://localhost:5000/cam/consultation/get-consultid/${id}`
+      `${process.env.React_App_Backend_URL}/cam/consultation/get-consultid/${id}`
     );
 
     if(!response.ok) {
@@ -66,6 +70,8 @@ const fetchConsultationById = async () => {
   }catch (error) {
     console.error("Error fetching consultation:", error);
     return null;
+  }finally {
+    toggleLoading(false); // Set loading to false after API call
   }
 };
 
@@ -108,7 +114,8 @@ const handleDeleteClick = () => {
 
 const handleConfirmDelete = async (consultId) => {
   try{
-    const response = await fetch(`http://localhost:5000/cam/consultation/delete-solutionbyid/${consultId}`,{
+    toggleLoading(true);
+    const response = await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/delete-solutionbyid/${consultId}`,{
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -127,6 +134,8 @@ const handleConfirmDelete = async (consultId) => {
   }catch (error) {
     console.error("Error deleting feedback:", error);
     // Handle error (e.g., display error message)
+  }finally {
+    toggleLoading(false); // Set loading to false after API call
   }
 };
 
@@ -144,7 +153,7 @@ const handleCancelDelete = () => {
               {Consultation.map((consultation, index) => (
                 <Accordion.Item key={index} eventKey={consultation._id.toString()} style={{marginTop:"5px"}}>
                   <Accordion.Header style={{fontWeight:"bold"}}>
-                    Consultation Id : {consultation.consultId}<br></br>
+                    Customer Name : {consultation.name}<br></br>
                     Vehicle Type : {consultation.vehicleType}<br></br>
                     Component : {consultation.component}<br></br>
                     Issue : {consultation.issue}<br></br>
@@ -177,7 +186,7 @@ const handleCancelDelete = () => {
        </Form> 
        {/* Render the FeedbackUpdateModal when showUpdateModal is true */}
    {showUpdateModal && (
-    <UpdateSolutionModal
+    <FeedbackReviewModal
     show={showUpdateModal}
     onHide={() => setShowUpdateModal(false)}
     Consultation={Consultation}

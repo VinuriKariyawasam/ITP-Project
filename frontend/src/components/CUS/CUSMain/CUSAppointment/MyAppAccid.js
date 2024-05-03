@@ -8,7 +8,7 @@ import { CusAuthContext } from "../../../../context/cus-authcontext";
 
 
 
-function MyAppAccid() {
+function MyAppAccid ({ toggleLoading }) {
 
   const [showModal, setShowModal] = useState(false);
   const [accidentalAppointment, setaccidentalAppointment] = useState([]);
@@ -33,11 +33,15 @@ function MyAppAccid() {
   let userId = cusauth.userId;
   const getAccidentalData = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/appointment/get-accidentalAppointmentbyuserId/${userId}`);
+      toggleLoading(true);
+      const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-accidentalAppointmentbyuserId/${userId}`);
       setaccidentalAppointment(response.data.data);
 
     } catch (error) {
       console.error('Error fetching appointments:', error);
+    }
+    finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -59,9 +63,11 @@ function MyAppAccid() {
     // Make sure selectedAppointment is not null
     if (selectedAppointment && appointmentdate) { // Ensure appointmentdate is not empty
       // Send a request to update the appointment with the new date and time
-      axios.put(`http://localhost:5000/appointment/update-accidentalAppointment/${selectedAppointment._id}`, {
+      toggleLoading(true); 
+      axios.put(`${process.env.React_App_Backend_URL}/appointment/update-accidentalAppointment/${selectedAppointment._id}`, {
         userId: selectedAppointment.userId, // Use userId from selectedAppointment
         name: selectedAppointment.name,
+        cusType:selectedAppointment.cusType,
         vType: selectedAppointment.vType,
         vNo: selectedAppointment.vNo,
         dateAccidentaOccured: selectedAppointment.dateAccidentaOccured,
@@ -83,14 +89,18 @@ function MyAppAccid() {
         .catch(error => {
           console.error(error);
           // Handle errors
+        }).finally(()=>{
+          toggleLoading(false); 
         });
     }
   };
 
 
-  const Delete = (id) => {
+  const Delete = (id,Image) => {
 
-    axios.delete(`http://localhost:5000/appointment/delete-accidentalAppointment/${id}`)
+    const image = Image;
+    toggleLoading(true); 
+    axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-allwithimage/${id}`,{data:{image}})
       .then(response => {
         console.log(response);
         window.location.reload();
@@ -99,6 +109,8 @@ function MyAppAccid() {
       .catch(error => {
         // Handle errors here
         console.error(error);
+      }).finally(()=>{
+        toggleLoading(false); 
       });
 
   };
@@ -144,7 +156,7 @@ function MyAppAccid() {
   const fetchAvailableTimes = async (date) => {
     try {
       const formattedDate = changedatetoformet(date);
-      const response = await axios.get(`http://localhost:5000/appointment/get-acceptedaccidentalappointmentbyDate/${formattedDate}`);
+      const response = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedaccidentalappointmentbyDate/${formattedDate}`);
       const appointments = response.data.data;
       console.log(appointments);
       const allTimes = ["9.00am", "10.30am", "12.00pm", "1.30pm", "3.00pm", "4.30pm"]; // Define allTimes here
@@ -210,6 +222,7 @@ function MyAppAccid() {
 
             <p>Vehicle No:{selectedAppointment.vNo} </p>
             <p>Customer Name:{selectedAppointment.name} </p>
+            <p>Customer Type:{selectedAppointment.cusType} </p>
             <p>Vehicle Type:{selectedAppointment.vType}  </p>
             <p>Accident occured on:{selectedAppointment.dateAccidentaOccured}</p>
             <p>Damaged Occured:{selectedAppointment.damagedOccured}</p>
@@ -245,9 +258,9 @@ function MyAppAccid() {
                 </select>
               </div>
             )}
-            <p>Contact No: {selectedAppointment.phone}</p>
+            <p>Contact No:{selectedAppointment.contactNo}</p>
             <label>Image </label>
-            <img src={`http://localhost:5000/${selectedAppointment.image}`} style={{ maxWidth: '100%', maxHeight: '300px' }} />
+            <img src={`${selectedAppointment.image}`} style={{ maxWidth: '100%', maxHeight: '300px' }} />
 
           </Modal.Body>
           <Modal.Footer>
@@ -261,7 +274,7 @@ function MyAppAccid() {
                 Update Appointment
               </Button>
             )}
-            <Button variant="danger" onClick={() => Delete(selectedAppointment._id)}>
+            <Button variant="danger" onClick={() => Delete(selectedAppointment._id,selectedAppointment.image)}>
               cancle
             </Button>
           </Modal.Footer>

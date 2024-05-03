@@ -15,7 +15,7 @@ import CreateDesignationModal from "./DesignationCreateModal";
 
 import UpdateDesignationModal from "./DesignationUpdateModal";
 
-function Designations() {
+function Designations({ toggleLoading }) {
   const navigate = useNavigate();
   const [designations, setDesignations] = useState([]);
   //crete modal state
@@ -27,19 +27,21 @@ function Designations() {
     useState(false);
   const [designationToDelete, setDesignationToDelete] = useState(null);
   const [reloadDesignations, setReloadDesignations] = useState(false);
-  const [key, setKey] = useState("pending");
+  const [key, setKey] = useState("designations");
   // Define state variables for toast message
   const [toastHeader, setToastHeader] = useState("");
   const [toastBody, setToastBody] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState("");
+  const [nopaylogs, setNopayLogs] = useState([]);
 
   useEffect(() => {
     // Fetch designation records from the backend when the component mounts
     const fetchDesignations = async () => {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const response = await fetch(
-          "http://localhost:5000/api/hr/designations"
+          `${process.env.React_App_Backend_URL}/api/hr/designations`
         );
 
         if (!response.ok) {
@@ -51,6 +53,8 @@ function Designations() {
         setReloadDesignations(false); // Reset reloadDesignations state
       } catch (error) {
         console.error("Error fetching designation records:", error);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
     fetchDesignations();
@@ -59,8 +63,9 @@ function Designations() {
   // Function to delete a designation record
   const deleteDesignation = async (designationId) => {
     try {
+      toggleLoading(true); // Set loading to true before API call
       const response = await fetch(
-        `http://localhost:5000/api/hr/delete-designation/${designationId}`,
+        `${process.env.React_App_Backend_URL}/api/hr/delete-designation/${designationId}`,
         {
           method: "DELETE",
           headers: {
@@ -87,8 +92,10 @@ function Designations() {
     } catch (error) {
       alert("Error deleting designation"); // Show error alert
       console.error("Error deleting designation:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
+      setShowDeleteConfirmationModal(false);
     }
-    setShowDeleteConfirmationModal(false);
   };
 
   // Update related functions
@@ -115,6 +122,29 @@ function Designations() {
 
   const handleCloseModal = () => {
     setShowModal(false);
+  };
+
+  //function to get no pay logs
+  useEffect(() => {
+    fetchLogs();
+  }, []);
+
+  const fetchLogs = async () => {
+    try {
+      toggleLoading(true); // Set loading to true before API call
+      const response = await fetch(
+        `${process.env.React_App_Backend_URL}/api/hr/allnopaylogs`
+      ); // Assuming this is the route you set up
+      if (!response.ok) {
+        throw new Error("Failed to fetch logs");
+      }
+      const data = await response.json();
+      setNopayLogs(data);
+    } catch (error) {
+      console.error("Error fetching logs:", error);
+    } finally {
+      toggleLoading(false); // Set loading to false after API call
+    }
   };
 
   return (
@@ -146,7 +176,7 @@ function Designations() {
             onSelect={(k) => setKey(k)}
             className="mb-3"
           >
-            <Tab eventKey="pending" title="Designations List">
+            <Tab eventKey="designations" title="Designations List">
               <Row>
                 <Stack direction="horizontal">
                   <div className="p-2">
@@ -269,6 +299,7 @@ function Designations() {
                 setShowToast={setShowToast}
                 setReloadDesignations={setReloadDesignations}
                 setToastType={setToastType} // or "warning", "error", etc.
+                toggleLoading={toggleLoading}
               />
               {/* Update Desigantion content here */}
               {showUpdateModal && (
@@ -289,8 +320,51 @@ function Designations() {
                     designations.find((d) => d._id === selectedDesignationId)
                       ?.basicSalary
                   }
+                  toggleLoading={toggleLoading}
                 />
               )}
+            </Tab>
+            <Tab eventKey="nopaylogs" title="No Pay Logs">
+              <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                <thead>
+                  <tr>
+                    <th style={{ border: "1px solid black", padding: "8px" }}>
+                      Date
+                    </th>
+                    <th style={{ border: "1px solid black", padding: "8px" }}>
+                      Status
+                    </th>
+                    <th style={{ border: "1px solid black", padding: "8px" }}>
+                      Absent Without Leave
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nopaylogs.map((log, index) => (
+                    <tr key={index}>
+                      <td style={{ border: "1px solid black", padding: "8px" }}>
+                        {new Date(log.date).toLocaleDateString()}
+                      </td>
+                      <td style={{ border: "1px solid black", padding: "8px" }}>
+                        {log.status}
+                      </td>
+                      <td style={{ border: "1px solid black", padding: "8px" }}>
+                        <ul
+                          style={{
+                            listStyleType: "none",
+                            padding: 0,
+                            margin: 0,
+                          }}
+                        >
+                          {log.absentWithoutLeave.map((emp, empIndex) => (
+                            <li key={empIndex}>{emp.empDBId}</li>
+                          ))}
+                        </ul>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </Tab>
           </Tabs>
         </Card.Body>

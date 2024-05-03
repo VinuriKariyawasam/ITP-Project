@@ -23,6 +23,14 @@ const navList = [
     icon: "bi bi-layout-text-window-reverse",
     href: "/staff/cam/faq_review"
   },
+
+  {
+    _id: 5,
+    name: "Contact Us Responses",
+    icon: "bi bi-file-earmark-fill",
+    href: "/staff/cam/contactDash"
+    
+  },
  
 
  /*{

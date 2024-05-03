@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 
-const SMMechanicalRepairs = props => {
+const SMMechanicalRepairs = ({ toggleLoading }) => {
 
   //create an empty array to store details
   const [mechanicalAppointment, setmechanicalAppointment] = useState([]);
@@ -15,6 +15,7 @@ const SMMechanicalRepairs = props => {
 
   const [userId, setuserId] = useState("");
   const [name, setname] = useState("");
+  const[cusType,setcusType]=useState("")
   const [vType, setvType] = useState("");
   const [vNo, setvNo] = useState("");
   const [serviceType, setserviceType] = useState("");
@@ -27,10 +28,24 @@ const SMMechanicalRepairs = props => {
   function sendata(e) {
     e.preventDefault();
     const serviceType = "Mechanical Repairs";
+    const emailData = {
+      to: selectedAppointment.email,
+      subject: `Appointment Confirmed`,
+      text: `Hi ${selectedAppointment.name},\n Your Mechanical repair Appintment with NeoTech Motors on ${selectedAppointment.appointmentdate.split('T')[0]} at ${selectedAppointment.appointmenttime} has been confirmed.`,
+      html: null,
+    };
+    toggleLoading(true); 
+    axios.post( `${process.env.React_App_Backend_URL}/appointment/sendappointmentmail`,
+        emailData
+      )
+      .then((response) => {
+        console.log(response.data);
+         //create javascript object
     //create javascript object
     const newacceptedappointment = {
       userId,
       name,
+      cusType,
       vType,
       vNo,
       serviceType,
@@ -40,16 +55,19 @@ const SMMechanicalRepairs = props => {
       appointmenttime,
 
     }
-
-    axios.post("http://localhost:5000/appointment/addacceptedappointment", newacceptedappointment).then(() => {
-      alert("Your Appointment Success")
+    axios.post(`${process.env.React_App_Backend_URL}/appointment/addacceptedappointment`, newacceptedappointment).then(() => {
+      alert("Appointment added to the calender")
       senddatamechanicalAppointmentHistory(selectedAppointment);
       Delete(selectedAppointment._id);
 
     }).catch((err) => {
       alert(err)
-    })
-
+    }).catch((error) => {
+      console.error("Error sending email:", error);
+    }).finally(()=>{
+      toggleLoading(false); 
+    });
+  })
   }
   function senddatamechanicalAppointmentHistory() {
 
@@ -57,6 +75,7 @@ const SMMechanicalRepairs = props => {
     const newacceptedmechanicalAppointment = {
       userId,
       name,
+      cusType,
       vType,
       vNo,
       issue,
@@ -65,13 +84,15 @@ const SMMechanicalRepairs = props => {
       appointmenttime
 
     }
-    axios.post("http://localhost:5000/appointment/addacceptedmechanicalAppointment", newacceptedmechanicalAppointment).then(() => {
-      alert("Appointment added to history")
+    toggleLoading(true); 
 
-
+    axios.post(`${process.env.React_App_Backend_URL}/appointment/addacceptedmechanicalAppointment`, newacceptedmechanicalAppointment).then(() => {
+     
     }).catch((err) => {
       alert(err)
-    })
+    }).finally(()=>{
+      toggleLoading(false); 
+    });
 
   }
 
@@ -79,6 +100,7 @@ const SMMechanicalRepairs = props => {
   const handleTableRowClick = (appointment) => {
     setuserId(appointment.userId);
     setname(appointment.name);
+    setcusType(appointment.cusType)
     setvType(appointment.vType);
     setvNo(appointment.vNo);
     setserviceType(appointment.serviceType);
@@ -91,7 +113,9 @@ const SMMechanicalRepairs = props => {
   useEffect(() => {
 
     function getmechanicalAppointment() {
-      axios.get("http://localhost:5000/appointment/get-mechanicalAppointment").then((res) => {
+      toggleLoading(true); 
+
+      axios.get(`${process.env.React_App_Backend_URL}/appointment/get-mechanicalAppointment`).then((res) => {
         const sortedAppointments = res.data.sort((a, b) => {
           return new Date(a.appointmentdate) - new Date(b.appointmentdate);
         });
@@ -99,7 +123,9 @@ const SMMechanicalRepairs = props => {
         console.log(res.data)
       }).catch((err) => {
         alert(err.message);
-      })
+      }).finally(()=>{
+        toggleLoading(false); 
+      });
     }
     getmechanicalAppointment();
 
@@ -114,8 +140,8 @@ const SMMechanicalRepairs = props => {
   };
 
   const Delete = (id) => {
-    
-      axios.delete(`http://localhost:5000/appointment/delete-mechanicalAppointment/${id}`)
+    toggleLoading(true); 
+      axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-mechanicalAppointment/${id}`)
         .then(response => {
           console.log(response);
           window.location.reload();
@@ -123,9 +149,13 @@ const SMMechanicalRepairs = props => {
         .catch(error => {
           // Handle errors here
           console.error(error);
+        }).finally(()=>{
+          toggleLoading(false); 
         });
     
   };
+
+
   return (
     <main id="main" className="main">
       <div>
@@ -138,6 +168,11 @@ const SMMechanicalRepairs = props => {
               </Modal.Header>
 
               <Modal.Body>
+              <Row>
+                <Card.Text>
+                    <strong>Customer Type: </strong>{selectedAppointment.cusType}<br />
+                  </Card.Text>
+                  </Row>
                 <Row>
                   <Card.Text>
                     <strong>Vehicle No: </strong>{selectedAppointment.vNo}<br />
