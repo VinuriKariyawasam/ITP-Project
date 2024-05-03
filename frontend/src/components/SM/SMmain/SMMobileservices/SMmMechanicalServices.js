@@ -29,7 +29,6 @@ const SMmMechanicalService = ({toggleLoading}) => {
   const [technician, setTechnician] = useState("");
 
   const assignTechnician = () => {
-    try{
       toggleLoading(true); // Set loading to true before API call
     // Send PUT request to update breakdown request with assigned technician
     axios.put(`${process.env.React_App_Backend_URL}/api/mobile/update-mechanical/${selectedRequest._id}`, { 
@@ -40,29 +39,30 @@ const SMmMechanicalService = ({toggleLoading}) => {
       handleCloseModal();
       getMechanicalRequests();
     })
-  }catch(error){
+    .catch(error => {
       console.error(error);
-    }finally {
+    })
+    .finally(() => {
       toggleLoading(false); // Set loading to false after API call
-    }
-  };
+    });
+};
 
   useEffect(() => {
     getMechanicalRequests();
   }, []);
 
   const getMechanicalRequests = () => {
-    try{
       toggleLoading(true);
     axios.get(`${process.env.React_App_Backend_URL}/api/mobile/get-mechanical`)
       .then((res) => {
         setMechanicalRequests(res.data);
       })
-    }catch(err){
+      .catch(err => {
         alert(err.message);
-      }finally {
+      })
+      .finally(() => {
         toggleLoading(false); // Set loading to false after API call
-      }
+      });
   };
 
   const handleTableRowClick = (request) => {
@@ -105,16 +105,18 @@ const SMmMechanicalService = ({toggleLoading}) => {
   const deleteRequest = (id) => {
     const shouldDelete = window.confirm("Please confirm deletion!");
     if (shouldDelete) {
-      try{
         toggleLoading(true); // Set loading to true before API call
       axios.delete(`${process.env.React_App_Backend_URL}/api/mobile/delete-mechanical/${id}`)
         .then(response => {
           console.log(response);
           window.location.reload();
         })
-      }catch(error) {
+        .catch(error => {
           console.error(error);
-        };
+        })
+        .finally(() => {
+          toggleLoading(false); // Set loading to false after API call
+        });
     }
   };
 

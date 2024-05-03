@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect  } from 'react'
 import { useForm } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
 import '../CUSMobileReq/Mechanicalreq.css'
@@ -9,11 +9,28 @@ import MechanicalImg from '../../../../images/MobileServices/MobMechanicalIMG.we
 function Mechanicalreq({toggleLoading}) {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors }, reset, trigger } = useForm();
+  const [currentLocation, setCurrentLocation] = useState(null);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const { latitude, longitude } = position.coords;
+          setCurrentLocation({ latitude, longitude });
+        },
+        error => {
+          console.error(error);
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }, []);
 
   const onSubmit = data => {
-    //console.log(data);
+    // Append current location to the form data
+    data.location = currentLocation;
     // Perform form submission logic here
-    try{
       toggleLoading(true);
     axios.post(`${process.env.React_App_Backend_URL}/api/mobile/add-mechanical`,{
         cusName: data.cusName,
@@ -30,14 +47,14 @@ function Mechanicalreq({toggleLoading}) {
           reset();
 
         })
-      }catch(err){
+        .catch((err) => {
             alert(err);
             //console.error(err);
             //alert("Error submitting request. Please try again later.");
-        }
-        finally {
-          toggleLoading(false); // Set loading to false after API call
-        }
+          })
+          .finally(() => {
+            toggleLoading(false); // Set loading to false after API call
+          });
   };
 
 
@@ -82,7 +99,7 @@ function Mechanicalreq({toggleLoading}) {
                                                 value: /^[A-Z0-9]+(-[0-9]+)*$/, //vehicle number validation
                                                 message: "Invalid vehicle number"
                                                 } })} 
-              className="mobinput-styles" type="text" id="vehicleNo" placeholder="XXX-5555 / XX-6060 / 61-4353 / SRI-5132" 
+              className="mobinput-styles" type="text" id="vehicleNo" placeholder="XXX-5555 / 61-4353 / SRI-5132" 
               onBlur={() => validateField("vehicleNo")}/>
               {errors.vehicleNo && <span style={{ color: "red" }}>{errors.vehicleNo.message}</span>}
             </div></Col><Col>
@@ -111,8 +128,8 @@ function Mechanicalreq({toggleLoading}) {
             <Col>
             <div className="mobform-element">
                   <Form.Label htmlFor="reqLocation" className='mobL1'>Location</Form.Label><br />
-                  <Form.Control {...register("reqLocation", { required: true })} className="mobinput-styles" type="text" id="reqLocation" placeholder="Your Location" />
-                  {errors.reqLocation && <span style={{ color: "red" }}>Location is required</span>}
+                  <Form.Control {...register("reqLocation", { required: true })} className="mobinput-styles" type="text" id="reqLocation" placeholder="Your Location" value={`${currentLocation ? currentLocation.latitude + ', ' + currentLocation.longitude : ''}`} />
+                  {errors.reqLocation && <span style={{ color: "red" }}>{errors.reqLocation.message}</span>}
             </div> </Col> </Row>
             <Row><Col>
             <div className="mobform-element">

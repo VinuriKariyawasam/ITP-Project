@@ -28,17 +28,17 @@ const SMmVehicleCarriers = ({toggleLoading}) => {
   }, []);
 
   const getVehicleCarrierRequests = () => {
-    try{
       toggleLoading(true); // Set loading to true before API call
     axios.get(`${process.env.React_App_Backend_URL}/api/mobile/get-vehiclecarrier`)
       .then((res) => {
         setCarrierRequests(res.data);
       })
-    }catch(err) {
+      .catch(err => {
         alert(err.message);
-      }finally {
+      })
+      .finally(() => {
         toggleLoading(false); // Set loading to false after API call
-      }
+      });
   };
 
   const handleTableRowClick = (request) => {
@@ -71,18 +71,18 @@ const SMmVehicleCarriers = ({toggleLoading}) => {
   const deleteRequest = (id) => {
     const shouldDelete = window.confirm("Please confirm deletion!");
     if (shouldDelete) {
-      try{
         toggleLoading(true);
       axios.delete(`${process.env.React_App_Backend_URL}/api/mobile/delete-vehiclecarrier/${id}`)
         .then(response => {
           console.log(response);
           window.location.reload();
         })
-      }catch(error) {
+        .catch(error => {
           console.error(error);
-        }finally {
+        })
+        .finally(() => {
           toggleLoading(false); // Set loading to false after API call
-        }
+        });
     }
   };
 
