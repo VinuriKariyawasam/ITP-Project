@@ -41,7 +41,8 @@ function AddVehicle({ toggleLoading }) {
       ? "Vehicle No. must contain only capital letters, Sinhala word 'ශ්‍රී', or numbers"
       : value.trim().length > 1 && value.trim().startsWith("ශ්‍රී")
       ? "ශ්‍රී can only be added after the first character"
-      : !/^\d*$/.test(value)
+      : !/^[A-Z\d]*$/.test(value)
+
       ? "Vehicle No. must contain only numbers"
       : "";
   break;
