@@ -23,4 +23,6 @@ router.put('/update-serviceReq/:id', ServiceReqController.updateServiceReq);
 router.delete('/delete-serviceReq/:id', ServiceReqController.deleteServiceReq);
 router.post('/add-serviceReqApp', ServiceReqController.createServiceReqfromApp);
 
+router.post('/add-serviceReqApp', ServiceReqController.createServiceReqfromApp);
+
 module.exports = router;

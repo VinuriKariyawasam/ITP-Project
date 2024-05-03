@@ -12,15 +12,15 @@ import {
   Navigate,
 } from "react-router-dom";
 
-function Mobile() {
+function Mobile({ toggleLoading }) {
   return (
     <>
 
     <Routes>
-    <Route path="/mobilemechanical" element={<Mechanicalreq/>} />
-    <Route path="/vehiclecarriers" element={<VehicleCarrReq/>} />
-    <Route path="/breakdownrequests" element={<EmBreakdownReq/>} />
-    <Route path="/mobilemain" element={<MobileMain/>} />
+    <Route path="/mobilemechanical" element={<Mechanicalreq toggleLoading={toggleLoading} />} />
+    <Route path="/vehiclecarriers" element={<VehicleCarrReq toggleLoading={toggleLoading} />} />
+    <Route path="/breakdownrequests" element={<EmBreakdownReq toggleLoading={toggleLoading} />} />
+    <Route path="/mobilemain" element={<MobileMain toggleLoading={toggleLoading} />} />
     </Routes>
     </>
   )

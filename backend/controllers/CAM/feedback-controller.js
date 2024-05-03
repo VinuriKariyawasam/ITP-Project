@@ -245,7 +245,7 @@ static async getFeedbackByfeedbackId(req, res) {
 }
 
 //update feedback by feedbackId
- static async updateFeedbackByfeedbackId(req, res, next){
+ /*static async updateFeedbackByfeedbackId(req, res, next){
   const { feedbackId } = req.params; // Extract feedbackId from request parameters
   console.log("Request Body:", feedbackId);
   const updatedData = req.body; // Extract updated data from request body
@@ -271,7 +271,55 @@ static async getFeedbackByfeedbackId(req, res) {
     console.error("Error updating feedback:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-};
+};*/
+
+static async updateFeedbackByfeedbackId(req, res) {
+  const { feedbackId } = req.params;
+  const updatedData = req.body;
+  const newFile = req.files; // Assuming you're using multer or similar for file upload
+
+  try {
+      // Update consultation solution in the database
+      const updatedFeedback = await feedbackModel.findOneAndUpdate(
+          { feedbackId: feedbackId},
+          updatedData,
+          { new: true } // Return the updated document
+      );
+
+      if (!updatedFeedback) {
+          return res.status(404).json({ error: "Feedback not found" });
+      }
+
+      // If there's a new file, delete the existing file from Firebase Storage (optional)
+      if (newFile) {
+          const existingFile = updatedFeedback.fileUrl;
+          if (existingFile) {
+              await fb_storage.bucket('/CAM/uploads').files(existingFile).delete();
+          }
+          
+          // Upload the new file to Firebase Storage
+          const bucketName = '/CAM/uploads';
+          const fileName = newFile.originalname;
+          const fileData = newFile.buffer;
+
+          const fileUploadResponse = await fb_storage.bucket(bucketName).files(fileName).save(fileData, {
+              metadata: {
+                  contentType: newFile.mimetype
+              }
+          });
+          const newFileUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
+
+          // Update consultation document with the new file URL
+          updatedFeedback.fileUrl = newFileUrl;
+          await updatedFeedback.save();
+      }
+
+      res.status(200).json(updatedFeedback);
+  } catch (error) {
+      console.error("Error updating consultation solution:", error);
+      res.status(500).json({ error: error.message });
+  }
+}
 
 static async deleteFeedbackById(req, res) {
   const { feedbackId } = req.params; // Extract user ID from request parameters

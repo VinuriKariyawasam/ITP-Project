@@ -56,6 +56,7 @@ const ConsultancyPage = ({ toggleLoading }) => {
 
 const fetchConsultationById = async () => {
   try{
+    toggleLoading(true);
     const response = await fetch(
       `${process.env.React_App_Backend_URL}/cam/consultation/get-consultid/${id}`
     );
@@ -69,6 +70,8 @@ const fetchConsultationById = async () => {
   }catch (error) {
     console.error("Error fetching consultation:", error);
     return null;
+  }finally {
+    toggleLoading(false); // Set loading to false after API call
   }
 };
 
@@ -111,6 +114,7 @@ const handleDeleteClick = () => {
 
 const handleConfirmDelete = async (consultId) => {
   try{
+    toggleLoading(true);
     const response = await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/delete-solutionbyid/${consultId}`,{
       method: "PUT",
       headers: {
@@ -130,6 +134,8 @@ const handleConfirmDelete = async (consultId) => {
   }catch (error) {
     console.error("Error deleting feedback:", error);
     // Handle error (e.g., display error message)
+  }finally {
+    toggleLoading(false); // Set loading to false after API call
   }
 };
 

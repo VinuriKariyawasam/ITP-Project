@@ -36,6 +36,7 @@ function SM({ toggleLoading }) {
 
       <Routes>
 
+
         <Route path="/" exact element={<SMmain toggleLoading={toggleLoading} />} />
         <Route path="appointmentmain/" element={<SMAppointmentMain toggleLoading={toggleLoading} />} />
         <Route path="periodicalappointment" exact element={<SMPeriodicalServices toggleLoading={toggleLoading}  />} />
@@ -45,11 +46,12 @@ function SM({ toggleLoading }) {
         <Route path="/mechanicalhistory" exact element={<Mechanicalhistory toggleLoading={toggleLoading} />} />
         <Route path="/accidentalappointment" exact element={<SMAccidentalRepairs toggleLoading={toggleLoading} />} />
         <Route path="/accidentalhistory" exact element={<AccidentalHistory toggleLoading={toggleLoading} />} />
+
         <Route path="record/*" element={<Smrecords />} />
-        <Route path="/mobilemain" element={<SMMobileMain/>} />
-        <Route path="/mobilemechanical" exact element={<SMmMechanicalServices/>} />
-        <Route path="/breakdownrequests" exact element={<SMmEmBreakdown/>} />
-        <Route path="/vehiclecarriers" exact element={<SMmVehicleCarriers/>} />
+        <Route path="/mobilemain" element={<SMMobileMain toggleLoading={toggleLoading}/>} />
+        <Route path="/mobilemechanical" exact element={<SMmMechanicalServices toggleLoading={toggleLoading}/>} />
+        <Route path="/breakdownrequests" exact element={<SMmEmBreakdown toggleLoading={toggleLoading}/>} />
+        <Route path="/vehiclecarriers" exact element={<SMmVehicleCarriers toggleLoading={toggleLoading}/>} />
         <Route path="quotation/*" element={<Smquotation/>} />
         <Route path="report/*" element={<Smreports/>} />
         <Route path="serviceReq/*" element={<SmSrequest/>} />

@@ -125,11 +125,13 @@ function CustomerApp({toggleLoading}) {
           <Route path="/products/*" element={<Products />} />
           <Route path="/appointment/*" element={<CUSAppointment toggleLoading={toggleLoading}/>} />
           <Route path="/payments/*" element={<Payment  toggleLoading={toggleLoading }/>} />
-          <Route path="/cusaffairs/*" element={<CUSAffairs toggleLoading={toggleLoading}/>} />
-          <Route path="/cusprofile/*" element={<CusProfile />} />
+
+          <Route path="/cusaffairs/*" element={<CUSAffairs toggleLoading={toggleLoading }/>} />
+          <Route path="/cusprofile/*" element={<CusProfile toggleLoading={toggleLoading }/>} />
+
           <Route path="/cusreg/*" element={<CusRegistration toggleLoading={toggleLoading}/>} />
           <Route path="/cuslogin/*" element={<CusLogin toggleLoading={toggleLoading}/>} />
-          <Route path="/mobservices/*" element={<MobileService />} />
+          <Route path="/mobservices/*" element={<MobileService toggleLoading={toggleLoading}/>} />
           <Route path="/contactus*" element={<Contactus />} />
           <Route path="/aboutus" element={<AboutUs />} />
         </Routes>

@@ -17,8 +17,9 @@ function StaffFooter() {
         Designed by <a href="#">OctagonIT Team</a>
       </div>
       <div className="credits">
-        IT Support:- <a href="#">+94 71 152 1161/+94 71 480 4203 </a>
-        <a href="#">teamoctagonit@gmail.com</a>
+        IT Support:-{" "}
+        <a href="tel:+94 71 152 1161">+94 71 152 1161/+94 71 480 4203 </a>
+        <a href="mailto:teamoctagonit@gmail.com">teamoctagonit@gmail.com</a>
       </div>
     </footer>
   );
