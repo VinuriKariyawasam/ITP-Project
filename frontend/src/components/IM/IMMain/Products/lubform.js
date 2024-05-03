@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "../../../../data/IM/form-hook";
 import InputGroup from 'react-bootstrap/InputGroup';
 
-const LubForm = () => {
+const LubForm = ({ toggleLoading }) => {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState("");
   const [fileError, setFileError] = useState("");
@@ -41,9 +41,10 @@ const LubForm = () => {
 
   const lubSubmitHandler = async (event) => {
     event.preventDefault();
+    toggleLoading(true);
     const imgData = new FormData();
     imgData.append("image", formState.inputs.image.value);
-    axios.post("http://localhost:5000/Product/imgupload", imgData)
+    axios.post(`${process.env.React_App_Backend_URL}/Product/imgupload`, imgData)
     .then((res) => {
       const Url = res.data.downloadURL
       console.log(Url)
@@ -56,7 +57,7 @@ const LubForm = () => {
      image: Url
       }
       const response = axios.post(
-        "http://localhost:5000/Product/addlubricant",
+        `${process.env.React_App_Backend_URL}/Product/addlubricant`,
         formData
       );
 
@@ -68,6 +69,8 @@ const LubForm = () => {
     }})
     .catch((err) => {
       alert("error");
+    }).finally(() => {
+      toggleLoading(false);
     });
   };
   useEffect(() => {
@@ -134,9 +137,11 @@ const LubForm = () => {
               type="number"
               placeholder="Enter quantity"
               min="1"
-              onInput={(event) =>
-                inputHandler("quantity", event.target.value, true)
-              }
+              onInput={(event) =>{
+                let input = event.target.value.replace(/[^\d]/g, ''); // Remove non-digit characters
+                event.target.value = input;
+                inputHandler("quantity", input, true);
+              }}
               required
             />
           </Form.Group>
@@ -150,9 +155,11 @@ const LubForm = () => {
               type="number"
               placeholder="Enter unit price"
               min="1"
-              onInput={(event) =>
-                inputHandler("unit_price", event.target.value, true)
-              }
+              onInput={(event) =>{
+                let input = event.target.value.replace(/[^\d]/g, ''); // Remove non-digit characters
+              event.target.value = input;
+                inputHandler("unit_price", input, true)
+              }}
               required
             />
             </InputGroup>

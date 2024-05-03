@@ -1,7 +1,6 @@
 // Import necessary modules
-import React, { useState, useCallback, useEffect,useContext } from "react";
+import React, { useState, useCallback, useEffect, useContext } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
 
 // Import components and context
 import Header from "../src/components/CUS/CusHeader/Header";
@@ -19,9 +18,6 @@ import { CusAuthContext } from "./context/cus-authcontext";
 import Contactus from "./components/CUS/CUSMain/ContactUs";
 import AboutUs from "./components/CUS/Pages/CUSAboutUs";
 
-
-
-
 // Import Bootstrap CSS and icons
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -30,8 +26,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 let logoutTimer;
 // Main component
 
-function CustomerApp({toggleLoading}) {
-
+function CustomerApp({ toggleLoading }) {
   // Define state variables
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState(null);
@@ -41,18 +36,18 @@ function CustomerApp({toggleLoading}) {
   const [tokenExpirationDate, setTokenExpirationDate] = useState();
 
   // Define login and logout functions
-  const login = useCallback((userId,email,name,token,expirationDate) => {
+  const login = useCallback((userId, email, name, token, expirationDate) => {
     setIsLoggedIn(true);
-    setEmail(email)
+    setEmail(email);
     setUserId(userId);
     setName(name);
     setToken(token);
-    
+
     const tokenExpirationDate =
       expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
-      setTokenExpirationDate(tokenExpirationDate);
+    setTokenExpirationDate(tokenExpirationDate);
     localStorage.setItem(
-      'userData',
+      "userData",
       JSON.stringify({
         userId: userId,
         name: name,
@@ -70,29 +65,29 @@ function CustomerApp({toggleLoading}) {
     setName(null);
     setToken(null);
     setTokenExpirationDate(null);
-    localStorage.removeItem('userData');
+    localStorage.removeItem("userData");
   }, []);
 
   // Check for authentication data in localStorage on component mount
-  useEffect(()=>{
-    if(token && tokenExpirationDate){
-      const remainingTime=tokenExpirationDate.getTime()-new Date().getTime();
-      logoutTimer=setTimeout(logout,remainingTime)
-    }
-    else{
+  useEffect(() => {
+    if (token && tokenExpirationDate) {
+      const remainingTime =
+        tokenExpirationDate.getTime() - new Date().getTime();
+      logoutTimer = setTimeout(logout, remainingTime);
+    } else {
       clearTimeout(logoutTimer);
     }
-  },[token,logout,tokenExpirationDate]);
+  }, [token, logout, tokenExpirationDate]);
 
-  useEffect(()=>{
-    if(token && tokenExpirationDate){
-      const remainingTime=tokenExpirationDate.getTime()-new Date().getTime();
-      logoutTimer=setTimeout(logout,remainingTime)
-    }
-    else{
+  useEffect(() => {
+    if (token && tokenExpirationDate) {
+      const remainingTime =
+        tokenExpirationDate.getTime() - new Date().getTime();
+      logoutTimer = setTimeout(logout, remainingTime);
+    } else {
       clearTimeout(logoutTimer);
     }
-  },[token,logout,tokenExpirationDate]);
+  }, [token, logout, tokenExpirationDate]);
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("userData"));
@@ -101,43 +96,71 @@ function CustomerApp({toggleLoading}) {
       storedData.token &&
       new Date(storedData.expiration) > new Date()
     ) {
-      login(storedData.email, storedData.userId,storedData.name,storedData.token,new Date(storedData.expiration));
+      login(
+        storedData.email,
+        storedData.userId,
+        storedData.name,
+        storedData.token,
+        new Date(storedData.expiration)
+      );
     }
   }, [login]);
   // Define routes
   return (
-   
-      <CusAuthContext.Provider
-        value={{
-          isLoggedIn:!!token,
-          token: token,
-          userId: userId,
-          name: name,
-          email: email,
-          login: login,
-          logout: logout
-        }}
-      >
-        <Header />
-        <Routes>
-
-          <Route path="/" element={<Cushome  toggleLoading={toggleLoading}/>} />
-          <Route path="/products/*" element={<Products />} />
-          <Route path="/appointment/*" element={<CUSAppointment toggleLoading={toggleLoading}/>} />
-          <Route path="/payments/*" element={<Payment  toggleLoading={toggleLoading }/>} />
-
-          <Route path="/cusaffairs/*" element={<CUSAffairs toggleLoading={toggleLoading }/>} />
-          <Route path="/cusprofile/*" element={<CusProfile toggleLoading={toggleLoading }/>} />
-
-          <Route path="/cusreg/*" element={<CusRegistration toggleLoading={toggleLoading}/>} />
-          <Route path="/cuslogin/*" element={<CusLogin toggleLoading={toggleLoading}/>} />
-          <Route path="/mobservices/*" element={<MobileService toggleLoading={toggleLoading}/>} />
-          <Route path="/contactus*" element={<Contactus />} />
-          <Route path="/aboutus" element={<AboutUs />} />
-        </Routes>
-        <CusFooter />
-      </CusAuthContext.Provider>
-   
+    <CusAuthContext.Provider
+      value={{
+        isLoggedIn: !!token,
+        token: token,
+        userId: userId,
+        name: name,
+        email: email,
+        login: login,
+        logout: logout,
+      }}
+    >
+      <Header />
+      <Routes>
+        <Route path="/" element={<Cushome toggleLoading={toggleLoading} />} />
+        <Route
+          path="/products/*"
+          element={<Products toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="/appointment/*"
+          element={<CUSAppointment toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="/payments/*"
+          element={<Payment toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="/cusaffairs/*"
+          element={<CUSAffairs toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="/cusprofile/*"
+          element={<CusProfile toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="/cusreg/*"
+          element={<CusRegistration toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="/cuslogin/*"
+          element={<CusLogin toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="/mobservices/*"
+          element={<MobileService toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="/contactus*"
+          element={<Contactus toggleLoading={toggleLoading} />}
+        />
+        <Route path="/aboutus" element={<AboutUs />} />
+      </Routes>
+      <CusFooter />
+    </CusAuthContext.Provider>
   );
 }
 

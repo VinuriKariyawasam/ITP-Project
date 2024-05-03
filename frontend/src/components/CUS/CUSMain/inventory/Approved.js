@@ -6,8 +6,9 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 import Badge from 'react-bootstrap/Badge'
+import { Link } from 'react-router-dom';
 
-function Sptable2() {
+function Sptable2({ toggleLoading }) {
     const [selectedOrder, setSelectedOrder] = useState(null);
     const cusauth = useContext(CusAuthContext); 
     const [showModal, setShowModal] = useState(false);
@@ -15,13 +16,16 @@ function Sptable2() {
     const email = cusauth.email;
     useEffect(() => {
         function getapprovedSpareparts() {
+          toggleLoading(true);
           axios
-            .get("http://localhost:5000/Product/approvedsp")
+            .get(`${process.env.React_App_Backend_URL}/Product/approvedsp`)
             .then((res) => {
               setapprovedSpareParts(res.data);
             })
             .catch((err) => {
               alert("error");
+            }).finally(() => {
+              toggleLoading(false);
             });
         }
         getapprovedSpareparts();
@@ -82,7 +86,9 @@ function Sptable2() {
         <p>Total: Rs.{selectedOrder?.total}</p>
       </Modal.Body>
       <Modal.Footer>
+        <Link to="/customer/payments/payonline">
       <Button variant="primary">Pay</Button>
+      </Link>
       </Modal.Footer>
     </Modal>
 </div>

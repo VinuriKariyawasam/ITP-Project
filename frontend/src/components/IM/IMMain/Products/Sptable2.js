@@ -14,7 +14,7 @@ function Sptable2() {
     useEffect(() => {
         function getapprovedSpareparts() {
           axios
-            .get("http://localhost:5000/Product/approvedsp")
+            .get(`${process.env.React_App_Backend_URL}/Product/approvedsp`)
             .then((res) => {
               setapprovedSpareParts(res.data);
             })

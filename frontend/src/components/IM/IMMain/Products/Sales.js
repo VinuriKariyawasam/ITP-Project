@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import Modal from 'react-bootstrap/Modal';
 
-function Sales() {
+function Sales({ toggleLoading }) {
 const [key, setKey] = useState('pending');
 const [pendingorder, setpendingorder] = useState([]); 
 const [completedorder, setcompletedorder] = useState([]); 
@@ -18,29 +18,37 @@ const [showModal, setShowModal] = useState(false);
 const [searchDate, setSearchDate] = useState('');
 
 useEffect(() => {
-    function getpendingorder() {
-      axios
-        .get("http://localhost:5000/Product/getorderpending")
-        .then((res) => {
-          setpendingorder(res.data);
-        })
-        .catch((err) => {
-          alert("error");
-        });
-    }
-    getpendingorder();
-  }, []);
+  function getpendingorder() {
+    toggleLoading(true);
+    axios
+      .get(`${process.env.React_App_Backend_URL}/Product/getorderpending`)
+      .then((res) => {
+        setpendingorder(res.data);
+      })
+      .catch((err) => {
+        alert("error");
+      })
+      .finally(() => {
+        toggleLoading(false);
+      });
+  }
+  getpendingorder();
+}, []);
 
   useEffect(() => {
     function getcompletedorder() {
+        toggleLoading(true);
       axios
-        .get("http://localhost:5000/Product/getordercompleted")
+        .get(`${process.env.React_App_Backend_URL}/Product/getordercompleted`)
         .then((res) => {
           setcompletedorder(res.data);
         })
         .catch((err) => {
           alert("error");
+        }).finally(() => {
+          toggleLoading(false);
         });
+        
     }
     getcompletedorder();
   }, []);
@@ -115,7 +123,7 @@ return (
     <tr>
       <th>OrderID</th>
       <th>Date</th>
-      <th>Total</th>
+      <th>Total Rs.</th>
       <th>Status</th>
       <th>Details</th>
     </tr>
@@ -169,7 +177,7 @@ return (
       <tr>
         <th>OrderID</th>
         <th>Date</th>
-        <th>Total</th>
+        <th>Total Rs.</th>
         <th>Status</th>
         <th>Details</th>
       </tr>
