@@ -6,7 +6,7 @@ import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
 import FileUpload from "../SuperUtil/SuperFileUpload";
 
-function AddServiceReq() {
+function AddServiceReq({ toggleLoading }) {
   const [formData, setFormData] = useState({
     vehicleNo: "",
     date: null,
@@ -26,14 +26,20 @@ function AddServiceReq() {
 
     // Validate each field as it's being typed
     switch (name) {
-      case "vehicleNo":
-      errorMessage =
-        value.trim().length === 0 || value.trim().length > 10
-          ? "Vehicle No. is required and must be at most 10 characters"
-          : !/^[A-Z\u0DC1\u0DCA\u200D\u0DBB\u0DD3\d]+$/.test(value)
-          ? "Vehicle No. must contain only capital letters, Sinhala word 'ශ්‍රී', or numbers"
-          : "";
-      break;
+      // handleChange function
+case "vehicleNo":
+  errorMessage =
+    value.trim().length === 0 || value.trim().length > 10
+      ? "Vehicle No. is required and must be at most 10 characters"
+      : !/^[A-Z\u0DC1\u0DCA\u200D\u0DBB\u0DD3\d]+$/.test(value)
+      ? "Vehicle No. must contain only capital letters, Sinhala word 'ශ්‍රී', or numbers"
+      : value.trim().length > 1 && value.trim().startsWith("ශ්‍රී")
+      ? "ශ්‍රී can only be added after the first character"
+      : !/^[A-Z\d]*$/.test(value)
+      ? "Vehicle No. must contain only numbers"
+      : "";
+  break;
+
       case "date":
         errorMessage = !value ? "Date is required" : "";
         break;
@@ -79,6 +85,7 @@ function AddServiceReq() {
     e.preventDefault();
     if (validateForm()) {
       try {
+        toggleLoading(true); // Set loading to true before API call
         const formDataToSend = new FormData();
         formDataToSend.append("vehicleNo", formData.vehicleNo);
         formDataToSend.append("date", formData.date.toISOString());
@@ -87,7 +94,7 @@ function AddServiceReq() {
         formDataToSend.append("request", formData.request);
         formDataToSend.append("report", formData.report);
         formDataToSend.append("reportFileName", formData.report.name);
-        const response = await fetch("http://localhost:5000/api/vehicle/add-serviceReq", {
+        const response = await fetch(`${process.env.React_App_Backend_URL}/api/vehicle/add-serviceReq`, {
           method: "POST",
           body: formDataToSend,
         });
@@ -101,6 +108,8 @@ function AddServiceReq() {
         }
       } catch (error) {
         console.error("Error creating service request:", error);
+      }finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     }
   };
@@ -139,12 +148,28 @@ function AddServiceReq() {
   };
   
   const handleAddSri = () => {
-    const updatedVehicleNo = formData.vehicleNo + "ශ්‍රී"; // Add "ශ්‍රී" to the end of the vehicle number
-    setFormData(prevFormData => ({
+    const trimmedValue = formData.vehicleNo.trim();
+    // Check if the vehicle number is empty or starts with "ශ්‍රී"
+    if (trimmedValue.length === 0 || trimmedValue.startsWith("ශ්‍රී")) {
+      return; // Exit function if the conditions are met
+    }
+  
+    // Validate the vehicle number to ensure it starts with a number and contains only numbers
+    if (!/^\d+$/.test(trimmedValue)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        vehicleNo: "Vehicle No. must start with a number and contain only numbers",
+      }));
+      return; // Exit function if validation fails
+    }
+  
+    // If all conditions are met, add "ශ්‍රී" to the vehicle number
+    setFormData((prevFormData) => ({
       ...prevFormData,
-      vehicleNo: updatedVehicleNo
+      vehicleNo: trimmedValue + "ශ්‍රී",
     }));
   };
+  
   
 
   const handleCalendarIconClick = () => {

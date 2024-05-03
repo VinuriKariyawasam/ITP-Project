@@ -13,7 +13,7 @@ import cusimage1 from '../../../../src/images/CUS/CustomerImg/cusimage1.png';
 import cusimage2 from '../../../../src/images/CUS/CustomerImg/cusimage2.jpg';
 import cusimage3 from '../../../../src/images/CUS/CustomerImg/cusimage3.jpg';
 
-function CusLogin(){
+function CusLogin({ toggleLoading }){
   const navigate = useNavigate();
   const cusauth = useContext(CusAuthContext);
   const [formData, setFormData] = useState({
@@ -23,9 +23,12 @@ function CusLogin(){
 
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
+  const cusreg_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusreg`;
  
   function CustomerLogin(e){
     e.preventDefault();
+    try{
+      toggleLoading(true);
 
     const loginCustomer = {
       email,
@@ -37,7 +40,8 @@ function CusLogin(){
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(loginCustomer)
     };
-    fetch('http://localhost:5000/api/customer/cus-login', requestOptions)
+   
+    fetch(`${process.env.React_App_Backend_URL}/api/customer/cus-login`, requestOptions)
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -50,10 +54,17 @@ function CusLogin(){
       cusauth.login(data.userId,data.email,data.name,data.token);
       navigate("/customer");
     })
-    .catch(error => {
+  .catch(error => {
       alert('Error:', error.message);
-    });
+    })
+  .finally (() => {
+    toggleLoading(false); // Set loading to false after API call completes
+  });
+}catch (error) {
+    alert('Error:', error.message);
+    toggleLoading(false); // Set loading to false in case of an error
   }
+}
     return(
         <div>
         <main id="main" style={{marginLeft:"20px",marginTop:"1px"}}>
@@ -91,7 +102,7 @@ function CusLogin(){
                   Sign In
             </Button>
             <p style={{marginTop:"30px"}}><center>Don't have an account? 
-            <a href="http://localhost:3000/customer/cusreg" class="link-info"> Sign up</a></center></p>
+            <a href= {cusreg_frontendurl} class="link-info"> Sign up</a></center></p>
             </Card.Body>
              </Card>
               </Form>

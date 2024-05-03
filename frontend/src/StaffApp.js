@@ -87,7 +87,7 @@ function StaffApp({ toggleLoading }) {
         )}
 
         {userPosition === "Supervisor" || userPosition === "General Manager" ? (
-          <Route path="/supervisor/*" element={<SUPER />} />
+          <Route path="/supervisor/*" element={<SUPER toggleLoading={toggleLoading}/>} />
         ) : (
           <Route path="/supervisor/*" element={<RestrictedPage />} />
         )}
