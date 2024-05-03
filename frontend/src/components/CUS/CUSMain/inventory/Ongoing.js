@@ -16,7 +16,7 @@ function Ongoing() {
     useEffect(() => {
       function getapprovedSpareparts() {
         axios
-          .get("http://localhost:5000/Product/ongoingsp")
+          .get(`${process.env.React_App_Backend_URL}/Product/ongoingsp`)
           .then((res) => {
             setapprovedSpareParts(res.data);
           })

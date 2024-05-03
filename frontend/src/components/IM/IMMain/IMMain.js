@@ -10,7 +10,7 @@ import axios from "axios";
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
-function IMMain() {
+function IMMain({ toggleLoading }) {
 
   const [Quantity, setQuantity] = useState([]);
   const [selectedproduct, setproduct] = useState([])
@@ -19,14 +19,17 @@ function IMMain() {
 
   useEffect(() => {
     function getQuantity() {
+      toggleLoading(true);
       axios
-        .get(`http://localhost:5000/Product/getquantity`)
+        .get(`${process.env.React_App_Backend_URL}/Product/getquantity`)
         .then((res) => {
           setQuantity(res.data);
           console.log(res.data)
         })
         .catch((err) => {
           alert("error");
+        }).finally(() => {
+          toggleLoading(false);
         });
     }
     getQuantity();
@@ -41,28 +44,29 @@ function IMMain() {
   const handleButtonClick = (item) => {
     setShowModal(true);
     setproduct(item)
-
-        axios.delete(`http://localhost:5000/Product/deletequantity/${item._id}`)
+        axios.delete(`${process.env.React_App_Backend_URL}/Product/deletequantity/${item._id}`)
               .then((response) => {
                 console.log(response);
               })
               .catch((error) => {
                 console.error(error);
-              });
+              })
   };
 
   const handleAddQuantity = (up) => {
+   
     if (up > 0) {
       console.log("Adding quantity:", up);
     } else {
       console.error("Quantity must be greater than 0.");
     }
+    toggleLoading(true);
     if (selectedproduct) {
       const type = selectedproduct.Product_type
       const name = selectedproduct.Product_name
     if(type == "lubricant"){
 
-      axios.get(`http://localhost:5000/Product/lubricantstock`)
+      axios.get(`${process.env.React_App_Backend_URL}/Product/lubricantstock`)
         .then((res) => {
           const lubricant = (res.data)
           const lubricanttoupdate = lubricant.find((product) => product.Product_name === name);
@@ -79,7 +83,7 @@ function IMMain() {
             image: lubricanttoupdate.image, 
           }
           axios
-      .put(`http://localhost:5000/Product/updatelubricant/${pastItemId}`, upproduct)
+      .put(`${process.env.React_App_Backend_URL}/Product/updatelubricant/${pastItemId}`, upproduct)
       .then((response) => {
         console.log(response);
         window.location.reload();
@@ -90,7 +94,7 @@ function IMMain() {
 
     })}else if(type == "tire"){
       axios
-      .get(`http://localhost:5000/Product/Tirestock`)
+      .get(`${process.env.React_App_Backend_URL}/Product/Tirestock`)
       .then((res) => {
         const tire = (res.data)
         const tiretoupdate = tire.find((product) => product.Product_name === name);
@@ -110,13 +114,15 @@ function IMMain() {
         }
           console.log("complete",upproduct)
         axios
-      .put(`http://localhost:5000/Product/updateTire/${pastItemId}`, upproduct)
+      .put(`${process.env.React_App_Backend_URL}/Product/updateTire/${pastItemId}`, upproduct)
       .then((response) => {
         console.log(response);
         window.location.reload();
       })
       .catch((error) => {
         console.error(error);
+      }).finally(() => {
+        toggleLoading(false);
       });
       })
     }
@@ -132,7 +138,7 @@ function IMMain() {
   return (
     <main id="main" className="main">
       <ImPageTitle title="Inventory Manager Dashboard" url="/staff/im" />
-      <IMDashboard />
+      <IMDashboard toggleLoading={toggleLoading}/>
       <br />
       <h2>Stocks running low</h2>
         <Card >

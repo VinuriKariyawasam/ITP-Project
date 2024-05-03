@@ -7,7 +7,7 @@ import Modal from 'react-bootstrap/Modal';
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 import Badge from 'react-bootstrap/Badge';
 
-function Notapproved() {
+function Notapproved({ toggleLoading }) {
   const cusauth = useContext(CusAuthContext); 
   const [SpareParts, setSpareparts] = useState([]); 
     const [selectedOrder, setSelectedOrder] = useState(null);
@@ -15,13 +15,16 @@ function Notapproved() {
   const email = cusauth.email;
     useEffect(() => {
         function getSpareparts() {
+          toggleLoading(true);
           axios
-            .get("http://localhost:5000/Product/pendingsp")
+            .get(`${process.env.React_App_Backend_URL}/Product/pendingsp`)
             .then((res) => {
               setSpareparts(res.data);
             })
             .catch((err) => {
               alert("error");
+            }).finally(() => {
+              toggleLoading(false);
             });
         }
         getSpareparts();
@@ -33,8 +36,9 @@ function Notapproved() {
         console.log(image)
         const shouldDelete = window.confirm('Confirm Remove');
         if (shouldDelete) {
+          toggleLoading(true);
               axios
-                .delete(`http://localhost:5000/Product/deletependingsp/${id}`, { data: { image } })
+                .delete(`${process.env.React_App_Backend_URL}/Product/deletependingsp/${id}`, { data: { image } })
                 .then((response) => {
                   console.log(response);
                   setShowModal(false); 
@@ -42,7 +46,9 @@ function Notapproved() {
                 })
                 .catch((error) => {
                   console.error(error);
-                })
+                }).finally(() => {
+                  toggleLoading(false);
+                });
         }
       }
 

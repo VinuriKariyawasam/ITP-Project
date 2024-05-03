@@ -27,7 +27,7 @@ function IM({ toggleLoading }) {
       <Header/>
       <IMSideBar />
       <Routes>
-        <Route path="/*" element={<IMMain />} />
+        <Route path="/*" element={<IMMain toggleLoading={toggleLoading}/>} />
         <Route path="/lubricants/*" element={<Lubricants toggleLoading={toggleLoading}/>} />
         <Route path="lubricants/addproduct/" element={<Addlubricant toggleLoading={toggleLoading}/>} />
         <Route path="/Tires/*" element={<Tires toggleLoading={toggleLoading}/>} />
