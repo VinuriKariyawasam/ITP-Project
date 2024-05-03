@@ -45,4 +45,6 @@ router.get("/records/count", RecordController.getRecordCount);
 // Route to get count of all quotations
 router.get("/quotations/count", quotationController.getQuotationCount);
 
+
+
 module.exports = router;

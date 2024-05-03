@@ -77,6 +77,7 @@ function StaffApp({ toggleLoading }) {
 
           <Route path="/sm/*" element={<SM toggleLoading={toggleLoading}/>} />
 
+
         ) : (
           <Route path="/sm/*" element={<RestrictedPage />} />
         )}

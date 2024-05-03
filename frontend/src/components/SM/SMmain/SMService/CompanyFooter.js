@@ -36,7 +36,7 @@ const CompanyFooter = () => {
             <div className="finance-manager" style={signatureStyle}>
               {/* Signature */}
               <h4>.....................................</h4>
-              <h4><b>Finance Manager</b></h4>
+              <h4><b>Supervisor</b></h4>
               {/* Space */}
             </div>
           </Col>

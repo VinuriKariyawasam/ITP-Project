@@ -27,11 +27,12 @@ function SUPERVISOR({ toggleLoading }) {
         <Route path="/" element={<SuperMain toggleLoading={toggleLoading}/>} />
         <Route path="vehicle/*" element={<SuperVehicle toggleLoading={toggleLoading}/>} />
         <Route path="serviceReq/*" element={<SuperServiceReq toggleLoading={toggleLoading}/>} />
-        <Route path="jobs/*" element={<Sujob/>} />
+        <Route path="jobs/*" element={<Sujob toggleLoading={toggleLoading}/>} />
         <Route path="products/*" element={<SuperProducts toggleLoading={toggleLoading}/>} />
         <Route path="shedules/*" element={<Shedules toggleLoading={toggleLoading}/>} />
         <Route path="records/*" element={<SuperRecords toggleLoading={toggleLoading}/>} />
         <Route path="quotation/*" element={<SuperQuotation toggleLoading={toggleLoading}/>} />
+
 
       </Routes>
    

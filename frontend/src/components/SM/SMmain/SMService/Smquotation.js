@@ -14,15 +14,15 @@ import {
 } from "react-router-dom";
 import RecDash from "./RecDash";
 
-function Smrecords() {
+function Smrecords({ toggleLoading }) {
   return (
     <main id="main" className="main">
       
       
 
       <Routes>
-       <Route path="/" element={<QuotaDash/>} />
-        <Route path="/add" element={<Addquotation/>} />
+       <Route path="/" element={<QuotaDash toggleLoading={toggleLoading}/>} />
+        <Route path="/add" element={<Addquotation toggleLoading={toggleLoading}/>} />
         
       </Routes>
     </main>

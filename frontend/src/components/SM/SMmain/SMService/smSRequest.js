@@ -12,14 +12,14 @@ import {
 } from "react-router-dom";
 
 
-function SmSrequest() {
+function SmSrequest({toggleLoading}) {
   return (
     <main id="main" className="main">
       
       
 
       <Routes>
-        <Route path="/" element ={<ServiceReqDash/>}/>
+        <Route path="/" element ={<ServiceReqDash toggleLoading={toggleLoading}/>}/>
       </Routes>
     </main>
   );

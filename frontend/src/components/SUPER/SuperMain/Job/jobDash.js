@@ -9,14 +9,15 @@ function formatDateFromISO(isoDateString) {
   return date.toISOString().split('T')[0];
 }
 
-const JobDash = () => {
+const JobDash = ({ toggleLoading }) => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/sm/jobs');
+        toggleLoading(true);
+        const response = await fetch(`${process.env.React_App_Backend_URL}/api/sm/jobs`);
         if (response.ok) {
           const data = await response.json();
           console.log('Received jobs data:', data);
@@ -28,6 +29,9 @@ const JobDash = () => {
       } catch (error) {
         console.error('Error fetching jobs:', error);
       }
+      finally{
+        toggleLoading(false);
+      }
     };
 
     fetchJobs();
@@ -35,7 +39,8 @@ const JobDash = () => {
 
   const fetchTechnicianName = async (technicianId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/hr/employee/${technicianId}`);
+      toggleLoading(true);
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/hr/employee/${technicianId}`);
       if (response.ok) {
         const data = await response.json();
         return `${data.firstName} ${data.lastName}`;
@@ -45,6 +50,9 @@ const JobDash = () => {
     } catch (error) {
       console.error('Error fetching technician:', error);
       return 'Unknown Technician';
+    }
+    finally{
+      toggleLoading(false);
     }
   };
 

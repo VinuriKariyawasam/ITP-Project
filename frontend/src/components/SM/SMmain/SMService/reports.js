@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 
-function Report() {
+function Report( {toggleLoading}) {
     const navigate = useNavigate();
   const [selectedStartDate, setSelectedStartDate] = useState(new Date());
   const [selectedEndDate, setSelectedEndDate] = useState(new Date());
@@ -105,7 +105,8 @@ function Report() {
     };
   
     try {
-      const response = await fetch("http://localhost:5000/api/sm/reports", {
+      toggleLoading(true);
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/sm/reports`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,6 +127,9 @@ function Report() {
     } catch (error) {
       console.error('Error submitting report:', error);
       // Handle error (e.g., show error message to user)
+    }
+    finally{
+      toggleLoading(false);
     }
   };
   
