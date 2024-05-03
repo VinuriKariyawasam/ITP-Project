@@ -125,7 +125,7 @@ function AddEmp({ toggleLoading }) {
         };
 
         // Send a fetch request to the backend controller for sending email
-        await fetch(`${process.env.React_App_Backend_URL}/api/finance/email`, {
+        await fetch(`${process.env.React_App_Backend_URL}/api/hr/email`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

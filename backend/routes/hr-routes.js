@@ -11,7 +11,7 @@ router.use(bodyParser.json());
 //const StaffCheckAuth = require("../config/auth/staff-check-auth");
 //const NoPayHandler = require("../controllers/hr/noPayHandler");
 const NoPayController = require("../controllers/hr/noPay-controller");
-
+const { sendMail } = require("../config/hrnodemailer");
 const multer = require("multer");
 
 // Set up multer for handling file uploads
@@ -283,5 +283,9 @@ router.get("/nopaylogs/today", NoPayController.getLogsForToday);
 
 // Route to get all records
 router.get("/allnopaylogs", NoPayController.getAllRecords);
+
+//email route
+
+router.post("/email", sendMail);
 
 module.exports = router;

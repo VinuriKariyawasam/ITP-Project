@@ -56,32 +56,34 @@ const AttendanceRecordsTable = ({
 
   //render table rows with data
   const renderTableRows = () => {
-    return filteredTableData.map((record) => {
-      return (
-        <tr key={record._id}>
-          <td>
-            <div>Date: {new Date(record.date).toLocaleDateString()}</div>
-            <div>Time: {new Date(record.date).toLocaleTimeString()}</div>
-          </td>
-          <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-            {record.employeeAttendance.filter((emp) => emp.value).length}
-          </td>
-          <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-            {record.employeeAttendance.filter((emp) => !emp.value).length}
-          </td>
-          <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-            <Button
-              onClick={() => handleShowAttendance(record.employeeAttendance)}
-            >
-              View
-            </Button>
-          </td>
-          <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-            {calculateAttendancePercentage(record.employeeAttendance)}
-          </td>
-        </tr>
-      );
-    });
+    return filteredTableData
+      .filter((record) => dateFilter(record.date))
+      .map((record) => {
+        return (
+          <tr key={record._id}>
+            <td>
+              <div>Date: {new Date(record.date).toLocaleDateString()}</div>
+              <div>Time: {new Date(record.date).toLocaleTimeString()}</div>
+            </td>
+            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+              {record.employeeAttendance.filter((emp) => emp.value).length}
+            </td>
+            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+              {record.employeeAttendance.filter((emp) => !emp.value).length}
+            </td>
+            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+              <Button
+                onClick={() => handleShowAttendance(record.employeeAttendance)}
+              >
+                View
+              </Button>
+            </td>
+            <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+              {calculateAttendancePercentage(record.employeeAttendance)}
+            </td>
+          </tr>
+        );
+      });
   };
   const calculateAttendancePercentage = (employeeAttendance) => {
     const totalCount = employeeAttendance.length;
@@ -153,48 +155,6 @@ const AttendanceRecordsTable = ({
       jsPDF: { unit: "in", format: "letter", orientation: "landscape" }, // Set orientation to landscape
     };
 
-    // Generate table rows dynamically based on the current state of table data
-    const tableRows = filteredTableData
-      .filter((record) => dateFilter(record.date))
-      .map((record) => {
-        const attendanceRows = record.employeeAttendance
-          .map((emp) => {
-            return `
-          <tr>
-            <td>${emp.empId}</td>
-            <td>${emp.name}</td>
-            <td>${emp.value ? "Present" : "Absent"}</td>
-          </tr>
-        `;
-          })
-          .join("");
-
-        return `
-        <tr>
-          <td>${new Date(record.date).toLocaleDateString()}</td>
-          <td>${new Date(record.date).toLocaleTimeString()}</td>
-          <td>${presentCount}</td>
-          <td>${absentCount}</td>
-          <td>${calculateAttendancePercentage(record.employeeAttendance)}</td>
-          <td>
-            <table>
-              <thead>
-                <tr>
-                  <th>EmpId</th>
-                  <th>Name</th>
-                  <th>Attendance</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${attendanceRows}
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      `;
-      })
-      .join("");
-
     // Generate PDF content with table rows and other details
     const content = `
     <div style="margin: 5px;">
@@ -227,7 +187,7 @@ const AttendanceRecordsTable = ({
           </tr>
         </thead>
         <tbody>
-          ${tableRows}
+          ${renderTableRows}
         </tbody>
       </table>
       <p style="text-align: right; margin-top: 20px;">Authorized By: ${userPosition}</p>

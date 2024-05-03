@@ -249,23 +249,45 @@ function HrDashboard({ toggleLoading }) {
             title="Total Employees"
             value={employeesCount}
             iconClass="bi-people-fill"
+            link="/staff/hr/employee"
           />
           <DbCard
             title="Total Leaves"
             value={todayLeavesCount}
             iconClass="bi-calendar-x"
             duration="Today"
+            link="/staff/hr/leaves"
           />
           <DbCard
             title="Total Salaries"
             value={totalSalary}
             iconClass="bi-coin"
             duration="Monthly"
+            link="/staff/hr/salary"
           />
         </div>
       </div>
 
-      <Row style={{ marginTop: "5%" }}>
+      {attendanceData.length > 0 ? null : (
+        <Row>
+          <div className="d-flex align-items-center">
+            <h4 style={{ marginRight: "1%" }}>
+              <Badge bg="warning">Attendance</Badge>
+            </h4>
+
+            <h4 style={{ color: "blue" }}>
+              Today attendance is not taken yet.Please take the attendance.
+            </h4>
+            <Link to="/staff/hr/attendance" style={{ marginLeft: "1%" }}>
+              <Button variant="dark" size="sm">
+                Take Attendance
+              </Button>
+            </Link>
+          </div>
+        </Row>
+      )}
+
+      <Row style={{ marginTop: "3%" }}>
         <Col md={6}>
           <div>
             <h3>Attendance Percentage of last 7 days</h3>
@@ -371,10 +393,21 @@ function HrDashboard({ toggleLoading }) {
                 border: "1px solid black",
               }}
             >
-              <h5>Attendance not taken for today yet.</h5>
-              <Link to="/staff/hr/attendance">
-                <button>Go to Attendance</button>
-              </Link>
+              <div className="d-flex align-items-center">
+                <h4 style={{ marginRight: "1%" }}>
+                  <Badge bg="warning">Attendance</Badge>
+                </h4>
+
+                <h4 style={{ color: "blue" }}>
+                  No attendance today.Visit the attendance page to take
+                  attendance.
+                </h4>
+                <Link to="/staff/hr/attendance" style={{ marginLeft: "1%" }}>
+                  <Button variant="dark" size="sm">
+                    Attendance
+                  </Button>
+                </Link>
+              </div>
             </Card.Body>
           </Card>
         )}

@@ -136,7 +136,9 @@ const StaffLogin = ({ toggleLoading }) => {
             </Card.Body>
             <Card.Footer>
               <p className="forgot-password text-right">
-                <a href="mailto:neotechmotorssl@gmail.com">Forgot password?</a>
+                <a href="mailto:hr.neotechmotorssl@gmail.com">
+                  Forgot password?
+                </a>
               </p>
             </Card.Footer>
           </Card>
