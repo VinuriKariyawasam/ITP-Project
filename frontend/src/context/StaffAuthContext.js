@@ -22,10 +22,23 @@ export const StaffAuthProvider = ({ children }) => {
   });
 
   const login = (userId, token, userPosition) => {
-    setAuthState({ isLoggedIn: true, userId, userPosition, token });
+    const timestamp = Date.now(); // Capture current timestamp
+    setAuthState({
+      isLoggedIn: true,
+      userId,
+      userPosition,
+      token,
+      timestamp, // Store timestamp along with other auth data
+    });
     localStorage.setItem(
       "auth",
-      JSON.stringify({ isLoggedIn: true, userId, userPosition, token })
+      JSON.stringify({
+        isLoggedIn: true,
+        userId,
+        userPosition,
+        token,
+        timestamp,
+      })
     );
     startLogoutTimer();
   };
@@ -36,10 +49,11 @@ export const StaffAuthProvider = ({ children }) => {
       userId: null,
       userPosition: null,
       token: null,
+      timestamp: null, // Clear timestamp when logging out
     });
     localStorage.removeItem("auth");
     clearLogoutTimer();
-    navigate("/staff/login"); // Redirect to login page
+    navigate("/staff/login");
   };
 
   const startLogoutTimer = () => {
@@ -55,25 +69,39 @@ export const StaffAuthProvider = ({ children }) => {
     startLogoutTimer();
   };
 
-  // Initialize authState from local storage
   useEffect(() => {
     const storedAuth = localStorage.getItem("auth");
     if (storedAuth) {
-      setAuthState(JSON.parse(storedAuth));
+      const { token, timestamp } = JSON.parse(storedAuth);
+      if (token && timestamp) {
+        const currentTime = Date.now();
+        const twelveHoursInMillis = 12 * 60 * 60 * 1000;
+        const timeElapsed = currentTime - timestamp;
+        if (timeElapsed < twelveHoursInMillis) {
+          setAuthState(JSON.parse(storedAuth));
+          startLogoutTimer();
+        } else {
+          logout(); // Token has expired, log the user out
+        }
+      }
     }
   }, []);
 
-  // Reset logout timer on user activity
   useEffect(() => {
-    window.addEventListener("mousemove", resetLogoutTimer);
-    window.addEventListener("mousedown", resetLogoutTimer);
-    window.addEventListener("keypress", resetLogoutTimer);
+    const handleUserActivity = () => {
+      resetLogoutTimer();
+    };
+
+    const events = ["mousemove", "mousedown", "keypress"];
+    events.forEach((event) => {
+      window.addEventListener(event, handleUserActivity);
+    });
 
     return () => {
       clearLogoutTimer();
-      window.removeEventListener("mousemove", resetLogoutTimer);
-      window.removeEventListener("mousedown", resetLogoutTimer);
-      window.removeEventListener("keypress", resetLogoutTimer);
+      events.forEach((event) => {
+        window.removeEventListener(event, handleUserActivity);
+      });
     };
   }, []);
 
