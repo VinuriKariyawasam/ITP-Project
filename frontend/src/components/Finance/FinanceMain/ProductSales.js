@@ -11,21 +11,22 @@ const ProductSales = ({ toggleLoading }) => {
   const [completedOrder, setCompletedOrder] = useState([]);
   const [searchDate, setSearchDate] = useState("");
 
+  const getApprovedSpareParts = async () => {
+    try {
+      toggleLoading(true);
+      const res = await axios.get(
+        `${process.env.React_App_Backend_URL}/Product/approvedsp`
+      );
+      setApprovedSpareParts(res.data);
+    } catch (error) {
+      console.error("Error fetching approved spare parts:", error);
+      alert("Error fetching approved spare parts");
+    } finally {
+      toggleLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const getApprovedSpareParts = async () => {
-      try {
-        toggleLoading(true);
-        const res = await axios.get(
-          `${process.env.React_App_Backend_URL}/Product/approvedsp`
-        );
-        setApprovedSpareParts(res.data);
-      } catch (error) {
-        console.error("Error fetching approved spare parts:", error);
-        alert("Error fetching approved spare parts");
-      } finally {
-        toggleLoading(false);
-      }
-    };
     getApprovedSpareParts();
   }, []);
 
@@ -93,7 +94,8 @@ const ProductSales = ({ toggleLoading }) => {
       )
       .then((res) => {
         console.log("Order Approved:", order);
-        getPendingOrder(); // Refresh pending orders
+        getPendingOrder();
+        getApprovedSpareParts(); // Refresh pending orders
       })
       .catch((err) => {
         console.error("Error approving order:", err);
@@ -182,6 +184,11 @@ const ProductSales = ({ toggleLoading }) => {
             <Modal.Title>Order Details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <img
+              style={{ width: "50%", height: "50%" }}
+              src={`http://localhost:5000/${selectedOrder?.image}`}
+              alt="Product Image"
+            />
             <p>Order Id: {selectedOrder?.orderId}</p>
             <p>Customer Name: {selectedOrder?.name}</p>
             <p>Vehicle Number: {selectedOrder?.vehicleNumber}</p>
