@@ -19,13 +19,14 @@ import FileUpload from "../CUS_CAM/CUS_CAM_util/FileUpload";
 import "./StarRating.css";
 import feedbackimg7 from "../../../../../src/images/cam/feedbackimg7.jpg";
 
-function Feedback() {
+function Feedback({ toggleLoading }) {
   const cusAuth = useContext(CusAuthContext);
   let id = cusAuth.userId;
   const navigate = useNavigate();
   const [validated, setValidated] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  
+  const feedback_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusaffairs/allfeedback`;
+  const myfeedback_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusaffairs/myfeedback`;
 
   //validation and submit
   const {
@@ -38,6 +39,7 @@ function Feedback() {
 
   const onSubmit = async (data) => {
     try {
+      toggleLoading(true);
       const formData = new FormData();
 
        // Append regular form data
@@ -61,6 +63,7 @@ function Feedback() {
         console.log(pair[0], pair[1]);
       }
 
+      
       const response = await fetch(
         `${process.env.React_App_Backend_URL}/cam/feedback/add-feedback`,
         {
@@ -95,6 +98,8 @@ function Feedback() {
       } else {
         console.error("Error:", error.message);
       }
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -223,7 +228,7 @@ function Feedback() {
       <div className="card" style={{width:"18rem"}}>
   <img src={cusimage2} className="card-img-top" alt="..." style={{height:"200px"}}/>
   <div className="card-body" style={{height:"180px"}}>
-    <a href="${process.env.React_App_Frontend_URL}/customer/cusaffairs/allfeedback" class="btn btn-dark" 
+    <a href={feedback_frontendurl} class="btn btn-dark" 
     style={{width:"200px",marginTop:"5px"}}>FeedBack</a>
     <p>Your feedback is the compass guiding us towards excellence. Together, let's pave the road to exceptional service.
       Explore more thoughts on us.!</p>
@@ -232,7 +237,7 @@ function Feedback() {
 <div className="card" style={{width:"18rem"}}>
   <img src={cusimage3} className="card-img-top" alt="..." style={{height:"200px"}}/>
   <div className="card-body">
-    <a href="${process.env.React_App_Frontend_URL}/customer/cusaffairs/myfeedback" className="btn btn-dark" 
+    <a href={myfeedback_frontendurl} className="btn btn-dark" 
     style={{width:"200px",marginTop:"5px"}}>My FeedBack</a>
     <p>Your voice shapes our journey.Refine your feedback as we evolve together towards perfection.!</p>
   </div>

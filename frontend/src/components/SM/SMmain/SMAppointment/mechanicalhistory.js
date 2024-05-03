@@ -8,7 +8,7 @@ import jsPDF from 'jspdf';
 import { Link } from 'react-router-dom';
 import logo from "../../../../images/logoblack_trans.png";
 
-const Mechanicalhistory = props => {
+const Mechanicalhistory = ({ toggleLoading })=> {
 
   //create an empty array to store details
   const [mechanicalAppointment, setmechanicalAppointment] = useState([]);
@@ -19,13 +19,16 @@ const Mechanicalhistory = props => {
   useEffect(() => {
 
     function getmechanicalAppointment() {
+      toggleLoading(true); 
       axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedmechanicalAppointment`).then((res) => {
         const sortedAppointments = res.data.sort((a, b) => new Date(b.appointmentdate) - new Date(a.appointmentdate));
         setmechanicalAppointment(sortedAppointments);
         setFilteredAppointments(sortedAppointments);
       }).catch((err) => {
         alert(err.message);
-      })
+      }).finally(()=>{
+        toggleLoading(false); 
+      });
     }
     getmechanicalAppointment();
 

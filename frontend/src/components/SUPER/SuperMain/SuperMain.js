@@ -6,11 +6,11 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 
-function SuperMain() {
+function SuperMain({ toggleLoading }) {
   return (
     <main id="main" className="main">
       <SuperPageTitle title="Supervisor Dashboard" url="/supervisor/" />
-      <SuperDashboard />
+      <SuperDashboard toggleLoading={toggleLoading}/>
 
       <Card>
         <Card.Body>

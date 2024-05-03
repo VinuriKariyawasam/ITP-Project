@@ -3,11 +3,11 @@ import "./hrMain.css";
 import HrDashboard from "./HrDashboard";
 import HrPageTitle from "./HRPageTitle";
 
-function HrMain() {
+function HrMain({ toggleLoading }) {
   return (
     <main id="main" className="main">
       <HrPageTitle title="Employee Management Dashboard" url="/hr/" />
-      <HrDashboard />
+      <HrDashboard toggleLoading={toggleLoading} />
     </main>
   );
 }

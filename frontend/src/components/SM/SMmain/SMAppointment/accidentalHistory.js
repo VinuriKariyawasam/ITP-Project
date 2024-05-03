@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 import jsPDF from 'jspdf';
 import { Link } from 'react-router-dom';
 import logo from "../../../../images/logoblack_trans.png";
-const AccidentalHistory = props => {
+const AccidentalHistory = ({ toggleLoading })  => {
 
   //create an empty array to store details
   const [accidentalAppointment, setaccidentalAppointment] = useState([]);
@@ -17,6 +17,7 @@ const AccidentalHistory = props => {
   useEffect(() => {
 
     function getaccidentalAppointment() {
+      toggleLoading(true); 
       axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedaccidentalAppointment`).then((res) => {
         const sortedAppointments = res.data.sort((a, b) => {
           return new Date(a.appointmentdate) - new Date(b.appointmentdate);
@@ -25,7 +26,9 @@ const AccidentalHistory = props => {
         console.log(res.data)
       }).catch((err) => {
         alert(err.message);
-      })
+      }).finally(()=>{
+        toggleLoading(false); 
+      });
     }
     getaccidentalAppointment();
 

@@ -69,7 +69,7 @@ function OnlineConsultation({ toggleLoading }){
       for (const pair of formData.entries()) {
         console.log(pair[0], pair[1]);
       }
-
+      toggleLoading(true)
       const response = await fetch(
         `${process.env.React_App_Backend_URL}/cam/consultation/add-issue`,
         {
@@ -104,6 +104,8 @@ function OnlineConsultation({ toggleLoading }){
       } else {
         console.error("Error:", error.message);
       }
+    }finally {
+      toggleLoading(false); // Set loading to false after API call
     }
   };
 
@@ -183,6 +185,28 @@ useEffect(() => {
     filesUrls,
     _v,
   } = consultation
+
+  //delete consultation
+  const handleDelete = async (consultId) => {
+    try {
+      toggleLoading(true);
+      // Send DELETE request to backend API using fetch
+      await fetch(`${process.env.React_App_Backend_URL}/cam/consultation/delete-consultation/${consultId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json", 
+        },
+      },
+      alert("Consultation Deleted successfully!"),
+      navigate("/customer/cusaffairs/consultation")
+    );
+  } catch (error) {
+    console.error("Error deleting consultation:", error);
+    // Handle error (e.g., display error message)
+  }finally {
+    toggleLoading(false); // Set loading to false after API call
+  }
+};
 
     return(
     <div>
@@ -305,6 +329,11 @@ useEffect(() => {
                    readOnly
                 />
                </Form.Group>
+               <Button variant="danger" type="submit" 
+               style={{marginTop:"1px",marginLeft:"25px",marginTop:"10px", width:"90%"}}
+               onClick={() => handleDelete(consultation.consultId)}>
+               Delete my consultation
+               </Button>
           </Row>
           </Accordion.Body>
           </Accordion.Item>

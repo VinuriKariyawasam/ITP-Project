@@ -1,12 +1,15 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
-const dbCard = ({ title, value, iconClass, duration }) => {
+import { Link } from "react-router-dom";
+
+const dbCard = ({ title, value, iconClass, duration, link }) => {
   return (
     <div className="col-lg-4">
       <Card bg="white" text="black" className="shadow-lg">
         <Card.Body>
           <Card.Title>
-            {title}
+            <Link to={link}>{title}</Link>
+
             <span>|{duration} </span>
             <i className={`bi ${iconClass} fa-9x float-end`}></i>
           </Card.Title>

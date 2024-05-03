@@ -8,7 +8,7 @@ import jsPDF from 'jspdf';
 import { Link } from 'react-router-dom';
 import logo from "../../../../images/logoblack_trans.png";
 
-const PeriodicalHistory = props => {
+const PeriodicalHistory = ({ toggleLoading })=> {
 
   //create an empty array to store details
   const [acceptedperiodicalAppointment, setacceptedperiodicalAppointment] = useState([]);
@@ -19,12 +19,15 @@ const PeriodicalHistory = props => {
   useEffect(() => {
     const getAcceptedPeriodicalAppointment = async () => {
       try {
+        toggleLoading(true); 
         const res = await axios.get(`${process.env.React_App_Backend_URL}/appointment/get-acceptedperiodicalAppointment`);
         const sortedAppointments = res.data.sort((a, b) => new Date(b.appointmentdate) - new Date(a.appointmentdate));
         setacceptedperiodicalAppointment(sortedAppointments);
         setFilteredAppointments(sortedAppointments);
       } catch (error) {
         alert(error.message);
+      } finally {
+        toggleLoading(false); // Set loading to false after API call
       }
     };
     getAcceptedPeriodicalAppointment();

@@ -8,7 +8,7 @@ import MyAppAccid from './MyAppAccid'
 import MyApApp from './MyApApp'
 import  MyAppCom from './MyAppCom'
 
-const MyAppointment = props => {
+const MyAppointment = ({ toggleLoading } )=> {
 
   const [activeTab, setActiveTab] = useState("Periodical Appointment");
 
@@ -19,7 +19,7 @@ const MyAppointment = props => {
   
   <h1 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' ,marginLeft: '40%',marginTop:'0%'}}>Your Appointments</h1>
   <h3 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Approved Appointments</h3><br/><br/>
-<MyApApp/><br></br>
+<MyApApp toggleLoading={toggleLoading} /><br></br>
   
 
 
@@ -33,20 +33,20 @@ const MyAppointment = props => {
           >
             <Tab title="Periodical Appointment" eventKey="Periodical Appointment">
         
-            <MyApPer/>
+            <MyApPer toggleLoading={toggleLoading} />
   
       </Tab>
       <Tab  title="Mechanical Repairs" eventKey="Mechanical Repairs">
-        <MyApMec/>
+        <MyApMec toggleLoading={toggleLoading} />
      
       </Tab>
       <Tab  title="Accidental Repairs" eventKey="Accidental Repairs">
         
-    <MyAppAccid/>
+    <MyAppAccid toggleLoading={toggleLoading} />
       </Tab>
      </Tabs>
      <h3 style={{ fontWeight: 'bold', fontFamily: 'Times New Roman' }}>Completed Appointments</h3><br/><br/>
-     <MyAppCom/><br></br>
+     <MyAppCom toggleLoading={toggleLoading} /><br></br>
         </div>
 </div>
 </main>

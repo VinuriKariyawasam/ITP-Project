@@ -4,7 +4,18 @@ import neo from "../../../images/neo-tech-high-resolution-logo-transparent.png";
 
 import { CusAuthContext } from "../../../context/cus-authcontext";
 function CusFooter() {
+
   const CusAuth = useContext(CusAuthContext);
+
+  const cusfrontendurl = `${process.env.React_App_Frontend_URL}/customer`;
+
+  const login_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cuslogin`;
+  const reg_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusreg`;
+  const faq_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusaffairs/faq`;
+  const consult_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusaffairs/consultation`;
+  const feedback_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusaffairs/allfeedback`;
+
+
   return (
     <footer
       className="bg-dark text-white py-5"
@@ -13,7 +24,7 @@ function CusFooter() {
       <Container>
         <Row>
           <Col md={3} className="mb-4 mb-md-0">
-            <a href="http://localhost:3000/customer" className="d-flex align-items-center p-0 text-white">
+            <a href= {cusfrontendurl} className="d-flex align-items-center p-0 text-white">
               <img alt="logo" src={neo} width="200px" />
             </a>
             <p className="my-3">
@@ -41,7 +52,7 @@ function CusFooter() {
                 </a>
               </li>
               <li>
-                <a href="http://localhost:3000/customer/cusaffairs/faq" className="text-white">
+                <a href = {faq_frontendurl} className="text-white">
                   FAQ
                 </a>
               </li>
@@ -73,7 +84,7 @@ function CusFooter() {
                 </a>
               </li>
               <li>
-                <a href="http://localhost:3000/customer/cusaffairs/consultation" className="text-white">
+                <a href= {consult_frontendurl} className="text-white">
                   Online Consultation
                 </a>
               </li>
@@ -90,17 +101,17 @@ function CusFooter() {
             <h5 className="mb-4 fw-bold">Quick Links</h5>
             <ul className="list-unstyled">
               <li>
-                <a href="http://localhost:3000/customer/cusreg" className="text-white">
+                <a href= {reg_frontendurl} className="text-white">
                   Sign Up
                 </a>
               </li>
               <li>
-                <a href="http://localhost:3000/customer/cuslogin" className="text-white">
+                <a href= {login_frontendurl} className="text-white">
                   Log in
                 </a>
               </li>
               <li>
-                <a href="http://localhost:3000/customer/cusaffairs/allfeedback" className="text-white">
+                <a href={feedback_frontendurl} className="text-white">
                   Feedbacks
                 </a>
               </li>

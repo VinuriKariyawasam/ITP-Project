@@ -99,9 +99,16 @@ function CusnavItem() {
               <NavDropdown.Item href="http://localhost:3000/customer/mobservices/mobilemain">
                 Mobile Services
               </NavDropdown.Item>
+
+
+              {CusAuth.isLoggedIn && (
+              
               <NavDropdown.Item href={`${process.env.React_App_Frontend_URL}/customer/appointment/appointnmentMain`}>
+
+
                 Appointment
               </NavDropdown.Item>
+              )}
               <NavDropdown.Item>Our Services</NavDropdown.Item>
             </NavDropdown>
             <Nav.Link href="http://localhost:3000/customer/contactus">Contact Us</Nav.Link>

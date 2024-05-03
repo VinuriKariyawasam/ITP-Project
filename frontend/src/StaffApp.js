@@ -32,18 +32,18 @@ import NotFoundPage from "./components/util/NotFoundPage";
 
 function StaffApp({ toggleLoading }) {
   const { userId, userPosition, isLoggedIn } = useContext(StaffAuthContext);
-
+  const frontendurl = `${process.env.React_App_Frontend_URL}/`;
   return (
     <>
       <Header />
       <Routes>
-        <Route
-          path="/"
-          element={<NotFoundPage page="http://localhost:3000/" />}
-        />
+        <Route path="/" element={<NotFoundPage page={frontendurl} />} />
 
         {isLoggedIn === false ? (
-          <Route path="/login" element={<StaffLogin />} />
+          <Route
+            path="/login"
+            element={<StaffLogin toggleLoading={toggleLoading} />}
+          />
         ) : (
           <Route path="/login" element={<AlreadyLogIn />} />
         )}
@@ -51,7 +51,9 @@ function StaffApp({ toggleLoading }) {
         {isLoggedIn === true ? (
           <Route
             path="/staffprofile"
-            element={<StaffMyProfile userId={userId} />}
+            element={
+              <StaffMyProfile userId={userId} toggleLoading={toggleLoading} />
+            }
           />
         ) : (
           <Route path="/staffprofile" element={<AlreadyLogIn />} />
@@ -72,7 +74,9 @@ function StaffApp({ toggleLoading }) {
         )}
         {userPosition === "Service Manager" ||
         userPosition === "General Manager" ? (
-          <Route path="/sm/*" element={<SM />} />
+
+          <Route path="/sm/*" element={<SM toggleLoading={toggleLoading}/>} />
+
         ) : (
           <Route path="/sm/*" element={<RestrictedPage />} />
         )}
@@ -85,7 +89,7 @@ function StaffApp({ toggleLoading }) {
         )}
 
         {userPosition === "Supervisor" || userPosition === "General Manager" ? (
-          <Route path="/supervisor/*" element={<SUPER />} />
+          <Route path="/supervisor/*" element={<SUPER toggleLoading={toggleLoading}/>} />
         ) : (
           <Route path="/supervisor/*" element={<RestrictedPage />} />
         )}

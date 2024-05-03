@@ -19,6 +19,7 @@ import cusimage3 from '../../../../src/images/CUS/CustomerImg/cusimage3.jpg';
 function CusRegistration({ toggleLoading }){
   const navigate = useNavigate();
   const cusauth = useContext(CusAuthContext);
+  const cuslogin_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cuslogin`;
 
   const [formData, setFormData] = useState({
     Name: "",
@@ -130,6 +131,8 @@ const handleConfirmPasswordChange = (e) => {
 
   function sendCusDetails(e){
     e.preventDefault();
+    try{
+      toggleLoading(true);
 
     // Check if the phone number has exactly 9 digits
   if (contact.length !== 10) {
@@ -151,7 +154,8 @@ const handleConfirmPasswordChange = (e) => {
       body: JSON.stringify(newCustomer)
     };
     
-    fetch('http://localhost:5000/api/customer/signup/add-customer', requestOptions)
+   
+    fetch(`${process.env.React_App_Backend_URL}/api/customer/signup/add-customer`, requestOptions)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -164,9 +168,16 @@ const handleConfirmPasswordChange = (e) => {
       
         navigate("/customer");
       })
-      .catch(error => {
+    .catch(error => {
         alert('Error:', error.message);
-      });
+    })
+    .finally (() => {
+      toggleLoading(false); // Set loading to false after API call completes
+    });
+  }catch (error) {
+    alert('Error:', error.message);
+    toggleLoading(false); // Set loading to false in case of an error
+  }
   }
     return(
         <div>
@@ -315,7 +326,7 @@ const handleConfirmPasswordChange = (e) => {
                   Sign Up
             </Button>
             <p style={{marginTop:"20px"}}><center>Already have an account? 
-            <a href="http://localhost:3000/customer/cuslogin" class="link-info"> Sign in</a></center></p>
+            <a href={cuslogin_frontendurl} class="link-info"> Sign in</a></center></p>
             </Card.Body>
              </Card>
               </Form>

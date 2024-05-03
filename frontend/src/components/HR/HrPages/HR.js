@@ -20,7 +20,7 @@ function HR({ toggleLoading }) {
       <HrSideBar />
 
       <Routes>
-        <Route path="/" element={<HrMain />} />
+        <Route path="/" element={<HrMain toggleLoading={toggleLoading} />} />
         <Route
           path="employee/*"
           element={<HrEmployee toggleLoading={toggleLoading} />}
@@ -29,9 +29,18 @@ function HR({ toggleLoading }) {
           path="salary/*"
           element={<HrSalary toggleLoading={toggleLoading} />}
         />
-        <Route path="attendance/*" element={<HrAttendance />} />
-        <Route path="leaves/*" element={<HrLeaves />} />
-        <Route path="configs/*" element={<HrConfigs />} />
+        <Route
+          path="attendance/*"
+          element={<HrAttendance toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="leaves/*"
+          element={<HrLeaves toggleLoading={toggleLoading} />}
+        />
+        <Route
+          path="configs/*"
+          element={<HrConfigs toggleLoading={toggleLoading} />}
+        />
       </Routes>
     </>
   );
