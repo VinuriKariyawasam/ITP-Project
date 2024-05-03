@@ -5,7 +5,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Badge from 'react-bootstrap/Badge';
-function Sptable1() {
+function Sptable1({ toggleLoading }) {
     const [SpareParts, setSpareparts] = useState([]); 
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -13,13 +13,16 @@ function Sptable1() {
     
     useEffect(() => {
         function getSpareparts() {
+          toggleLoading(true);
           axios
-            .get("http://localhost:5000/Product/pendingsp")
+            .get(`${process.env.React_App_Backend_URL}/Product/pendingsp`)
             .then((res) => {
               setSpareparts(res.data);
             })
             .catch((err) => {
               alert("error");
+            }).finally(() => {
+              toggleLoading(false);
             });
         }
         getSpareparts();
@@ -29,6 +32,7 @@ function Sptable1() {
         const shouldDelete = window.confirm('Confirm Reject');
         const image = Image;
         if (shouldDelete) {
+          toggleLoading(true);
           const emailData = {
             to: email ,
             subject: `Order Rejection`,
@@ -38,14 +42,14 @@ function Sptable1() {
     
           axios
             .post(
-              "http://localhost:5000/Product/sendrejectemail",
+              `${process.env.React_App_Backend_URL}/Product/sendrejectemail`,
               emailData
             )
             .then((response) => {
               console.log(response.data);
               
               axios
-                .delete(`http://localhost:5000/Product/deletependingsp/${id}`,{ data: { image } })
+                .delete(`${process.env.React_App_Backend_URL}/Product/deletependingsp/${id}`,{ data: { image } })
                 .then((response) => {
                   console.log(response);
                   setShowModal(false); 
@@ -57,6 +61,8 @@ function Sptable1() {
             })
             .catch((error) => {
               console.error("Error sending email:", error);
+            }).finally(() => {
+              toggleLoading(false);
             });
         }
       };
@@ -65,7 +71,7 @@ function Sptable1() {
         console.log(order)
         const totalString = window.prompt('Enter total: Rs.');
         const total = parseFloat(totalString);
-
+        toggleLoading(true);
         const formData = {
           id: order._id,
           name: order.name,
@@ -84,7 +90,7 @@ function Sptable1() {
         };
       console.log(formData)
 
-      axios.post("http://localhost:5000/Product/addapprovedsp",formData).then((res) =>{
+      axios.post(`${process.env.React_App_Backend_URL}/Product/addapprovedsp`,formData).then((res) =>{
           console.log(res.data)
           const newOrderId = res.data.order.orderId;
           
@@ -98,14 +104,14 @@ function Sptable1() {
 
           axios
             .post(
-              "http://localhost:5000/Product/sendrejectemail",
+              `${process.env.React_App_Backend_URL}/Product/sendrejectemail`,
               emailData
             )
             .then((response) => {
               console.log(response.data);
 
               axios
-                .delete(`http://localhost:5000/Product/removependingsp/${order._id}`)
+                .delete(`${process.env.React_App_Backend_URL}/Product/removependingsp/${order._id}`)
                 .then((response) => {
                   console.log(response);
                   setShowModal(false); 
@@ -119,6 +125,8 @@ function Sptable1() {
             });
       }).catch((err) =>{
         console.log(err)
+      }).finally(() => {
+        toggleLoading(false);
       });
       
       }
@@ -173,10 +181,10 @@ function Sptable1() {
         <p>Description: {selectedOrder?.description}</p>
       </Modal.Body>
       <Modal.Footer>
-      <Button variant="danger" onClick={() => handleReject(selectedOrder?._id,selectedOrder?.email,selectedOrder?.image)}>
+      <Button variant="danger" onClick={() => {handleReject(selectedOrder?._id,selectedOrder?.email,selectedOrder?.image);handleCloseModal();}}>
       Reject
         </Button>
-        <Button variant="success" onClick={() =>handleApprove(selectedOrder)}>
+        <Button variant="success" onClick={() =>{handleApprove(selectedOrder);handleCloseModal();}}>
           Approve
         </Button>
       </Modal.Footer>

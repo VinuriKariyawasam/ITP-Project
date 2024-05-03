@@ -12,8 +12,9 @@ import Notapproved from './Notapproved';
 import Approved from './Approved';
 import Ongoing from './Ongoing';
 import Completedsp from './Completedsp';
+import { Link } from 'react-router-dom';
 
-function OrderHistory() {
+function OrderHistory({ toggleLoading }) {
   const cusauth = useContext(CusAuthContext); 
   const [key, setKey] = useState('pending');
   const [spKey,setspkey] = useState('pending');
@@ -24,13 +25,16 @@ function OrderHistory() {
 
   useEffect(() => {
     function getpendingorder() {
+      toggleLoading(true);
       axios
-        .get("http://localhost:5000/Product/getorderpending")
+        .get(`${process.env.React_App_Backend_URL}/Product/getorderpending`)
         .then((res) => {
           setpendingorder(res.data);
         })
         .catch((err) => {
           alert("error");
+        }).finally(() => {
+          toggleLoading(false);
         });
     }
     getpendingorder();
@@ -97,7 +101,7 @@ function OrderHistory() {
               <th>Product Name</th>
               <th>Unit Price</th>
               <th>Quantity</th>
-              <th>Total</th>
+              <th>Total Rs.</th>
             </tr>
           </thead>
           <tbody>
@@ -114,12 +118,14 @@ function OrderHistory() {
       )}
     </Modal.Body>
     <Modal.Footer>
-      <Button>Pay</Button>
+    <Link to="/customer/payments/payonline">
+      <Button variant="primary">Pay</Button>
+      </Link>
     </Modal.Footer>
   </Modal>
   </Tab>
   <Tab eventKey="approved" title="completed orders">
-    <Completedorderhistory/>
+    <Completedorderhistory toggleLoading={toggleLoading}/>
     </Tab>
  </Tabs>
  </div>
@@ -132,16 +138,16 @@ function OrderHistory() {
 >
 <Tab eventKey="pending" title="To be approve orders">
     
-<Notapproved/>
+<Notapproved toggleLoading={toggleLoading}/>
 </Tab>
 <Tab eventKey="topay" title="To be pay orders">
-  <Approved/>
+  <Approved toggleLoading={toggleLoading}/>
 </Tab>
 <Tab eventKey="ongoing" title="To be complete orders">
-  <Ongoing/>
+  <Ongoing toggleLoading={toggleLoading}/>
 </Tab>
 <Tab eventKey="comp" title="completed orders">
-  <Completedsp/>
+  <Completedsp toggleLoading={toggleLoading}/>
 </Tab>
  </Tabs>
     </div>

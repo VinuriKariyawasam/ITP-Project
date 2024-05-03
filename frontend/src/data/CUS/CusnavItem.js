@@ -92,16 +92,20 @@ function CusnavItem() {
             <Nav.Link href="http://localhost:3000/customer">Home</Nav.Link>
             <NavDropdown title="Service" id="basic-nav-dropdown">
               {CusAuth.isLoggedIn && (
-                <NavDropdown.Item href="http://localhost:3000/customer/products">
+                <NavDropdown.Item href={`${process.env.React_App_Frontend_URL}/customer/products`}>
                   Product
                 </NavDropdown.Item>
               )}
               <NavDropdown.Item href="http://localhost:3000/customer/mobservices/mobilemain">
                 Mobile Services
               </NavDropdown.Item>
+
+
               {CusAuth.isLoggedIn && (
               
-              <NavDropdown.Item href="http://localhost:3000/customer/appointment/appointnmentMain">
+              <NavDropdown.Item href={`${process.env.React_App_Frontend_URL}/customer/appointment/appointnmentMain`}>
+
+
                 Appointment
               </NavDropdown.Item>
               )}

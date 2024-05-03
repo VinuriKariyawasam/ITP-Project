@@ -14,7 +14,7 @@ function Sptable3() {
   useEffect(() => {
     function getapprovedSpareparts() {
       axios
-        .get("http://localhost:5000/Product/ongoingsp")
+        .get(`${process.env.React_App_Backend_URL}/Product/ongoingsp`)
         .then((res) => {
           setapprovedSpareParts(res.data);
         })
@@ -49,7 +49,7 @@ function Sptable3() {
     };
     
     axios
-      .put(`http://localhost:5000/Product/updatetocomplete/${SpareParts._id}`, updateorder)
+      .put(`${process.env.React_App_Backend_URL}/Product/updatetocomplete/${SpareParts._id}`, updateorder)
     .then((response) => {
       console.log(response.data);
       window.location.reload(); 
@@ -71,7 +71,7 @@ function Sptable3() {
 
       axios
         .post(
-          "http://localhost:5000/Product/sendrejectemail",
+          `${process.env.React_App_Backend_URL}/Product/sendrejectemail`,
           emailData
         )
         .then((response) => {

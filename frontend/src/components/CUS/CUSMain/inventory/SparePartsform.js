@@ -8,7 +8,7 @@ import Row from "react-bootstrap/Row";
 import { useNavigate } from "react-router-dom";
 import { CusAuthContext } from "../../../../context/cus-authcontext";
 
-function SparePartsform() {
+function SparePartsform({ toggleLoading }) {
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState("");
   const [vNo, setvNo] = useState("");
@@ -22,7 +22,7 @@ function SparePartsform() {
       },
       vehicleNumber: {
         value: "",
-        isValid:true,
+        isValid: true,
       },
       brand: {
         value: "",
@@ -66,10 +66,11 @@ function SparePartsform() {
 
   const spSubmitHandler = async (event) => {
     event.preventDefault();
+    toggleLoading(true);
     const imgData = new FormData();
     imgData.append("image", formState.inputs.image.value);
     axios
-      .post("http://localhost:5000/Product/imgupload", imgData)
+      .post(`${process.env.React_App_Backend_URL}/Product/imgupload`, imgData)
       .then((res) => {
         const Url = res.data.downloadURL;
         console.log(Url);
@@ -95,11 +96,11 @@ function SparePartsform() {
           };
 
           const response = axios.post(
-            "http://localhost:5000/Product//addsp",
+            `${process.env.React_App_Backend_URL}/Product//addsp`,
             formData
           );
 
-          navigate("/customer/products");
+          navigate("/customer/products/myorders");
           console.log(response);
           console.log(formData);
         } catch (err) {
@@ -108,6 +109,9 @@ function SparePartsform() {
       })
       .catch((err) => {
         alert("error");
+      })
+      .finally(() => {
+        toggleLoading(false);
       });
   };
   const handleAddSri = () => {
@@ -195,8 +199,11 @@ function SparePartsform() {
                     type="text"
                     placeholder="Toyota"
                     onInput={(event) =>
-                      inputHandler("brand", event.target.value, true)
-                    }
+                      {
+                        let input = event.target.value.replace(/[^a-zA-Z\s]/g, ''); // Remove numbers
+                      event.target.value = input; // Update the input value
+                      inputHandler("brand", input, true); // Call inputHandler with the cleaned input
+                    }}
                     required
                   />
                 </Form.Group>
@@ -225,19 +232,11 @@ function SparePartsform() {
                     max="2099"
                     placeholder="Enter Year"
                     onChange={(event) => {
-                      let enteredValue = event.target.value.replace(/\D/g, "");
-                      if (enteredValue.length > 4) {
-                        enteredValue = enteredValue.slice(0, 4);
-                      }
-                      inputHandler(
-                        "year",
-                        enteredValue,
-                        enteredValue.length === 4
-                      );
-                      if (enteredValue.length === 4) {
-                        event.target.disabled = true;
+                      const input = event.target.value.replace(/\D/g, ''); // Remove non-numeric characters
+                      if (input.length > 4) {
+                        event.target.value = input.slice(0, 4); // Limit to four digits
                       } else {
-                        event.target.disabled = false;
+                        inputHandler("year", input, true); // Update the input value
                       }
                     }}
                     required
@@ -251,22 +250,35 @@ function SparePartsform() {
                     type="text"
                     maxLength={15}
                     placeholder="Enter color"
-                    onInput={(event) =>
-                      inputHandler("color", event.target.value, true)
-                    }
+                    onInput={(event) =>{
+                      const input = event.target.value.replace(/[^A-Za-z\s]/g, ''); // Remove numbers and special characters
+                      event.target.value = input;
+                      inputHandler("color", input, true);
+                    }}
                     required
                   />
                 </Form.Group>
                 <Form.Group as={Col} md="4">
                   <Form.Label>Contact number</Form.Label>
                   <Form.Control
+                    className="remove-spinner"
                     id="contactNumber"
-                    type="phone"
-                    maxLength={10}
+                    type="Number"
+                    pattern="[0-9]{10}"
                     placeholder=" 07X XXX XXXX"
-                    onInput={(event) =>
-                      inputHandler("contactNumber", event.target.value, true)
-                    }
+                    onInput={(event) => {
+                      let input = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                      if (input.startsWith("0")) {
+                        input = input.slice(0, 10); // Limit to first 10 digits
+                        if (input.length > 10) {
+                          input = input.slice(0, 10); // Truncate to 10 digits
+                        }
+                      } else {
+                        input = ""; // Reset input if it doesn't start with '0'
+                      }
+                      event.target.value = input;
+                      inputHandler("contactNumber", input, true);
+                    }}
                     required
                   />
                 </Form.Group>
