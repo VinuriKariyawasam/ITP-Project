@@ -49,13 +49,13 @@ const UpdateIncome = ({toggleLoading}) => {
       newErrors.title = "Title is required";
       valid = false;
     }
-    if (!formData.amount.trim()) {
-      newErrors.amount = "Amount is required";
-      valid = false;
-    } else if (isNaN(formData.amount) || Number(formData.amount) <= 0) {
-      newErrors.amount = "Amount must be a positive number";
-      valid = false;
-    }
+    // if (!formData.amount.trim()) {
+    //   newErrors.amount = "Amount is required";
+    //   valid = false;
+    // } else if (isNaN(formData.amount) || Number(formData.amount) <= 0) {
+    //   newErrors.amount = "Amount must be a positive number";
+    //   valid = false;
+    // }
     if (!formData.type.trim()) {
       newErrors.type = "Type is required";
       valid = false;

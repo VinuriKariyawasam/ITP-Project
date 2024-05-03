@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Row, Col, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-function QuotaDash() {
+function QuotaDash({toggleLoading}) {
   const [quotations, setQuotations] = useState([]);
   const [filteredQuotations, setFilteredQuotations] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -10,7 +10,8 @@ function QuotaDash() {
 
   const fetchQuotations = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/sm/quotations");
+      toggleLoading(true);
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/sm/quotations`);
       if (response.ok) {
         const data = await response.json();
         setQuotations(data);
@@ -20,6 +21,9 @@ function QuotaDash() {
       }
     } catch (error) {
       console.error("Error fetching quotations:", error);
+    }
+    finally{
+      toggleLoading(false);
     }
   };
 
@@ -34,7 +38,8 @@ function QuotaDash() {
 
   const handleDeleteQuotation = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/sm/quotations/${id}`, {
+      toggleLoading(true);
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/sm/quotations/${id}`, {
         method: "DELETE",
       });
       console.log("Delete response:", response);
@@ -47,6 +52,9 @@ function QuotaDash() {
       }
     } catch (error) {
       console.error("Error deleting quotation:", error);
+    }
+    finally{
+      toggleLoading(false);
     }
   };
 

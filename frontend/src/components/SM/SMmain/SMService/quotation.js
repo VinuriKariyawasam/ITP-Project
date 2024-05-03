@@ -15,7 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import { toPng } from "html-to-image"; // Import toPng function from html-to-image
 
-function AddQuotation() {
+function AddQuotation({toggleLoading}) {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [items, setItems] = useState([
@@ -95,8 +95,8 @@ function AddQuotation() {
         price: item.price !== "" ? parseFloat(item.price) : 0,
         selected: item.selected,
       }));
-
-      const response = await fetch("http://localhost:5000/api/sm/quotations", {
+      toggleLoading(true);
+      const response = await fetch(`${process.env.React_App_Backend_URL}/api/sm/quotations`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,6 +120,9 @@ function AddQuotation() {
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Failed to submit form. Please try again.");
+    }
+    finally{
+      toggleLoading(false);
     }
   };
 

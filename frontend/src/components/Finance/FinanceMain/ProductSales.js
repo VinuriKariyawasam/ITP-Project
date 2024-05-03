@@ -11,21 +11,23 @@ const ProductSales = ({toggleLoading}) => {
   const [completedOrder, setCompletedOrder] = useState([]);
   const [searchDate, setSearchDate] = useState("");
 
+  const getApprovedSpareParts = async () => {
+    try {
+      toggleLoading(true);
+      const res = await axios.get(`${process.env.React_App_Backend_URL}/Product/approvedsp`);
+      setApprovedSpareParts(res.data);
+    } catch (error) {
+      console.error("Error fetching approved spare parts:", error);
+      alert("Error fetching approved spare parts");
+    } finally {
+      toggleLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const getApprovedSpareParts = async () => {
-        try {
-            toggleLoading(true);
-            const res = await axios.get(`${process.env.React_App_Backend_URL}/Product/approvedsp`);
-            setApprovedSpareParts(res.data);
-        } catch (error) {
-            console.error("Error fetching approved spare parts:", error);
-            alert("Error fetching approved spare parts");
-        } finally {
-            toggleLoading(false);
-        }
-    };
     getApprovedSpareParts();
-}, []);
+  }, []);
+
 
 useEffect(() => {
     const getPendingOrder = async () => {
@@ -84,7 +86,8 @@ const getPendingOrder = () => {
     axios.put(`${process.env.React_App_Backend_URL}/Product/updatetoongoing/${order._id}`, { status: "ongoing" })
       .then((res) => {
         console.log("Order Approved:", order);
-        getPendingOrder(); // Refresh pending orders
+        getPendingOrder(); 
+        getApprovedSpareParts();// Refresh pending orders
       })
       .catch((err) => {
         console.error("Error approving order:", err);

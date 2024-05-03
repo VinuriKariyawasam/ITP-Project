@@ -4,9 +4,6 @@ import logo from "../../../../images/Payment/neotechlogo.jpg"
 export const CompanyHeader = () => {
   return (
     <div className="invoice-title">
-    <h4 className="float-end font-size-15">
-      Financial Report
-    </h4>
     <div className="mb-4">
       <img src={logo} alt="Invoice Logo" width="200px" />
     </div>

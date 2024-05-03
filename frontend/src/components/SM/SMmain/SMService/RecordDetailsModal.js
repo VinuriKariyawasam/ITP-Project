@@ -68,7 +68,7 @@ useEffect(() => {
 
       // Send DELETE request to backend API
       await axios.delete(
-        `http://localhost:5000/api/sm/archive-record/${_id}`,{
+        `${process.env.React_App_Backend_URL}/api/sm/archive-record/${_id}`,{
        // Adjust the endpoint URL accordingly
       method: "DELETE",
       headers: {

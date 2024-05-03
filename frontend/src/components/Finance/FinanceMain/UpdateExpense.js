@@ -58,9 +58,9 @@ const UpdateExpense = ({toggleLoading}) => {
         if (!formData.title.trim()) {
             newErrors.title = 'Title is required';
         }
-        if (!formData.amount.trim() || parseFloat(formData.amount) <= 0) {
-            newErrors.amount = 'Amount must be a positive value';
-        }
+        // if (!formData.amount.trim() || parseFloat(formData.amount) <= 0) {
+        //     newErrors.amount = 'Amount must be a positive value';
+        // }
         if (!formData.type.trim()) {
             newErrors.type = 'Type is required';
         }
