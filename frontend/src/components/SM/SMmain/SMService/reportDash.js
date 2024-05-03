@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Row, Col, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { saveAs } from 'file-saver'; // Import saveAs from file-saver library
+import ReportPDFGenerator from "./ReportGenerator"; // Import the new component
 
 const ReportDash = ({toggleLoading}) => {
   const [reports, setReports] = useState([]);
@@ -25,7 +25,7 @@ const ReportDash = ({toggleLoading}) => {
     }
     finally{
       toggleLoading(false);
-    }
+      }
   };
 
   useEffect(() => {
@@ -61,24 +61,6 @@ const ReportDash = ({toggleLoading}) => {
   const handleBackButtonClick = () => {
     navigate(-1); // Navigate back to the previous page
   };
-
-  const handleDownloadReport = async (reportId) => {
-    try {
-      toggleLoading(true);
-      const response = await fetch(`${process.env.React_App_Backend_URL}/api/sm/reports/pdf/${reportId}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const blob = await response.blob();
-      saveAs(blob, `Report_${reportId}.pdf`);
-    } catch (error) {
-      console.error('Error downloading report:', error);
-    }
-    finally{
-      toggleLoading(false);
-    }
-  };
-  
 
   return (
     <div className="my-4">
@@ -131,7 +113,6 @@ const ReportDash = ({toggleLoading}) => {
             <th>Test Run Details</th>
             <th>Service Done Technician ID</th>
             <th>Test Done Technician ID</th>
-            <th>Action</th> {/* New column for download button */}
           </tr>
         </thead>
         <tbody>
@@ -160,15 +141,11 @@ const ReportDash = ({toggleLoading}) => {
               <td>{report.testRunDetails}</td>
               <td>{report.serviceDoneTechnicianId}</td>
               <td>{report.testDoneTechnicianId}</td>
-              <td>
-                <Button variant="secondary" onClick={() => handleDownloadReport(report.serviceReportId)}>
-                  Download
-                </Button>
-              </td> {/* Download button */}
             </tr>
           ))}
         </tbody>
       </Table>
+      <ReportPDFGenerator reports={filteredReports} /> {/* Add the ReportPDFGenerator component */}
     </div>
   );
 };

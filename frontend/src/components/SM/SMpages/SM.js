@@ -52,7 +52,7 @@ function SM({ toggleLoading }) {
         <Route path="/vehiclecarriers" exact element={<SMmVehicleCarriers/>} />
         <Route path="quotation/*" element={<Smquotation toggleLoading={toggleLoading}/>} />
         <Route path="report/*" element={<Smreports toggleLoading={toggleLoading}/>} />
-        <Route path="serviceReq/*" element={<SmSrequest/>} />
+        <Route path="serviceReq/*" element={<SmSrequest toggleLoading={toggleLoading}/>} />
       </Routes>
     </>
   );

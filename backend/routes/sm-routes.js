@@ -45,7 +45,6 @@ router.get("/records/count", RecordController.getRecordCount);
 // Route to get count of all quotations
 router.get("/quotations/count", quotationController.getQuotationCount);
 
-// Route to fetch PDF details for a service report by ID
-router.get('/reports/pdf/:id', reportController.generatePDF);
+
 
 module.exports = router;
