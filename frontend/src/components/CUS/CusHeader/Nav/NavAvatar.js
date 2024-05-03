@@ -10,6 +10,8 @@ function NavAvatar() {
   const navigate = useNavigate();
 
   const cusprofile_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusprofile`;
+  const myappointment_frontendurl = `${process.env.React_App_Frontend_URL}/customer/appointment/myappointment`;
+  const myorders_frontendurl = `${process.env.React_App_Frontend_URL}/customer/products/myorders`;
 
   // Function to handle logout
   const handleLogout = () => {
@@ -36,7 +38,9 @@ function NavAvatar() {
           {cusauth.isLoggedIn && (
             <>
               <li className="cus-dropdown-header">
-                <h6 style={{ textAlign: "center",marginBottom:"5%" }}>{cusauth.name}</h6>
+                <h6 style={{ textAlign: "center", marginBottom: "5%" }}>
+                  {cusauth.name}
+                </h6>
               </li>
               <li>
                 <hr className="dropdown-divider" />
@@ -45,7 +49,7 @@ function NavAvatar() {
               <li>
                 <a
                   className="cus-dropdown-item d-flex align-items-center"
-                  href= {cusprofile_frontendurl}
+                  href={cusprofile_frontendurl}
                 >
                   <span>My Profile</span>
                 </a>
@@ -68,7 +72,7 @@ function NavAvatar() {
               <li>
                 <a
                   className="cus-dropdown-item d-flex align-items-center"
-                  href="http://localhost:3000/customer/appointment/myappointment"
+                  href={myappointment_frontendurl}
                 >
                   <span>My Appointments</span>
                 </a>
@@ -79,7 +83,7 @@ function NavAvatar() {
               <li>
                 <a
                   className="cus-dropdown-item d-flex align-items-center"
-                  href="http://localhost:3000/customer/products/myorders"
+                  href={myorders_frontendurl}
                 >
                   <span>My Orders</span>
                 </a>

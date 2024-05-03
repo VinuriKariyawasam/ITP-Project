@@ -4,7 +4,6 @@ import neo from "../../../images/neo-tech-high-resolution-logo-transparent.png";
 
 import { CusAuthContext } from "../../../context/cus-authcontext";
 function CusFooter() {
-
   const CusAuth = useContext(CusAuthContext);
 
   const cusfrontendurl = `${process.env.React_App_Frontend_URL}/customer`;
@@ -14,7 +13,10 @@ function CusFooter() {
   const faq_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusaffairs/faq`;
   const consult_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusaffairs/consultation`;
   const feedback_frontendurl = `${process.env.React_App_Frontend_URL}/customer/cusaffairs/allfeedback`;
-
+  const contactus_frontendurl = `${process.env.React_App_Frontend_URL}/customer/contactus`;
+  const aboutus_frontendurl = `${process.env.React_App_Frontend_URL}/customer/aboutus`;
+  const breakdown_frontendurl = `${process.env.React_App_Frontend_URL}/customer/mobservices/breakdownrequests`;
+  const mobilemain_frontendurl = `${process.env.React_App_Frontend_URL}/customer/mobservices/mobilemain`;
 
   return (
     <footer
@@ -24,7 +26,10 @@ function CusFooter() {
       <Container>
         <Row>
           <Col md={3} className="mb-4 mb-md-0">
-            <a href= {cusfrontendurl} className="d-flex align-items-center p-0 text-white">
+            <a
+              href={cusfrontendurl}
+              className="d-flex align-items-center p-0 text-white"
+            >
               <img alt="logo" src={neo} width="200px" />
             </a>
             <p className="my-3">
@@ -42,85 +47,95 @@ function CusFooter() {
             <h5 className="mb-4 fw-bold">Help</h5>
             <ul className="list-unstyled">
               <li>
-                <a href="/" className="text-white">
+                <a href={aboutus_frontendurl} className="text-white">
                   About Us
                 </a>
               </li>
               <li>
-                <a href="http://localhost:3000/customer/contactus" className="text-white">
+                <a href={contactus_frontendurl} className="text-white">
                   Contact Us
                 </a>
               </li>
               <li>
-                <a href = {faq_frontendurl} className="text-white">
+                <a href={faq_frontendurl} className="text-white">
                   FAQ
-                </a>
-              </li>
-              <li>
-                <a href="/" className="text-white">
-                  Services
                 </a>
               </li>
             </ul>
           </Col>
           <Col md={2} className="mb-4 mb-md-0">
-            <h5 className="mb-4 fw-bold">Help</h5>
+            <h5 className="mb-4 fw-bold">Services</h5>
             <ul className="list-unstyled">
-            {CusAuth.isLoggedIn && (
-              <li>
-                <a href={`${process.env.React_App_Frontend_URL}/customer/appointment/appointnmentMain`} className="text-white">
-                  Appointments
-                </a>
-              </li>
+              {CusAuth.isLoggedIn && (
+                <li>
+                  <a
+                    href={`${process.env.React_App_Frontend_URL}/customer/appointment/appointnmentMain`}
+                    className="text-white"
+                  >
+                    Appointments
+                  </a>
+                </li>
               )}
               <li>
-                <a href="/" className="text-white">
+                <a href={breakdown_frontendurl} className="text-white">
                   Breakdown
                 </a>
               </li>
               <li>
-                <a href="/" className="text-white">
+                <a href={mobilemain_frontendurl} className="text-white">
                   Mobile Service
                 </a>
               </li>
-              <li>
-                <a href= {consult_frontendurl} className="text-white">
-                  Online Consultation
-                </a>
-              </li>
               {CusAuth.isLoggedIn && (
-              <li>
-                <a href={`${process.env.React_App_Frontend_URL}/customer/products`} className="text-white">
-                  Products
-                </a>
-              </li>
+                <li>
+                  <a href={consult_frontendurl} className="text-white">
+                    Online Consultation
+                  </a>
+                </li>
+              )}
+              {CusAuth.isLoggedIn && (
+                <li>
+                  <a
+                    href={`${process.env.React_App_Frontend_URL}/customer/products`}
+                    className="text-white"
+                  >
+                    Products
+                  </a>
+                </li>
               )}
             </ul>
           </Col>
-          <Col md={2} className="mb-4 mb-md-0">
-            <h5 className="mb-4 fw-bold">Quick Links</h5>
-            <ul className="list-unstyled">
-              <li>
-                <a href= {reg_frontendurl} className="text-white">
-                  Sign Up
-                </a>
-              </li>
-              <li>
-                <a href= {login_frontendurl} className="text-white">
-                  Log in
-                </a>
-              </li>
-              <li>
-                <a href={feedback_frontendurl} className="text-white">
-                  Feedbacks
-                </a>
-              </li>
-            </ul>
-          </Col>
+          {CusAuth.isLoggedIn && (
+            <Col md={2} className="mb-4 mb-md-0">
+              <h5 className="mb-4 fw-bold">Quick Links</h5>
+              <ul className="list-unstyled">
+                <li>
+                  <a href={reg_frontendurl} className="text-white">
+                    Sign Up
+                  </a>
+                </li>
+                <li>
+                  <a href={login_frontendurl} className="text-white">
+                    Log in
+                  </a>
+                </li>
+                <li>
+                  <a href={feedback_frontendurl} className="text-white">
+                    Feedbacks
+                  </a>
+                </li>
+              </ul>
+            </Col>
+          )}
           <Col md={3} className="mb-4 mb-md-0">
             <h5 className="mb-4 fw-bold d-flex align-items-center">
               <i class="bi bi-envelope-at-fill me-2"></i>{" "}
-              neotechmotorssl@gmail.com
+              <a
+                href="mailto:neotechmotorssl@gmail.com"
+                style={{ color: "white" }}
+              >
+                neotechmotorssl@gmail.com
+              </a>
             </h5>
             <br />
             <h5 className="mb-4 fw-bold d-flex align-items-center">
