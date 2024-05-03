@@ -86,18 +86,11 @@ function Main() {
 
       <Card>
         <Card.Body>
-          <Card.Text
-            style={{ float: "left", marginTop: "1.5%", marginBottom: "-1%" }}
-          >
-            View Feedbacks
-          </Card.Text>
-          <Link to="/">
-            <Button
-              style={{ float: "right", marginTop: "1%", marginBottom: "-1%" }}
-              variance="primary"
-            >
-              Explore
-            </Button>
+
+          <Card.Text style={{ float: "left", marginTop:"1.5%",marginBottom:"-1%"  }}>View Consultancy Page</Card.Text>
+          <Link to="/staff/cam/con_support">
+          <Button style={{ float: "right",marginTop:"1%" , marginBottom:"-1%"}} variance="primary">explore</Button>
+
           </Link>
         </Card.Body>
       </Card>

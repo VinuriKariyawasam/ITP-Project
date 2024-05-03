@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table } from 'react-bootstrap';
 
-const Dashboard = () => {
+const Dashboard = ({ toggleLoading }) => {
     const [contacts, setContacts] = useState([]);
 
     useEffect(() => {
@@ -11,11 +11,14 @@ const Dashboard = () => {
 
     const fetchData = async () => {
         try {
+            toggleLoading(true);
             const response = await axios.get(`${process.env.React_App_Backend_URL}/api/mobile/contact-us-messages`);
             setContacts(response.data); // Assuming your API response is an array of objects
         } catch (error) {
             console.error(error);
-        }
+        }finally {
+            toggleLoading(false); // Set loading to false after API call
+          }
     };
 
     return (

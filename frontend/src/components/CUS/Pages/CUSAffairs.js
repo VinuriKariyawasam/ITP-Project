@@ -27,10 +27,10 @@ function CUSAffairs({ toggleLoading }) {
 
       <Routes> 
         <Route path="/allfeedback/*" element={<AllFeedbacks toggleLoading={toggleLoading}/>}></Route>
-        <Route path="/feedback/*" element={<Feedback/>}></Route>
+        <Route path="/feedback/*" element={<Feedback toggleLoading={toggleLoading}/>}></Route>
         <Route path="myfeedback/*" element={<MyFeedback toggleLoading={toggleLoading}/>}></Route>
         <Route path="/consultation/*" element={<OnlineConsultation toggleLoading={toggleLoading}/>}></Route>
-        <Route path="/contactDash*" element={<ContactUsDash />} />
+        <Route path="/contactDash*" element={<ContactUsDash toggleLoading={toggleLoading}/>} />
         <Route path="/faq/*" element={<FAQ toggleLoading={toggleLoading}/>}></Route>
     
      </Routes>
