@@ -16,6 +16,24 @@ function Main() {
           <Card.Text
             style={{ float: "left", marginTop: "1.5%", marginBottom: "-1%" }}
           >
+            Financial Reports
+          </Card.Text>
+          <Link to="/staff/finance/financial-reports">
+            <Button
+              style={{ float: "right", marginTop: "1%", marginBottom: "-1%" }}
+              variance="primary"
+            >
+              Explore
+            </Button>
+          </Link>
+        </Card.Body>
+      </Card>
+
+      <Card>
+        <Card.Body>
+          <Card.Text
+            style={{ float: "left", marginTop: "1.5%", marginBottom: "-1%" }}
+          >
             View Attendance
           </Card.Text>
 
@@ -24,7 +42,7 @@ function Main() {
               style={{ float: "right", marginTop: "1%", marginBottom: "-1%" }}
               variance="primary"
             >
-              explore
+              Explore
             </Button>
           </Link>
         </Card.Body>
@@ -42,7 +60,7 @@ function Main() {
               style={{ float: "right", marginTop: "1%", marginBottom: "-1%" }}
               variance="primary"
             >
-              explore
+              Explore
             </Button>
           </Link>
         </Card.Body>
@@ -55,12 +73,12 @@ function Main() {
           >
             View sales
           </Card.Text>
-          <Link to="/">
+          <Link to="/staff/im/sales">
             <Button
               style={{ float: "right", marginTop: "1%", marginBottom: "-1%" }}
               variance="primary"
             >
-              explore
+              Explore
             </Button>
           </Link>
         </Card.Body>
@@ -78,7 +96,7 @@ function Main() {
               style={{ float: "right", marginTop: "1%", marginBottom: "-1%" }}
               variance="primary"
             >
-              explore
+              Explore
             </Button>
           </Link>
         </Card.Body>
