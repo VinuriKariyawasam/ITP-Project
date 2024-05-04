@@ -32,25 +32,8 @@ const SMPeriodicalServices = ({ toggleLoading }) => {
   const [msg, setmsg] = useState("");
 
   function sendata(e) {
-
     e.preventDefault();
     const serviceType = "Periodical Services";
-    const emailData = {
-      to: selectedAppointment.email,
-      subject: `Appointment Confirmed`,
-      text: `Hi ${selectedAppointment.name},\n Your PeriodicalService Appintment with NeoTech Motors on ${selectedAppointment.appointmentdate.split('T')[0]} at ${selectedAppointment.appointmenttime} has been confirmed.`,
-      html: null,
-    };
-
-      toggleLoading(true); // Set loading to true before API call
-    axios
-      .post(
-        `${process.env.React_App_Backend_URL}/appointment/sendappointmentmail`,
-        emailData
-      )
-      .then((response) => {
-        console.log(response.data);
-         //create javascript object
     const newacceptedappointment = {
       userId,
       name,
@@ -64,7 +47,7 @@ const SMPeriodicalServices = ({ toggleLoading }) => {
       appointmenttime,
       
     }
-
+    toggleLoading(true);
     axios.post(`${process.env.React_App_Backend_URL}/appointment/addacceptedappointment`, newacceptedappointment).then(() => {
       alert("Appointment added to the calender") 
       senddataperiodicalAppointmentHistory(selectedAppointment); // Call sendataperiodicalAppointmentHistory function
@@ -72,13 +55,10 @@ const SMPeriodicalServices = ({ toggleLoading }) => {
 
     }).catch((err) => {
       alert(err)
-    }).catch((error) => {
-      console.error("Error sending email:", error);
     }).finally(()=>{
       toggleLoading(false); 
     })
-  })
-
+  
   }
 
 
@@ -102,9 +82,7 @@ const SMPeriodicalServices = ({ toggleLoading }) => {
     }
     toggleLoading(true); 
     axios.post(`${process.env.React_App_Backend_URL}/appointment/addaceptedperiodicalAppointment`,newacceptedPeriodicalAppointment).then(() => {
-       
-      
-
+         
     }).catch((err) => {
       alert(err)
     }).finally(()=>{
@@ -181,36 +159,6 @@ const SMPeriodicalServices = ({ toggleLoading }) => {
     
   };
 
-  const cancleAppointment = (id,email,name,date,time) => {
-    
-    const emailData = {
-      to:email,
-      subject: `Appointment cancelled`,
-      text:  `Hi ${name},\n We are sorry to inform you that Your Periodical Service Appintment with NeoTech Motors on ${date.split('T')[0]} at ${time} has been canceled due to unavilability of technicians at given time slots.We are kindly request you to make an new Appointment.`,
-      html: null,
-    };
-      toggleLoading(true); // Set loading to true before API call
-    axios
-      .post(
-        `${process.env.React_App_Backend_URL}/appointment/sendappointmentmail`,
-        emailData
-      )
-      .then((response) => {
-        console.log(response.data);
-    axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-periodicalAppointment/${id}`)
-      .then(response => {
-        console.log(response);
-        window.location.reload();
-      })
-    }).catch(error => {
-      // Handle errors here
-      console.error(error);
-    }).finally(()=>{
-      toggleLoading(false); 
-    });
-
-  
-};
   
   return (
     <main id="main" className="main">
@@ -233,8 +181,12 @@ const SMPeriodicalServices = ({ toggleLoading }) => {
           <button type="button" className="btn-close" aria-label="Close" onClick={handleCardClose}></button>
           <Row>
             <Card.Text >
-              <strong >Vehicle No: </strong>{selectedAppointment.vNo}<br />
               <strong >Customer Name: </strong>{selectedAppointment.name}<br />
+            </Card.Text>
+          </Row>
+          <Row>
+            <Card.Text >
+              <strong >Vehicle No: </strong>{selectedAppointment.vNo}<br />
             </Card.Text>
           </Row>
           <Row>
@@ -267,7 +219,7 @@ const SMPeriodicalServices = ({ toggleLoading }) => {
             </Card.Text>
           </Row>
           <Row style={{ marginTop: '4%', display: 'flex' }}>
-            <Button variant="danger" onClick={() => cancleAppointment(selectedAppointment._id,selectedAppointment.email,selectedAppointment.name,selectedAppointment.appointmentdate,selectedAppointment.appointmenttime)} style={{ marginLeft: '20%', width: '100px' }}>Cancel</Button>
+            <Button variant="danger" onClick={() => Delete(selectedAppointment._id)} style={{ marginLeft: '20%', width: '100px' }}>Cancel</Button>
             <Button variant="primary" onClick={sendata} style={{ marginLeft: '20%', width: '100px' }}>Approve</Button>
           </Row>
         </Card.Body>

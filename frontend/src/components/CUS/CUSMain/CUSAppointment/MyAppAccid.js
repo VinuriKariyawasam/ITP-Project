@@ -275,7 +275,7 @@ function MyAppAccid ({ toggleLoading }) {
               </Button>
             )}
             <Button variant="danger" onClick={() => Delete(selectedAppointment._id,selectedAppointment.image)}>
-              cancle
+              Cancel
             </Button>
           </Modal.Footer>
         </Modal>

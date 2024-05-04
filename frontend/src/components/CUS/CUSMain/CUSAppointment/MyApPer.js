@@ -263,7 +263,7 @@ function MyApPer({ toggleLoading }) {
                             </Button>
                         )}
                         <Button variant="danger" onClick={() => Delete(selectedAppointment._id)}>
-                            cancle
+                            cancel
                         </Button>
                     </Modal.Footer>
                 </Modal>

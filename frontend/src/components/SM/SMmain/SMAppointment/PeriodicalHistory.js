@@ -147,7 +147,11 @@ const checkPageBreak = (currentY, lineHeight, pageHeight) => {
                 <Row>
                   <Card.Text style={{ display: "flex" }} >
                     <strong style={{ float: "left" }}>Vehicle No: </strong>{selectedAppointment.vNo}<br />
-                    <strong style={{ marginLeft: "40%", float: "right" }}>Customer Name: </strong>{selectedAppointment.name}<br />
+                  </Card.Text>
+                </Row>
+                <Row>
+                  <Card.Text style={{ display: "flex" }} >
+                    <strong style={{ float: "left" }}>Vehicle No: </strong>{selectedAppointment.vNo}<br />
                   </Card.Text>
                 </Row>
                 <Row>
