@@ -28,20 +28,6 @@ const SMMechanicalRepairs = ({ toggleLoading }) => {
   function sendata(e) {
     e.preventDefault();
     const serviceType = "Mechanical Repairs";
-    const emailData = {
-      to: selectedAppointment.email,
-      subject: `Appointment Confirmed`,
-      text: `Hi ${selectedAppointment.name},\n Your Mechanical repair Appintment with NeoTech Motors on ${selectedAppointment.appointmentdate.split('T')[0]} at ${selectedAppointment.appointmenttime} has been confirmed.`,
-      html: null,
-    };
-    toggleLoading(true); 
-    axios.post( `${process.env.React_App_Backend_URL}/appointment/sendappointmentmail`,
-        emailData
-      )
-      .then((response) => {
-        console.log(response.data);
-         //create javascript object
-    //create javascript object
     const newacceptedappointment = {
       userId,
       name,
@@ -55,6 +41,7 @@ const SMMechanicalRepairs = ({ toggleLoading }) => {
       appointmenttime,
 
     }
+    toggleLoading(true); 
     axios.post(`${process.env.React_App_Backend_URL}/appointment/addacceptedappointment`, newacceptedappointment).then(() => {
       alert("Appointment added to the calender")
       senddatamechanicalAppointmentHistory(selectedAppointment);
@@ -62,12 +49,10 @@ const SMMechanicalRepairs = ({ toggleLoading }) => {
 
     }).catch((err) => {
       alert(err)
-    }).catch((error) => {
-      console.error("Error sending email:", error);
     }).finally(()=>{
       toggleLoading(false); 
     });
-  })
+  
   }
   function senddatamechanicalAppointmentHistory() {
 
