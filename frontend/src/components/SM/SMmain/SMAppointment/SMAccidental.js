@@ -28,20 +28,6 @@ const SMAccidentalRepairs = ({ toggleLoading }) => {
   function sendata(e) {
     e.preventDefault();
     const serviceType = "Accidental Repairs";
-    const emailData = {
-      to: selectedAppointment.email,
-      subject: `Appointment Confirmed`,
-      text: `Hi ${selectedAppointment.name},\n Your Accidental Repair Appintment with NeoTech Motors on ${selectedAppointment.appointmentdate.split('T')[0]} at ${selectedAppointment.appointmenttime} has been confirmed.`,
-      html: null,
-    };
-    toggleLoading(true); 
-    axios
-      .post(
-        `${process.env.React_App_Backend_URL}/appointment/sendappointmentmail`,
-        emailData
-      )
-      .then((response) => {
-        console.log(response.data);
 
     //create javascript object
     const newacceptedappointment = {
@@ -57,7 +43,7 @@ const SMAccidentalRepairs = ({ toggleLoading }) => {
       appointmenttime,
 
     }
-
+    toggleLoading(true); 
     axios.post(`${process.env.React_App_Backend_URL}/appointment/addacceptedappointment`,newacceptedappointment).then(() => {
       alert("Appointment Added to calendar")
       senddataAccidentalAppointmentHistory(selectedAppointment);
@@ -65,12 +51,10 @@ const SMAccidentalRepairs = ({ toggleLoading }) => {
 
     }).catch((err) => {
       alert(err)
-    }).catch((error) => {
-      console.error("Error sending email:", error);
     }).finally(()=>{
       toggleLoading(false); 
     });
-  })
+  
 
   }
   function senddataAccidentalAppointmentHistory() {
@@ -91,7 +75,6 @@ const SMAccidentalRepairs = ({ toggleLoading }) => {
     
     }
     toggleLoading(true); 
-
     axios.post(`${process.env.React_App_Backend_URL}/appointment/addacceptedaccidentalAppointment`,newacceptedaccidentalAppointment).then(() => {
       
     }).catch((err) => {
@@ -147,6 +130,7 @@ const SMAccidentalRepairs = ({ toggleLoading }) => {
   const handleCardClose = () => {
     setSelectedAppointment(null);
   };
+
   const Delete = (id) => {
     toggleLoading(true);
       axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-accidentalAppointment/${id}`)
@@ -161,31 +145,14 @@ const SMAccidentalRepairs = ({ toggleLoading }) => {
           toggleLoading(false); 
         });
     
-    
   };
-  const cancleAppointment = (id,email,name,date,time,Image) => {
+  const cancleAppointment = (id,Image) => {
     const image = Image;
-    const emailData = {
-      to:email,
-      subject: `Appointment cancelled`,
-      text:  `Hi ${name},\n We are sorry to inform you that Your Accidental Repair Appintment with NeoTech Motors on ${date.split('T')[0]} at ${time} has been canceled due to unavilability of technicians at given time slots.We are kindly request you to make an new Appointment.`,
-      html: null,
-    };
-    toggleLoading(true); 
-    axios
-      .post(
-        `${process.env.React_App_Backend_URL}/appointment/sendappointmentmail`,
-        emailData
-      )
-      .then((response) => {
-        console.log(response.data);
-
     axios.delete(`${process.env.React_App_Backend_URL}/appointment/delete-allwithimage/${id}`,{data:{image}})
       .then(response => {
         console.log(response);
         window.location.reload();
-      })
-}).catch(error => {
+      }).catch(error => {
         // Handle errors here
         console.error(error);
       }).finally(()=>{
@@ -242,7 +209,7 @@ const SMAccidentalRepairs = ({ toggleLoading }) => {
                 <Row style={{ marginTop: "4%", display: "flex" }}>
                 </Row>
                 <Row style={{ marginTop: "4%", display: "flex" }}>
-                  <Button variant="danger" onClick={() => cancleAppointment(selectedAppointment._id,selectedAppointment.email,selectedAppointment.name,selectedAppointment.appointmentdate,selectedAppointment.appointmenttime,selectedAppointment.image)} style={{ marginLeft: '20%', width: '100px' }}>Cancel</Button>
+                  <Button variant="danger" onClick={() => cancleAppointment(selectedAppointment._id,selectedAppointment.image)} style={{ marginLeft: '20%', width: '100px' }}>Cancel</Button>
                   <Button variant="primary" onClick={sendata} style={{ marginLeft: "20%", width: "100px" }}>Approve</Button>
                 </Row>
               </Card.Body>
