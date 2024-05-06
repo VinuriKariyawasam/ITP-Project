@@ -144,6 +144,48 @@ const AttendanceRecordsTable = ({
   // Concatenate headerData, columnHeaders, and csvData
   const finalCsvData = headerData.concat(columnHeaders).concat(csvData);
 
+  // Generate table rows dynamically based on the current state of table data
+  const tableRows = filteredTableData
+    .filter((record) => dateFilter(record.date))
+    .map((record) => {
+      const attendanceRows = record.employeeAttendance
+        .map((emp) => {
+          return `
+          <tr>
+            <td>${emp.empId}</td>
+            <td>${emp.name}</td>
+            <td>${emp.value ? "Present" : "Absent"}</td>
+          </tr>
+        `;
+        })
+        .join("");
+
+      return `
+        <tr>
+          <td>${new Date(record.date).toLocaleDateString()}</td>
+          <td>${new Date(record.date).toLocaleTimeString()}</td>
+          <td>${presentCount}</td>
+          <td>${absentCount}</td>
+          <td>${calculateAttendancePercentage(record.employeeAttendance)}</td>
+          <td>
+            <table>
+              <thead>
+                <tr>
+                  <th>EmpId</th>
+                  <th>Name</th>
+                  <th>Attendance</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${attendanceRows}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      `;
+    })
+    .join("");
+
   // Generate PDF from the table
   const generatePDF = () => {
     const currentDate = new Date().toLocaleDateString();
@@ -187,7 +229,7 @@ const AttendanceRecordsTable = ({
           </tr>
         </thead>
         <tbody>
-          ${renderTableRows}
+        ${tableRows}
         </tbody>
       </table>
       <p style="text-align: right; margin-top: 20px;">Authorized By: ${userPosition}</p>
@@ -291,7 +333,7 @@ const AttendanceRecordsTable = ({
               </th>
             </tr>
           </thead>
-          <tbody>{renderTableRows()}</tbody>
+          <tbody className="tablebody">{renderTableRows()}</tbody>
         </table>
       </div>
       <Modal show={showModal} onHide={handleCloseModal}>

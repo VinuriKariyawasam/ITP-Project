@@ -46,8 +46,8 @@ function CusRegistration({ toggleLoading }){
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [address, setaddress] = useState("");
-  const [showPassword, setShowPassword] = useState('');
-  const [showConfirmPassword, setConfirmShowPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setConfirmShowPassword] = useState(false);
 
   //validations
   const handleChangeName = (e) => {
@@ -257,7 +257,7 @@ const handleConfirmPasswordChange = (e) => {
                 <Form.Label>Password *</Form.Label>
                 <InputGroup hasValidation>
                     <Form.Control 
-                        type="password" 
+                        type={showPassword ? "text" : "password"} 
                         placeholder="Password" 
                         value={password}
                         onChange={handleChangePassword}
@@ -288,7 +288,7 @@ const handleConfirmPasswordChange = (e) => {
                 <Form.Label>Confirm Password *</Form.Label>
                 <div className="d-flex align-items-center"> {/* Wrap label and input with flex */}
                 <Form.Control 
-                    type="password" 
+                    type={showConfirmPassword ? "text" : "password"} 
                     placeholder="Confirm Password"
                     value={confirmPassword}
                     onChange={handleChangeConfirmPassword}
@@ -310,8 +310,6 @@ const handleConfirmPasswordChange = (e) => {
                   placeholder="1234 Main St"
                   value={address}
                   onChange={(e) => setaddress(e.target.value)}
-                  pattern="^[a-zA-Z\s]+$"  // Regex to allow only letters and spaces
-                  title="Please enter a valid address without special characters or numbers"
                   /><br></br>
 
                 <div class="form-check">

@@ -8,17 +8,16 @@ import "./AddVehicle.css"; // Import CSS file for custom styles
 function AddVehicle({ toggleLoading }) {
   const [formData, setFormData] = useState({
     vehicleNo: "",
-  brand: "",
-  model: "",
-  year: "",
-  name: "",
-  contact: "",
-  email: "",
-  date: new Date(),
-  type: "", // Add type field
-  government: false,
+    brand: "",
+    model: "",
+    year: "",
+    name: "",
+    contact: "",
+    email: "",
+    date: new Date(),
+    type: "", // Add type field
+    government: false,
     records: null, // Adjusted to set a default date
-  
   });
 
   const [errors, setErrors] = useState({});
@@ -34,18 +33,17 @@ function AddVehicle({ toggleLoading }) {
     // Validate each field as it's being typed
     switch (name) {
       case "vehicleNo":
-  errorMessage =
-    value.trim().length === 0 || value.trim().length > 10
-      ? "Vehicle No. is required and must be at most 10 characters"
-      : !/^[A-Z\u0DC1\u0DCA\u200D\u0DBB\u0DD3\d]+$/.test(value)
-      ? "Vehicle No. must contain only capital letters, Sinhala word 'ශ්‍රී', or numbers"
-      : value.trim().length > 1 && value.trim().startsWith("ශ්‍රී")
-      ? "ශ්‍රී can only be added after the first character"
-      : !/^[A-Z\d]*$/.test(value)
-
-      ? "Vehicle No. must contain only numbers"
-      : "";
-  break;
+        errorMessage =
+          value.trim().length === 0 || value.trim().length > 10
+            ? "Vehicle No. is required and must be at most 10 characters"
+            : !/^[A-Z\u0DC1\u0DCA\u200D\u0DBB\u0DD3\d]+$/.test(value)
+            ? "Vehicle No. must contain only capital letters, Sinhala word 'ශ්‍රී', or numbers"
+            : value.trim().length > 1 && value.trim().startsWith("ශ්‍රී")
+            ? "ශ්‍රී can only be added after the first character"
+            : !/^[A-Z\d]*$/.test(value)
+            ? ""
+            : "";
+        break;
       case "date":
         errorMessage = !value ? "Date is required" : "";
         break;
@@ -75,19 +73,24 @@ function AddVehicle({ toggleLoading }) {
           : "";
         break;
       case "email":
-        errorMessage = !/\S+@\S+\.\S+/.test(value) ? "Invalid email address" : "";
+        errorMessage = !/\S+@\S+\.\S+/.test(value)
+          ? "Invalid email address"
+          : "";
         break;
 
-        case "type":
-          setFormData({ ...formData, [name]: value });
-          break;
+      case "type":
+        setFormData({ ...formData, [name]: value });
+        break;
       default:
         break;
     }
 
     setErrors({ ...errors, [name]: errorMessage });
     setErrorField(null);
-    setFormData({ ...formData, [name]: name === "government" ? checked : value });
+    setFormData({
+      ...formData,
+      [name]: name === "government" ? checked : value,
+    });
   };
 
   const handleAddSri = () => {
@@ -96,16 +99,17 @@ function AddVehicle({ toggleLoading }) {
     if (trimmedValue.length === 0 || trimmedValue.startsWith("ශ්‍රී")) {
       return; // Exit function if the conditions are met
     }
-  
+
     // Validate the vehicle number to ensure it starts with a number and contains only numbers
     if (!/^\d+$/.test(trimmedValue)) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        vehicleNo: "Vehicle No. must start with a number and contain only numbers",
+        vehicleNo:
+          "Vehicle No. must start with a number and contain only numbers",
       }));
       return; // Exit function if validation fails
     }
-  
+
     // If all conditions are met, add "ශ්‍රී" to the vehicle number
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -126,13 +130,16 @@ function AddVehicle({ toggleLoading }) {
     if (validateForm()) {
       try {
         toggleLoading(true); // Set loading to true before API call
-        const response = await fetch(`${process.env.React_App_Backend_URL}/api/vehicle/add-vehicle`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
+        const response = await fetch(
+          `${process.env.React_App_Backend_URL}/api/vehicle/add-vehicle`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
@@ -143,7 +150,7 @@ function AddVehicle({ toggleLoading }) {
         }
       } catch (error) {
         console.error("Error registering vehicle:", error);
-      }finally {
+      } finally {
         toggleLoading(false); // Set loading to false after API call
       }
     }
@@ -234,7 +241,9 @@ function AddVehicle({ toggleLoading }) {
               onChange={handleChange}
               className={`form-control ${errors.vehicleNo ? "is-invalid" : ""}`}
             />
-            <Button variant="secondary" onClick={handleAddSri}>Add ශ්‍රී</Button>
+            <Button variant="secondary" onClick={handleAddSri}>
+              Add ශ්‍රී
+            </Button>
             {errors.vehicleNo && (
               <div className="invalid-feedback">{errors.vehicleNo}</div>
             )}
@@ -283,8 +292,12 @@ function AddVehicle({ toggleLoading }) {
           </div>
 
           <div className="mb-2">
-            <label htmlFor="name">Name &nbsp;&nbsp; <span style={{ color: 'blue' }}>**If the vehicle is a government vehicle, 
-                                                                          enter ministry name</span></label>
+            <label htmlFor="name">
+              Name &nbsp;&nbsp;{" "}
+              <span style={{ color: "blue" }}>
+                **If the vehicle is a government vehicle, enter ministry name
+              </span>
+            </label>
             <input
               type="text"
               name="name"
@@ -312,7 +325,7 @@ function AddVehicle({ toggleLoading }) {
           </div>
 
           <div className="mb-2">
-          <label htmlFor="email">Email </label>
+            <label htmlFor="email">Email </label>
 
             <input
               type="email"
@@ -327,21 +340,21 @@ function AddVehicle({ toggleLoading }) {
           </div>
 
           <div className="mb-2">
-  <label htmlFor="type">Type</label>
-  <select
-    name="type"
-    value={formData.type}
-    onChange={handleChange}
-    className={`form-control ${errors.type ? "is-invalid" : ""}`}
-  >
-    <option value="">Select Type</option>
-    <option value="government">Government</option>
-    <option value="nonGovernment">Non-Government</option>
-  </select>
-  {errors.type && (
-    <div className="invalid-feedback">{errors.type}</div>
-  )}
-</div>
+            <label htmlFor="type">Type</label>
+            <select
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              className={`form-control ${errors.type ? "is-invalid" : ""}`}
+            >
+              <option value="">Select Type</option>
+              <option value="government">Government</option>
+              <option value="nonGovernment">Non-Government</option>
+            </select>
+            {errors.type && (
+              <div className="invalid-feedback">{errors.type}</div>
+            )}
+          </div>
 
           <div className="mb-2">
             <label htmlFor="date">Date</label>

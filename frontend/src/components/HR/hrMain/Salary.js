@@ -321,6 +321,7 @@ function Salary({ toggleLoading }) {
       if (data) {
         alert("No Pay deducts successfully");
       }
+      fetchLogsForToday();
     } catch (error) {
       console.error("Error triggering function:", error);
     } finally {
