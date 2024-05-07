@@ -90,7 +90,7 @@ function SparePartsform({ toggleLoading }) {
             contactNumber: formState.inputs.contactNumber.value,
             description: formState.inputs.description.value,
             status: "pending",
-            email: cusauth.email,
+            email: `${cusauth.email}`,
             image: Url,
             orderdate: formattedDate,
           };
